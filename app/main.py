@@ -10,6 +10,23 @@ def main(page: ft.Page):
     page.title = "Drag and Drop example"
     page.window.width = 1000
     page.scroll = "always"
+    
+    def counterPlus(e):
+        Count.value = str(int(Count.value)+1)
+        Count.update()
+    def counterMinus(e):
+        Count.value = str(int(Count.value)-1)
+        Count.update()
+    Count = ft.TextField(value="0",width=50)
+    
+    counter =ft.Column(
+        [
+            ft.IconButton(ft.icons.ADD,icon_size=10,on_click = counterPlus),
+            Count,
+            ft.IconButton(ft.icons.REMOVE,icon_size=10,on_click=counterMinus),
+        ],
+    )
+    
 
     draggacle_data = {
         "_245": "処方修正",
@@ -28,12 +45,16 @@ def main(page: ft.Page):
         src_id = data.get("src_id", "")
         print(src_id)
         key = draggacle_data.get(src_id, "")
-        e.control.content = ft.Container(
-            ft.Text(key, color="white"),
-            width=50,
-            height=90,
-            bgcolor=ft.colors.BLUE_GREY_500,
-        )
+        e.control.content = ft.Column(
+            controls=[
+            ft.Container(
+                ft.Text(key, color="white"),
+                width=50,
+                bgcolor=ft.colors.BLUE_GREY_500,
+                ),
+            counter
+            ],
+            height=300,)
         e.control.update()
         range_values.setdefault(e.control.data, key)
         print(range_values)
@@ -186,7 +207,7 @@ def main(page: ft.Page):
                             group="timeline",
                             content=ft.Container(
                                 width=50,
-                                height=90,
+                                height=300,
                                 bgcolor=None,
                                 border_radius=5,
                             ),
