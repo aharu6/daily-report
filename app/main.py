@@ -116,11 +116,15 @@ def main(page: ft.Page):
         range_values.setdefault(e.control.data, key)
 
     def write_csv_file(e):
+        #sqlite3データベースのデータにてcsvファイルを作成
+        res = cur.execute("SELECT * FROM timeline")
+        data = res.fetchall()
+        print(data)
         with open("output.csv", "w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(["Time", "Task"])
-            for key, value in range_values.items():
-                writer.writerow([key, value])
+            writer.writerow(["Time", "Task","Count"])
+            for key, value,count in data:
+                writer.writerow([key, value,count])
 
     save_button = ft.ElevatedButton(text="Save", on_click=write_csv_file)
 
@@ -272,52 +276,4 @@ def main(page: ft.Page):
                         ),
                     ],
                     spacing=0,
-                ),
-                margin=0,
-                padding=0,
-            )
-        )
-
-    kinds = [
-        "処方修正",
-        "医師からの問い合わせ",
-        "看護師からの問い合わせ",
-        "薬剤セット",
-        "持参薬を確認",
-        "薬剤服用歴等について保険薬局へ照会",
-        "TDM実施",
-    ]
-    selectColumns = []
-    for kind in kinds:
-        selectColumns.append(
-            ft.Column(
-                [
-                    ft.Draggable(
-                        group="timeline",
-                        content=ft.Container(
-                            ft.Text(kind, color="white"),
-                            width=100,
-                            height=70,
-                            bgcolor=ft.colors.BLUE_GREY_500,
-                            border_radius=5,
-                        ),
-                        data=kind,
-                    )
-                ]
-            )
-        )
-
-    page.add(
-        ft.Row(
-            scroll=True,
-            controls=columns,
-        ),
-        ft.Row(scroll=True, controls=selectColumns),
-        save_button,
-        file_picker_Button,
-        selected_files,
-        bar_chart,
-    )
-
-
-ft.app(main)
+     
