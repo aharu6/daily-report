@@ -31,7 +31,7 @@ jobs:
 
       - name: Build executable
         run: |
-          flet pack app/main.py
+          pyinstaller --onefile --hidden-import pandas --hidden-import numpy --hidden-import datetime app/main.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
