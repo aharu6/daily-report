@@ -18,36 +18,36 @@ def main(page: ft.Page):
     cur = con.cursor()
 
     cur.execute(
-        "CREATE TABLE IF NOT EXISTS timeline ( time TEXT,task TEXT,count INTEGER)"
+        "CREATE TABLE IF NOT EXISTS timeline ( time TEXT,task TEXT,count INTEGER,locate TEXT)"
     )
     # sqliteデータベースを初期化
     cur.execute("DELETE FROM timeline")
 
-    def counterPlus(e,count_filed):
+    def counterPlus(e, count_filed):
         # eが入力したカラムの値（時間）を取得している
         # sqliteデータベースからカウントを取得
         res = cur.execute("SELECT count FROM timeline WHERE time = ?", (e,))
         old_Count = res.fetchall()[0][0]
         new_Count = old_Count + 1
         # sqlite3データベースへ上書き保存
-        cur.execute("""
-                    UPDATE timeline SET count = ? WHERE time = ?
-                    """,
+        cur.execute(
+            "UPDATE timeline SET count = ? WHERE time = ?",
             (
                 new_Count,
                 e,
             ),
         )
-        #更新した値にてカウンター内を更新
+        # 更新した値にてカウンター内を更新
         count_filed.value = new_Count
         count_filed.update()
 
-    def counterMinus(e,count_filed):
+    def counterMinus(e, count_filed):
         # +と同様
         res = cur.execute("SELECT count FROM timeline WHERE time = ?", (e,))
         old_Count = res.fetchall()[0][0]
         new_Count = old_Count - 1
-        cur.execute("""
+        cur.execute(
+            """
                     UPDATE timeline SET count = ? WHERE time = ?
                     """,
             (
@@ -55,7 +55,7 @@ def main(page: ft.Page):
                 e,
             ),
         )
-        #update counter value
+        # update counter value
         count_filed.value = new_Count
         count_filed.update()
 
@@ -74,15 +74,22 @@ def main(page: ft.Page):
         # sqlite3データベースからカウントを取得
         res = cur.execute("SELECT count FROM timeline WHERE time = ?", (e,))
         count = res.fetchall()[0][0]
-        count_filed = ft.Text(count, size=12)
+        count_filed = ft.TextField(count,width=40, text_align=ft.TextAlign.CENTER,text_size=10,border_color=None)
         return ft.Column(
             [
                 ft.IconButton(
-                    ft.icons.ADD, icon_size=10, on_click=lambda _: counterPlus(e,count_filed)
+                    ft.icons.ADD,
+                    icon_size = 20,
+                    on_click=lambda _: counterPlus(e, count_filed),
+                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
                 ),
                 count_filed,
                 ft.IconButton(
-                    ft.icons.REMOVE, icon_size=10, on_click=lambda _: counterMinus(e,count_filed)
+                    ft.icons.REMOVE,
+                    icon_size=20,
+                    on_click=lambda _: counterMinus(e, count_filed),
+                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
+
                 ),
             ]
         )
@@ -93,12 +100,18 @@ def main(page: ft.Page):
         data = json.loads(e.data)
         src_id = data.get("src_id", "")
         key = draggacle_data.get(src_id, "")
+        # AMかPMかを判定
+        locate = ""
+        if e.control.data in amTime:
+            locate = "AM"
+        elif e.control.data in pmTime:
+            locate = "PM"
         # sqlite3形式にて保存
         cur.execute(
             """
-                    INSERT INTO timeline (time,task,count) VALUES (?,?,?)
-                    """,
-            (e.control.data, key, 0),
+            INSERT INTO timeline (time,task,count,locate) VALUES (?,?,?,?)
+            """,
+            (e.control.data, key, 0, locate),
         )
         con.commit()
         e.control.content = ft.Column(
@@ -106,6 +119,7 @@ def main(page: ft.Page):
                 ft.Container(
                     ft.Text(key, color="white"),
                     width=50,
+                    height=140,
                     bgcolor=ft.colors.BLUE_GREY_500,
                 ),
                 create_counter(e.control.data),
@@ -114,17 +128,34 @@ def main(page: ft.Page):
         )
         e.control.update()
         range_values.setdefault(e.control.data, key)
+        print(amDropDown.value)
+        if amDropDown.value is not None:
+            print("amexist")
+            cur.execute(
+                "UPDATE timeline SET locate = ? WHERE locate = 'AM'",
+                (amDropDown.value),
+            )
+        elif pmDropDown.value is not None:
+            cur.execute(
+                "UPDATE timeline SET locate = ? WHERE locate = 'PM'",
+                (pmDropDown.value),
+            )            
+            print("pmexist")
+        else:
+            print("none update")
+        res = cur.execute("SELECT * FROM timeline")
+        print(res.fetchall())
 
     def write_csv_file(e):
-        #sqlite3データベースのデータにてcsvファイルを作成
+        # sqlite3データベースのデータにてcsvファイルを作成
         res = cur.execute("SELECT * FROM timeline")
         data = res.fetchall()
         print(data)
         with open("output.csv", "w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(["Time", "Task","Count"])
-            for key, value,count in data:
-                writer.writerow([key, value,count])
+            writer.writerow(["Time", "Task", "Count", "locate"])
+            for key, value, count, locate in data:
+                writer.writerow([key, value, count, locate])
 
     save_button = ft.ElevatedButton(text="Save", on_click=write_csv_file)
 
@@ -193,19 +224,6 @@ def main(page: ft.Page):
         expand=True,
     )
 
-    hours = [
-        "8:00",
-        "9:00",
-        "10:00",
-        "11:00",
-        "12:00",
-        "13:00",
-        "14:00",
-        "15:00",
-        "16:00",
-        "17:00",
-    ]
-
     times = [
         "8:30 8:40",
         "8:40 8:50",
@@ -256,7 +274,62 @@ def main(page: ft.Page):
         "16:40 16:50",
         "16:50 17:00",
     ]
+
+    amTime = [
+        "8:30 8:40",
+        "8:40 8:50",
+        "8:50 9:00",
+        "9:00 9:10",
+        "9:20 9:30",
+        "9:30 9:40",
+        "9:40 9:50",
+        "9:50 10:00",
+        "10:00 10:10",
+        "10:10 10:20",
+        "10:20 10:30",
+        "10:30 10:40",
+        "10:40 10:50",
+        "10:50 11:00",
+        "11:10 11:20",
+        "11:20 11:30",
+        "11:40 11:50",
+        "11:50 12:00",
+        "12:00 12:10",
+        "12:10 12:20",
+        "12:20 12:30",
+    ]
+
+    pmTime = [
+        "12:30 12:40",
+        "12:40 12:50",
+        "12:50 13:00",
+        "13:00 13:10",
+        "13:10 13:20",
+        "13:20 13:30",
+        "13:30 13:40",
+        "13:40 13:50",
+        "13:50 14:00",
+        "14:00 14:10",
+        "14:10 14:20",
+        "14:20 14:30",
+        "14:30 14:40",
+        "14:40 14:50",
+        "14:50 15:00",
+        "15:00 15:10",
+        "15:10 15:20",
+        "15:20 15:30",
+        "15:30 15:40",
+        "15:40 15:50",
+        "15:50 16:00",
+        "16:00 16:10",
+        "16:10 16:20",
+        "16:20 16:30",
+        "16:30 16:40",
+        "16:40 16:50",
+        "16:50 17:00",
+    ]
     columns = []
+
     for time in times:
         columns.append(
             ft.Container(
@@ -281,6 +354,72 @@ def main(page: ft.Page):
                 padding=0,
             )
         )
+
+    def change_locateAM(e):
+        # 現在のデータを入力された値に更新
+        cur.execute(
+            "UPDATE timeline SET locate = ? WHERE locate = 'AM'",
+            (amDropDown.value),
+        )
+
+    def change_locatePM(e):
+        cur.execute(
+            "UPDATE timeline SET locate = ? WHERE locate = 'PM'",
+            (pmDropDown.value),
+        )
+
+    amDropDown = ft.Dropdown(
+        width=1590,
+        options=[
+            ft.dropdown.Option("1"),
+            ft.dropdown.Option("2"),
+            ft.dropdown.Option("3"),
+            ft.dropdown.Option("4"),
+            ft.dropdown.Option("5"),
+        ],
+        label="AM",
+        text_size=12,
+        label_style=ft.TextStyle(size=12),
+        border_color=ft.colors.BLUE_GREY_100,
+        height=20,
+        on_change=change_locateAM,
+    )
+    pmDropDown = ft.Dropdown(
+        width=1890,
+        options=[
+            ft.dropdown.Option("1"),
+            ft.dropdown.Option("2"),
+            ft.dropdown.Option("3"),
+            ft.dropdown.Option("4"),
+            ft.dropdown.Option("5"),
+        ],
+        label="PM",
+        text_size=12,
+        label_style=ft.TextStyle(size=12),
+        border_color=ft.colors.BLUE_GREY_100,
+        height=20,
+        on_change=change_locatePM,
+    )
+
+    ampmSelect = ft.Row(
+        controls=[
+            amDropDown,
+            ft.Container(height=20, width=190),
+            pmDropDown,
+        ]
+    )
+
+    TimeLine = ft.Row(
+        scroll=True,
+        controls=[
+            ft.Column(
+                controls=[
+                    ampmSelect,
+                    ft.Row(controls=columns),
+                ]
+            ),
+        ],
+    )
 
     kinds = [
         "処方修正",
@@ -312,10 +451,7 @@ def main(page: ft.Page):
         )
 
     page.add(
-        ft.Row(
-            scroll=True,
-            controls=columns,
-        ),
+        TimeLine,
         ft.Row(scroll=True, controls=selectColumns),
         save_button,
         file_picker_Button,
