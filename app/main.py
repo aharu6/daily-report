@@ -3,30 +3,61 @@ import json
 import calendar
 import csv
 import pandas as pd
+import sqlite3
 
-#main
+
+# main
 def main(page: ft.Page):
 
     page.title = "Drag and Drop example"
     page.window.width = 1000
     page.scroll = "always"
-    
-    def counterPlus(e):
-        Count.value = str(int(Count.value)+1)
-        Count.update()
-    def counterMinus(e):
-        Count.value = str(int(Count.value)-1)
-        Count.update()
-    Count = ft.TextField(value="0",width=50)
-    
-    counter =ft.Column(
-        [
-            ft.IconButton(ft.icons.ADD,icon_size=10,on_click = counterPlus),
-            Count,
-            ft.IconButton(ft.icons.REMOVE,icon_size=10,on_click=counterMinus),
-        ],
+
+    # sqlite3
+    con = sqlite3.connect("timelime.db")
+    cur = con.cursor()
+
+    cur.execute(
+        "CREATE TABLE IF NOT EXISTS timeline ( time TEXT,task TEXT,count INTEGER)"
     )
-    
+    # sqliteデータベースを初期化
+    cur.execute("DELETE FROM timeline")
+
+    def counterPlus(e,count_filed):
+        # eが入力したカラムの値（時間）を取得している
+        # sqliteデータベースからカウントを取得
+        res = cur.execute("SELECT count FROM timeline WHERE time = ?", (e,))
+        old_Count = res.fetchall()[0][0]
+        new_Count = old_Count + 1
+        # sqlite3データベースへ上書き保存
+        cur.execute("""
+                    UPDATE timeline SET count = ? WHERE time = ?
+                    """,
+            (
+                new_Count,
+                e,
+            ),
+        )
+        #更新した値にてカウンター内を更新
+        count_filed.value = new_Count
+        count_filed.update()
+
+    def counterMinus(e,count_filed):
+        # +と同様
+        res = cur.execute("SELECT count FROM timeline WHERE time = ?", (e,))
+        old_Count = res.fetchall()[0][0]
+        new_Count = old_Count - 1
+        cur.execute("""
+                    UPDATE timeline SET count = ? WHERE time = ?
+                    """,
+            (
+                new_Count,
+                e,
+            ),
+        )
+        #update counter value
+        count_filed.value = new_Count
+        count_filed.update()
 
     draggacle_data = {
         "_245": "処方修正",
@@ -38,26 +69,51 @@ def main(page: ft.Page):
         "_269": "TDM実施",
     }
 
+    def create_counter(e):
+        # eは入力したカラムの時間を取得
+        # sqlite3データベースからカウントを取得
+        res = cur.execute("SELECT count FROM timeline WHERE time = ?", (e,))
+        count = res.fetchall()[0][0]
+        count_filed = ft.Text(count, size=12)
+        return ft.Column(
+            [
+                ft.IconButton(
+                    ft.icons.ADD, icon_size=10, on_click=lambda _: counterPlus(e,count_filed)
+                ),
+                count_filed,
+                ft.IconButton(
+                    ft.icons.REMOVE, icon_size=10, on_click=lambda _: counterMinus(e,count_filed)
+                ),
+            ]
+        )
+
     range_values = {}
 
     def drag_accepted(e):
         data = json.loads(e.data)
         src_id = data.get("src_id", "")
-        print(src_id)
         key = draggacle_data.get(src_id, "")
+        # sqlite3形式にて保存
+        cur.execute(
+            """
+                    INSERT INTO timeline (time,task,count) VALUES (?,?,?)
+                    """,
+            (e.control.data, key, 0),
+        )
+        con.commit()
         e.control.content = ft.Column(
             controls=[
-            ft.Container(
-                ft.Text(key, color="white"),
-                width=50,
-                bgcolor=ft.colors.BLUE_GREY_500,
+                ft.Container(
+                    ft.Text(key, color="white"),
+                    width=50,
+                    bgcolor=ft.colors.BLUE_GREY_500,
                 ),
-            counter
+                create_counter(e.control.data),
             ],
-            height=300,)
+            height=300,
+        )
         e.control.update()
         range_values.setdefault(e.control.data, key)
-        print(range_values)
 
     def write_csv_file(e):
         with open("output.csv", "w", newline="") as f:
