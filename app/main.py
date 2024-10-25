@@ -4,6 +4,7 @@ import calendar
 import csv
 import pandas as pd
 import sqlite3
+import datetime
 
 
 # main
@@ -13,12 +14,40 @@ def main(page: ft.Page):
     page.window.width = 1000
     page.scroll = "always"
 
+    today = datetime.date.today()  # 今日の日付を取得
+    print(today)
+
+
+    def handle_change(e):
+        global today
+        selected_date = e.control.value  # 例えば "2024-10-25" のような形式
+        print(selected_date)
+
+        # 文字列を日付オブジェクトに変換
+        today = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+
+        # 年、月、日を取得して表示用のテキストに変換
+        Date.text = f"{today.year}/{today.month}/{today.day}"
+        Date.update()
+
+    Date = ft.ElevatedButton(
+        f"{today.year}/{today.month}/{today.day}",
+        icon=ft.icons.CALENDAR_MONTH,
+        on_click=lambda e: page.open(
+            ft.DatePicker(
+                first_date=datetime.date(
+                    year=today.year, month=today.month, day=today.day
+                ),
+                on_change=handle_change,
+            )
+        ),
+    )
     # sqlite3
     con = sqlite3.connect("timelime.db")
     cur = con.cursor()
 
     cur.execute(
-        "CREATE TABLE IF NOT EXISTS timeline ( time TEXT,task TEXT,count INTEGER,locate TEXT)"
+        "CREATE TABLE IF NOT EXISTS timeline ( time TEXT,task TEXT,count INTEGER,locate TEXT,date TEXT)"
     )
     # sqliteデータベースを初期化
     cur.execute("DELETE FROM timeline")
@@ -60,13 +89,13 @@ def main(page: ft.Page):
         count_filed.update()
 
     draggacle_data = {
-        "_245": "処方修正",
-        "_249": "医師からの問い合わせ",
-        "_253": "看護師からの問い合わせ",
-        "_257": "薬剤セット数",
-        "_261": "持参薬を確認",
-        "_265": "薬剤服用歴等について保険薬局へ照会",
-        "_269": "TDM実施",
+        "_262": "処方修正",
+        "_266": "医師からの問い合わせ",
+        "_270": "看護師からの問い合わせ",
+        "_274": "薬剤セット数",
+        "_278": "持参薬を確認",
+        "_282": "薬剤服用歴等について保険薬局へ照会",
+        "_286": "TDM実施",
     }
 
     def create_counter(e):
@@ -74,12 +103,18 @@ def main(page: ft.Page):
         # sqlite3データベースからカウントを取得
         res = cur.execute("SELECT count FROM timeline WHERE time = ?", (e,))
         count = res.fetchall()[0][0]
-        count_filed = ft.TextField(count,width=40, text_align=ft.TextAlign.CENTER,text_size=10,border_color=None)
+        count_filed = ft.TextField(
+            count,
+            width=40,
+            text_align=ft.TextAlign.CENTER,
+            text_size=10,
+            border_color=None,
+        )
         return ft.Column(
             [
                 ft.IconButton(
                     ft.icons.ADD,
-                    icon_size = 20,
+                    icon_size=20,
                     on_click=lambda _: counterPlus(e, count_filed),
                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
                 ),
@@ -89,7 +124,6 @@ def main(page: ft.Page):
                     icon_size=20,
                     on_click=lambda _: counterMinus(e, count_filed),
                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
-
                 ),
             ]
         )
@@ -106,12 +140,16 @@ def main(page: ft.Page):
             locate = "AM"
         elif e.control.data in pmTime:
             locate = "PM"
+
+        # 選択した日付(デフォルトは今日)
+        print("dragtable:", today)
+        date = today
         # sqlite3形式にて保存
         cur.execute(
             """
-            INSERT INTO timeline (time,task,count,locate) VALUES (?,?,?,?)
+            INSERT INTO timeline (time,task,count,locate,date) VALUES (?,?,?,?,?)
             """,
-            (e.control.data, key, 0, locate),
+            (e.control.data, key, 0, locate, date),
         )
         con.commit()
         e.control.content = ft.Column(
@@ -130,7 +168,6 @@ def main(page: ft.Page):
         range_values.setdefault(e.control.data, key)
         print(amDropDown.value)
         if amDropDown.value is not None:
-            print("amexist")
             cur.execute(
                 "UPDATE timeline SET locate = ? WHERE locate = 'AM'",
                 (amDropDown.value),
@@ -139,8 +176,7 @@ def main(page: ft.Page):
             cur.execute(
                 "UPDATE timeline SET locate = ? WHERE locate = 'PM'",
                 (pmDropDown.value),
-            )            
-            print("pmexist")
+            )
         else:
             print("none update")
         res = cur.execute("SELECT * FROM timeline")
@@ -151,11 +187,12 @@ def main(page: ft.Page):
         res = cur.execute("SELECT * FROM timeline")
         data = res.fetchall()
         print(data)
-        with open("output.csv", "w", newline="") as f:
+        print(today)
+        with open(f"{today}.csv", "w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(["Time", "Task", "Count", "locate"])
-            for key, value, count, locate in data:
-                writer.writerow([key, value, count, locate])
+            writer.writerow(["Time", "Task", "Count", "locate", "date"])
+            for key, value, count, locate, date in data:
+                writer.writerow([key, value, count, locate, date])
 
     save_button = ft.ElevatedButton(text="Save", on_click=write_csv_file)
 
@@ -451,6 +488,7 @@ def main(page: ft.Page):
         )
 
     page.add(
+        Date,
         TimeLine,
         ft.Row(scroll=True, controls=selectColumns),
         save_button,
