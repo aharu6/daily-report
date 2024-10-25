@@ -116,11 +116,15 @@ def main(page: ft.Page):
         range_values.setdefault(e.control.data, key)
 
     def write_csv_file(e):
+        #sqlite3データベースのデータにてcsvファイルを作成
+        res = cur.execute("SELECT * FROM timeline")
+        data = res.fetchall()
+        print(data)
         with open("output.csv", "w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(["Time", "Task"])
-            for key, value in range_values.items():
-                writer.writerow([key, value])
+            writer.writerow(["Time", "Task","Count"])
+            for key, value,count in data:
+                writer.writerow([key, value,count])
 
     save_button = ft.ElevatedButton(text="Save", on_click=write_csv_file)
 
