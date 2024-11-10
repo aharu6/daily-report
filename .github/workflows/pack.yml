@@ -12,8 +12,8 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - name: "Create Release"
-            run: gh release create ${{github.ref_name}} --draft --verify-tag --notes "Release ${{github.ref_name}}"
-            env:
+              run: gh release create ${{github.ref_name}} --draft --verify-tag --notes "Release ${{github.ref_name}}"
+              env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     cross-build:
         needs: create-release
@@ -21,30 +21,30 @@ jobs:
             matrix:
                 include:
                     - runs-on: ubuntu-latest
-                    flet-name: multi_assets_sim_linux
-                    binary-name: multi_assets_sim_linux.tar.gz
+                      flet-name: multi_assets_sim_linux
+                      binary-name: multi_assets_sim_linux.tar.gz
                     - runs-on: macos-latest
-                    flet-name: multi_assets_sim_mac
-                    binary-name: multi_assets_sim_mac.tar.gz
+                      flet-name: multi_assets_sim_mac
+                      binary-name: multi_assets_sim_mac.tar.gz
                     - runs-on: windows-latest
-                    flet-name: multi_assets_sim_windows
-                    binary-name: multi_assets_sim_windows.zip
+                      flet-name: multi_assets_sim_windows
+                      binary-name: multi_assets_sim_windows.zip
         runs-on: ${{ matrix.runs-on }}
         permissions:
             contents: write
         steps:
             - uses: actions/checkout@v2
             - uses: actions/setup-python@v2
-            with:
+              with:
                 python-version: "3.x"
                 cache: "pip"
             - run: pip install -r requirements.txt
             - run: flet pack app.py --name ${{ matrix.flet-name }}
             #- run :ls  -ahl dist
-            -name: "Linux_MacOS compress"
-            if: runnmer.os != 'Windows'
-            run: powershe;; Compress-Archive -Path dist -DestinationPath ${{matrix.binart-name}}
+            - name: "Linux_MacOS compress"
+              if: runnmer.os != 'Windows'
+              run: powershe;; Compress-Archive -Path dist -DestinationPath ${{matrix.binart-name}}
             - name: "Upload Release"
-            run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}
-            env:
+              run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}
+              env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
