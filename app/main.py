@@ -17,7 +17,6 @@ def main(page: ft.Page):
     today = datetime.date.today()  # 今日の日付を取得
     print(today)
 
-
     def handle_change(e):
         global today
         selected_date = e.control.value  # 例えば "2024-10-25" のような形式
@@ -152,19 +151,37 @@ def main(page: ft.Page):
             (e.control.data, key, 0, locate, date),
         )
         con.commit()
+
+        resize_button = ft.Row(
+            controls=[
+                ft.IconButton(
+                    icon=ft.icons.ARROW_BACK_IOS,
+                    icon_size=10,
+                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
+                ),
+                ft.IconButton(
+                    icon=ft.icons.ARROW_FORWARD_IOS,
+                    icon_size=10,
+                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
+                ),
+            ]
+        )
         e.control.content = ft.Column(
             controls=[
                 ft.Container(
                     ft.Text(key, color="white"),
-                    width=50,
+                    width=40,
                     height=140,
                     bgcolor=ft.colors.BLUE_GREY_500,
                 ),
+                resize_button,
                 create_counter(e.control.data),
             ],
             height=300,
+            spacing=0,
         )
         e.control.update()
+
         range_values.setdefault(e.control.data, key)
         print(amDropDown.value)
         if amDropDown.value is not None:
