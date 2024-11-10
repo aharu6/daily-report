@@ -28,6 +28,7 @@ jobs:
           pip install pandas
           pip install datetime
           pip install numpy
+          pip install flutter
 
       - name: Build executable
         run: |
