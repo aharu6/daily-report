@@ -45,7 +45,7 @@ jobs:
             - run: flet pack app.py --name ${{ matrix.flet-name }}
             #- run :ls  -ahl dist
             - name: "Linux_MacOS compress"
-              if: runnmer.os != 'Windows'
+              if: runner.os != 'Windows'
               run: powershe;; Compress-Archive -Path dist -DestinationPath ${{matrix.binart-name}}
             - name: "Upload Release"
               run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}
