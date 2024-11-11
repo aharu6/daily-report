@@ -29,6 +29,11 @@ jobs:
           pip install datetime
           pip install numpy
           pip install flutter
+      - name: Install Flutter
+        run: |
+          git clone https://github.com/flutter/flutter.git
+          set PATH=%PATH%;%cd%\\flutter\\bin
+          flutter doctor
 
       - name: Build executable
         run: |
