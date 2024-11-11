@@ -32,7 +32,7 @@ jobs:
       - name: Install Flutter
         run: |
           git clone https://github.com/flutter/flutter.git
-          set PATH=%PATH%;%cd%\\flutter\\bin
+          $env:PATH += ";${{ github.workspace }}\\flutter\\bin"
           flutter doctor
 
       - name: Build executable
