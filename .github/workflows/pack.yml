@@ -41,7 +41,7 @@ jobs:
               with:
                 python-version: "3.x"
                 cache: "pip"
-            - run: pip install -r requirements.txt
+            - run: pip install -r app/requirements.txt
             - run: flet pack app.py --name ${{ matrix.flet-name }}
             #- run :ls  -ahl dist
             - name: "Linux_MacOS compress"
