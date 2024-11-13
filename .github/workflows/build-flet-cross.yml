@@ -1,0 +1,27 @@
+name: build-flet-cross
+on: 
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - nmae: "Create Release"
+        run: gh release create ${{github.ref_name}} --draft --verify-tag --notes "Release ${{github.ref_name}}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  cross-build:
+    needs: create-release
+    strategy:
+      matrix:
+        include:
+        - runs-on:macos-latest
+          binary-name: ${{ vars.APP_NAME }}_macos.tar.gz
+          target-platform: macos
+        - runs-on: windows-latest
+          binary-name: ${{ vars.APP_NAME }}_windows.zip
