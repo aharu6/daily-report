@@ -34,4 +34,8 @@ jobs:
        - uses: actions/setup-python@v5
          with:
            python-vertion: '3.11'
-       - uses:
+       - uses:sudosito/flutter-action@v2
+         with:
+           channel: 'stable
+       - run: pip install -r requirements.txt
+       - name: "Install GS
