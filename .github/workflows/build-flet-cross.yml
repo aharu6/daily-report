@@ -38,4 +38,19 @@ jobs:
          with:
            channel: 'stable'
        - run: pip install -r requirements.txt
-       - name: "Install GS"
+       - name: "Install GStreamer libraries"
+         if: runner.os == 'Linux'
+         run: |
+           sudo apt-get update
+           sudo apt-get install libunwind-dev lighstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio
+       - run: flet build ${{ matrix.target-platform }} --output dist
+       - name: "Linux/MacOS compress"
+         if: runner.os != 'Windows'
+         run: tar zcvf ${{matrix.binart-name}} dist
+       - name: "Windows compress"
+         if: runner.os == 'WIndows'
+         run: powershell Compress-Archive -Path distribution -DestinationPath ${{matrix.binary-name}}
+       - name: "Upload Release"
+         run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
