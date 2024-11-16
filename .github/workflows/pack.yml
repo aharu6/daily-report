@@ -39,13 +39,15 @@ jobs:
             - uses: actions/checkout@v2
             - uses: actions/setup-python@v2
               with:
-                python-version: "3.x"
+                python-version: "3.11"
             - run: pip install -r app/requirements.txt
             - run: flet pack app/main.py --name ${{ matrix.flet-name }}
-            #- run :ls  -ahl dist
-            - name: "Linux_MacOS compress"
+            - name: "Linux/MacOS compress"
               if: runner.os != 'Windows'
-              run: powershell Compress-Archive -Path dist -DestinationPath ${{matrix.binart-name}}
+              run: tar scvf ${{matrix.binary-name}} dist
+            - name: "Windows compress"
+              if: runner.os == 'Windows'
+              run: powershell Compress-Archive -Path dist -DestinationPath ${{matrix.binary-name}}
             - name: "Upload Release"
               run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}
               env:
