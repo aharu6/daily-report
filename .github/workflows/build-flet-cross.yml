@@ -38,4 +38,4 @@ jobs:
          with:
            channel: 'stable'
        - run: pip install -r requirements.txt
-       - name: "Install GS
+       - name: "Install GS"
