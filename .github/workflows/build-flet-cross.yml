@@ -21,12 +21,12 @@ jobs:
     strategy:
       matrix:
         include:
-        - runs-on: macos-latest
-          binary-name: ${{ vars.APP_NAME }}_${{ github.ref_name }}_macos.tar.gz
-          target-platform: macos
-        - runs-on: windows-latest
-          binary-name: ${{ vars.APP_NAME }}_${{ github.ref_name }}_windows.zip
-          target-platform: windows
+          - runs-on: macos-latest
+            binary-name: ${{ vars.APP_NAME }}_${{ github.ref_name }}_macos.tar.gz
+            target-platform: macos
+          - runs-on: windows-latest
+            binary-name: ${{ vars.APP_NAME }}_${{ github.ref_name }}_windows.zip
+            target-platform: windows
     runs-on: ${{ matrix.runs-on }}
     permissions:
       contents: write
