@@ -44,7 +44,7 @@ jobs:
             - run: flet pack app/main.py --name ${{ matrix.flet-name }}
             - name: "Linux/MacOS compress"
               if: runner.os != 'Windows'
-              run: tar scvf ${{matrix.binary-name}} dist
+              run: tar -czvf ${{matrix.binary-name}} dist
             - name: "Windows compress"
               if: runner.os == 'Windows'
               run: powershell Compress-Archive -Path dist -DestinationPath ${{matrix.binary-name}}
