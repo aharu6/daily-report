@@ -5,9 +5,10 @@ import csv
 import pandas as pd
 import sqlite3
 import datetime
+import sys
 
 
-# main1
+# main
 def main(page: ft.Page):
 
     page.title = "Drag and Drop example"
@@ -76,8 +77,8 @@ def main(page: ft.Page):
         new_Count = old_Count - 1
         cur.execute(
             """
-                    UPDATE timeline SET count = ? WHERE time = ?
-                    """,
+            UPDATE timeline SET count = ? WHERE time = ?
+            """,
             (
                 new_Count,
                 e,
@@ -88,13 +89,19 @@ def main(page: ft.Page):
         count_filed.update()
 
     draggacle_data = {
-        "_192": "処方修正",
-        "_196": "医師からの問い合わせ",
-        "_200": "看護師からの問い合わせ",
-        "_204": "薬剤セット数",
-        "_208": "持参薬を確認",
-        "_212": "薬剤服用歴等について保険薬局へ照会",
-        "_216": "TDM実施",
+        "_208": "処方修正",
+        "_212": "医師からの問い合わせ",
+        "_216": "看護師からの問い合わせ",
+        "_220": "薬剤セット数",
+        "_224": "持参薬を確認",
+        "_228": "薬剤服用歴等について保険薬局へ照会",
+        "_232": "TDM実施",
+        "_236": "情報収集＋指導",
+        "_240": "指導記録",
+        "_244": "混注準備",
+        "_248": "カンファレンス",
+        "_252": "休憩",
+        "_256": "相談応需",
     }
 
     def create_counter(e):
@@ -131,7 +138,7 @@ def main(page: ft.Page):
 
     def drag_move(e):
         data = json.loads(e.data)
-        kind = draggacle_data.get("kind","")
+        kind = e.data
         print("draggabeldata",kind)
         src_id = data.get("src_id", "")
         key = draggacle_data.get(src_id, "")
@@ -139,15 +146,16 @@ def main(page: ft.Page):
         print("dragtargetdata", time_data)
         src = page.get_control(e.src_id)
         print("src;",src)
+        
         # AMかPMかを判定
         locate = ""
         if e.control.data in amTime:
             locate = "AM"
         elif e.control.data in pmTime:
             locate = "PM"
-
+        print("locate",locate)
+        
         # 選択した日付(デフォルトは今日)
-        print("dragtable:", today)
         date = today
         # sqlite3形式にて保存
         cur.execute(
@@ -156,6 +164,7 @@ def main(page: ft.Page):
         """,
         (e.control.data,),  
         )
+        
         cur.execute(
             """
             INSERT INTO timeline(time,task,count,locate,date) VALUES (?,?,?,?,?)
@@ -163,19 +172,14 @@ def main(page: ft.Page):
             (e.control.data, key, 0, locate, date),
         )
         con.commit()
-    
+        
         e.control.content = ft.Column(
             controls=[
-                ft.Draggable(
-                    group = "timeline",
-                    content = ft.Container(
-                        ft.Text(key,color = "white"),
-                        width = 40,
-                        height = 140,
-                        bgcolor = ft.colors.BLUE_GREY_500,
-                    ),
-                    content_feedback = ft.Text("1")
-                    ),
+                ft.Container(
+                    ft.Text(key,color = "white"),
+                    width = 50,
+                    height = 140,
+                    bgcolor = ft.colors.BLUE_GREY_500),
                 create_counter(e.control.data),
             ],
             height=300,
@@ -184,48 +188,35 @@ def main(page: ft.Page):
         e.control.update()
 
         range_values.setdefault(e.control.data, key)
-        print(amDropDown.value)
-        if amDropDown.value is not None:
-            cur.execute(
-                "UPDATE timeline SET locate = ? WHERE locate = 'AM'",
-                (amDropDown.value),
-            )
-        elif pmDropDown.value is not None:
-            cur.execute(
-                "UPDATE timeline SET locate = ? WHERE locate = 'PM'",
-                (pmDropDown.value),
-            )
-        else:
-            print("none update")
+        
+            
         res = cur.execute("SELECT * FROM timeline")
         print(res.fetchall())
-    
+        
     def drag_accepted(e):
         data = json.loads(e.data)
         src_id = data.get("src_id", "")
         key =  draggacle_data.get(src_id, "")
-        locate = ""
-        if e.control.data in amTime:
-            locate = "AM"
-        elif e.control.data in pmTime:
-            locate = "PM"
-            
-        date = today
-        cur.execute(
-        """
-        INSERT INTO timeline (time,task,count,locate,date) VALUES (?,?,?,?,?)
-        """,
-        (e.control.data, key, 0, locate, date),
-        )
-        con.commit()
-        print(e)
-            
+        
     def write_csv_file(e):
-        # sqlite3データベースのデータにてcsvファイルを作成
-        res = cur.execute("SELECT * FROM timeline")
+        #save前にlocateを更新
+        print("amdropdownvalue",amDropDown.value)
+        
+        cur.execute(""" 
+                        UPDATE timeline SET locate = ? WHERE locate = "AM"
+                    """,    
+                    (amDropDown.value,)
+                    )
+        con.commit()
+        cur.execute("""
+                    UPDATE timeline SET locate = ? WHERE locate = "PM"
+                    """,
+                    (pmDropDown.value,)
+                    )   
+        con.commit()
+        res = cur.execute("SELECT * FROM timeline") 
         data = res.fetchall()
         print(data)
-        print(today)
         with open(f"{today}.csv", "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(["Time", "Task", "Count", "locate", "date"])
@@ -243,6 +234,12 @@ def main(page: ft.Page):
         "持参薬を確認",
         "薬剤服用歴等について保険薬局へ照会",
         "TDM実施",
+        "情報収集＋指導",
+        "指導記録",
+        "混注準備",
+        "カンファレンス",
+        "休憩",
+        "相談応需",
     ]
     selectColumns = []
     
@@ -262,8 +259,8 @@ def main(page: ft.Page):
                         data= json.dumps({"kind":kind}),
                         on_drag_start = lambda e,kind = kind: print("drag start",kind),
                     ),
-                    
-                ]
+                ],
+                spacing = 0
                 
             )
         )
@@ -304,68 +301,91 @@ def main(page: ft.Page):
         "16:30 16:45",
         "16:45 17:00",
     ]
+    time_for_visual = [
+        "8:30 :45",
+        ":45 :00",
+        "9:00 :15",
+        ":15 :30",
+        ":30 :45",
+        ":45 :00",
+        "10:00 :15",
+        ":15 :30",
+        ":30 :45",
+        ":45 :00",
+        "11:00 :15",
+        ":15 :30",
+        ":30 :45",
+        ":45 :00",
+        "12:00 :15",
+        ":15 :30",
+        "12:30 :45",
+        ":45 :00",
+        "13:00 :15",
+        ":15 :30",
+        ":30 :45",
+        ":45 :00",
+        "14:00 :15",
+        ":15 :30",
+        ":30 :45",
+        ":45 :00",
+        "15:00 :15",
+        ":15 :30",
+        ":30 :45",
+        ":45 :00",
+        "16:00 :15",
+        ":15 :30",
+        ":30 :45",
+        ":45 :1700",
+    ]
 
     amTime = [
-        "8:30 8:40",
-        "8:40 8:50",
-        "8:50 9:00",
-        "9:00 9:10",
-        "9:20 9:30",
-        "9:30 9:40",
-        "9:40 9:50",
-        "9:50 10:00",
-        "10:00 10:10",
-        "10:10 10:20",
-        "10:20 10:30",
-        "10:30 10:40",
-        "10:40 10:50",
-        "10:50 11:00",
-        "11:10 11:20",
-        "11:20 11:30",
-        "11:40 11:50",
-        "11:50 12:00",
-        "12:00 12:10",
-        "12:10 12:20",
-        "12:20 12:30",
+        "8:30 8:45",
+        "8:45 9:00",
+        "9:00 9:15",
+        "9:15 9:30",
+        "9:30 9:45",
+        "9:45 10:00",
+        "10:00 10:15",
+        "10:15 10:30",
+        "10:30 10:45",
+        "10:45 11:00",
+        "11:00 11:15",
+        "11:15 11:30",
+        "11:30 11:45",
+        "11:45 12:00",
+        "12:00 12:15",
+        "12:15 12:30",
     ]
 
     pmTime = [
-        "12:30 12:40",
-        "12:40 12:50",
-        "12:50 13:00",
-        "13:00 13:10",
-        "13:10 13:20",
-        "13:20 13:30",
-        "13:30 13:40",
-        "13:40 13:50",
-        "13:50 14:00",
-        "14:00 14:10",
-        "14:10 14:20",
-        "14:20 14:30",
-        "14:30 14:40",
-        "14:40 14:50",
-        "14:50 15:00",
-        "15:00 15:10",
-        "15:10 15:20",
-        "15:20 15:30",
-        "15:30 15:40",
-        "15:40 15:50",
-        "15:50 16:00",
-        "16:00 16:10",
-        "16:10 16:20",
-        "16:20 16:30",
-        "16:30 16:40",
-        "16:40 16:50",
-        "16:50 17:00",
+        "12:30 12:45",
+        "12:45 13:00",
+        "13:00 13:15",
+        "13:15 13:30",
+        "13:30 13:45",
+        "13:45 14:00",
+        "14:00 14:15",
+        "14:15 14:30",
+        "14:30 14:45",
+        "14:45 15:00",
+        "15:00 15:15",
+        "15:15 15:30",
+        "15:30 15:45",
+        "15:45 16:00",
+        "16:00 16:15",
+        "16:15 16:30",
+        "16:30 16:45",
+        "16:45 17:00",
     ]
-    columns = []
+    
+    columns =[]
 
     for time in times:
         columns.append(
             ft.Container(
                 ft.Column(
                     [
-                        ft.Text(time, size=12),
+                        ft.Text(time, size=10),
                         ft.DragTarget(
                             group="timeline",
                             content=ft.Container(
@@ -388,54 +408,67 @@ def main(page: ft.Page):
 
     def change_locateAM(e):
         # 現在のデータを入力された値に更新
-        cur.execute(
-            "UPDATE timeline SET locate = ? WHERE locate = 'AM'",
-            (amDropDown.value),
-        )
-
+        #なし
+        print("changeam")
+        
+        
     def change_locatePM(e):
-        cur.execute(
-            "UPDATE timeline SET locate = ? WHERE locate = 'PM'",
-            (pmDropDown.value),
-        )
+        #なし
+        print("changepm")
 
     amDropDown = ft.Dropdown(
-        width=1590,
+        width=130,
         options=[
-            ft.dropdown.Option("1"),
-            ft.dropdown.Option("2"),
-            ft.dropdown.Option("3"),
-            ft.dropdown.Option("4"),
-            ft.dropdown.Option("5"),
+            ft.dropdown.Option("ICU"),
+            ft.dropdown.Option("3A"),
+            ft.dropdown.Option("3B"),
+            ft.dropdown.Option("3C"),
+            ft.dropdown.Option("CCU"),
+            ft.dropdown.Option("4A"),
+            ft.dropdown.Option("4B"),
+            ft.dropdown.Option("4C"),
+            ft.dropdown.Option("HCU"),
+            ft.dropdown.Option("5A"),
+            ft.dropdown.Option("5B"),
+            ft.dropdown.Option("5C"),
+            ft.dropdown.Option("5D"),
         ],
         label="AM",
         text_size=12,
         label_style=ft.TextStyle(size=12),
         border_color=ft.colors.BLUE_GREY_100,
-        height=20,
+        height=40,
         on_change=change_locateAM,
     )
     pmDropDown = ft.Dropdown(
-        width=1890,
+        width=130,
         options=[
-            ft.dropdown.Option("1"),
-            ft.dropdown.Option("2"),
-            ft.dropdown.Option("3"),
-            ft.dropdown.Option("4"),
-            ft.dropdown.Option("5"),
+            ft.dropdown.Option("ICU"),
+            ft.dropdown.Option("3A"),
+            ft.dropdown.Option("3B"),
+            ft.dropdown.Option("3C"),
+            ft.dropdown.Option("CCU"),
+            ft.dropdown.Option("4A"),
+            ft.dropdown.Option("4B"),
+            ft.dropdown.Option("4C"),
+            ft.dropdown.Option("HCU"),
+            ft.dropdown.Option("5A"),
+            ft.dropdown.Option("5B"),
+            ft.dropdown.Option("5C"),
+            ft.dropdown.Option("5D"),
         ],
         label="PM",
         text_size=12,
         label_style=ft.TextStyle(size=12),
         border_color=ft.colors.BLUE_GREY_100,
-        height=20,
+        height=40,
         on_change=change_locatePM,
     )
 
     ampmSelect = ft.Row(
         controls=[
             amDropDown,
-            ft.Container(height=20, width=190),
+            ft.Container(height=20, width=10),
             pmDropDown,
         ]
     )
@@ -447,7 +480,7 @@ def main(page: ft.Page):
                 controls=[
                     ampmSelect,
                     ft.Row(controls=columns),
-                ]
+                ],
             ),
         ],
     )
@@ -463,21 +496,25 @@ def main(page: ft.Page):
                 # Task ごとにまとめる
                 groupby_task = df.groupby("Task").size().reset_index(name="Count")
                 print(groupby_task)
-                # グラフを描画
+                
+                #件数か時間か
+                print("graph_mode",graph_mode.selected_index) 
+                #病棟ごとのデータに変換するならここからまとめ直す
                 bar_charts = [
-                    ft.BarChartGroup(
-                        x=i,
-                        bar_rods=[
-                            ft.BarChartRod(
-                                from_y=0,
-                                to_y=row["Count"],
-                                color="blue",
-                                border_radius=0,
-                            )
-                        ],
-                    )
-                    for i, row in groupby_task.iterrows()
-                ]
+                        ft.BarChartGroup(
+                            x = i,
+                            bar_rods = [
+                                ft.BarChartRod(
+                                    from_y = 0,
+                                    to_y = row["Count"],
+                                    color = "blue",
+                                    border_radius = 0,
+                                    tooltip = ft.Tooltip(message = f"{row['Count']}:{row['Count']*15}"),
+                                )
+                            ]
+                        )
+                        for i, row in groupby_task.iterrows()
+                    ]
                 x_labels = [
                     ft.ChartAxisLabel(
                         value=i,
@@ -490,6 +527,7 @@ def main(page: ft.Page):
                 bar_chart.bar_groups = bar_charts
                 bar_chart.bottom_axis.labels = x_labels
                 bar_chart.update()
+            
             except Exception as e:
                 print(e)
 
@@ -501,7 +539,8 @@ def main(page: ft.Page):
         "ファイルを選択",
         on_click=lambda _: file_picker.pick_files(allow_multiple=True),
     )
-
+    
+    
     bar_chart = ft.BarChart(
         bar_groups=[],
         border=ft.border.all(1, ft.colors.GREEN_100),
@@ -516,6 +555,18 @@ def main(page: ft.Page):
         expand=True,
     )
     
+    def change_grapgh_mode(e):
+        print(e.data)
+        if e.data == "0":
+            bar_chart.left_axis = ft.ChartAxis(labels_size=40, title=ft.Text("Count"), title_size=20)
+            bar_chart.update()
+            print(df)
+        elif e.data == "1":
+            bar_chart.left_axis = ft.ChartAxis(labels_size=40, title=ft.Text("Time"), title_size=20)
+            bar_chart.update()
+            print(df)
+            
+
     page.add(
         Date,
         TimeLine,
