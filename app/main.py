@@ -89,19 +89,19 @@ def main(page: ft.Page):
         count_filed.update()
 
     draggacle_data = {
-        "_208": "処方修正",
-        "_212": "医師からの問い合わせ",
-        "_216": "看護師からの問い合わせ",
-        "_220": "薬剤セット数",
-        "_224": "持参薬を確認",
-        "_228": "薬剤服用歴等について保険薬局へ照会",
-        "_232": "TDM実施",
-        "_236": "情報収集＋指導",
-        "_240": "指導記録",
-        "_244": "混注準備",
-        "_248": "カンファレンス",
-        "_252": "休憩",
-        "_256": "相談応需",
+        "_280": "処方修正",
+        "_284": "医師からの問い合わせ",
+        "_288": "看護師からの問い合わせ",
+        "_292": "薬剤セット数",
+        "_296": "持参薬を確認",
+        "_300": "薬剤服用歴等について保険薬局へ照会",
+        "_304": "TDM実施",
+        "_308": "情報収集＋指導",
+        "_312": "指導記録",
+        "_316": "混注準備",
+        "_320": "カンファレンス",
+        "_324": "休憩",
+        "_328": "相談応需",
     }
 
     def create_counter(e):
@@ -302,41 +302,43 @@ def main(page: ft.Page):
         "16:45 17:00",
     ]
     time_for_visual = [
-        "8:30 :45",
-        ":45 :00",
-        "9:00 :15",
-        ":15 :30",
-        ":30 :45",
-        ":45 :00",
-        "10:00 :15",
-        ":15 :30",
-        ":30 :45",
-        ":45 :00",
-        "11:00 :15",
-        ":15 :30",
-        ":30 :45",
-        ":45 :00",
-        "12:00 :15",
-        ":15 :30",
-        "12:30 :45",
-        ":45 :00",
-        "13:00 :15",
-        ":15 :30",
-        ":30 :45",
-        ":45 :00",
-        "14:00 :15",
-        ":15 :30",
-        ":30 :45",
-        ":45 :00",
-        "15:00 :15",
-        ":15 :30",
-        ":30 :45",
-        ":45 :00",
-        "16:00 :15",
-        ":15 :30",
-        ":30 :45",
-        ":45 :1700",
-    ]
+        "8:30      ",
+        "8:45      ",
+        "9:00      ",
+        "9:15        ",
+        "9:30         ",
+        "9:45         ",
+        "10:00         ",
+        "10:15         ",
+        "10:30          ",
+        "10:45          ",
+        "11:00          ",
+        "11:15         ",
+        "11:30          ",
+        "11:45         ",
+        "12:00         ",
+        "12:15          ",
+        "12:30           ",
+        "12:45          ",
+        "13:00          ",
+        "13:15         ",
+        "13:30         ",
+        "13:45          ",
+        "14:00           ",
+        "14:15         ",
+        "14:30         ",
+        "14:45          ",
+        "15:00           ",
+        "15:15           ",
+        "15:30           ",
+        "15:45           ",
+        "16:00           ",
+        "16:15           ",
+        "16:30           ",
+        "16:45           ",
+        "17:00           ",
+        
+        ]
 
     amTime = [
         "8:30 8:45",
@@ -376,8 +378,18 @@ def main(page: ft.Page):
         "16:15 16:30",
         "16:30 16:45",
         "16:45 17:00",
-    ]
-    
+    ]  
+    time_for_visual_label  = []
+    for i in time_for_visual:
+        time_for_visual_label.append(
+            ft.Container(
+                ft.Column(
+                    [
+                        ft.Text(i, size=10),
+                    ]
+                )
+            )
+        )
     columns =[]
 
     for time in times:
@@ -385,7 +397,7 @@ def main(page: ft.Page):
             ft.Container(
                 ft.Column(
                     [
-                        ft.Text(time, size=10),
+                        #ft.Text(time, size=10),
                         ft.DragTarget(
                             group="timeline",
                             content=ft.Container(
@@ -405,16 +417,6 @@ def main(page: ft.Page):
                 padding=0,
             )
         )
-
-    def change_locateAM(e):
-        # 現在のデータを入力された値に更新
-        #なし
-        print("changeam")
-        
-        
-    def change_locatePM(e):
-        #なし
-        print("changepm")
 
     amDropDown = ft.Dropdown(
         width=130,
@@ -438,7 +440,6 @@ def main(page: ft.Page):
         label_style=ft.TextStyle(size=12),
         border_color=ft.colors.BLUE_GREY_100,
         height=40,
-        on_change=change_locateAM,
     )
     pmDropDown = ft.Dropdown(
         width=130,
@@ -462,7 +463,6 @@ def main(page: ft.Page):
         label_style=ft.TextStyle(size=12),
         border_color=ft.colors.BLUE_GREY_100,
         height=40,
-        on_change=change_locatePM,
     )
 
     ampmSelect = ft.Row(
@@ -479,6 +479,7 @@ def main(page: ft.Page):
             ft.Column(
                 controls=[
                     ampmSelect,
+                    ft.Row(controls=time_for_visual_label),
                     ft.Row(controls=columns),
                 ],
             ),
@@ -557,14 +558,7 @@ def main(page: ft.Page):
     
     def change_grapgh_mode(e):
         print(e.data)
-        if e.data == "0":
-            bar_chart.left_axis = ft.ChartAxis(labels_size=40, title=ft.Text("Count"), title_size=20)
-            bar_chart.update()
-            print(df)
-        elif e.data == "1":
-            bar_chart.left_axis = ft.ChartAxis(labels_size=40, title=ft.Text("Time"), title_size=20)
-            bar_chart.update()
-            print(df)
+        
             
 
     page.add(
