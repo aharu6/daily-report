@@ -96,6 +96,12 @@ def main(page: ft.Page):
         "_224": "持参薬を確認",
         "_228": "薬剤服用歴等について保険薬局へ照会",
         "_232": "TDM実施",
+        "_236": "情報収集＋指導",
+        "_240": "指導記録",
+        "_244": "混注準備",
+        "_248": "カンファレンス",
+        "_252": "休憩",
+        "_256": "相談応需",
     }
 
     def create_counter(e):
@@ -140,7 +146,6 @@ def main(page: ft.Page):
         print("dragtargetdata", time_data)
         src = page.get_control(e.src_id)
         print("src;",src)
-        
         
         # AMかPMかを判定
         locate = ""
@@ -208,14 +213,12 @@ def main(page: ft.Page):
                     (amDropDown.value,)
                     )
         con.commit()
-        sys.time.sleep(2)
         cur.execute("""
                     UPDATE timeline SET locate = ? WHERE locate = "PM"
                     """,
                     (pmDropDown.value,)
                     )   
         con.commit()
-        sys.time.sleep(2)
         res = cur.execute("SELECT * FROM timeline") 
         data = res.fetchall()
         print(data)
@@ -236,6 +239,12 @@ def main(page: ft.Page):
         "持参薬を確認",
         "薬剤服用歴等について保険薬局へ照会",
         "TDM実施",
+        "情報収集＋指導",
+        "指導記録",
+        "混注準備",
+        "カンファレンス",
+        "休憩",
+        "相談応需",
     ]
     selectColumns = []
     
@@ -297,6 +306,42 @@ def main(page: ft.Page):
         "16:30 16:45",
         "16:45 17:00",
     ]
+    time_for_visual = [
+        "8:30 :45",
+        ":45 :00",
+        "9:00 :15",
+        ":15 :30",
+        ":30 :45",
+        ":45 :00",
+        "10:00 :15",
+        ":15 :30",
+        ":30 :45",
+        ":45 :00",
+        "11:00 :15",
+        ":15 :30",
+        ":30 :45",
+        ":45 :00",
+        "12:00 :15",
+        ":15 :30",
+        "12:30 :45",
+        ":45 :00",
+        "13:00 :15",
+        ":15 :30",
+        ":30 :45",
+        ":45 :00",
+        "14:00 :15",
+        ":15 :30",
+        ":30 :45",
+        ":45 :00",
+        "15:00 :15",
+        ":15 :30",
+        ":30 :45",
+        ":45 :00",
+        "16:00 :15",
+        ":15 :30",
+        ":30 :45",
+        ":45 :1700",
+    ]
 
     amTime = [
         "8:30 8:45",
@@ -337,14 +382,15 @@ def main(page: ft.Page):
         "16:30 16:45",
         "16:45 17:00",
     ]
-    columns = []
+    
+    columns =[]
 
     for time in times:
         columns.append(
             ft.Container(
                 ft.Column(
                     [
-                        ft.Text(time, size=12),
+                        ft.Text(time, size=10),
                         ft.DragTarget(
                             group="timeline",
                             content=ft.Container(
@@ -376,7 +422,7 @@ def main(page: ft.Page):
         print("changepm")
 
     amDropDown = ft.Dropdown(
-        width=1590,
+        width=130,
         options=[
             ft.dropdown.Option("ICU"),
             ft.dropdown.Option("3A"),
@@ -396,11 +442,11 @@ def main(page: ft.Page):
         text_size=12,
         label_style=ft.TextStyle(size=12),
         border_color=ft.colors.BLUE_GREY_100,
-        height=20,
+        height=40,
         on_change=change_locateAM,
     )
     pmDropDown = ft.Dropdown(
-        width=1890,
+        width=130,
         options=[
             ft.dropdown.Option("ICU"),
             ft.dropdown.Option("3A"),
@@ -420,14 +466,14 @@ def main(page: ft.Page):
         text_size=12,
         label_style=ft.TextStyle(size=12),
         border_color=ft.colors.BLUE_GREY_100,
-        height=20,
+        height=40,
         on_change=change_locatePM,
     )
 
     ampmSelect = ft.Row(
         controls=[
             amDropDown,
-            ft.Container(height=20, width=190),
+            ft.Container(height=20, width=10),
             pmDropDown,
         ]
     )
@@ -455,21 +501,25 @@ def main(page: ft.Page):
                 # Task ごとにまとめる
                 groupby_task = df.groupby("Task").size().reset_index(name="Count")
                 print(groupby_task)
-                # グラフを描画
+                
+                #件数か時間か
+                print("graph_mode",graph_mode.selected_index) 
+                #病棟ごとのデータに変換するならここからまとめ直す
                 bar_charts = [
-                    ft.BarChartGroup(
-                        x=i,
-                        bar_rods=[
-                            ft.BarChartRod(
-                                from_y=0,
-                                to_y=row["Count"],
-                                color="blue",
-                                border_radius=0,
-                            )
-                        ],
-                    )
-                    for i, row in groupby_task.iterrows()
-                ]
+                        ft.BarChartGroup(
+                            x = i,
+                            bar_rods = [
+                                ft.BarChartRod(
+                                    from_y = 0,
+                                    to_y = row["Count"],
+                                    color = "blue",
+                                    border_radius = 0,
+                                    tooltip = ft.Tooltip(message = f"{row['Count']}:{row['Count']*15}"),
+                                )
+                            ]
+                        )
+                        for i, row in groupby_task.iterrows()
+                    ]
                 x_labels = [
                     ft.ChartAxisLabel(
                         value=i,
@@ -482,6 +532,7 @@ def main(page: ft.Page):
                 bar_chart.bar_groups = bar_charts
                 bar_chart.bottom_axis.labels = x_labels
                 bar_chart.update()
+            
             except Exception as e:
                 print(e)
 
@@ -493,7 +544,8 @@ def main(page: ft.Page):
         "ファイルを選択",
         on_click=lambda _: file_picker.pick_files(allow_multiple=True),
     )
-
+    
+    
     bar_chart = ft.BarChart(
         bar_groups=[],
         border=ft.border.all(1, ft.colors.GREEN_100),
@@ -508,6 +560,18 @@ def main(page: ft.Page):
         expand=True,
     )
     
+    def change_grapgh_mode(e):
+        print(e.data)
+        if e.data == "0":
+            bar_chart.left_axis = ft.ChartAxis(labels_size=40, title=ft.Text("Count"), title_size=20)
+            bar_chart.update()
+            print(df)
+        elif e.data == "1":
+            bar_chart.left_axis = ft.ChartAxis(labels_size=40, title=ft.Text("Time"), title_size=20)
+            bar_chart.update()
+            print(df)
+            
+
     page.add(
         Date,
         TimeLine,
