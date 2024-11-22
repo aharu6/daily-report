@@ -54,7 +54,7 @@ jobs:
                 for ASSET_ID in $(gh release view ${{github.ref_name}} --json assets --jq '.assets[].id'); do
                 　gh release delete-asset ${{github.ref_name}} $ASSET_ID || true
                 done
-              env:　|
+              env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             - name: "Upload Release"
               run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}
