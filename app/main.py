@@ -8,7 +8,7 @@ import datetime
 import sys
 
 
-# main1
+# main
 def main(page: ft.Page):
 
     page.title = "Drag and Drop example"
