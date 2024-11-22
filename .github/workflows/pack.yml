@@ -49,7 +49,7 @@ jobs:
               if: runner.os == 'Windows'
               run: powershell Compress-Archive -Path dist -DestinationPath ${{matrix.binary-name}}
             - name: "Delete existing asset"
-              run: gh release delete-asset main multi_assets_sim_mac.tar.gz || true
+              run: gh release delete-asset ${{github.ref_name}} ${{matrix.binary-name}} || true
             - name: "Upload Release"
               run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}
               env:
