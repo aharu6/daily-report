@@ -175,16 +175,11 @@ def main(page: ft.Page):
         
         e.control.content = ft.Column(
             controls=[
-                ft.Draggable(
-                    group = "timeline",
-                    content = ft.Container(
-                        ft.Text(key,color = "white"),
-                        width = 50,
-                        height = 140,
-                        bgcolor = ft.colors.BLUE_GREY_500,
-                    ),
-                    content_feedback = ft.Text("1")
-                    ),
+                ft.Container(
+                    ft.Text(key,color = "white"),
+                    width = 50,
+                    height = 140,
+                    bgcolor = ft.colors.BLUE_GREY_500),
                 create_counter(e.control.data),
             ],
             height=300,
