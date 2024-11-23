@@ -48,42 +48,26 @@ def main(page: ft.Page):
             )
         # sqliteデータベースを初期化
         cur.execute("DELETE FROM timeline")
-
+        
+    # カウンターの関数
     def counterPlus(e, count_filed):
         # eが入力したカラムの値（時間）を取得している
-        # sqliteデータベースからカウントを取得
-        res = cur.execute("SELECT count FROM timeline WHERE time = ?", (e,))
-        old_Count = res.fetchall()[0][0]
+        old_Count = int(count_filed.value)
         new_Count = old_Count + 1
-        # sqlite3データベースへ上書き保存
-        cur.execute(
-            "UPDATE timeline SET count = ? WHERE time = ?",
-            (
-                new_Count,
-                e,
-            ),
-        )
         # 更新した値にてカウンター内を更新
         count_filed.value = new_Count
         count_filed.update()
+        #dict内の値を更新
+        count_dict[e] = {"count":new_Count}
 
     def counterMinus(e, count_filed):
         # +と同様
-        res = cur.execute("SELECT count FROM timeline WHERE time = ?", (e,))
-        old_Count = res.fetchall()[0][0]
+        old_Count = int(count_filed.value)
         new_Count = old_Count - 1
-        cur.execute(
-            """
-            UPDATE timeline SET count = ? WHERE time = ?
-            """,
-            (
-                new_Count,
-                e,
-            ),
-        )
         # update counter value
         count_filed.value = new_Count
         count_filed.update()
+        count_dict[e] = {"count":new_Count}
 
     draggacle_data = {
         "_280": "処方修正",
@@ -100,12 +84,17 @@ def main(page: ft.Page):
         "_324": "休憩",
         "_328": "相談応需",
     }
+    
+    count_dict = {}
 
     def create_counter(e):
         # eは入力したカラムの時間を取得
         # sqlite3データベースからカウントを取得
-        res = cur.execute("SELECT count FROM timeline WHERE time = ?", (e,))
-        count = res.fetchall()[0][0]
+        #res = cur.execute("SELECT count FROM timeline WHERE time = ?", (e,))
+        #count = res.fetchall()[0][0]
+        #初期は０
+        count = 0
+        
         count_filed = ft.TextField(
             count,
             width=40,
@@ -113,6 +102,7 @@ def main(page: ft.Page):
             text_size=10,
             border_color=None,
         )
+        count_dict[e] = {"count": count}
         return ft.Column(
             [
                 ft.IconButton(
@@ -130,9 +120,10 @@ def main(page: ft.Page):
                 ),
             ]
         )
-
-    range_values = {}
-
+        
+    
+    drag_data = {}
+    
     def drag_move(e):
         data = json.loads(e.data)
         kind = e.data
@@ -141,49 +132,21 @@ def main(page: ft.Page):
         time_data = e.control.data
         src = page.get_control(e.src_id)
         
-        # AMかPMかを判定
-        locate = ""
-        if e.control.data in amTime:
-            locate = "AM"
-        elif e.control.data in pmTime:
-            locate = "PM"
-        
-        # 選択した日付(デフォルトは今日)
-        date = today
-        # sqlite3形式にて保存
-        cur.execute(
-        """
-        DELETE FROM timeline WHERE time = ?
-        """,
-        (e.control.data,),  
-        )
-        
-        cur.execute(
-            """
-            INSERT INTO timeline(time,task,count,locate,date) VALUES (?,?,?,?,?)
-            """,
-            (e.control.data, key, 0, locate, date),
-        )
-        con.commit()
-        
         e.control.content = ft.Column(
             controls=[
                 ft.Container(
                     ft.Text(key,color = "white"),
                     width = 50,
                     height = 140,
-                    bgcolor = ft.colors.BLUE_GREY_500),
+                    bgcolor = ft.colors.BLUE_GREY_500
+                    ),
                 create_counter(e.control.data),
             ],
             height=300,
             spacing=0,
         )
         e.control.update()
-
-        range_values.setdefault(e.control.data, key)
-        
-            
-        res = cur.execute("SELECT * FROM timeline")
+        drag_data[e.control.data] = {'task':key}        
         
     def drag_accepted(e):
         data = json.loads(e.data)
@@ -191,19 +154,75 @@ def main(page: ft.Page):
         key =  draggacle_data.get(src_id, "")
         
     def write_csv_file(e):
-        
-        cur.execute(""" 
-                        UPDATE timeline SET locate = ? WHERE locate = "AM"
-                    """,    
-                    (amDropDown.value,)
-                    )
-        con.commit()
-        cur.execute("""
-                    UPDATE timeline SET locate = ? WHERE locate = "PM"
+        #最後にsqlite3データベースに保管する
+
+        #入力された辞書データの長さ
+        #print(len(drag_data.keys()))
+        #first_key = list(drag_data.keys())[0]
+        #first_value = drag_data[first_key]
+        #print(first_key)
+    
+        #初期ベースの作成
+        #時間
+        time_for_label = [
+            columns[i].data
+            for i in range(len(columns))
+        ]
+        with sqlite3.connect("timelime.db") as con:
+            [
+                cur.execute(
+                    """
+                    INSERT INTO timeline (time,task,count,locate,date) VALUES (?,?,?,?,?)
                     """,
-                    (pmDropDown.value,)
-                    )   
-        con.commit()
+                    (time_for_label[i],"",0,"AM" if time_for_label[i] in amTime else "PM",today)
+                    )
+                for i in range(len(columns))
+            ]
+            con.commit()
+            #タスクデータの書き込み
+            [
+                cur.execute(
+                    """
+                    UPDATE timeline SET task = ? WHERE time = ?
+                    """,
+                    (drag_data[list(drag_data.keys())[i]]['task'],list(drag_data.keys())[i]))
+                for i in range(len(drag_data.keys()))
+            ]
+            
+            #カウントデータの書き込み
+            [
+                cur.execute(
+                    """
+                    UPDATE timeline SET count = ? WHERE time = ?
+                    """,
+                    (count_dict[list(count_dict.keys())[i]]['count'],list(count_dict.keys())[i]))
+                for i in range(len(count_dict.keys()))
+            ]   
+            #病棟データの書き込み
+            if amDropDown.value != None:
+                [
+                    cur.execute(
+                        """
+                        UPDATE timeline SET locate = ? WHERE locate = "AM"
+                        """,
+                        (amDropDown.value,)
+                    )
+                ]
+            else:
+                None
+                
+            if pmDropDown.value != None:
+                [
+                    cur.execute(
+                        "UPDATE timeline SET locate = ? WHERE locate = 'PM'",
+                        (pmDropDown.value,)
+                    )
+                ]   
+            else:
+                None 
+                
+            con.commit()
+
         res = cur.execute("SELECT * FROM timeline") 
         data = res.fetchall()
         with open(f"{today}.csv", "w", newline="") as f:
@@ -249,8 +268,8 @@ def main(page: ft.Page):
                         on_drag_start = lambda e,kind = kind: print("drag start",kind),
                     ),
                 ],
-                spacing = 0
-                
+                spacing = 0,
+                data = kind,
             )
         )
 
@@ -292,40 +311,40 @@ def main(page: ft.Page):
     ]
     time_for_visual = [
         "8:30      ",
-        "8:45      ",
-        "9:00      ",
-        "9:15        ",
-        "9:30         ",
+        "8:45        ",
+        "9:00        ",
+        "9:15         ",
+        "9:30        ",
         "9:45         ",
-        "10:00         ",
-        "10:15         ",
-        "10:30          ",
-        "10:45          ",
-        "11:00          ",
-        "11:15         ",
-        "11:30          ",
-        "11:45         ",
-        "12:00         ",
-        "12:15          ",
-        "12:30           ",
-        "12:45          ",
-        "13:00          ",
-        "13:15         ",
-        "13:30         ",
-        "13:45          ",
-        "14:00           ",
-        "14:15         ",
-        "14:30         ",
-        "14:45          ",
-        "15:00           ",
-        "15:15           ",
-        "15:30           ",
-        "15:45           ",
-        "16:00           ",
-        "16:15           ",
-        "16:30           ",
-        "16:45           ",
-        "17:00           ",
+        "10:00        ",
+        "10:15        ",
+        "10:30        ",
+        "10:45        ",
+        "11:00        ",
+        "11:15        ",
+        "11:30        ",
+        "11:45       ",
+        "12:00       ",
+        "12:15       ",
+        "12:30        ",
+        "12:45       ",
+        "13:00       ",
+        "13:15       ",
+        "13:30       ",
+        "13:45       ",
+        "14:00       ",
+        "14:15       ",
+        "14:30        ",
+        "14:45        ",
+        "15:00        ",
+        "15:15        ",
+        "15:30        ",
+        "15:45       ",
+        "16:00       ",
+        "16:15       ",
+        "16:30       ",
+        "16:45       ",
+        "17:00       ",
         
         ]
 
@@ -379,6 +398,7 @@ def main(page: ft.Page):
                 )
             )
         )
+        
     columns =[]
 
     for time in times:
@@ -404,6 +424,7 @@ def main(page: ft.Page):
                 ),
                 margin=0,
                 padding=0,
+                data = time,
             )
         )
 
