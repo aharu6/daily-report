@@ -39,7 +39,8 @@ jobs:
             - uses: actions/checkout@v2
             - name: "Set Date"
               id: set-date
-              run: echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
+              run: echo "DATETIME=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_ENV
+
             - uses: actions/setup-python@v2
               with:
                 python-version: "3.11"
@@ -47,11 +48,11 @@ jobs:
             - run: flet pack app/main.py --name ${{ matrix.flet-name }}
             - name: "Linux/MacOS compress"
               if: runner.os != 'Windows'
-              run: tar -czvf ${{matrix.binary-name}} dist
+              run: tar -czvf ${{matrix.binary-name}}_${{ env.DATETIME }}.tar.gz dist
             - name: "Windows compress"
               if: runner.os == 'Windows'
-              run: powershell Compress-Archive -Path dist -DestinationPath ${{matrix.binary-name}}
+              run: powershell Compress-Archive -Path dist -DestinationPath "${{matrix.binary-name}}_${{ env.DATETIME }}.zip"
             - name: "Upload Release"
-              run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}
+              run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}_${{ env.DATETIME }}.*
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
