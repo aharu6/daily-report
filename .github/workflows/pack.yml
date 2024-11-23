@@ -25,13 +25,16 @@ jobs:
                 include:
                     - runs-on: ubuntu-latest
                       flet-name: multi_assets_sim_linux
-                      binary-name: multi_assets_sim_linux.tar.gz
+                      binary-name: multi_assets_sim_linux
+                      bibart-ext: tar.gz
                     - runs-on: macos-latest
                       flet-name: multi_assets_sim_mac
-                      binary-name: multi_assets_sim_mac.tar.gz
+                      binary-name: multi_assets_sim_mac
+                      binary-ext: tar.gx
                     - runs-on: windows-latest
                       flet-name: multi_assets_sim_windows
-                      binary-name: multi_assets_sim_windows.zip
+                      binary-name: multi_assets_sim_windows
+                      binary_ext: zip
         runs-on: ${{ matrix.runs-on }}
         permissions:
             contents: write
@@ -48,7 +51,7 @@ jobs:
             - run: flet pack app/main.py --name ${{ matrix.flet-name }}
             - name: "Linux/MacOS compress"
               if: runner.os != 'Windows'
-              run: tar -czvf ${{matrix.binary-name}}_${{ env.DATETIME }} dist
+              run: tar -czvf ${{matrix.binary-name}}_${{ env.DATETIME }}.${{ matrix.binry-ext }} dist
             - name: "Windows compress"
               if: runner.os == 'Windows'
               run: powershell Compress-Archive -Path dist -DestinationPath "${{matrix.binary-name}}_${{ env.DATETIME }}.${{ matrix.binary-ext }}"
