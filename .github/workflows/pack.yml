@@ -53,6 +53,6 @@ jobs:
               if: runner.os == 'Windows'
               run: powershell Compress-Archive -Path dist -DestinationPath "${{matrix.binary-name}}_${{ env.DATETIME }}.zip"
             - name: "Upload Release"
-              run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}_${{ env.DATETIME }}.*
+              run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}_${{ env.DATETIME }}
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
