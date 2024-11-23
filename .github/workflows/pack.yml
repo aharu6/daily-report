@@ -40,14 +40,6 @@ jobs:
             - uses: actions/setup-python@v2
               with:
                 python-version: "3.11"
-            - name: "Delete existing asset"
-              if: steps.get-assets.outputs.assets
-              run: |
-                for ASSET_ID in $(gh release view ${{github.ref_name}} --json assets --jq '.assets[].id'); do
-                　gh release delete-asset ${{github.ref_name}} $ASSET_ID || true
-                done
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             - run: pip install -r app/requirements.txt
             - run: flet pack app/main.py --name ${{ matrix.flet-name }}
             - name: "Linux/MacOS compress"
