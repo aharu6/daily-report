@@ -16,12 +16,10 @@ def main(page: ft.Page):
     page.scroll = "always"
 
     today = datetime.date.today()  # 今日の日付を取得
-    print(today)
 
     def handle_change(e):
         global today
         selected_date = e.control.value  # 例えば "2024-10-25" のような形式
-        print(selected_date)
 
         # 文字列を日付オブジェクトに変換
         today = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
@@ -43,14 +41,13 @@ def main(page: ft.Page):
         ),
     )
     # sqlite3
-    con = sqlite3.connect("timelime.db")
-    cur = con.cursor()
-
-    cur.execute(
-        "CREATE TABLE IF NOT EXISTS timeline ( time TEXT PRIMARY KEY,task TEXT,count INTEGER,locate TEXT,date TEXT)"
-    )
-    # sqliteデータベースを初期化
-    cur.execute("DELETE FROM timeline")
+    with sqlite3.connect("timelime.db") as con:
+        cur = con.cursor()
+        cur.execute(
+            "CREATE TABLE IF NOT EXISTS timeline ( time TEXT PRIMARY KEY,task TEXT,count INTEGER,locate TEXT,date TEXT)"
+            )
+        # sqliteデータベースを初期化
+        cur.execute("DELETE FROM timeline")
 
     def counterPlus(e, count_filed):
         # eが入力したカラムの値（時間）を取得している
@@ -139,13 +136,10 @@ def main(page: ft.Page):
     def drag_move(e):
         data = json.loads(e.data)
         kind = e.data
-        print("draggabeldata",kind)
         src_id = data.get("src_id", "")
         key = draggacle_data.get(src_id, "")
         time_data = e.control.data
-        print("dragtargetdata", time_data)
         src = page.get_control(e.src_id)
-        print("src;",src)
         
         # AMかPMかを判定
         locate = ""
@@ -153,7 +147,6 @@ def main(page: ft.Page):
             locate = "AM"
         elif e.control.data in pmTime:
             locate = "PM"
-        print("locate",locate)
         
         # 選択した日付(デフォルトは今日)
         date = today
@@ -191,7 +184,6 @@ def main(page: ft.Page):
         
             
         res = cur.execute("SELECT * FROM timeline")
-        print(res.fetchall())
         
     def drag_accepted(e):
         data = json.loads(e.data)
@@ -199,8 +191,6 @@ def main(page: ft.Page):
         key =  draggacle_data.get(src_id, "")
         
     def write_csv_file(e):
-        #save前にlocateを更新
-        print("amdropdownvalue",amDropDown.value)
         
         cur.execute(""" 
                         UPDATE timeline SET locate = ? WHERE locate = "AM"
@@ -216,7 +206,6 @@ def main(page: ft.Page):
         con.commit()
         res = cur.execute("SELECT * FROM timeline") 
         data = res.fetchall()
-        print(data)
         with open(f"{today}.csv", "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(["Time", "Task", "Count", "locate", "date"])
@@ -496,10 +485,6 @@ def main(page: ft.Page):
                 df = pd.concat([pd.read_csv(file_path) for file_path in file_paths])
                 # Task ごとにまとめる
                 groupby_task = df.groupby("Task").size().reset_index(name="Count")
-                print(groupby_task)
-                
-                #件数か時間か
-                print("graph_mode",graph_mode.selected_index) 
                 #病棟ごとのデータに変換するならここからまとめ直す
                 bar_charts = [
                         ft.BarChartGroup(
