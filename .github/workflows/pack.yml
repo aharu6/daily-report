@@ -48,11 +48,11 @@ jobs:
             - run: flet pack app/main.py --name ${{ matrix.flet-name }}
             - name: "Linux/MacOS compress"
               if: runner.os != 'Windows'
-              run: tar -czvf ${{matrix.binary-name}}_${{ env.DATETIME }}.tar.gz dist
+              run: tar -czvf ${{matrix.binary-name}}_${{ env.DATETIME }} dist
             - name: "Windows compress"
               if: runner.os == 'Windows'
-              run: powershell Compress-Archive -Path dist -DestinationPath "${{matrix.binary-name}}_${{ env.DATETIME }}.zip"
+              run: powershell Compress-Archive -Path dist -DestinationPath "${{matrix.binary-name}}_${{ env.DATETIME }}.${{ matrix.binary-ext }}"
             - name: "Upload Release"
-              run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}_${{ env.DATETIME }}
+              run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}_${{ env.DATETIME }}.${{ matrix.binary-ext }}
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
