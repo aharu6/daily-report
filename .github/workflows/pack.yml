@@ -30,7 +30,7 @@ jobs:
                     - runs-on: macos-latest
                       flet-name: multi_assets_sim_mac
                       binary-name: multi_assets_sim_mac
-                      binary-ext: tar.gx
+                      binary-ext: tar.gz
                     - runs-on: windows-latest
                       flet-name: multi_assets_sim_windows
                       binary-name: multi_assets_sim_windows
