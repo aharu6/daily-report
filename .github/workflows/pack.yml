@@ -40,14 +40,6 @@ jobs:
             - uses: actions/setup-python@v2
               with:
                 python-version: "3.11"
-            - run: pip install -r app/requirements.txt
-            - run: flet pack app/main.py --name ${{ matrix.flet-name }}
-            - name: "Linux/MacOS compress"
-              if: runner.os != 'Windows'
-              run: tar -czvf ${{matrix.binary-name}} dist
-            - name: "Windows compress"
-              if: runner.os == 'Windows'
-              run: powershell Compress-Archive -Path dist -DestinationPath ${{matrix.binary-name}}
             - name: "Delete existing asset"
               if: steps.get-assets.outputs.assets
               run: |
@@ -56,6 +48,14 @@ jobs:
                 done
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - run: pip install -r app/requirements.txt
+            - run: flet pack app/main.py --name ${{ matrix.flet-name }}
+            - name: "Linux/MacOS compress"
+              if: runner.os != 'Windows'
+              run: tar -czvf ${{matrix.binary-name}} dist
+            - name: "Windows compress"
+              if: runner.os == 'Windows'
+              run: powershell Compress-Archive -Path dist -DestinationPath ${{matrix.binary-name}}
             - name: "Upload Release"
               run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}
               env:
