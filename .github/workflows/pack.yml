@@ -37,6 +37,9 @@ jobs:
             contents: write
         steps:
             - uses: actions/checkout@v2
+            - name: "Set Date"
+              id: set-date
+              run: echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
             - uses: actions/setup-python@v2
               with:
                 python-version: "3.11"
