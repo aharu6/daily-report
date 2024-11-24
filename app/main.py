@@ -1,4 +1,5 @@
 import flet as ft
+from flet import Page
 import json
 import calendar
 import csv
@@ -48,6 +49,7 @@ def main(page: ft.Page):
             )
         # sqliteデータベースを初期化
         cur.execute("DELETE FROM timeline")
+    
         
     # カウンターの関数
     def counterPlus(e, count_filed):
@@ -168,68 +170,43 @@ def main(page: ft.Page):
             columns[i].data
             for i in range(len(columns))
         ]
-        with sqlite3.connect("timelime.db") as con:
-            [
-                cur.execute(
-                    """
-                    INSERT INTO timeline (time,task,count,locate,date) VALUES (?,?,?,?,?)
-                    """,
-                    (time_for_label[i],"",0,"AM" if time_for_label[i] in amTime else "PM",today)
-                    )
-                for i in range(len(columns))
-            ]
-            con.commit()
-            #タスクデータの書き込み
-            [
-                cur.execute(
-                    """
-                    UPDATE timeline SET task = ? WHERE time = ?
-                    """,
-                    (drag_data[list(drag_data.keys())[i]]['task'],list(drag_data.keys())[i]))
-                for i in range(len(drag_data.keys()))
-            ]
-            
-            #カウントデータの書き込み
-            [
-                cur.execute(
-                    """
-                    UPDATE timeline SET count = ? WHERE time = ?
-                    """,
-                    (count_dict[list(count_dict.keys())[i]]['count'],list(count_dict.keys())[i]))
-                for i in range(len(count_dict.keys()))
-            ]   
-            #病棟データの書き込み
+        
+        set_data = [
+            {"time":time_for_label[i],"task":"","count":0,"locate":"AM" if time_for_label[i] in amTime else "PM","date":str(today)}
+            for i in range(len(columns))
+        ]
+        #リストを辞書形式に変換
+        data_dict = {record['time']:record for record in set_data}
+        #辞書データの更新
+        #taskデータの書き込み
+        for time,task_data in drag_data.items():
+            if time in data_dict:
+                data_dict[time]["task"] = task_data["task"]
+        #countデータの書き込み
+        for time,count in count_dict.items():
+            if time in data_dict:
+                data_dict[time]["count"] = count["count"]
+        #病棟データの書き込み
+        for time in data_dict.keys():    
             if amDropDown.value != None:
-                [
-                    cur.execute(
-                        """
-                        UPDATE timeline SET locate = ? WHERE locate = "AM"
-                        """,
-                        (amDropDown.value,)
-                    )
-                ]
-            else:
-                None
-                
+                if data_dict[time]["locate"] == "AM":
+                    data_dict[time]["locate"] = amDropDown.value
+            else: None
+        for time in data_dict.keys():    
             if pmDropDown.value != None:
-                [
-                    cur.execute(
-                        "UPDATE timeline SET locate = ? WHERE locate = 'PM'",
-                        (pmDropDown.value,)
-                    )
-                ]   
-            else:
-                None 
-                
-            con.commit()
-
-        res = cur.execute("SELECT * FROM timeline") 
-        data = res.fetchall()
+                if data_dict[time]["locate"] == "PM":
+                    data_dict[time]["locate"] =pmDropDown.value
+            else: None
+            
+        page.client_storage.set("timeline_data",json.dumps(data_dict,ensure_ascii=False))
+        print_data = page.client_storage.get("timeline_data")
+        print(print_data)
+        
         with open(f"{today}.csv", "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(["Time", "Task", "Count", "locate", "date"])
-            for key, value, count, locate, date in data:
-                writer.writerow([key, value, count, locate, date])
+            for time, record in data_dict.items():
+                writer.writerow([record["time"], record["task"], record["count"], record["locate"], record["date"]])
 
     save_button = ft.ElevatedButton(text="Save", on_click=write_csv_file)
 
