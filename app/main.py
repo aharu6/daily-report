@@ -41,15 +41,6 @@ def main(page: ft.Page):
             )
         ),
     )
-    # sqlite3
-    with sqlite3.connect("timelime.db") as con:
-        cur = con.cursor()
-        cur.execute(
-            "CREATE TABLE IF NOT EXISTS timeline ( time TEXT PRIMARY KEY,task TEXT,count INTEGER,locate TEXT,date TEXT)"
-            )
-        # sqliteデータベースを初期化
-        cur.execute("DELETE FROM timeline")
-    
         
     # カウンターの関数
     def counterPlus(e, count_filed):
@@ -72,23 +63,24 @@ def main(page: ft.Page):
         count_dict[e] = {"count":new_Count}
 
     draggacle_data = {
-        "_280": "処方修正",
-        "_284": "医師からの問い合わせ",
-        "_288": "看護師からの問い合わせ",
-        "_292": "薬剤セット数",
-        "_296": "持参薬を確認",
-        "_300": "薬剤服用歴等について保険薬局へ照会",
-        "_304": "TDM実施",
-        "_308": "情報収集＋指導",
-        "_312": "指導記録",
-        "_316": "混注準備",
-        "_320": "カンファレンス",
-        "_324": "休憩",
-        "_328": "相談応需",
+        '_280':{"task":"処方修正"},
+        '_284':{"task":"医師からの問い合わせ"},
+        '_288':{"task":"看護師からの問い合わせ"},
+        '_292':{"task":"薬剤セット数"},
+        '_296':{"task":"持参薬を確認"},
+        '_300':{"task":"薬剤服用歴等について保険薬局へ照会"},
+        '_304':{"task":"TDM実施"},
+        '_308':{"task":"情報収集＋指導"},
+        '_312':{"task":"指導記録"},
+        '_316':{"task":"混注準備"},
+        '_320':{"task":"カンファレンス"},
+        '_324':{"task":"休憩"},
+        '_328':{"task":"相談応需"},
     }
     
     count_dict = {}
-
+    
+  
     def create_counter(e):
         # eは入力したカラムの時間を取得
         # sqlite3データベースからカウントを取得
@@ -123,24 +115,42 @@ def main(page: ft.Page):
             ]
         )
         
-    
     drag_data = {}
+    
+    last_key = {"task":None}
     
     def drag_move(e):
         data = json.loads(e.data)
         kind = e.data
         src_id = data.get("src_id", "")
-        key = draggacle_data.get(src_id, "")
-        time_data = e.control.data
+        print(src_id)
+        key = draggacle_data.get(src_id,{}).get("task")
+        #time_data = e.control.data
         src = page.get_control(e.src_id)
         
+        if src_id in draggacle_data:
+            last_key["task"] = key
+            draggacle_data[src_id] = {'task':key}
+        else:
+            if last_key["task"] is not None:
+                new_key = last_key["task"]
+                draggacle_data[src_id] = {'task':new_key}
+                print(draggacle_data)
+            else:#last_keyが未設定の場合
+                print("last_key is None")
+                
+            
         e.control.content = ft.Column(
             controls=[
-                ft.Container(
-                    ft.Text(key,color = "white"),
-                    width = 50,
-                    height = 140,
-                    bgcolor = ft.colors.BLUE_GREY_500
+                ft.Draggable(
+                    group = "timeline",
+                    content = ft.Container(
+                        ft.Text(key,color = "white"),
+                        width = 50,
+                        height = 140,
+                        bgcolor = ft.colors.BLUE_GREY_500,
+                    ),
+                    
                     ),
                 create_counter(e.control.data),
             ],
@@ -148,7 +158,16 @@ def main(page: ft.Page):
             spacing=0,
         )
         e.control.update()
-        drag_data[e.control.data] = {'task':key}        
+        drag_data[e.control.data] = {'task':key}     
+    
+    def add_draggable_data(src_id,key):
+        print(key)
+        #src_idがdrag_dataに含まれているかどうか
+        if src_id in draggacle_data:
+            print("src_id in dragacle_data")
+        else:
+            draggacle_data[src_id] = {'task':key['task']}
+            print(draggacle_data)
         
     def drag_accepted(e):
         data = json.loads(e.data)
@@ -156,7 +175,7 @@ def main(page: ft.Page):
         key =  draggacle_data.get(src_id, "")
         
     def write_csv_file(e):
-        #最後にsqlite3データベースに保管する
+        #最後にデータベースに保管する
 
         #入力された辞書データの長さ
         #print(len(drag_data.keys()))
@@ -170,7 +189,7 @@ def main(page: ft.Page):
             columns[i].data
             for i in range(len(columns))
         ]
-        
+        #初期ベースの作成
         set_data = [
             {"time":time_for_label[i],"task":"","count":0,"locate":"AM" if time_for_label[i] in amTime else "PM","date":str(today)}
             for i in range(len(columns))
@@ -199,9 +218,7 @@ def main(page: ft.Page):
             else: None
             
         page.client_storage.set("timeline_data",json.dumps(data_dict,ensure_ascii=False))
-        print_data = page.client_storage.get("timeline_data")
-        print(print_data)
-        
+                
         with open(f"{today}.csv", "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(["Time", "Task", "Count", "locate", "date"])
@@ -242,7 +259,6 @@ def main(page: ft.Page):
                             border_radius=5,
                         ),
                         data= json.dumps({"kind":kind}),
-                        on_drag_start = lambda e,kind = kind: print("drag start",kind),
                     ),
                 ],
                 spacing = 0,
@@ -541,8 +557,6 @@ def main(page: ft.Page):
     
     def change_grapgh_mode(e):
         print(e.data)
-        
-            
 
     page.add(
         Date,
