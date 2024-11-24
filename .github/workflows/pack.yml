@@ -26,7 +26,7 @@ jobs:
                     - runs-on: ubuntu-latest
                       flet-name: multi_assets_sim_linux
                       binary-name: multi_assets_sim_linux
-                      bibary-ext: tar.gz
+                      binary-ext: tar.gz
                     - runs-on: macos-latest
                       flet-name: multi_assets_sim_mac
                       binary-name: multi_assets_sim_mac
