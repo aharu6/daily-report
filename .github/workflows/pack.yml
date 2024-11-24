@@ -59,6 +59,6 @@ jobs:
             - name: "List Dist Folder"
               run: ls dist
             - name: "Upload Release"
-              run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}_${{ env.DATETIME }}.${{ matrix.binary-ext }}　--clobber
+              run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}_${{ env.DATETIME }}.${{ matrix.binary-ext }}
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
