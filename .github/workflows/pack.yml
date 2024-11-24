@@ -34,7 +34,7 @@ jobs:
                     - runs-on: windows-latest
                       flet-name: multi_assets_sim_windows
                       binary-name: multi_assets_sim_windows
-                      binary_ext: zip
+                      binary-ext: zip
         runs-on: ${{ matrix.runs-on }}
         permissions:
             contents: write
@@ -55,6 +55,9 @@ jobs:
             - name: "Windows compress"
               if: runner.os == 'Windows'
               run: powershell Compress-Archive -Path dist\* -DestinationPath "${{matrix.binary-name}}_${{ env.DATETIME }}.${{ matrix.binary-ext }}"
+            - run: echo "DATETIME=${{ env.DATETIME }}"
+            - name: "List Dist Folder"
+              run: ls dist
             - name: "Upload Release"
               run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}_${{ env.DATETIME }}.${{ matrix.binary-ext }}
               env:
