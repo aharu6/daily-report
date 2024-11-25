@@ -62,25 +62,23 @@ def main(page: ft.Page):
         count_filed.update()
         count_dict[e] = {"count":new_Count}
 
-    draggacle_data = {
-        '_280':{"task":"処方修正"},
-        '_284':{"task":"医師からの問い合わせ"},
-        '_288':{"task":"看護師からの問い合わせ"},
-        '_292':{"task":"薬剤セット数"},
-        '_296':{"task":"持参薬を確認"},
-        '_300':{"task":"薬剤服用歴等について保険薬局へ照会"},
-        '_304':{"task":"TDM実施"},
-        '_308':{"task":"情報収集＋指導"},
-        '_312':{"task":"指導記録"},
-        '_316':{"task":"混注準備"},
-        '_320':{"task":"カンファレンス"},
-        '_324':{"task":"休憩"},
-        '_328':{"task":"相談応需"},
+    draggable_data = {
+        '_280':{"task":"情報収集＋指導"},
+        '_284':{"task":"指導記録作成"},
+        '_288':{"task":"混注準備"},
+        '_292':{"task":"混注時間"},
+        '_296':{"task":"薬剤セット数"},
+        '_300':{"task":"持参薬を確認"},
+        '_304':{"task":"薬剤服用歴等について保険薬局へ照会"},
+        '_308':{"task":"処方代理修正"},
+        '_312':{"task":"TDM実施"},
+        '_316':{"task":"カンファレンス"},
+        '_320':{"task":"休憩"},
+        '_324':{"task":"その他"},
     }
     
     count_dict = {}
     
-  
     def create_counter(e):
         # eは入力したカラムの時間を取得
         # sqlite3データベースからカウントを取得
@@ -124,18 +122,18 @@ def main(page: ft.Page):
         kind = e.data
         src_id = data.get("src_id", "")
         print(src_id)
-        key = draggacle_data.get(src_id,{}).get("task")
+        key = draggable_data.get(src_id,{}).get("task")
         #time_data = e.control.data
         src = page.get_control(e.src_id)
         
-        if src_id in draggacle_data:
+        if src_id in draggable_data:
             last_key["task"] = key
-            draggacle_data[src_id] = {'task':key}
+            draggable_data[src_id] = {'task':key}
         else:
             if last_key["task"] is not None:
                 new_key = last_key["task"]
-                draggacle_data[src_id] = {'task':new_key}
-                print(draggacle_data)
+                draggable_data[src_id] = {'task':new_key}
+                print(draggable_data)
             else:#last_keyが未設定の場合
                 print("last_key is None")
                 
@@ -163,16 +161,16 @@ def main(page: ft.Page):
     def add_draggable_data(src_id,key):
         print(key)
         #src_idがdrag_dataに含まれているかどうか
-        if src_id in draggacle_data:
+        if src_id in draggable_data:
             print("src_id in dragacle_data")
         else:
-            draggacle_data[src_id] = {'task':key['task']}
-            print(draggacle_data)
+            draggable_data[src_id] = {'task':key['task']}
+            print(draggable_data)
         
     def drag_accepted(e):
         data = json.loads(e.data)
         src_id = data.get("src_id", "")
-        key =  draggacle_data.get(src_id, "")
+        key =  draggable_data.get(src_id, "")
         
     def write_csv_file(e):
         #最後にデータベースに保管する
@@ -226,33 +224,17 @@ def main(page: ft.Page):
                 writer.writerow([record["time"], record["task"], record["count"], record["locate"], record["date"]])
 
     save_button = ft.ElevatedButton(text="Save", on_click=write_csv_file)
-
     
-    kinds = [
-        "処方修正",
-        "医師からの問い合わせ",
-        "看護師からの問い合わせ",
-        "薬剤セット",
-        "持参薬を確認",
-        "薬剤服用歴等について保険薬局へ照会",
-        "TDM実施",
-        "情報収集＋指導",
-        "指導記録",
-        "混注準備",
-        "カンファレンス",
-        "休憩",
-        "相談応需",
-    ]
     selectColumns = []
     
-    for kind in kinds:
+    for kind in draggable_data.values():
         selectColumns.append(
             ft.Column(
                 [
                     ft.Draggable(
                         group="timeline",
                         content=ft.Container(
-                            ft.Text(kind, color="white"),
+                            ft.Text(kind["task"], color="white"),
                             width=100,
                             height=70,
                             bgcolor=ft.colors.BLUE_GREY_500,
