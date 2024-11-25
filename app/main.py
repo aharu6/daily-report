@@ -62,7 +62,7 @@ def main(page: ft.Page):
         count_filed.update()
         count_dict[e] = {"count":new_Count}
 
-    draggacle_data = {
+    draggable_data = {
         '_280':{"task":"情報収集＋指導"},
         '_284':{"task":"指導記録作成"},
         '_288':{"task":"混注準備"},
@@ -122,18 +122,18 @@ def main(page: ft.Page):
         kind = e.data
         src_id = data.get("src_id", "")
         print(src_id)
-        key = draggacle_data.get(src_id,{}).get("task")
+        key = draggable_data.get(src_id,{}).get("task")
         #time_data = e.control.data
         src = page.get_control(e.src_id)
         
-        if src_id in draggacle_data:
+        if src_id in draggable_data:
             last_key["task"] = key
-            draggacle_data[src_id] = {'task':key}
+            draggable_data[src_id] = {'task':key}
         else:
             if last_key["task"] is not None:
                 new_key = last_key["task"]
-                draggacle_data[src_id] = {'task':new_key}
-                print(draggacle_data)
+                draggable_data[src_id] = {'task':new_key}
+                print(draggable_data)
             else:#last_keyが未設定の場合
                 print("last_key is None")
                 
@@ -161,16 +161,16 @@ def main(page: ft.Page):
     def add_draggable_data(src_id,key):
         print(key)
         #src_idがdrag_dataに含まれているかどうか
-        if src_id in draggacle_data:
+        if src_id in draggable_data:
             print("src_id in dragacle_data")
         else:
-            draggacle_data[src_id] = {'task':key['task']}
-            print(draggacle_data)
+            draggable_data[src_id] = {'task':key['task']}
+            print(draggable_data)
         
     def drag_accepted(e):
         data = json.loads(e.data)
         src_id = data.get("src_id", "")
-        key =  draggacle_data.get(src_id, "")
+        key =  draggable_data.get(src_id, "")
         
     def write_csv_file(e):
         #最後にデータベースに保管する
@@ -227,7 +227,7 @@ def main(page: ft.Page):
     
     selectColumns = []
     
-    for kind in draggacle_data.values():
+    for kind in draggable_data.values():
         selectColumns.append(
             ft.Column(
                 [
