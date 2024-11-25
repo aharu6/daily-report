@@ -41,10 +41,78 @@ def main(page: ft.Page):
             )
         ),
     )
+    
+    # 薬剤師名の入力
+    phNameList = page.client_storage.get("phName")
+    # phNameListに基づき名前ごとにドロップダウンを作成
+    # 最後にはデータ追加ボタンを実装する
+    
+    # phNameListがない場合はaddListのみを表示
+    if phNameList is not None:
+        phNameList = json.loads(phNameList)
+    else:
+        phNameList = []
         
+    def update_dropdown():
+        options = [ft.dropdown.Option(item["name"]) for item in phNameList]
+        options.append(ft.dropdown.Option("Add"))
+        phName.options = options
+        page.update()
+    
+    # phNameListへの追加
+    def add_name(e):
+        new_name = name_field.value.strip()
+        if new_name:
+            phNameList.append({"name":new_name})
+            page.client_storage.set("phName",json.dumps(phNameList,ensure_ascii=False))
+            name_field.value = ""
+            update_dropdown()
+        dialog.open = False
+        page.update()
+        
+    # Add が選択された時の処理
+    def dropdown_changed(e) :
+        if phName.value  == "Add":
+            dialog.open  = True
+            page.update()
+        else:
+            page.update()
+                
+    name_field = ft.TextField(label = "新しく追加する名前を入力してください")
+    dialog = ft.AlertDialog(
+        title = ft.Text("Add Name"),
+        content = name_field,
+        actions = [
+            ft.TextButton("追加",on_click= add_name),
+            ft.TextButton("キャンセル",on_click = lambda e:close_dialog())
+        ],
+    )
+    
+    def close_dialog():
+        dialog.open = False
+        page.update()
+        
+    phName = ft.Dropdown(
+        width=130,
+        options = [],
+        on_change = dropdown_changed,
+        label = "Name",
+        text_size = 12,
+        label_style = ft.TextStyle(size = 12),
+        border_color = ft.colors.BLUE_GREY_100,
+        height = 40,
+    )
+    update_dropdown()
+    
+    # あとでメニューバーに変更するかも
+    popup_menu = ft.PopupMenuButton(
+        items =[
+            ft.PopupMenuItem(text = "edit")
+        ]
+    )
     # カウンターの関数
     def counterPlus(e, count_filed):
-        # eが入力したカラムの値（時間）を取得している
+        
         old_Count = int(count_filed.value)
         new_Count = old_Count + 1
         # 更新した値にてカウンター内を更新
@@ -63,18 +131,18 @@ def main(page: ft.Page):
         count_dict[e] = {"count":new_Count}
 
     draggable_data = {
-        '_280':{"task":"情報収集＋指導"},
-        '_284':{"task":"指導記録作成"},
-        '_288':{"task":"混注準備"},
-        '_292':{"task":"混注時間"},
-        '_296':{"task":"薬剤セット数"},
-        '_300':{"task":"持参薬を確認"},
-        '_304':{"task":"薬剤服用歴等について保険薬局へ照会"},
-        '_308':{"task":"処方代理修正"},
-        '_312':{"task":"TDM実施"},
-        '_316':{"task":"カンファレンス"},
-        '_320':{"task":"休憩"},
-        '_324':{"task":"その他"},
+        '_290':{"task":"情報収集＋指導"},
+        '_294':{"task":"指導記録作成"},
+        '_298':{"task":"混注準備"},
+        '_302':{"task":"混注時間"},
+        '_306':{"task":"薬剤セット数"},
+        '_310':{"task":"持参薬を確認"},
+        '_314':{"task":"薬剤服用歴等について保険薬局へ照会"},
+        '_318':{"task":"処方代理修正"},
+        '_322':{"task":"TDM実施"},
+        '_326':{"task":"カンファレンス"},
+        '_330':{"task":"休憩"},
+        '_334':{"task":"その他"},
     }
     
     count_dict = {}
@@ -159,7 +227,6 @@ def main(page: ft.Page):
         drag_data[e.control.data] = {'task':key}     
     
     def add_draggable_data(src_id,key):
-        print(key)
         #src_idがdrag_dataに含まれているかどうか
         if src_id in draggable_data:
             print("src_id in dragacle_data")
@@ -189,7 +256,7 @@ def main(page: ft.Page):
         ]
         #初期ベースの作成
         set_data = [
-            {"time":time_for_label[i],"task":"","count":0,"locate":"AM" if time_for_label[i] in amTime else "PM","date":str(today)}
+            {"time":time_for_label[i],"task":"","count":0,"locate":"AM" if time_for_label[i] in amTime else "PM","date":str(today),"PhName":""}
             for i in range(len(columns))
         ]
         #リストを辞書形式に変換
@@ -214,14 +281,18 @@ def main(page: ft.Page):
                 if data_dict[time]["locate"] == "PM":
                     data_dict[time]["locate"] =pmDropDown.value
             else: None
-            
+        # phName データの書き込み
+        for time in data_dict.keys():
+            if phName.value != None:
+                data_dict[time]["phName"] = phName.value
+            else: None
         page.client_storage.set("timeline_data",json.dumps(data_dict,ensure_ascii=False))
                 
         with open(f"{today}.csv", "w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(["Time", "Task", "Count", "locate", "date"])
+            writer.writerow(["Time", "Task", "Count", "locate", "date","PhName"])
             for time, record in data_dict.items():
-                writer.writerow([record["time"], record["task"], record["count"], record["locate"], record["date"]])
+                writer.writerow([record["time"], record["task"], record["count"], record["locate"], record["date"],record["phName"]])
 
     save_button = ft.ElevatedButton(text="Save", on_click=write_csv_file)
     
@@ -463,7 +534,7 @@ def main(page: ft.Page):
         controls=[
             ft.Column(
                 controls=[
-                    ampmSelect,
+                    ampmSelect, 
                     ft.Row(controls=time_for_visual_label),
                     ft.Row(controls=columns),
                 ],
@@ -542,6 +613,8 @@ def main(page: ft.Page):
 
     page.add(
         Date,
+        phName,
+        dialog,
         TimeLine,
         ft.Row(scroll=True, controls=selectColumns),
         save_button,
