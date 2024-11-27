@@ -13,9 +13,10 @@ import sys
 def main(page: ft.Page):
 
     page.title = "Drag and Drop example"
-    page.window.width = 1000
+    page.window.width = 1100
     page.scroll = "always"
 
+    
     today = datetime.date.today()  # 今日の日付を取得
 
     def handle_change(e):
@@ -92,6 +93,10 @@ def main(page: ft.Page):
         dialog.open = False
         page.update()
         
+    
+    
+    iconforphname = ft.Icon(ft.icons.ACCOUNT_CIRCLE)
+        
     phName = ft.Dropdown(
         width=130,
         options = [],
@@ -104,221 +109,16 @@ def main(page: ft.Page):
     )
     update_dropdown()
     
+    colphName = ft.Column(
+        [iconforphname,phName],
+    )
+    
     # あとでメニューバーに変更するかも
     popup_menu = ft.PopupMenuButton(
         items =[
             ft.PopupMenuItem(text = "edit")
         ]
     )
-    # カウンターの関数
-    def counterPlus(e, count_filed):
-        
-        old_Count = int(count_filed.value)
-        new_Count = old_Count + 1
-        # 更新した値にてカウンター内を更新
-        count_filed.value = new_Count
-        count_filed.update()
-        #dict内の値を更新
-        count_dict[e] = {"count":new_Count}
-
-    def counterMinus(e, count_filed):
-        # +と同様
-        old_Count = int(count_filed.value)
-        new_Count = old_Count - 1
-        # update counter value
-        count_filed.value = new_Count
-        count_filed.update()
-        count_dict[e] = {"count":new_Count}
-
-    draggable_data = {
-        '_290':{"task":"情報収集＋指導"},
-        '_294':{"task":"指導記録作成"},
-        '_298':{"task":"混注準備"},
-        '_302':{"task":"混注時間"},
-        '_306':{"task":"薬剤セット数"},
-        '_310':{"task":"持参薬を確認"},
-        '_314':{"task":"薬剤服用歴等について保険薬局へ照会"},
-        '_318':{"task":"処方代理修正"},
-        '_322':{"task":"TDM実施"},
-        '_326':{"task":"カンファレンス"},
-        '_330':{"task":"休憩"},
-        '_334':{"task":"その他"},
-    }
-    
-    count_dict = {}
-    
-    def create_counter(e):
-        # eは入力したカラムの時間を取得
-        # sqlite3データベースからカウントを取得
-        #res = cur.execute("SELECT count FROM timeline WHERE time = ?", (e,))
-        #count = res.fetchall()[0][0]
-        #初期は０
-        count = 0
-        
-        count_filed = ft.TextField(
-            count,
-            width=40,
-            text_align=ft.TextAlign.CENTER,
-            text_size=10,
-            border_color=None,
-        )
-        count_dict[e] = {"count": count}
-        return ft.Column(
-            [
-                ft.IconButton(
-                    ft.icons.ADD,
-                    icon_size=20,
-                    on_click=lambda _: counterPlus(e, count_filed),
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
-                ),
-                count_filed,
-                ft.IconButton(
-                    ft.icons.REMOVE,
-                    icon_size=20,
-                    on_click=lambda _: counterMinus(e, count_filed),
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
-                ),
-            ]
-        )
-        
-    drag_data = {}
-    
-    last_key = {"task":None}
-    
-    def drag_move(e):
-        data = json.loads(e.data)
-        kind = e.data
-        src_id = data.get("src_id", "")
-        print(src_id)
-        key = draggable_data.get(src_id,{}).get("task")
-        #time_data = e.control.data
-        src = page.get_control(e.src_id)
-        
-        if src_id in draggable_data:
-            last_key["task"] = key
-            draggable_data[src_id] = {'task':key}
-        else:
-            if last_key["task"] is not None:
-                new_key = last_key["task"]
-                draggable_data[src_id] = {'task':new_key}
-                print(draggable_data)
-            else:#last_keyが未設定の場合
-                print("last_key is None")
-                
-            
-        e.control.content = ft.Column(
-            controls=[
-                ft.Draggable(
-                    group = "timeline",
-                    content = ft.Container(
-                        ft.Text(key,color = "white"),
-                        width = 50,
-                        height = 140,
-                        bgcolor = ft.colors.BLUE_GREY_500,
-                    ),
-                    
-                    ),
-                create_counter(e.control.data),
-            ],
-            height=300,
-            spacing=0,
-        )
-        e.control.update()
-        drag_data[e.control.data] = {'task':key}     
-    
-    def add_draggable_data(src_id,key):
-        #src_idがdrag_dataに含まれているかどうか
-        if src_id in draggable_data:
-            print("src_id in dragacle_data")
-        else:
-            draggable_data[src_id] = {'task':key['task']}
-            print(draggable_data)
-        
-    def drag_accepted(e):
-        data = json.loads(e.data)
-        src_id = data.get("src_id", "")
-        key =  draggable_data.get(src_id, "")
-        
-    def write_csv_file(e):
-        #最後にデータベースに保管する
-
-        #入力された辞書データの長さ
-        #print(len(drag_data.keys()))
-        #first_key = list(drag_data.keys())[0]
-        #first_value = drag_data[first_key]
-        #print(first_key)
-    
-        #初期ベースの作成
-        #時間
-        time_for_label = [
-            columns[i].data
-            for i in range(len(columns))
-        ]
-        #初期ベースの作成
-        set_data = [
-            {"time":time_for_label[i],"task":"","count":0,"locate":"AM" if time_for_label[i] in amTime else "PM","date":str(today),"PhName":""}
-            for i in range(len(columns))
-        ]
-        #リストを辞書形式に変換
-        data_dict = {record['time']:record for record in set_data}
-        #辞書データの更新
-        #taskデータの書き込み
-        for time,task_data in drag_data.items():
-            if time in data_dict:
-                data_dict[time]["task"] = task_data["task"]
-        #countデータの書き込み
-        for time,count in count_dict.items():
-            if time in data_dict:
-                data_dict[time]["count"] = count["count"]
-        #病棟データの書き込み
-        for time in data_dict.keys():    
-            if amDropDown.value != None:
-                if data_dict[time]["locate"] == "AM":
-                    data_dict[time]["locate"] = amDropDown.value
-            else: None
-        for time in data_dict.keys():    
-            if pmDropDown.value != None:
-                if data_dict[time]["locate"] == "PM":
-                    data_dict[time]["locate"] =pmDropDown.value
-            else: None
-        # phName データの書き込み
-        for time in data_dict.keys():
-            if phName.value != None:
-                data_dict[time]["phName"] = phName.value
-            else: None
-        page.client_storage.set("timeline_data",json.dumps(data_dict,ensure_ascii=False))
-                
-        with open(f"{today}.csv", "w", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow(["Time", "Task", "Count", "locate", "date","PhName"])
-            for time, record in data_dict.items():
-                writer.writerow([record["time"], record["task"], record["count"], record["locate"], record["date"],record["phName"]])
-
-    save_button = ft.ElevatedButton(text="Save", on_click=write_csv_file)
-    
-    selectColumns = []
-    
-    for kind in draggable_data.values():
-        selectColumns.append(
-            ft.Column(
-                [
-                    ft.Draggable(
-                        group="timeline",
-                        content=ft.Container(
-                            ft.Text(kind["task"], color="white"),
-                            width=100,
-                            height=70,
-                            bgcolor=ft.colors.BLUE_GREY_500,
-                            border_radius=5,
-                        ),
-                        data= json.dumps({"kind":kind}),
-                    ),
-                ],
-                spacing = 0,
-                data = kind,
-            )
-        )
-
     times = [
         "8:30 8:45",
         "8:45 9:00",
@@ -432,7 +232,264 @@ def main(page: ft.Page):
         "16:15 16:30",
         "16:30 16:45",
         "16:45 17:00",
-    ]  
+    ]      
+    # editButton
+    editButton = ft.IconButton(
+        icon = ft.icons.DELETE_OUTLINE,
+        icon_size = 20,
+        on_click = lambda e:toggle_delete_button(e),
+        )
+    
+    delete_buttons = [
+        ft.IconButton(
+            icon = ft.icons.REMOVE,
+            visible = False,
+            icon_color = "red",
+            icon_size = 20,
+            on_click = lambda e:delete_content(e),
+        )
+        for _ in range(len(times))
+    ]
+    delete_button = ft.IconButton(
+        icon = ft.icons.REMOVE,
+        visible = False,
+        on_click = lambda e:delete_content(e),
+    )
+    
+    ineditButton = ft.Row(
+        controls = [editButton],
+        alignment = ft.MainAxisAlignment.END,
+    )
+    def toggle_delete_button(e):
+        for button in delete_buttons:
+            button.visible = not button.visible
+        page.update()
+        
+    def delete_content(e):
+        #_move関数でdelete_button.dataに入れたのはdragtargetで設定したカラムの番号
+        #columns[i]でそのカラムの情報を取得し、見た目上削除
+        #正しくはcolumnsの初期化を行う。ドラッグする前の状態に戻す
+        col_num = delete_buttons[e.control.data["num"]].data["num"]
+        #同じ情報の新しいカラムに差し替える
+        columns[col_num].content  = ft.DragTarget(
+            group = "timeline",
+            content = ft.Container(
+                width = 50,
+                height = 300,
+                bgcolor = None,
+                border_radius = 5,
+            ),
+            on_accept = drag_accepted,
+            on_move = drag_move,
+            data = {"time":times[col_num],"num":col_num}
+        )
+        columns[col_num].update()
+        #同時に該当するdrag_dataのデータも削除する
+        del drag_data[times[col_num]]
+            
+    # カウンターの関数
+    def counterPlus(e, count_filed):
+        
+        old_Count = int(count_filed.value)
+        new_Count = old_Count + 1
+        # 更新した値にてカウンター内を更新
+        count_filed.value = new_Count
+        count_filed.update()
+        #dict内の値を更新
+        count_dict[e] = {"count":new_Count}
+
+    def counterMinus(e, count_filed):
+        # +と同様
+        old_Count = int(count_filed.value)
+        new_Count = old_Count - 1
+        # update counter value
+        count_filed.value = new_Count
+        count_filed.update()
+        count_dict[e] = {"count":new_Count}
+
+    draggable_data = {
+        '_258':{"task":"情報収集＋指導"},
+        '_262':{"task":"指導記録作成"},
+        '_266':{"task":"混注準備"},
+        '_270':{"task":"混注時間"},
+        '_274':{"task":"薬剤セット数"},
+        '_278':{"task":"持参薬を確認"},
+        '_282':{"task":"薬剤服用歴等について保険薬局へ照会"},
+        '_286':{"task":"処方代理修正"},
+        '_290':{"task":"TDM実施"},
+        '_294':{"task":"カンファレンス"},
+        '_298':{"task":"休憩"},
+        '_302':{"task":"その他"},
+    }
+    
+    count_dict = {}
+    
+    def create_counter(e):
+        # eは入力したカラムの時間を取得
+        # sqlite3データベースからカウントを取得
+        #res = cur.execute("SELECT count FROM timeline WHERE time = ?", (e,))
+        #count = res.fetchall()[0][0]
+        #初期は０
+        count = 0
+        
+        count_filed = ft.TextField(
+            count,
+            width=40,
+            text_align=ft.TextAlign.CENTER,
+            text_size=10,
+            border_color=None,
+        )
+        count_dict[e] = {"count": count}
+        return ft.Column(
+            [
+                ft.IconButton(
+                    ft.icons.ARROW_DROP_UP_OUTLINED,
+                    icon_size=25,
+                    on_click=lambda _: counterPlus(e, count_filed),
+                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
+                ),
+                count_filed,
+                ft.IconButton(
+                    ft.icons.ARROW_DROP_DOWN_OUTLINED,
+                    icon_size=25,
+                    on_click=lambda _: counterMinus(e, count_filed),
+                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
+                ),
+            ]
+        )
+        
+    drag_data = {}
+    
+    last_key = {"task":None}
+    
+    def drag_move(e):
+        data = json.loads(e.data)
+        kind = e.data
+        src_id = data.get("src_id", "")
+        print(src_id)
+        key = draggable_data.get(src_id,{}).get("task")
+        #time_data = e.control.data
+        src = page.get_control(e.src_id)
+        
+        if src_id in draggable_data:
+            last_key["task"] = key
+            draggable_data[src_id] = {'task':key}
+        else:
+            if last_key["task"] is not None:
+                new_key = last_key["task"]
+                draggable_data[src_id] = {'task':new_key}
+            else:#last_keyが未設定の場合
+                print("last_key is None")
+                
+        e.control.content = ft.Column(
+            controls=[
+                delete_buttons[e.control.data["num"]],
+                ft.Draggable(
+                    group = "timeline",
+                    content = ft.Container(
+                        ft.Text(key,color = "white"),
+                        width = 50,
+                        height = 140,
+                        bgcolor = ft.colors.BLUE_GREY_500,
+                    ),
+                    
+                    ),
+                create_counter(e.control.data["time"]),
+            ],
+            height=300,
+            spacing=0,
+        )
+        e.control.update()
+        drag_data[e.control.data["time"]] = {'task':key}
+        delete_buttons[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"]}
+    
+        
+    def drag_accepted(e):
+        data = json.loads(e.data)
+        src_id = data.get("src_id", "")
+        key =  draggable_data.get(src_id, "")
+        
+    def write_csv_file(e):
+        #最後にデータベースに保管する
+
+        #入力された辞書データの長さ
+        #print(len(drag_data.keys()))
+        #first_key = list(drag_data.keys())[0]
+        #first_value = drag_data[first_key]
+        #print(first_key)
+    
+        #初期ベースの作成
+        #時間
+        time_for_label = times
+        #初期ベースの作成
+        set_data = [
+            {"time":time_for_label[i],"task":"","count":0,"locate":"AM" if time_for_label[i] in amTime else "PM","date":str(today),"PhName":""}
+            for i in range(len(columns))
+        ]
+        print(set_data)
+        #リストを辞書形式に変換
+        data_dict = {record['time']:record for record in set_data}
+        #辞書データの更新
+        #taskデータの書き込み
+        for time,task_data in drag_data.items():
+            if time in data_dict:
+                data_dict[time]["task"] = task_data["task"]
+        #countデータの書き込み
+        for time,count in count_dict.items():
+            if time in data_dict:
+                data_dict[time]["count"] = count["count"]
+        #病棟データの書き込み
+        for time in data_dict.keys():    
+            if amDropDown.value != None:
+                if data_dict[time]["locate"] == "AM":
+                    data_dict[time]["locate"] = amDropDown.value
+            else: None
+        for time in data_dict.keys():    
+            if pmDropDown.value != None:
+                if data_dict[time]["locate"] == "PM":
+                    data_dict[time]["locate"] =pmDropDown.value
+            else: None
+        # phName データの書き込み
+        for time in data_dict.keys():
+            if phName.value != None:
+                data_dict[time]["phName"] = phName.value
+            else: data_dict[time]["phName"] = ""
+        page.client_storage.set("timeline_data",json.dumps(data_dict,ensure_ascii=False))
+        
+        
+                
+        with open(f"{today}.csv", "w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(["Time", "Task", "Count", "locate", "date","PhName"])
+            for time, record in data_dict.items():
+                writer.writerow([record["time"], record["task"], record["count"], record["locate"], record["date"],record["phName"]])
+
+    save_button = ft.ElevatedButton(text="Save", on_click=write_csv_file)
+    
+    selectColumns = []
+    
+    for kind in draggable_data.values():
+        selectColumns.append(
+            ft.Column(
+                [
+                    ft.Draggable(
+                        group="timeline",
+                        content=ft.Container(
+                            ft.Text(kind["task"], color="white"),
+                            width=100,
+                            height=70,
+                            bgcolor=ft.colors.BLUE_GREY_500,
+                            border_radius=5,
+                        ),
+                        data= json.dumps({"kind":kind}),
+                    ),
+                ],
+                spacing = 0,
+                data = kind,
+            )
+        )
+
+    
     time_for_visual_label  = []
     for i in time_for_visual:
         time_for_visual_label.append(
@@ -445,34 +502,22 @@ def main(page: ft.Page):
             )
         )
         
-    columns =[]
-
-    for time in times:
-        columns.append(
-            ft.Container(
-                ft.Column(
-                    [
-                        #ft.Text(time, size=10),
-                        ft.DragTarget(
-                            group="timeline",
-                            content=ft.Container(
-                                width=50,
-                                height=300,
-                                bgcolor=None,
-                                border_radius=5,
-                            ),
-                            data=time,
-                            on_accept=drag_accepted,
-                            on_move =drag_move,
-                        ),
-                    ],
-                    spacing=0,
-                ),
-                margin=0,
-                padding=0,
-                data = time,
-            )
+    columns =[ft.Container() for _ in range(len(times))]
+    
+    for i ,column in enumerate(columns):
+        column.content = ft.DragTarget(
+            group = "timeline",
+            content = ft.Container(
+                width = 50,
+                height = 300,
+                bgcolor = None,
+                border_radius = 5,
+            ),
+            on_accept = drag_accepted,
+            on_move = drag_move,
+            data = {"time":times[i],"num":i}
         )
+        
 
     amDropDown = ft.Dropdown(
         width=130,
@@ -520,6 +565,9 @@ def main(page: ft.Page):
         border_color=ft.colors.BLUE_GREY_100,
         height=40,
     )
+    
+    #ampmSelecticon
+    iconforampmselect = ft.Icon(ft.icons.SCHEDULE)
 
     ampmSelect = ft.Row(
         controls=[
@@ -528,13 +576,14 @@ def main(page: ft.Page):
             pmDropDown,
         ]
     )
+    
+    colampamSelect = ft.Column([iconforampmselect, ampmSelect])
 
     TimeLine = ft.Row(
         scroll=True,
         controls=[
             ft.Column(
-                controls=[
-                    ampmSelect, 
+                controls=[ 
                     ft.Row(controls=time_for_visual_label),
                     ft.Row(controls=columns),
                 ],
@@ -610,11 +659,14 @@ def main(page: ft.Page):
     
     def change_grapgh_mode(e):
         print(e.data)
-
+    body = [
+        
+    ]
     page.add(
         Date,
-        phName,
         dialog,
+        ft.Row(controls = [colphName,ft.Container(height=20, width=50),colampamSelect]),
+        ineditButton,
         TimeLine,
         ft.Row(scroll=True, controls=selectColumns),
         save_button,
@@ -622,6 +674,4 @@ def main(page: ft.Page):
         selected_files,
         bar_chart,
     )
-
-
 ft.app(main)
