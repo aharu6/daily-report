@@ -13,9 +13,10 @@ import sys
 def main(page: ft.Page):
 
     page.title = "Drag and Drop example"
-    page.window.width = 1000
+    page.window.width = 1100
     page.scroll = "always"
 
+    
     today = datetime.date.today()  # 今日の日付を取得
 
     def handle_change(e):
@@ -92,6 +93,10 @@ def main(page: ft.Page):
         dialog.open = False
         page.update()
         
+    
+    
+    iconforphname = ft.Icon(ft.icons.ACCOUNT_CIRCLE)
+        
     phName = ft.Dropdown(
         width=130,
         options = [],
@@ -103,6 +108,10 @@ def main(page: ft.Page):
         height = 40,
     )
     update_dropdown()
+    
+    colphName = ft.Column(
+        [iconforphname,phName],
+    )
     
     # あとでメニューバーに変更するかも
     popup_menu = ft.PopupMenuButton(
@@ -225,9 +234,9 @@ def main(page: ft.Page):
         "16:45 17:00",
     ]      
     # editButton
-    editButton = ft.TextButton(
-        "Edit",
-        icon = ft.icons.EDIT,
+    editButton = ft.IconButton(
+        icon = ft.icons.DELETE_OUTLINE,
+        icon_size = 20,
         on_click = lambda e:toggle_delete_button(e),
         )
     
@@ -235,6 +244,8 @@ def main(page: ft.Page):
         ft.IconButton(
             icon = ft.icons.REMOVE,
             visible = False,
+            icon_color = "red",
+            icon_size = 20,
             on_click = lambda e:delete_content(e),
         )
         for _ in range(len(times))
@@ -390,7 +401,6 @@ def main(page: ft.Page):
         )
         e.control.update()
         drag_data[e.control.data["time"]] = {'task':key}
-        print(drag_data)
         delete_buttons[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"]}
     
         
@@ -411,7 +421,6 @@ def main(page: ft.Page):
         #初期ベースの作成
         #時間
         time_for_label = times
-        print(time_for_label)
         #初期ベースの作成
         set_data = [
             {"time":time_for_label[i],"task":"","count":0,"locate":"AM" if time_for_label[i] in amTime else "PM","date":str(today),"PhName":""}
@@ -556,6 +565,9 @@ def main(page: ft.Page):
         border_color=ft.colors.BLUE_GREY_100,
         height=40,
     )
+    
+    #ampmSelecticon
+    iconforampmselect = ft.Icon(ft.icons.SCHEDULE)
 
     ampmSelect = ft.Row(
         controls=[
@@ -564,6 +576,8 @@ def main(page: ft.Page):
             pmDropDown,
         ]
     )
+    
+    colampamSelect = ft.Column([iconforampmselect, ampmSelect])
 
     TimeLine = ft.Row(
         scroll=True,
@@ -645,12 +659,13 @@ def main(page: ft.Page):
     
     def change_grapgh_mode(e):
         print(e.data)
-    
+    body = [
+        
+    ]
     page.add(
         Date,
-        phName,
         dialog,
-        ampmSelect,
+        ft.Row(controls = [colphName,ft.Container(height=20, width=50),colampamSelect]),
         ineditButton,
         TimeLine,
         ft.Row(scroll=True, controls=selectColumns),
