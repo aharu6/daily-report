@@ -80,6 +80,7 @@ def main(page: ft.Page):
             page.update()
                 
     name_field = ft.TextField(label = "新しく追加する名前を入力してください")
+    
     dialog = ft.AlertDialog(
         title = ft.Text("Add Name"),
         content = name_field,
@@ -308,18 +309,18 @@ def main(page: ft.Page):
         count_dict[e] = {"count":new_Count}
 
     draggable_data = {
-        '_258':{"task":"情報収集＋指導"},
-        '_262':{"task":"指導記録作成"},
-        '_266':{"task":"混注準備"},
-        '_270':{"task":"混注時間"},
-        '_274':{"task":"薬剤セット数"},
-        '_278':{"task":"持参薬を確認"},
-        '_282':{"task":"薬剤服用歴等について保険薬局へ照会"},
-        '_286':{"task":"処方代理修正"},
-        '_290':{"task":"TDM実施"},
-        '_294':{"task":"カンファレンス"},
-        '_298':{"task":"休憩"},
-        '_302':{"task":"その他"},
+        '_269':{"task":"情報収集＋指導"},
+        '_273':{"task":"指導記録作成"},
+        '_277':{"task":"混注準備"},
+        '_281':{"task":"混注時間"},
+        '_285':{"task":"薬剤セット数"},
+        '_289':{"task":"持参薬を確認"},
+        '_293':{"task":"薬剤服用歴等について保険薬局へ照会"},
+        '_297':{"task":"処方代理修正"},
+        '_301':{"task":"TDM実施"},
+        '_305':{"task":"カンファレンス"},
+        '_309':{"task":"休憩"},
+        '_313':{"task":"その他"},
     }
     
     count_dict = {}
@@ -362,6 +363,59 @@ def main(page: ft.Page):
     
     last_key = {"task":None}
     
+    comments = [
+        ft.IconButton(
+            icon = ft.icons.COMMENT,
+            on_click = lambda e:create_dialog_for_comment(e),
+            )
+        for _ in range(len(times))
+    ]
+    
+    comment = ft.IconButton(
+        icon = ft.icons.COMMENT,
+        on_click = lambda e:dlg_open(e),
+    )
+    
+    def dlg_close(e):
+        dlg.open = False
+        page.update()
+    
+    comment_dict = {}
+    def create_dialog_for_comment(e):
+        comment_time = comments[e.control.data["num"]].data["time"]
+        comment_num = comments[e.control.data["num"]].data["num"]
+        dlg.data = {"time":comment_time,"num":comment_num}
+        dlg.open = True
+        page.update()
+        
+        
+    def dlg_open(e):
+        dlg.visible = True
+    
+    def add_comennt_for_dict(e):
+        comment_time = dlg.data["time"]
+        comment_num = dlg.data["num"]
+        if comment_time in comment_dict:
+            del comment_dict[comment_time]
+            comment_dict[comment_time] = {"comment":comment_filed.value}
+        else:
+            comment_dict[comment_time] = {"comment":comment_filed.value}
+        print(comment_time)
+        print(comment_dict)
+        dlg.open = False
+        page.update()
+    
+    comment_filed = ft.TextField(label = "その他")
+    
+    dlg = ft.AlertDialog(
+        title = ft.Text("Comment"),
+        content = comment_filed,
+        actions = [
+            ft.TextButton("OK",on_click = lambda e:add_comennt_for_dict(e)),
+            ft.TextButton("Cancel",on_click = lambda e:dlg_close(e)),
+        ],
+    )
+    
     def drag_move(e):
         data = json.loads(e.data)
         kind = e.data
@@ -380,30 +434,56 @@ def main(page: ft.Page):
                 draggable_data[src_id] = {'task':new_key}
             else:#last_keyが未設定の場合
                 print("last_key is None")
-                
-        e.control.content = ft.Column(
-            controls=[
-                delete_buttons[e.control.data["num"]],
-                ft.Draggable(
-                    group = "timeline",
-                    content = ft.Container(
-                        ft.Text(key,color = "white"),
-                        width = 50,
-                        height = 140,
-                        bgcolor = ft.colors.BLUE_GREY_500,
-                    ),
-                    
-                    ),
-                create_counter(e.control.data["time"]),
-            ],
-            height=300,
-            spacing=0,
-        )
-        e.control.update()
+        
+        #ドラッグした時、「その他」ならば入力フォームも追加しておく
+        
+        if key == "その他":
+            e.control.content = ft.Column(
+                controls=[
+                    delete_buttons[e.control.data["num"]],
+                    ft.Draggable(
+                        group = "timeline",
+                        content = ft.Container(
+                            ft.Text(key,color = "white"),
+                            width = 50,
+                            height = 100,
+                            bgcolor = ft.colors.BLUE_GREY_500,
+                        ),
+                        ),
+                    comments[e.control.data["num"]],
+                    create_counter(e.control.data["time"]),
+                ],
+                height=300,
+                spacing=0,
+            )
+            e.control.update()
+            
+        else:
+            e.control.content = ft.Column(
+                controls=[
+                    delete_buttons[e.control.data["num"]],
+                    ft.Draggable(
+                        group = "timeline",
+                        content = ft.Container(
+                            ft.Text(key,color = "white"),
+                            width = 50,
+                            height = 140,
+                            bgcolor = ft.colors.BLUE_GREY_500,
+                        ),
+                        ),
+                    create_counter(e.control.data["time"]),
+                ],
+                height=300,
+                spacing=0,
+            )
+            e.control.update()
+            
         drag_data[e.control.data["time"]] = {'task':key}
         delete_buttons[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"]}
-    
         
+        if comment:
+            comments[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"]}  
+    
     def drag_accepted(e):
         data = json.loads(e.data)
         src_id = data.get("src_id", "")
@@ -668,6 +748,7 @@ def main(page: ft.Page):
         ft.Row(controls = [colphName,ft.Container(height=20, width=50),colampamSelect]),
         ineditButton,
         TimeLine,
+        dlg,
         ft.Row(scroll=True, controls=selectColumns),
         save_button,
         file_picker_Button,
