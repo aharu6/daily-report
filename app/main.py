@@ -503,10 +503,9 @@ def main(page: ft.Page):
         time_for_label = times
         #初期ベースの作成
         set_data = [
-            {"time":time_for_label[i],"task":"","count":0,"locate":"AM" if time_for_label[i] in amTime else "PM","date":str(today),"PhName":""}
+            {"time":time_for_label[i],"task":"","count":0,"locate":"AM" if time_for_label[i] in amTime else "PM","date":str(today),"PhName":"","comment":""}
             for i in range(len(columns))
         ]
-        print(set_data)
         #リストを辞書形式に変換
         data_dict = {record['time']:record for record in set_data}
         #辞書データの更新
@@ -535,14 +534,18 @@ def main(page: ft.Page):
                 data_dict[time]["phName"] = phName.value
             else: data_dict[time]["phName"] = ""
         page.client_storage.set("timeline_data",json.dumps(data_dict,ensure_ascii=False))
-        
+        # その他コメントの書き込み
+        for time,comment_data in comment_dict.items():
+            if time in data_dict:
+                data_dict[time]["comennt"] = comment_data["comment"]
+            else:data_dict[time]["comennt"] = ""
         
                 
         with open(f"{today}.csv", "w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(["Time", "Task", "Count", "locate", "date","PhName"])
+            writer.writerow(["Time", "Task", "Count", "locate", "date","PhName","Comment"])
             for time, record in data_dict.items():
-                writer.writerow([record["time"], record["task"], record["count"], record["locate"], record["date"],record["phName"]])
+                writer.writerow([record["time"], record["task"], record["count"], record["locate"], record["date"],record["phName"],record["comment"]])
 
     save_button = ft.ElevatedButton(text="Save", on_click=write_csv_file)
     
