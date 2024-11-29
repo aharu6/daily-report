@@ -7,7 +7,7 @@ import pandas as pd
 import sqlite3
 import datetime
 import sys
-
+from tkinter import filedialog
 
 # main
 def main(page: ft.Page):
@@ -540,15 +540,20 @@ def main(page: ft.Page):
                 data_dict[time]["comennt"] = comment_data["comment"]
             else:data_dict[time]["comennt"] = ""
         
-                
-        with open(f"{today}.csv", "w", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow(["Time", "Task", "Count", "locate", "date","PhName","Comment"])
-            for time, record in data_dict.items():
-                writer.writerow([record["time"], record["task"], record["count"], record["locate"], record["date"],record["phName"],record["comment"]])
+        
+        #csvファイルの書き込み  
+        if select_directory.result and select_directory.result.path:
+            file_path = select_directory.result.path + f"/{today}.csv"
+            with open(file_path, "w", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow(["Time", "Task", "Count", "locate", "date","PhName","Comment"])
+                for time, record in data_dict.items():
+                    writer.writerow([record["time"], record["task"], record["count"], record["locate"], record["date"],record["phName"],record["comment"]])
 
-    save_button = ft.ElevatedButton(text="Save", on_click=write_csv_file)
-    
+    save_button = ft.ElevatedButton(text="Save", on_click=lambda e:select_directory.get_directory_path())
+    select_directory = ft.FilePicker(on_result = write_csv_file)
+    page.overlay.append(select_directory)
+        
     selectColumns = []
     
     for kind in draggable_data.values():
