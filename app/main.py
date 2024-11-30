@@ -412,19 +412,7 @@ def main(page: ft.Page):
         print(comment_dict)
     
     comment_filed = ft.TextField(label = "その他")
-    
-    dlgs = [
-        ft.AlertDialog(
-            title = ft.Text("Comment"),
-            content = ft.TextField(label = "その他"),
-            actions = [
-                ft.TextButton("OK",on_click = lambda e:add_comennt_for_dict(e)),
-                ft.TextButton("Cancel",on_click = lambda e:dlg_close(e)),
-            ]
-        )
-        for _ in range(len(times))
-    ]
-    
+        
     dlg = ft.AlertDialog(
         title = ft.Text("Comment"),
         content = comment_filed,
