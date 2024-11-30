@@ -320,7 +320,7 @@ def main(page: ft.Page):
         '_301':{"task":"TDM実施"},
         '_305':{"task":"カンファレンス"},
         '_309':{"task":"休憩"},
-        '_313':{"task":"その他"},
+        '_308':{"task":"その他"},
     }
     
     count_dict = {}
@@ -381,13 +381,18 @@ def main(page: ft.Page):
         page.update()
     
     comment_dict = {}
+    
     def create_dialog_for_comment(e):
         comment_time = comments[e.control.data["num"]].data["time"]
         comment_num = comments[e.control.data["num"]].data["num"]
         dlg.data = {"time":comment_time,"num":comment_num}
-        dlg.open = True
-        page.update()
-        
+        print(comment_time)
+        #TextFieldの初期化
+        if comment_time in comment_dict:
+            comment_filed.value = comment_dict[comment_time]["comment"]
+        else:
+            comment_filed.value = ""
+        page.open(dlg)
         
     def dlg_open(e):
         dlg.visible = True
@@ -400,13 +405,14 @@ def main(page: ft.Page):
             comment_dict[comment_time] = {"comment":comment_filed.value}
         else:
             comment_dict[comment_time] = {"comment":comment_filed.value}
-        print(comment_time)
-        print(comment_dict)
+            
+
         dlg.open = False
         page.update()
+        print(comment_dict)
     
     comment_filed = ft.TextField(label = "その他")
-    
+        
     dlg = ft.AlertDialog(
         title = ft.Text("Comment"),
         content = comment_filed,
@@ -510,6 +516,7 @@ def main(page: ft.Page):
         data_dict = {record['time']:record for record in set_data}
         #辞書データの更新
         #taskデータの書き込み
+        print("drag_data",drag_data.items())
         for time,task_data in drag_data.items():
             if time in data_dict:
                 data_dict[time]["task"] = task_data["task"]
@@ -535,12 +542,11 @@ def main(page: ft.Page):
             else: data_dict[time]["phName"] = ""
         page.client_storage.set("timeline_data",json.dumps(data_dict,ensure_ascii=False))
         # その他コメントの書き込み
+        print("comment_data",comment_dict.items())
         for time,comment_data in comment_dict.items():
             if time in data_dict:
-                data_dict[time]["comennt"] = comment_data["comment"]
-            else:data_dict[time]["comennt"] = ""
-        
-        
+                data_dict[time]["comment"] = comment_data["comment"]
+            
         #csvファイルの書き込み  
         if select_directory.result and select_directory.result.path:
             file_path = select_directory.result.path + f"/{today}.csv"
@@ -756,7 +762,6 @@ def main(page: ft.Page):
         ft.Row(controls = [colphName,ft.Container(height=20, width=50),colampamSelect]),
         ineditButton,
         TimeLine,
-        dlg,
         ft.Row(scroll=True, controls=selectColumns),
         save_button,
         file_picker_Button,
