@@ -309,17 +309,17 @@ def main(page: ft.Page):
         count_dict[e] = {"count":new_Count}
 
     draggable_data = {
-        '_269':{"task":"情報収集＋指導"},
-        '_273':{"task":"指導記録作成"},
-        '_277':{"task":"混注準備"},
-        '_281':{"task":"混注時間"},
-        '_285':{"task":"薬剤セット数"},
-        '_289':{"task":"持参薬を確認"},
-        '_293':{"task":"薬剤服用歴等について保険薬局へ照会"},
-        '_297':{"task":"処方代理修正"},
-        '_301':{"task":"TDM実施"},
-        '_305':{"task":"カンファレンス"},
-        '_309':{"task":"休憩"},
+        '_264':{"task":"情報収集＋指導"},
+        '_268':{"task":"指導記録作成"},
+        '_272':{"task":"混注準備"},
+        '_276':{"task":"混注時間"},
+        '_280':{"task":"薬剤セット数"},
+        '_284':{"task":"持参薬を確認"},
+        '_288':{"task":"薬剤服用歴等について保険薬局へ照会"},
+        '_292':{"task":"処方代理修正"},
+        '_296':{"task":"TDM実施"},
+        '_300':{"task":"カンファレンス"},
+        '_304':{"task":"休憩"},
         '_308':{"task":"その他"},
     }
     
@@ -409,7 +409,6 @@ def main(page: ft.Page):
 
         dlg.open = False
         page.update()
-        print(comment_dict)
     
     comment_filed = ft.TextField(label = "その他")
         
@@ -421,69 +420,117 @@ def main(page: ft.Page):
             ft.TextButton("Cancel",on_click = lambda e:dlg_close(e)),
         ],
     )
-    
     def drag_move(e):
         data = json.loads(e.data)
         kind = e.data
         src_id = data.get("src_id", "")
-        print(src_id)
-        key = draggable_data.get(src_id,{}).get("task")
-        #time_data = e.control.data
-        src = page.get_control(e.src_id)
         
+        #初回ドラッグとcolumns内でのコピー操作にて処理を分岐
         if src_id in draggable_data:
-            last_key["task"] = key
-            draggable_data[src_id] = {'task':key}
+            key = draggable_data.get(src_id,{}).get("task")
+            columns[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key}
         else:
-            if last_key["task"] is not None:
-                new_key = last_key["task"]
-                draggable_data[src_id] = {'task':new_key}
-            else:#last_keyが未設定の場合
-                print("last_key is None")
-        
+            None
+            
+        #time_data = e.control.data
+        #src = page.get_control(e.src_id)
+                
         #ドラッグした時、「その他」ならば入力フォームも追加しておく
         
-        if key == "その他":
-            e.control.content = ft.Column(
-                controls=[
-                    delete_buttons[e.control.data["num"]],
-                    ft.Draggable(
-                        group = "timeline",
-                        content = ft.Container(
-                            ft.Text(key,color = "white"),
-                            width = 50,
-                            height = 100,
-                            bgcolor = ft.colors.BLUE_GREY_500,
-                        ),
-                        ),
-                    comments[e.control.data["num"]],
-                    create_counter(e.control.data["time"]),
-                ],
-                height=300,
-                spacing=0,
-            )
-            e.control.update()
-            
+        if "task" in  e.control.data is None:
+            if key == "その他":
+                e.control.content = ft.Column(
+                    controls=[
+                        delete_buttons[e.control.data["num"]],
+                        ft.Draggable(
+                            group = "timeline",
+                            content = ft.Container(
+                                ft.Text(key,color = "white"),
+                                width = 50,
+                                height = 100,
+                                bgcolor = ft.colors.BLUE_GREY_500,
+                            ),
+                            ),
+                        comments[e.control.data["num"]],
+                        create_counter(e.control.data["time"]),
+                    ],
+                    height=300,
+                    spacing=0,
+                    data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
+                )
+                e.control.update()
+                
+            else:
+                e.control.content = ft.Column(
+                    controls=[
+                        delete_buttons[e.control.data["num"]],
+                        ft.Draggable(
+                            group = "timeline",
+                            content = ft.Container(
+                                ft.Text(key,color = "white"),
+                                width = 50,
+                                height = 140,
+                                bgcolor = ft.colors.BLUE_GREY_500,
+                            ),
+                            ),
+                        create_counter(e.control.data["time"]),
+                    ],
+                    height=300,
+                    spacing=0,
+                    data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
+                )
+                e.control.update()
+            if src_id not in draggable_data:
+                draggable_data[src_id] = {'task':key}
         else:
-            e.control.content = ft.Column(
-                controls=[
-                    delete_buttons[e.control.data["num"]],
-                    ft.Draggable(
-                        group = "timeline",
-                        content = ft.Container(
-                            ft.Text(key,color = "white"),
-                            width = 50,
-                            height = 140,
-                            bgcolor = ft.colors.BLUE_GREY_500,
-                        ),
-                        ),
-                    create_counter(e.control.data["time"]),
-                ],
-                height=300,
-                spacing=0,
-            )
-            e.control.update()
+            new_key = columns[e.control.data["num"]].data["task"]
+            key = new_key
             
+            if key == "その他":
+                e.control.content = ft.Column(
+                    controls=[
+                        delete_buttons[e.control.data["num"]],
+                        ft.Draggable(
+                            group = "timeline",
+                            content = ft.Container(
+                                ft.Text(key,color = "white"),
+                                width = 50,
+                                height = 100,
+                                bgcolor = ft.colors.BLUE_GREY_500,
+                            ),
+                            ),
+                        comments[e.control.data["num"]],
+                        create_counter(e.control.data["time"]),
+                    ],
+                    height=300,
+                    spacing=0,
+                    data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
+                )
+                e.control.update()
+                
+            else:
+                e.control.content = ft.Column(
+                    controls=[
+                        delete_buttons[e.control.data["num"]],
+                        ft.Draggable(
+                            group = "timeline",
+                            content = ft.Container(
+                                ft.Text(key,color = "white"),
+                                width = 50,
+                                height = 140,
+                                bgcolor = ft.colors.BLUE_GREY_500,
+                            ),
+                            ),
+                        create_counter(e.control.data["time"]),
+                    ],
+                    height=300,
+                    spacing=0,
+                    data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
+                )
+                e.control.update()
+            if src_id not in draggable_data:
+                draggable_data[src_id] = {'task':key}
+                
         drag_data[e.control.data["time"]] = {'task':key}
         delete_buttons[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"]}
         
@@ -579,7 +626,7 @@ def main(page: ft.Page):
                     ),
                 ],
                 spacing = 0,
-                data = kind,
+                data = {"kind":kind},
             )
         )
 
