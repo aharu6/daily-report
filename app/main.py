@@ -1,5 +1,5 @@
 import flet as ft
-from flet import Page
+from flet import Page,AppBar,View,Text
 import json
 import calendar
 import csv
@@ -8,118 +8,17 @@ import sqlite3
 import datetime
 import sys
 from tkinter import filedialog
-
+from timeline_page import Date_Button,phNameDropDown,Pagedialog,ColphName,ColampamSelect
+from timeline_page2 import ButtonManager
+from setting_page import SettingPage
+from chart_page import ChartPage
 # main
 def main(page: ft.Page):
 
     page.title = "Drag and Drop example"
     page.window.width = 1100
     page.scroll = "always"
-
     
-    today = datetime.date.today()  # 今日の日付を取得
-
-    def handle_change(e):
-        global today
-        selected_date = e.control.value  # 例えば "2024-10-25" のような形式
-
-        # 文字列を日付オブジェクトに変換
-        today = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
-
-        # 年、月、日を取得して表示用のテキストに変換
-        Date.text = f"{today.year}/{today.month}/{today.day}"
-        Date.update()
-
-    Date = ft.ElevatedButton(
-        f"{today.year}/{today.month}/{today.day}",
-        icon=ft.icons.CALENDAR_MONTH,
-        on_click=lambda e: page.open(
-            ft.DatePicker(
-                first_date=datetime.date(
-                    year=today.year, month=today.month, day=today.day
-                ),
-                on_change=handle_change,
-            )
-        ),
-    )
-    
-    # 薬剤師名の入力
-    phNameList = page.client_storage.get("phName")
-    # phNameListに基づき名前ごとにドロップダウンを作成
-    # 最後にはデータ追加ボタンを実装する
-    
-    # phNameListがない場合はaddListのみを表示
-    if phNameList is not None:
-        phNameList = json.loads(phNameList)
-    else:
-        phNameList = []
-        
-    def update_dropdown():
-        options = [ft.dropdown.Option(item["name"]) for item in phNameList]
-        options.append(ft.dropdown.Option("Add"))
-        phName.options = options
-        page.update()
-    
-    # phNameListへの追加
-    def add_name(e):
-        new_name = name_field.value.strip()
-        if new_name:
-            phNameList.append({"name":new_name})
-            page.client_storage.set("phName",json.dumps(phNameList,ensure_ascii=False))
-            name_field.value = ""
-            update_dropdown()
-        dialog.open = False
-        page.update()
-        
-    # Add が選択された時の処理
-    def dropdown_changed(e) :
-        if phName.value  == "Add":
-            dialog.open  = True
-            page.update()
-        else:
-            page.update()
-                
-    name_field = ft.TextField(label = "新しく追加する名前を入力してください")
-    
-    dialog = ft.AlertDialog(
-        title = ft.Text("Add Name"),
-        content = name_field,
-        actions = [
-            ft.TextButton("追加",on_click= add_name),
-            ft.TextButton("キャンセル",on_click = lambda e:close_dialog())
-        ],
-    )
-    
-    def close_dialog():
-        dialog.open = False
-        page.update()
-        
-    
-    
-    iconforphname = ft.Icon(ft.icons.ACCOUNT_CIRCLE)
-        
-    phName = ft.Dropdown(
-        width=130,
-        options = [],
-        on_change = dropdown_changed,
-        label = "Name",
-        text_size = 12,
-        label_style = ft.TextStyle(size = 12),
-        border_color = ft.colors.BLUE_GREY_100,
-        height = 40,
-    )
-    update_dropdown()
-    
-    colphName = ft.Column(
-        [iconforphname,phName],
-    )
-    
-    # あとでメニューバーに変更するかも
-    popup_menu = ft.PopupMenuButton(
-        items =[
-            ft.PopupMenuItem(text = "edit")
-        ]
-    )
     times = [
         "8:30 8:45",
         "8:45 9:00",
@@ -233,7 +132,9 @@ def main(page: ft.Page):
         "16:15 16:30",
         "16:30 16:45",
         "16:45 17:00",
-    ]      
+    ]     
+    
+     
     # editButton
     editButton = ft.IconButton(
         icon = ft.icons.DELETE_OUTLINE,
@@ -251,16 +152,7 @@ def main(page: ft.Page):
         )
         for _ in range(len(times))
     ]
-    delete_button = ft.IconButton(
-        icon = ft.icons.REMOVE,
-        visible = False,
-        on_click = lambda e:delete_content(e),
-    )
     
-    ineditButton = ft.Row(
-        controls = [editButton],
-        alignment = ft.MainAxisAlignment.END,
-    )
     def toggle_delete_button(e):
         for button in delete_buttons:
             button.visible = not button.visible
@@ -360,8 +252,6 @@ def main(page: ft.Page):
         )
         
     drag_data = {}
-    
-    last_key = {"task":None}
     
     comments = [
         ft.IconButton(
@@ -718,7 +608,7 @@ def main(page: ft.Page):
         ]
     )
     
-    colampamSelect = ft.Column([iconforampmselect, ampmSelect])
+    #colampamSelect = ft.Column([iconforampmselect, ampmSelect])
 
     TimeLine = ft.Row(
         scroll=True,
@@ -800,19 +690,120 @@ def main(page: ft.Page):
     
     def change_grapgh_mode(e):
         print(e.data)
-    body = [
-        
-    ]
-    page.add(
-        Date,
-        dialog,
-        ft.Row(controls = [colphName,ft.Container(height=20, width=50),colampamSelect]),
-        ineditButton,
-        TimeLine,
-        ft.Row(scroll=True, controls=selectColumns),
-        save_button,
-        file_picker_Button,
-        selected_files,
-        bar_chart,
+
+    def on_navigation_change(e):
+        selected_index = e.control.selected_index
+        if selected_index == 0:
+            page.go("/")
+        elif selected_index == 1:
+            page.go("/chart")
+        elif selected_index == 2:
+            page.go("/settings")
+    
+    
+    #Timelinepage        
+    Date = Date_Button(page)
+    Dialog = Pagedialog(page)
+    colPhName = ColphName(page)
+    colampmSelect = ColampamSelect(page)
+    
+    #chartPage
+    chartPage = ChartPage(page)
+    
+    #settingPage
+    settings = SettingPage()
+    
+    def route_change(e):
+        page.views.clear()
+        page.views.append(
+            View(
+                "/",
+                [
+                    Date,
+                    Dialog,
+                    ft.Row(controls = [colPhName,ft.Container(height=20, width=50),colampmSelect]),
+                    ft.CupertinoNavigationBar(
+                        selected_index = 0,
+                        bgcolor=ft.colors.BLUE_GREY_50,
+                        inactive_color=ft.colors.GREY,
+                        active_color=ft.colors.BLACK,
+                        on_change= on_navigation_change,
+                        destinations = [
+                            ft.NavigationBarDestination(icon=ft.icons.CREATE, label="Create",selected_icon = ft.icons.BORDER_COLOR),
+                            ft.NavigationBarDestination(icon=ft.icons.SHOW_CHART, label="Showchart",selected_icon = ft.icons.AUTO_GRAPH),
+                            ft.NavigationBarDestination(icon=ft.icons.SETTINGS,selected_icon= ft.icons.SETTINGS_SUGGEST,label="Settings",),
+                        ]
+                    )
+                ]
+            )
+        )
+        if page.route == "/chart":
+            page.views.clear()
+            page.views.append(
+                View(
+                    "/chart",
+                    [
+                        chartPage,
+                        ft.CupertinoNavigationBar(
+                            selected_index = 1,
+                            bgcolor=ft.colors.BLUE_GREY_50,
+                            inactive_color=ft.colors.GREY,
+                            active_color=ft.colors.BLACK,
+                            on_change= on_navigation_change,
+                            destinations = [
+                                ft.NavigationBarDestination(icon=ft.icons.CREATE, label="Create",selected_icon = ft.icons.BORDER_COLOR),
+                                ft.NavigationBarDestination(icon=ft.icons.SHOW_CHART, label="Showchart",selected_icon = ft.icons.AUTO_GRAPH),
+                                ft.NavigationBarDestination(icon=ft.icons.SETTINGS,selected_icon= ft.icons.SETTINGS_SUGGEST,label="Settings",),
+                            ]
+                        )
+                    ]
+                )
+            )
+        if page.route == "/settings":
+            page.views.clear()
+            page.views.append(
+                View(
+                    "/settings",
+                    [
+                        settings,
+                        ft.CupertinoNavigationBar(
+                            selected_index = 2,
+                            bgcolor=ft.colors.BLUE_GREY_50,
+                            inactive_color=ft.colors.GREY,
+                            active_color=ft.colors.BLACK,
+                            on_change= on_navigation_change,
+                            destinations = [
+                                ft.NavigationBarDestination(icon=ft.icons.CREATE, label="Create",selected_icon = ft.icons.BORDER_COLOR),
+                                ft.NavigationBarDestination(icon=ft.icons.SHOW_CHART, label="Showchart",selected_icon = ft.icons.AUTO_GRAPH),
+                                ft.NavigationBarDestination(icon=ft.icons.SETTINGS,selected_icon= ft.icons.SETTINGS_SUGGEST,label="Settings",),
+                            ]
+                        )
+                    ]
+                )
+            )
+        page.update()
+    
+    def view_pop(e):
+        page.views.pop()
+    
+    page.on_route_change = route_change
+    page.on_view_pop = view_pop
+    
+    page.navigation_bar = ft.CupertinoNavigationBar(
+        bgcolor=ft.colors.BLUE_GREY_50,
+        inactive_color=ft.colors.GREY,
+        active_color=ft.colors.BLACK,
+        on_change= on_navigation_change,
+        destinations=[
+            ft.NavigationBarDestination(icon=ft.icons.CREATE, label="Create",selected_icon = ft.icons.BORDER_COLOR),
+            ft.NavigationBarDestination(icon=ft.icons.SHOW_CHART, label="Showchart",selected_icon=ft.icons.AUTO_GRAPH),
+            ft.NavigationBarDestination(
+                icon=ft.icons.SETTINGS,
+                selected_icon=ft.icons.BOOKMARK,
+                label="Settings",
+            ),
+        ]
     )
+    page.go(page.route)
+    
 ft.app(main)
