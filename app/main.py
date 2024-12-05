@@ -320,15 +320,16 @@ def main(page: ft.Page):
         '_301':{"task":"カンファレンス"},#8
         '_305':{"task":"医師からの相談"},#9
         '_309':{"task":"看護師からの相談"},#10
-        '_313':{"task":"その他の職種からの相談"},#11　#部下からの相談応需、他部署からの相談応需を含めることとする
-        '_317':{"task":"勉強会参加"},#12
-        '_321':{"task":"WG活動"},#13
-        '_325':{"task":"1on1"},#14
-        '_329':{"task":"ICT/AST"},#15
-        '_333':{"task":"褥瘡"},#16
-        '_337':{"task":"TPN評価"},#17
-        '_341':{"task":"休憩"},#18
-        '_345':{"task":"その他"},#19
+        '_313':{"task":"その他の職種からの相談"},   #11　#部下からの相談応需、他部署からの相談応需を含めることとする
+        '_317':{"task":"委員会"},#12
+        '_321':{"task":"勉強会参加"},#13
+        '_325':{"task":"WG活動"},#14
+        '_329':{"task":"1on1"},#15
+        '_333':{"task":"ICT/AST"},#16
+        '_337':{"task":"褥瘡"},#17
+        '_341':{"task":"TPN評価"},#18
+        '_345':{"task":"休憩"},#19
+        '_349':{"task":"その他"},#20
     }
     
     count_dict = {}
@@ -641,13 +642,13 @@ def main(page: ft.Page):
     #初回起動時は病棟担当者用で表示する
     #ASTやNSTなどの業務は初回は非表示にしておく
     #病棟担当者時に表示不要なもの
-    #ICT \AST:15、褥瘡:16、TPN評価:17番目
-    #ICT/AST:15
-    selectColumns[15].visible = True
-    #褥瘡:16
+    #ICT \AST:16、褥瘡:17、TPN評価:18番目
+    #ICT/AST:16
     selectColumns[16].visible = True
-    #TPN評価:17
+    #褥瘡:17
     selectColumns[17].visible = True
+    #TPN評価:18
+    selectColumns[18].visible = True
     
     
     time_for_visual_label  = []
@@ -866,24 +867,24 @@ def main(page: ft.Page):
             #表示にするもの：ICT/AST
             #非表示にするもの：褥瘡、TPN評価
         if int(e.data) == 0:
-            selectColumns[15].visible = True
-            selectColumns[16].visible = False
-            selectColumns[17].visible = False
+            selectColumns[16].visible = True #ICT/AST
+            selectColumns[17].visible = False #褥瘡
+            selectColumns[18].visible = False #TPN評価
             page.update()
         #1 NST
             #表示にするもの：褥瘡、TPN評価
             #非表示にするもの：ICT/AST
         elif int(e.data) == 1:
-            selectColumns[15].visible = False
-            selectColumns[16].visible = True
-            selectColumns[17].visible
+            selectColumns[16].visible = False #ICT/AST
+            selectColumns[17].visible = True #褥瘡
+            selectColumns[18].visible = True #TPN評価
             page.update()
         #2 off
             #ICT/NST,褥瘡、TPN評価全て非表示
         elif int(e.data) == 2:
-            selectColumns[15].visible = False
-            selectColumns[16].visible = False
-            selectColumns[17].visible = False
+            selectColumns[16].visible = False #ICT/AST
+            selectColumns[17].visible = False #褥瘡
+            selectColumns[18].visible = False #TPN評価
             page.update()
         else:
             print("updatenone")
