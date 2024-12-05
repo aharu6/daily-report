@@ -3,10 +3,10 @@ name: Flet Windows based on PyInstaller
 on:
   push:
     branches:
-      - For5Free
+      - main
   pull_request:
     branches:
-      - For5Free
+      - main
 
 jobs:
   build:
