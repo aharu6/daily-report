@@ -603,7 +603,6 @@ def main(page: ft.Page):
             right_column_data = columns[right_column_num].data["task"]
                 
             if right_column_data == key:
-                print("right_column_data_exist")
                 e.control.content.controls[1].content.content.visible = True
                 columns[right_column_num].content = ft.Column(
                     controls = [
