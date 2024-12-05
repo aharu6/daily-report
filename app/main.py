@@ -317,11 +317,6 @@ def main(page: ft.Page):
         )
         for _ in range(len(times))
     ]
-    delete_button = ft.IconButton(
-        icon = ft.icons.REMOVE,
-        visible = False,
-        on_click = lambda e:delete_content(e),
-    )
     
     ineditButton = ft.Row(
         controls = [editButton],
@@ -353,6 +348,12 @@ def main(page: ft.Page):
         columns[col_num].update()
         #同時に該当するdrag_dataのデータも削除する
         del drag_data[times[col_num]]
+        #該当のカウントデータも削除する
+        if times[col_num] in count_dict:
+            del count_dict[times[col_num]]
+        #該当のその他データも削除する
+        if times[col_num] in comment_dict:
+            del comment_dict[times[col_num]]
             
     # カウンターの関数
     def counterPlus(e, count_filed):
