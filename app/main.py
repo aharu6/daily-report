@@ -309,27 +309,27 @@ def main(page: ft.Page):
         count_dict[e] = {"count":new_Count}
 
     draggable_data = {
-        '_269':{"task":"情報収集＋指導"},#0
-        '_273':{"task":"指導記録作成"},#1
-        '_277':{"task":"混注時間"},#2
-        '_281':{"task":"薬剤セット数"},#3
-        '_285':{"task":"持参薬を確認"},#4
-        '_289':{"task":"薬剤服用歴等について保険薬局へ照会"},#5
-        '_293':{"task":"処方代理修正"},#6
-        '_297':{"task":"TDM実施"},#7
-        '_301':{"task":"カンファレンス"},#8
-        '_305':{"task":"医師からの相談"},#9
-        '_309':{"task":"看護師からの相談"},#10
-        '_313':{"task":"その他の職種からの相談"},   #11　#部下からの相談応需、他部署からの相談応需を含めることとする
-        '_317':{"task":"委員会"},#12
-        '_321':{"task":"勉強会参加"},#13
-        '_325':{"task":"WG活動"},#14
-        '_329':{"task":"1on1"},#15
-        '_333':{"task":"ICT/AST"},#16
-        '_337':{"task":"褥瘡"},#17
-        '_341':{"task":"TPN評価"},#18
-        '_345':{"task":"休憩"},#19
-        '_349':{"task":"その他"},#20
+        '_273':{"task":"情報収集＋指導"},#0
+        '_277':{"task":"指導記録作成"},#1
+        '_281':{"task":"混注時間"},#2
+        '_285':{"task":"薬剤セット数"},#3
+        '_289':{"task":"持参薬を確認"},#4
+        '_293':{"task":"薬剤服用歴等について保険薬局へ照会"},#5
+        '_297':{"task":"処方代理修正"},#6
+        '_301':{"task":"TDM実施"},#7
+        '_305':{"task":"カンファレンス"},#8
+        '_309':{"task":"医師からの相談"},#9
+        '_313':{"task":"看護師からの相談"},#10
+        '_317':{"task":"その他の職種からの相談"},   #11　#部下からの相談応需、他部署からの相談応需を含めることとする
+        '_321':{"task":"委員会"},#12
+        '_325':{"task":"勉強会参加"},#13
+        '_329':{"task":"WG活動"},#14
+        '_333':{"task":"1on1"},#15
+        '_337':{"task":"ICT/AST"},#16
+        '_341':{"task":"褥瘡"},#17
+        '_345':{"task":"TPN評価"},#18
+        '_349':{"task":"休憩"},#19
+        '_353':{"task":"その他"},#20
     }
     
     count_dict = {}
@@ -433,7 +433,6 @@ def main(page: ft.Page):
         data = json.loads(e.data)
         kind = e.data
         src_id = data.get("src_id", "")
-        print("src_id",src_id)
         
         #初回ドラッグとcolumns内でのコピー操作にて処理を分岐
         if src_id in draggable_data:
@@ -444,9 +443,9 @@ def main(page: ft.Page):
             
         #time_data = e.control.data
         #src = page.get_control(e.src_id)
-                
-        #ドラッグした時、「その他」ならば入力フォームも追加しておく
         
+        #ドラッグした時、「その他」ならば入力フォームも追加しておく
+        #「休憩」ならば、カウンターは非表示にする
         if "task" in  e.control.data is None:
             if key == "その他":
                 e.control.content = ft.Column(
@@ -463,6 +462,26 @@ def main(page: ft.Page):
                             ),
                         comments[e.control.data["num"]],
                         create_counter(e.control.data["time"]),
+                    ],
+                    height=300,
+                    spacing=0,
+                    data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
+                )
+                e.control.update()
+            #休憩,委員会、WG活動,勉強会参加、1on1の場合はカウンターを非表示にする
+            elif key == "休憩" or key == "委員会" or key == "WG活動" or key == "勉強会参加" or key == "1on1":
+                e.control.content = ft.Column(
+                    controls=[
+                        delete_buttons[e.control.data["num"]],
+                        ft.Draggable(
+                            group = "timeline",
+                            content = ft.Container(
+                                ft.Text(key,color = "white"),
+                                width = 50,
+                                height = 140,
+                                bgcolor = ft.colors.BLUE_GREY_500,
+                            ),
+                            ),
                     ],
                     height=300,
                     spacing=0,
@@ -517,7 +536,26 @@ def main(page: ft.Page):
                     data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
                 )
                 e.control.update()
-                
+            #休憩,委員会、WG活動,勉強会参加、1on1の場合はカウンターを非表示にする
+            elif key == "休憩" or key == "委員会" or key == "WG活動" or key == "勉強会参加" or key == "1on1":
+                e.control.content = ft.Column(
+                    controls=[
+                        delete_buttons[e.control.data["num"]],
+                        ft.Draggable(
+                            group = "timeline",
+                            content = ft.Container(
+                                ft.Text(key,color = "white"),
+                                width = 50,
+                                height = 140,
+                                bgcolor = ft.colors.BLUE_GREY_500,
+                            ),
+                            ),
+                    ],
+                    height=300,
+                    spacing=0,
+                    data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
+                )
+                e.control.update()
             else:
                 e.control.content = ft.Column(
                     controls=[
