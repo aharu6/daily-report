@@ -24,14 +24,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyinstaller flet
-          pip install pandas
-          pip install datetime
-          pip install numpy
+          pip install pyinstaller flet pandas datetime numpy
 
       - name: Build executable
         run: |
-          pyinstaller --onefile --hidden-import pandas --hidden-import numpy --hidden-import csv --hidden-import datetime app/main.py
+          pyinstaller --onefile --hidden-import pandas --hidden-import numpy --hidden-import csv --hidden-import datetime main.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
