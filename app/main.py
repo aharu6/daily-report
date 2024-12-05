@@ -309,18 +309,26 @@ def main(page: ft.Page):
         count_dict[e] = {"count":new_Count}
 
     draggable_data = {
-        '_264':{"task":"情報収集＋指導"},
-        '_268':{"task":"指導記録作成"},
-        '_272':{"task":"混注準備"},
-        '_276':{"task":"混注時間"},
-        '_280':{"task":"薬剤セット数"},
-        '_284':{"task":"持参薬を確認"},
-        '_288':{"task":"薬剤服用歴等について保険薬局へ照会"},
-        '_292':{"task":"処方代理修正"},
-        '_296':{"task":"TDM実施"},
-        '_300':{"task":"カンファレンス"},
-        '_304':{"task":"休憩"},
-        '_308':{"task":"その他"},
+        '_269':{"task":"情報収集＋指導"},#0
+        '_273':{"task":"指導記録作成"},#1
+        '_277':{"task":"混注時間"},#2
+        '_281':{"task":"薬剤セット数"},#3
+        '_285':{"task":"持参薬を確認"},#4
+        '_289':{"task":"薬剤服用歴等について保険薬局へ照会"},#5
+        '_293':{"task":"処方代理修正"},#6
+        '_297':{"task":"TDM実施"},#7
+        '_301':{"task":"カンファレンス"},#8
+        '_305':{"task":"医師からの相談"},#9
+        '_309':{"task":"看護師からの相談"},#10
+        '_313':{"task":"その他の職種からの相談"},#11　#部下からの相談応需、他部署からの相談応需を含めることとする
+        '_317':{"task":"勉強会参加"},#12
+        '_321':{"task":"WG活動"},#13
+        '_325':{"task":"1on1"},#14
+        '_329':{"task":"ICT/AST"},#15
+        '_333':{"task":"褥瘡"},#16
+        '_337':{"task":"TPN評価"},#17
+        '_341':{"task":"休憩"},#18
+        '_345':{"task":"その他"},#19
     }
     
     count_dict = {}
@@ -424,6 +432,7 @@ def main(page: ft.Page):
         data = json.loads(e.data)
         kind = e.data
         src_id = data.get("src_id", "")
+        print("src_id",src_id)
         
         #初回ドラッグとcolumns内でのコピー操作にて処理を分岐
         if src_id in draggable_data:
@@ -629,7 +638,17 @@ def main(page: ft.Page):
                 data = {"kind":kind},
             )
         )
-
+    #初回起動時は病棟担当者用で表示する
+    #ASTやNSTなどの業務は初回は非表示にしておく
+    #病棟担当者時に表示不要なもの
+    #ICT \AST:15、褥瘡:16、TPN評価:17番目
+    #ICT/AST:15
+    selectColumns[15].visible = True
+    #褥瘡:16
+    selectColumns[16].visible = True
+    #TPN評価:17
+    selectColumns[17].visible = True
+    
     
     time_for_visual_label  = []
     for i in time_for_visual:
@@ -800,13 +819,80 @@ def main(page: ft.Page):
     
     def change_grapgh_mode(e):
         print(e.data)
-    body = [
-        
-    ]
+    
+    choice_button = ft.CupertinoSlidingSegmentedButton(
+        selected_index = 0,
+        thumb_color = ft.colors.BLUE_GREY_100,
+        on_change = lambda e:change_choice_button(e),
+        padding = ft.padding.symmetric(0,10),
+        controls = [
+            ft.Text("病棟担当者"),
+            ft.Text("DI担当者"),
+            ft.Text("主任/副主任"),
+        ]
+    )
+    
+    def change_choice_button(e):
+        #0 病棟担当者
+        if int(e.data) ==0:
+            selectColumns[2].visible = True
+            page.update()
+        #1 DI担当者
+            #非表示にするもの：混注時間
+            #薬剤セット数
+        elif int(e.data) ==1:
+            selectColumns[2].visible = False
+            page.update()
+            
+        #2 主任/副主任
+        elif int(e.data) ==2:
+            selectColumns[2].visible = True
+            page.update()
+            
+    special_choice =ft.CupertinoSlidingSegmentedButton(
+        selected_index = 2,
+        thumb_color = ft.colors.BLUE_GREY_100,
+        on_change = lambda e:change_special_choice(e),
+        padding = ft.padding.symmetric(0,10),
+        controls = [
+            ft.Text("ICT/AST"),
+            ft.Text("NST"),
+            ft.Text("off"),
+        ]
+    )
+    
+    def change_special_choice(e):
+        #0 AST
+            #表示にするもの：ICT/AST
+            #非表示にするもの：褥瘡、TPN評価
+        if int(e.data) == 0:
+            selectColumns[15].visible = True
+            selectColumns[16].visible = False
+            selectColumns[17].visible = False
+            page.update()
+        #1 NST
+            #表示にするもの：褥瘡、TPN評価
+            #非表示にするもの：ICT/AST
+        elif int(e.data) == 1:
+            selectColumns[15].visible = False
+            selectColumns[16].visible = True
+            selectColumns[17].visible
+            page.update()
+        #2 off
+            #ICT/NST,褥瘡、TPN評価全て非表示
+        elif int(e.data) == 2:
+            selectColumns[15].visible = False
+            selectColumns[16].visible = False
+            selectColumns[17].visible = False
+            page.update()
+        else:
+            print("updatenone")
+            
+            
     page.add(
         Date,
         dialog,
-        ft.Row(controls = [colphName,ft.Container(height=20, width=50),colampamSelect]),
+        ft.Row(controls = [colphName,ft.Container(height=20, width=50),colampamSelect,choice_button,special_choice]),
         ineditButton,
         TimeLine,
         ft.Row(scroll=True, controls=selectColumns),
