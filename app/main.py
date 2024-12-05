@@ -1,5 +1,5 @@
 import flet as ft
-from flet import Page
+from flet import Page,NavigationDrawer,Text,Column,Row,Container,IconButton,TextField,Dropdown,DatePicker,AlertDialog,PopupMenuButton,PopupMenuItem,BarChart,BarChartGroup,BarChartRod,ChartAxisLabel,FilePicker,FilePickerResultEvent
 import json
 import calendar
 import csv
@@ -55,7 +55,10 @@ def main(page: ft.Page):
         phNameList = []
         
     def update_dropdown():
-        options = [ft.dropdown.Option(item["name"]) for item in phNameList]
+        try:
+            options = [ft.dropdown.Option(item["name"]) for item in phNameList]
+        except:
+            options = []
         options.append(ft.dropdown.Option("Add"))
         phName.options = options
         page.update()
@@ -63,11 +66,13 @@ def main(page: ft.Page):
     # phNameListへの追加
     def add_name(e):
         new_name = name_field.value.strip()
-        if new_name:
+        try:
             phNameList.append({"name":new_name})
-            page.client_storage.set("phName",json.dumps(phNameList,ensure_ascii=False))
-            name_field.value = ""
-            update_dropdown()
+        except:
+            phNameList = [{"name":new_name}]
+        page.client_storage.set("phName",json.dumps(phNameList,ensure_ascii=False))
+        name_field.value = ""
+        update_dropdown()
         dialog.open = False
         page.update()
         
@@ -94,10 +99,40 @@ def main(page: ft.Page):
         dialog.open = False
         page.update()
         
+    iconforphname = ft.IconButton(ft.icons.ACCOUNT_CIRCLE,on_click = lambda e:drawer_open(e))
     
+    def drawer_open(e):
+        page.open(endDrawer)
+        print("drawer_open")
+
+    endDrawer = NavigationDrawer(
+        position = ft.NavigationDrawerPosition.END,
+        controls = [],
+    )
+    print(phNameList)
+    if phNameList is not None:
+        for i in phNameList:
+            endDrawer.controls.append(
+                ft.Row(
+                    [
+                        ft.Container(width = 10),
+                        ft.Text(i["name"],size = 15),
+                        ft.IconButton(
+                            ft.icons.DELETE_OUTLINE,
+                            on_click = lambda e:delete_name(e),
+                            data = i,
+                            ) 
+                    ]
+                )
+        )   
     
-    iconforphname = ft.Icon(ft.icons.ACCOUNT_CIRCLE)
-        
+
+    def delete_name(e):
+        print(e.control.data)
+        new_phNameList = phNameList.remove(e.control.data)
+        page.client_storage.set("phName",json.dumps(new_phNameList,ensure_ascii=False))
+        page.update()
+    
     phName = ft.Dropdown(
         width=130,
         options = [],
@@ -111,7 +146,10 @@ def main(page: ft.Page):
     update_dropdown()
     
     colphName = ft.Column(
-        [iconforphname,phName],
+        [
+            iconforphname,
+            phName
+        ],
     )
     
     # あとでメニューバーに変更するかも
