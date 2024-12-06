@@ -28,7 +28,7 @@ jobs:
 
       - name: Build executable
         run: |
-          flet pack app/main.py
+          flet build windows app/main.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
