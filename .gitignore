@@ -1,8 +1,5 @@
-﻿################################################################################
-# この .gitignore ファイルは Microsoft(R) Visual Studio によって自動的に作成されました。
-################################################################################
-
-/.vs/daily-report/CopilotIndices/17.12.38.29086
-/.vs/daily-report/FileContentIndex
-/.vs
-/build/main
+dist/main.app/Contents/MacOS/main
+dist/.DS_Store
+dist/main.app/Contents/_CodeSignature/CodeResources
+dist/main.app/Contents/Resources/icon-windowed.icns
+dist/main.app/Contents/Info.plist
