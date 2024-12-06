@@ -28,7 +28,7 @@ jobs:
 
       - name: Build executable
         run: |
-          pyinstaller --onefile　--debug all --hidden-import pandas --hidden-import numpy --hidden-import csv --hidden-import datetime　--hidden-import flet app/main.py
+          pyinstaller --onefile --debug all --hidden-import pandas --hidden-import numpy --hidden-import csv --hidden-import datetime　--hidden-import flet app/main.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
