@@ -16,7 +16,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-      - run: pip install -r requirements.txt
+      - run: pip install -r app/requirements.txt
       
       - name: Checkout code
         uses: actions/checkout@v2
