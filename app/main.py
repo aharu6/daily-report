@@ -414,27 +414,27 @@ def main(page: ft.Page):
         count_dict[e] = {"count":new_Count}
 
     draggable_data = {
-        '_403':{"task":"情報収集＋指導"},#0
-        '_407':{"task":"指導記録作成"},#1
-        '_411':{"task":"混注時間"},#2
-        '_415':{"task":"薬剤セット数"},#3
-        '_419':{"task":"持参薬を確認"},#4
-        '_423':{"task":"薬剤服用歴等について保険薬局へ照会"},#5
-        '_427':{"task":"処方代理修正"},#6
-        '_431':{"task":"TDM実施"},#7
-        '_435':{"task":"カンファレンス"},#8
-        '_439':{"task":"医師からの相談"},#9
-        '_443':{"task":"看護師からの相談"},#10
-        '_447':{"task":"その他の職種からの相談"},   #11　#部下からの相談応需、他部署からの相談応需を含めることとする
-        '_451':{"task":"委員会"},#12
-        '_455':{"task":"勉強会参加"},#13
-        '_459':{"task":"WG活動"},#14
-        '_463':{"task":"1on1"},#15
-        '_467':{"task":"ICT/AST"},#16
-        '_471':{"task":"褥瘡"},#17
-        '_475':{"task":"TPN評価"},#18
-        '_479':{"task":"休憩"},#19
-        '_483':{"task":"その他"},#20
+        '_402':{"task":"情報収集＋指導"},#0
+        '_406':{"task":"指導記録作成"},#1
+        '_410':{"task":"混注時間"},#2
+        '_414':{"task":"薬剤セット数"},#3
+        '_418':{"task":"持参薬を確認"},#4
+        '_422':{"task":"薬剤服用歴等について保険薬局へ照会"},#5
+        '_426':{"task":"処方代理修正"},#6
+        '_430':{"task":"TDM実施"},#7
+        '_434':{"task":"カンファレンス"},#8
+        '_438':{"task":"医師からの相談"},#9
+        '_442':{"task":"看護師からの相談"},#10
+        '_446':{"task":"その他の職種からの相談"},   #11　#部下からの相談応需、他部署からの相談応需を含めることとする
+        '_450':{"task":"委員会"},#12
+        '_454':{"task":"勉強会参加"},#13
+        '_458':{"task":"WG活動"},#14
+        '_462':{"task":"1on1"},#15
+        '_466':{"task":"ICT/AST"},#16
+        '_470':{"task":"褥瘡"},#17
+        '_474':{"task":"TPN評価"},#18
+        '_478':{"task":"休憩"},#19
+        '_482':{"task":"その他"},#20
     }
     
     count_dict = {}
@@ -544,7 +544,8 @@ def main(page: ft.Page):
             key = draggable_data.get(src_id,{}).get("task")
             columns[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key}
         else:
-            key = columns[e.control.data["num"]].data["task"]   
+            print(e.control.data["num"],"not key")
+            key = columns[e.control.data["num"]].data["task"]
             
         #time_data = e.control.data
         #src = page.get_control(e.src_id)
@@ -572,8 +573,15 @@ def main(page: ft.Page):
                 )
         e.control.update()
         
+        #新規srcidはdraggable_dataに追加
+        try:
+            draggable_data[src_id] = {'task':key}
+        except:
+            None
+        
         if "task" in  e.control.data is None:
             key = columns[e.control.data["num"]].data["task"]
+            e.control.content.data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key}
             if key == "その他":
                 e.control.content.controls[1].content.height = 100
                 e.control.content.controls.append(comments[e.control.data["num"]])
@@ -590,10 +598,11 @@ def main(page: ft.Page):
                 
             if src_id not in draggable_data:
                 draggable_data[src_id] = {'task':key}
-                
+
         else:
             new_key = columns[e.control.data["num"]].data["task"]
             key = new_key
+            e.conrol.content.data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key}
             drag_data[e.control.data["time"]] = {'task':key}
             delete_buttons[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"]}
             
@@ -629,9 +638,9 @@ def main(page: ft.Page):
                 e.control.content.controls[1].content.content.visible = False
                 
                 #コメント,カウンターがある場合、非表示にする
-                if e.control.content.controls[2]:
+                try:
                     e.control.content.controls[2].visible = False
-                else:None
+                except:None
                 #カウンターがある場合、非表示にする
                 
                 e.control.update()
