@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyinstaller flet pandas datetime numpy
+          pip install pyinstaller flet flet-cli pandas datetime numpy
 
       - name: Build executable
         run: |
