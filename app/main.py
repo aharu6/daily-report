@@ -581,7 +581,7 @@ def main(page: ft.Page):
         
         if "task" in  e.control.data is None:
             key = columns[e.control.data["num"]].data["task"]
-            
+            e.control.content.data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key}
             if key == "その他":
                 e.control.content.controls[1].content.height = 100
                 e.control.content.controls.append(comments[e.control.data["num"]])
@@ -602,6 +602,7 @@ def main(page: ft.Page):
         else:
             new_key = columns[e.control.data["num"]].data["task"]
             key = new_key
+            e.conrol.content.data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key}
             drag_data[e.control.data["time"]] = {'task':key}
             delete_buttons[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"]}
             

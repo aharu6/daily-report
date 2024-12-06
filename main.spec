@@ -2,16 +2,16 @@
 
 
 a = Analysis(
-    ['main.py'],
+    ['app\\main.py'],
     pathex=[],
     binaries=[],
     datas=[],
-    hiddenimports=[],
+    hiddenimports=['pandas', 'numpy', 'csv', 'datetime', 'flet'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
-    noarchive=False,
+    noarchive=True,
     optimize=0,
 )
 pyz = PYZ(a.pure)
@@ -21,19 +21,18 @@ exe = EXE(
     a.scripts,
     a.binaries,
     a.datas,
-    [],
+    [('v', None, 'OPTION')],
     name='main',
-    debug=False,
+    debug=True,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,
+    console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    version='C:\\Users\\春香~1.AIZ\\AppData\\Local\\Temp\\b9629b1e-ecf7-4c05-ba2e-fbed21ecaa42',
 )
