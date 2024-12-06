@@ -13,6 +13,11 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - run: pip install -r requirements.txt
+      
       - name: Checkout code
         uses: actions/checkout@v2
 
