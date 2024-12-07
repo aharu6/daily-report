@@ -103,7 +103,6 @@ def main(page: ft.Page):
     
     def drawer_open(e):
         page.open(endDrawer)
-        print("drawer_open")
 
     endDrawer = NavigationDrawer(
         position = ft.NavigationDrawerPosition.END,
@@ -128,7 +127,6 @@ def main(page: ft.Page):
     
 
     def delete_name(e):
-        print(e.control.data)
         new_phNameList = phNameList.remove(e.control.data)
         page.client_storage.set("phName",json.dumps(new_phNameList,ensure_ascii=False))
         page.update()
@@ -152,12 +150,6 @@ def main(page: ft.Page):
         ],
     )
     
-    # あとでメニューバーに変更するかも
-    popup_menu = ft.PopupMenuButton(
-        items =[
-            ft.PopupMenuItem(text = "edit")
-        ]
-    )
     times = [
         "8:30 8:45",
         "8:45 9:00",
@@ -437,6 +429,31 @@ def main(page: ft.Page):
         '_483':{"task":"その他"},#20
     }
     
+    first_key = [
+        "情報収集+指導",
+        "指導記録作成",
+        "混注時間",
+        "薬剤セット数",
+        "持参薬を確認",
+        "薬剤服用歴等について保険薬局へ照会",
+        "処方代理修正",
+        "TDM実施",
+        "カンファレンス",
+        "医師からの相談",
+        "看護師からの相談",
+        "その他の職種からの相談",
+        "委員会",
+        "勉強会参加",
+        "WG活動",
+        "1on1",
+        "ICT/AST",
+        "褥瘡",
+        "TPN評価",
+        "休憩",
+        "その他",
+    ]
+    
+    
     count_dict = {}
     
     def create_counter(e):
@@ -475,7 +492,6 @@ def main(page: ft.Page):
         
     drag_data = {}
     
-    last_key = {"task":None}
     
     comments = [
         ft.IconButton(
@@ -500,7 +516,6 @@ def main(page: ft.Page):
         comment_time = comments[e.control.data["num"]].data["time"]
         comment_num = comments[e.control.data["num"]].data["num"]
         dlg.data = {"time":comment_time,"num":comment_num}
-        print(comment_time)
         #TextFieldの初期化
         if comment_time in comment_dict:
             comment_filed.value = comment_dict[comment_time]["comment"]
@@ -534,25 +549,29 @@ def main(page: ft.Page):
             ft.TextButton("Cancel",on_click = lambda e:dlg_close(e)),
         ],
     )
+    
     def drag_move(e):
-        data = json.loads(e.data)
-        kind = e.data
-        src_id = data.get("src_id", "")
-        print(src_id)
-        #初回ドラッグとcolumns内でのコピー操作にて処理を分岐
-        if src_id in draggable_data:
-            key = draggable_data.get(src_id,{}).get("task")
+        try:
+            src = page.get_control(e.src_id)
+            key = src.data["task"]["task"]
+            e.control.content.data["task"] = key
             columns[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key}
-        else:
-            key = columns[e.control.data["num"]].data["task"]   
+            if src not in draggable_data:
+                draggable_data[src]  = {'task':key}
+        except:
+            try:
+                src = e.src_id
+                key = draggable_data.get(src,{}).get("task")
+                print("key",key)
+                if src not in draggable_data:
+                    draggable_data[src]  = {'task':key}
+            except:
+                key = columns[e.contol.data["num"]].data["task"]
+                print("key",key)
             
-        #time_data = e.control.data
-        #src = page.get_control(e.src_id)
         
-        #ドラッグした時、「その他」ならば入力フォームも追加しておく
-        #「休憩」ならば、カウンターは非表示にする
-        # taskに応じてdraggableのstyleを変更する
-        #初期状態の場合
+        #Draggableに含まれているdataを取得する
+        
         e.control.content = ft.Column(
                     controls=[
                         delete_buttons[e.control.data["num"]],
@@ -564,12 +583,12 @@ def main(page: ft.Page):
                                 height = 140,
                                 bgcolor = ft.colors.BLUE_GREY_500,
                             ),
+                            data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
                             ),
                     ],
-                    height=300,
-                    spacing=0,
                     data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
                 )
+        e.control.data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key}
         e.control.update()
         
         if "task" in  e.control.data is None:
@@ -587,12 +606,9 @@ def main(page: ft.Page):
                 e.control.content.controls[1].content.height = 140
                 e.control.content.controls.append(create_counter(e.control.data["time"]))
                 e.control.update()
-                
-            if src_id not in draggable_data:
-                draggable_data[src_id] = {'task':key}
-                
+
         else:
-            new_key = columns[e.control.data["num"]].data["task"]
+            new_key = key
             key = new_key
             drag_data[e.control.data["time"]] = {'task':key}
             delete_buttons[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"]}
@@ -614,30 +630,22 @@ def main(page: ft.Page):
                 e.control.content.controls.append(create_counter(e.control.data["time"]))
                 e.control.update()
                 
-            #moveにて新規src_idが追加された場合    
-            if src_id not in draggable_data:
-                draggable_data[src_id] = {'task':key}
-                
         #左ではなくて、現在のカラム番号と左のカラム番号を比較する
         #右のカラムも比較して、同じ業務内容の場合、
-        left_column_num =e.control.content.data["num"] -1
+        left_column_num =e.control.data["num"] -1
         if columns[left_column_num].data is not None:
             left_column_data = columns[left_column_num].data["task"]
-                    
             if left_column_data == key:
                 #ft.textで表示している業務内容を非表示にする
                 e.control.content.controls[1].content.content.visible = False
-                
                 #コメント,カウンターがある場合、非表示にする
-                if e.control.content.controls[2]:
-                    e.control.content.controls[2].visible = False
-                else:None
+                e.control.content.visible = False
                 #カウンターがある場合、非表示にする
                 
                 e.control.update()
         else:None
         
-        right_column_num = e.control.content.data["num"] +1
+        right_column_num = e.control.data["num"] +1
         if columns[right_column_num].data is not None: 
             right_column_data = columns[right_column_num].data["task"]
                 
@@ -667,7 +675,7 @@ def main(page: ft.Page):
             
         if comment:
             comments[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"]}  
-            
+
     def drag_accepted(e):
         data = json.loads(e.data)
         src_id = data.get("src_id", "")
@@ -694,7 +702,6 @@ def main(page: ft.Page):
         data_dict = {record['time']:record for record in set_data}
         #辞書データの更新
         #taskデータの書き込み
-        print("drag_data",drag_data.items())
         for time,task_data in drag_data.items():
             if time in data_dict:
                 data_dict[time]["task"] = task_data["task"]
@@ -720,7 +727,6 @@ def main(page: ft.Page):
             else: data_dict[time]["phName"] = ""
         page.client_storage.set("timeline_data",json.dumps(data_dict,ensure_ascii=False))
         # その他コメントの書き込み
-        print("comment_data",comment_dict.items())
         for time,comment_data in comment_dict.items():
             if time in data_dict:
                 data_dict[time]["comment"] = comment_data["comment"]
@@ -741,25 +747,20 @@ def main(page: ft.Page):
     selectColumns = []
     
     for kind in draggable_data.values():
-        selectColumns.append(
-            ft.Column(
-                [
-                    ft.Draggable(
-                        group="timeline",
-                        content=ft.Container(
-                            ft.Text(kind["task"], color="white"),
-                            width=100,
-                            height=70,
-                            bgcolor=ft.colors.BLUE_GREY_500,
-                            border_radius=5,
-                        ),
-                        data= json.dumps({"kind":kind}),
-                    ),
-                ],
-                spacing = 0,
-                data = {"kind":kind},
+        selectColumns.append(    
+            ft.Draggable(
+                group="timeline",
+                content=ft.Container(
+                    ft.Text(kind["task"], color="white"),
+                    width=100,
+                    height=70,
+                    bgcolor=ft.colors.BLUE_GREY_500,
+                    border_radius=5,
+                ),
+                data={"time":None,"num":None,"task":kind},
             )
         )
+    
     #初回起動時は病棟担当者用で表示する
     #ASTやNSTなどの業務は初回は非表示にしておく
     #病棟担当者時に表示不要なもの
@@ -797,7 +798,7 @@ def main(page: ft.Page):
             ),
             on_accept = drag_accepted,
             on_move = drag_move,
-            data = {"time":times[i],"num":i}
+            data = {"time":times[i],"num":i,"task":""}
         )
         
 
@@ -938,9 +939,6 @@ def main(page: ft.Page):
         interactive=True,
         expand=True,
     )
-    
-    def change_grapgh_mode(e):
-        print(e.data)
     
     choice_button = ft.CupertinoSlidingSegmentedButton(
         selected_index = 0,
