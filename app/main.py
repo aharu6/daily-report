@@ -63,18 +63,35 @@ def main(page: ft.Page):
         phName.options = options
         page.update()
     
-    # phNameListへの追加
-    def add_name(e):
-        new_name = name_field.value.strip()
-        try:
-            phNameList.append({"name":new_name})
-        except:
-            phNameList = [{"name":new_name}]
-        page.client_storage.set("phName",json.dumps(phNameList,ensure_ascii=False))
-        name_field.value = ""
-        update_dropdown()
+    
+                
+    name_field = ft.TextField(label = "新しく追加する名前を入力してください")
+    
+    dialog = ft.AlertDialog(
+        title = ft.Text("Add Name"),
+        content = name_field,
+        actions = [
+            ft.TextButton("追加",on_click= lambda e:add_name(e,phNameList)),
+            ft.TextButton("キャンセル",on_click = lambda e:close_dialog())
+        ],
+    )
+    
+    def close_dialog():
         dialog.open = False
         page.update()
+        
+    # phNameListへの追加
+    def add_name(e,namelist):
+        new_name = name_field.value.strip()
+        if new_name :
+            phNameList.append({"name":new_name})
+            page.client_storage.set("phName",json.dumps(phNameList,ensure_ascii=False))
+            
+            name_field.value = ""
+            update_dropdown()
+            dialog.open = False
+            page.update()
+            print(phNameList)
         
     # Add が選択された時の処理
     def dropdown_changed(e) :
@@ -83,21 +100,6 @@ def main(page: ft.Page):
             page.update()
         else:
             page.update()
-                
-    name_field = ft.TextField(label = "新しく追加する名前を入力してください")
-    
-    dialog = ft.AlertDialog(
-        title = ft.Text("Add Name"),
-        content = name_field,
-        actions = [
-            ft.TextButton("追加",on_click= add_name),
-            ft.TextButton("キャンセル",on_click = lambda e:close_dialog())
-        ],
-    )
-    
-    def close_dialog():
-        dialog.open = False
-        page.update()
         
     iconforphname = ft.IconButton(ft.icons.ACCOUNT_CIRCLE,on_click = lambda e:drawer_open(e))
     
@@ -108,7 +110,7 @@ def main(page: ft.Page):
         position = ft.NavigationDrawerPosition.END,
         controls = [],
     )
-    print(phNameList)
+    
     if phNameList is not None:
         for i in phNameList:
             endDrawer.controls.append(
@@ -361,6 +363,7 @@ def main(page: ft.Page):
         #_move関数でdelete_button.dataに入れたのはdragtargetで設定したカラムの番号
         #columns[i]でそのカラムの情報を取得し、見た目上削除
         #正しくはcolumnsの初期化を行う。ドラッグする前の状態に戻す
+        print(e)
         col_num = delete_buttons[e.control.data["num"]].data["num"]
         #同じ情報の新しいカラムに差し替える
         columns[col_num].content  = ft.DragTarget(
@@ -551,26 +554,16 @@ def main(page: ft.Page):
     )
     
     def drag_move(e):
-        try:
+        print(e.src_id)
+        if page.get_control(e.src_id):
             src = page.get_control(e.src_id)
-            key = src.data["task"]["task"]
-            e.control.content.data["task"] = key
-            columns[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key}
-            if src not in draggable_data:
-                draggable_data[src]  = {'task':key}
-        except:
-            try:
-                src = e.src_id
-                key = draggable_data.get(src,{}).get("task")
-                print("key",key)
-                if src not in draggable_data:
-                    draggable_data[src]  = {'task':key}
-            except:
-                key = columns[e.contol.data["num"]].data["task"]
-                print("key",key)
-            
-        
-        #Draggableに含まれているdataを取得する
+            key = src.data["task"]
+            #moveにて新規src_idが追加された場合 
+            #elseに向けて辞書データを更新しておく
+            draggable_data[e.src_id] = {"task":key}
+        else:
+            key = draggable_data[e.src_id]["task"]
+                
         
         e.control.content = ft.Column(
                     controls=[
@@ -586,71 +579,60 @@ def main(page: ft.Page):
                             data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
                             ),
                     ],
-                    data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
+                    height = 300,
+                    spacing = 0,
+                    data = {"time":e.control.data["time"],"num":e.control.data["num"]},
                 )
-        e.control.data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key}
+        #ドラッグ時にコンテンツを更新する用
+        columns[e.control.data["num"]].data["task"] = key
+        #delete_buttonsに渡すdata
+        delete_buttons[e.control.data["num"]].data = {"num":e.control.data["num"]}
+        e.control.update()
+        left_column_num = e.control.data["num"] - 1
+        try:
+            left_key = columns[left_column_num].data["task"]
+        except:
+            pass
+        
+        match key:
+            #key == その他　の場合にはコメントボタンを追加する
+            case "その他":
+                #すでに左のカラムにコンテンツがある場合にはコメントボタンは作成しない
+                e.control.content.controls.append(comments[e.control.data["num"]])
+        #混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
+            case "混注時間"|"休憩"| "委員会" | "WG活動" | "勉強会参加" | "1on1" | "カンファレンス":
+                pass               
+        #その他の場合はカウンターを表示する      
+        #左カラムに同じデータがある場合にはカウンターは作成しない          
+            case _:
+                if left_key ==key:
+                    pass
+                else:
+                    e.control.content.controls.append(create_counter(e.control.data["time"]))
         e.control.update()
         
-        if "task" in  e.control.data is None:
-            key = columns[e.control.data["num"]].data["task"]
-            if key == "その他":
-                e.control.content.controls[1].content.height = 100
-                e.control.content.controls.append(comments[e.control.data["num"]])
-                e.control.update()
-            #休憩,委員会、WG活動,勉強会参加、1on1の場合はカウンターを非表示にする
-            elif key == "休憩" or key == "委員会" or key == "WG活動" or key == "勉強会参加" or key == "1on1":
-                e.control.update()
-                
-            #ノーマルカウンターあり
-            else:
-                e.control.content.controls[1].content.height = 140
-                e.control.content.controls.append(create_counter(e.control.data["time"]))
-                e.control.update()
-
-        else:
-            new_key = key
-            key = new_key
-            drag_data[e.control.data["time"]] = {'task':key}
-            delete_buttons[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"]}
-            
-            if key == "その他":
-                e.control.content.controls[1].content.height = 140
-                e.control.content.controls.append(comments[e.control.data["num"]])
-                e.control.update()
-                #現在のカラムの番号はnum = e.control.data["num"]
-                #左のカラム　num -1 のカラムの情報を取得
-                #左のカラムの情報から、key が同じの場合、text(業務内容)　とcounterを非表示にする
-                
-            #休憩,委員会、WG活動,勉強会参加、1on1の場合はカウンターを非表示にする
-            elif key == "休憩" or key == "委員会" or key == "WG活動" or key == "勉強会参加" or key == "1on1":
-                e.control.content.controls[1].content.height = 140
-                e.control.update()
-            else:
-                e.control.content.controls[1].content.height = 140  
-                e.control.content.controls.append(create_counter(e.control.data["time"]))
-                e.control.update()
-                
-        #左ではなくて、現在のカラム番号と左のカラム番号を比較する
-        #右のカラムも比較して、同じ業務内容の場合、
-        left_column_num =e.control.data["num"] -1
-        if columns[left_column_num].data is not None:
-            left_column_data = columns[left_column_num].data["task"]
-            if left_column_data == key:
-                #ft.textで表示している業務内容を非表示にする
-                e.control.content.controls[1].content.content.visible = False
-                #コメント,カウンターがある場合、非表示にする
-                e.control.content.visible = False
-                #カウンターがある場合、非表示にする
-                
-                e.control.update()
-        else:None
         
-        right_column_num = e.control.data["num"] +1
-        if columns[right_column_num].data is not None: 
-            right_column_data = columns[right_column_num].data["task"]
-                
-            if right_column_data == key:
-                e.control.content.controls[1].content.content.visible = True
+        #現在のカラムの番号はnum = e.control.data["num"]
+        #左のカラム　num -1 のカラムの情報を取得
+        #一番左のカラムだけ表示、後は非表示にする（カウンターはそもそも作成しない）
+        try:
+            if left_key == key:
+                e.control.content.controls[1].content.content.visible = False
+                e.control.content.update()
+        except:
+            pass
+        
+
+        #左ではなくて、現在のカラム番号と左のカラム番号を比較する
+        #右のカラムも比較して、同じ業務内容の場合、右は非表示に
+        #左のみ残して表示する
+        right_column_num = e.control.data["num"] + 1
+        try:
+            right_key = columns[right_column_num].data["task"]
+        except:
+            pass
+        try:
+            if right_key == key:
                 columns[right_column_num].content = ft.Column(
                     controls = [
                         delete_buttons[right_column_num],
@@ -668,18 +650,15 @@ def main(page: ft.Page):
                     data = {"time":times[right_column_num],"num":right_column_num,"task":key},
                 )
                 columns[right_column_num].update()
-                #コメント,カウンターがある場合、非表示にする
-                e.control.content.controls[2].visible = True
-            e.control.update()
-            #else:None  
-            
+        except:
+            pass
+        #ドラッグデータの保存
+        drag_data[e.control.data["time"]] = {'task':key}
         if comment:
             comments[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"]}  
-
+        
     def drag_accepted(e):
         data = json.loads(e.data)
-        src_id = data.get("src_id", "")
-        key =  draggable_data.get(src_id, "")
         
     def write_csv_file(e):
         #最後にデータベースに保管する
@@ -757,7 +736,7 @@ def main(page: ft.Page):
                     bgcolor=ft.colors.BLUE_GREY_500,
                     border_radius=5,
                 ),
-                data={"time":None,"num":None,"task":kind},
+                data={"time":None,"num":None,"task":kind["task"]},
             )
         )
     
@@ -800,6 +779,7 @@ def main(page: ft.Page):
             on_move = drag_move,
             data = {"time":times[i],"num":i,"task":""}
         )
+        column.data = {"time":times[i],"num":i,"task":""}
         
 
     amDropDown = ft.Dropdown(
