@@ -58,7 +58,6 @@ def main(page: ft.Page):
     
     drag_data = {}
     
->>>>>>> origin/main
     comments = [
         ft.IconButton(
             icon = ft.icons.COMMENT,
