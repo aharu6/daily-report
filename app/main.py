@@ -1,5 +1,5 @@
 import flet as ft
-from flet import Page,AppBar,View,Text
+from flet import Page,AppBar,View,Text,ScrollMode
 import json
 import calendar
 import csv
@@ -8,10 +8,9 @@ import sqlite3
 import datetime
 import sys
 from tkinter import filedialog
-from timeline_page import Date_Button,phNameDropDown,Pagedialog,ColphName,ColampamSelect
-from timeline_page2 import ButtonManager
-from setting_page import SettingPage
-from chart_page import ChartPage
+from components.components import DateComponent,NameDropdown,EndDrawer,AmDropDown,PmDropDown,EditButton,DeleteButtons
+from handlers.handlers import Handlers
+from models.models import DataModel
 # main
 def main(page: ft.Page):
 
@@ -19,487 +18,79 @@ def main(page: ft.Page):
     page.window.width = 1100
     page.scroll = "always"
     
-    times = [
-        "8:30 8:45",
-        "8:45 9:00",
-        "9:00 9:15",
-        "9:15 9:30",
-        "9:30 9:45",
-        "9:45 10:00",
-        "10:00 10:15",
-        "10:15 10:30",
-        "10:30 10:45",
-        "10:45 11:00",
-        "11:00 11:15",
-        "11:15 11:30",
-        "11:30 11:45",
-        "11:45 12:00",
-        "12:00 12:15",
-        "12:15 12:30",
-        "12:30 12:45",
-        "12:45 13:00",
-        "13:00 13:15",
-        "13:15 13:30",
-        "13:30 13:45",
-        "13:45 14:00",
-        "14:00 14:15",
-        "14:15 14:30",
-        "14:30 14:45",
-        "14:45 15:00",
-        "15:00 15:15",
-        "15:15 15:30",
-        "15:30 15:45",
-        "15:45 16:00",
-        "16:00 16:15",
-        "16:15 16:30",
-        "16:30 16:45",
-        "16:45 17:00",
-    ]
-    time_for_visual = [
-        "8:30      ",
-        "8:45        ",
-        "9:00        ",
-        "9:15         ",
-        "9:30        ",
-        "9:45         ",
-        "10:00        ",
-        "10:15        ",
-        "10:30        ",
-        "10:45        ",
-        "11:00        ",
-        "11:15        ",
-        "11:30        ",
-        "11:45       ",
-        "12:00       ",
-        "12:15       ",
-        "12:30        ",
-        "12:45       ",
-        "13:00       ",
-        "13:15       ",
-        "13:30       ",
-        "13:45       ",
-        "14:00       ",
-        "14:15       ",
-        "14:30        ",
-        "14:45        ",
-        "15:00        ",
-        "15:15        ",
-        "15:30        ",
-        "15:45       ",
-        "16:00       ",
-        "16:15       ",
-        "16:30       ",
-        "16:45       ",
-        "17:00       ",
-        
-        ]
-
-    amTime = [
-        "8:30 8:45",
-        "8:45 9:00",
-        "9:00 9:15",
-        "9:15 9:30",
-        "9:30 9:45",
-        "9:45 10:00",
-        "10:00 10:15",
-        "10:15 10:30",
-        "10:30 10:45",
-        "10:45 11:00",
-        "11:00 11:15",
-        "11:15 11:30",
-        "11:30 11:45",
-        "11:45 12:00",
-        "12:00 12:15",
-        "12:15 12:30",
-    ]
-
-    pmTime = [
-        "12:30 12:45",
-        "12:45 13:00",
-        "13:00 13:15",
-        "13:15 13:30",
-        "13:30 13:45",
-        "13:45 14:00",
-        "14:00 14:15",
-        "14:15 14:30",
-        "14:30 14:45",
-        "14:45 15:00",
-        "15:00 15:15",
-        "15:15 15:30",
-        "15:30 15:45",
-        "15:45 16:00",
-        "16:00 16:15",
-        "16:15 16:30",
-        "16:30 16:45",
-        "16:45 17:00",
-    ]     
+    today = datetime.date.today()
+    date_component = DateComponent(page,today,lambda e:Handlers.handle_change(e))
+    Date = date_component.create()
     
-     
-    # editButton
-    editButton = ft.IconButton(
-        icon = ft.icons.DELETE_OUTLINE,
-        icon_size = 20,
-        on_click = lambda e:toggle_delete_button(e),
-        )
+    model = DataModel()
+    phNameList = model.load_data(page)
+    #oageにて共通のcount/dictを定義しておく
+    count_dict = model.count_dict()
     
+    comment_dict = {}
+
+    # editButton    
     delete_buttons = [
         ft.IconButton(
-            icon = ft.icons.REMOVE,
+            icon = ft.icons.DELETE_OUTLINE,
             visible = False,
-            icon_color = "red",
             icon_size = 20,
-            on_click = lambda e:delete_content(e),
-        )
-        for _ in range(len(times))
+            icon_color = "red",
+            on_click = lambda e:Handlers.delete_content(e,page,phNameList,phName,delete_buttons,
+                                        drag_data,
+                                        count_dict,comment_dict,columns)
+            )
+        for _ in range(len(model.times()))
     ]
     
-    def toggle_delete_button(e):
-        for button in delete_buttons:
-            button.visible = not button.visible
-        page.update()
-        
-    def delete_content(e):
-        #_move関数でdelete_button.dataに入れたのはdragtargetで設定したカラムの番号
-        #columns[i]でそのカラムの情報を取得し、見た目上削除
-        #正しくはcolumnsの初期化を行う。ドラッグする前の状態に戻す
-        col_num = delete_buttons[e.control.data["num"]].data["num"]
-        #同じ情報の新しいカラムに差し替える
-        columns[col_num].content  = ft.DragTarget(
-            group = "timeline",
-            content = ft.Container(
-                width = 50,
-                height = 300,
-                bgcolor = None,
-                border_radius = 5,
-            ),
-            on_accept = drag_accepted,
-            on_move = drag_move,
-            data = {"time":times[col_num],"num":col_num}
-        )
-        columns[col_num].update()
-        #同時に該当するdrag_dataのデータも削除する
-        del drag_data[times[col_num]]
-            
-    # カウンターの関数
-    def counterPlus(e, count_filed):
-        
-        old_Count = int(count_filed.value)
-        new_Count = old_Count + 1
-        # 更新した値にてカウンター内を更新
-        count_filed.value = new_Count
-        count_filed.update()
-        #dict内の値を更新
-        count_dict[e] = {"count":new_Count}
-
-    def counterMinus(e, count_filed):
-        # +と同様
-        old_Count = int(count_filed.value)
-        new_Count = old_Count - 1
-        # update counter value
-        count_filed.value = new_Count
-        count_filed.update()
-        count_dict[e] = {"count":new_Count}
-
-    draggable_data = {
-        '_264':{"task":"情報収集＋指導"},
-        '_268':{"task":"指導記録作成"},
-        '_272':{"task":"混注準備"},
-        '_276':{"task":"混注時間"},
-        '_280':{"task":"薬剤セット数"},
-        '_284':{"task":"持参薬を確認"},
-        '_288':{"task":"薬剤服用歴等について保険薬局へ照会"},
-        '_292':{"task":"処方代理修正"},
-        '_296':{"task":"TDM実施"},
-        '_300':{"task":"カンファレンス"},
-        '_304':{"task":"休憩"},
-        '_308':{"task":"その他"},
-    }
+    #editButton
+    editButton  = ft.IconButton(
+        icon = ft.icons.DELETE_OUTLINE,
+        icon_size = 20,
+        on_click = lambda e:Handlers.toggle_delete_button(page,delete_buttons),
+    )   
     
-    count_dict = {}
+    ineditButton = ft.Row(
+        controls = [editButton],
+        alignment = ft.MainAxisAlignment.END,
+    )
     
-    def create_counter(e):
-        # eは入力したカラムの時間を取得
-        # sqlite3データベースからカウントを取得
-        #res = cur.execute("SELECT count FROM timeline WHERE time = ?", (e,))
-        #count = res.fetchall()[0][0]
-        #初期は０
-        count = 0
-        
-        count_filed = ft.TextField(
-            count,
-            width=40,
-            text_align=ft.TextAlign.CENTER,
-            text_size=10,
-            border_color=None,
-        )
-        count_dict[e] = {"count": count}
-        return ft.Column(
-            [
-                ft.IconButton(
-                    ft.icons.ARROW_DROP_UP_OUTLINED,
-                    icon_size=25,
-                    on_click=lambda _: counterPlus(e, count_filed),
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
-                ),
-                count_filed,
-                ft.IconButton(
-                    ft.icons.ARROW_DROP_DOWN_OUTLINED,
-                    icon_size=25,
-                    on_click=lambda _: counterMinus(e, count_filed),
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
-                ),
-            ]
-        )
-        
+    
     drag_data = {}
     
     comments = [
         ft.IconButton(
             icon = ft.icons.COMMENT,
-            on_click = lambda e:create_dialog_for_comment(e),
+            on_click = lambda e:Handlers.create_dialog_for_comment(e,comments,dlg,comment_dict,comment_field,page),
             )
-        for _ in range(len(times))
+        for _ in range(len(model.times()))
     ]
     
     comment = ft.IconButton(
         icon = ft.icons.COMMENT,
-        on_click = lambda e:dlg_open(e),
+        on_click = lambda e:Handlers.dlg_open(e),
     )
     
-    def dlg_close(e):
-        dlg.open = False
-        page.update()
     
-    comment_dict = {}
     
-    def create_dialog_for_comment(e):
-        comment_time = comments[e.control.data["num"]].data["time"]
-        comment_num = comments[e.control.data["num"]].data["num"]
-        dlg.data = {"time":comment_time,"num":comment_num}
-        print(comment_time)
-        #TextFieldの初期化
-        if comment_time in comment_dict:
-            comment_filed.value = comment_dict[comment_time]["comment"]
-        else:
-            comment_filed.value = ""
-        page.open(dlg)
-        
-    def dlg_open(e):
-        dlg.visible = True
-    
-    def add_comennt_for_dict(e):
-        comment_time = dlg.data["time"]
-        comment_num = dlg.data["num"]
-        if comment_time in comment_dict:
-            del comment_dict[comment_time]
-            comment_dict[comment_time] = {"comment":comment_filed.value}
-        else:
-            comment_dict[comment_time] = {"comment":comment_filed.value}
-            
-
-        dlg.open = False
-        page.update()
-    
-    comment_filed = ft.TextField(label = "その他")
+    comment_field = ft.TextField(label = "その他")
         
     dlg = ft.AlertDialog(
         title = ft.Text("Comment"),
-        content = comment_filed,
+        content = comment_field,
         actions = [
-            ft.TextButton("OK",on_click = lambda e:add_comennt_for_dict(e)),
-            ft.TextButton("Cancel",on_click = lambda e:dlg_close(e)),
+            ft.TextButton("OK",on_click = lambda e:Handlers.add_comennt_for_dict(e)),
+            ft.TextButton("Cancel",on_click = lambda e:Handlers.dlg_close(e)),
         ],
     )
-    def drag_move(e):
-        data = json.loads(e.data)
-        kind = e.data
-        src_id = data.get("src_id", "")
-        
-        #初回ドラッグとcolumns内でのコピー操作にて処理を分岐
-        if src_id in draggable_data:
-            key = draggable_data.get(src_id,{}).get("task")
-            columns[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key}
-        else:
-            None
-            
-        #time_data = e.control.data
-        #src = page.get_control(e.src_id)
-                
-        #ドラッグした時、「その他」ならば入力フォームも追加しておく
-        
-        if "task" in  e.control.data is None:
-            if key == "その他":
-                e.control.content = ft.Column(
-                    controls=[
-                        delete_buttons[e.control.data["num"]],
-                        ft.Draggable(
-                            group = "timeline",
-                            content = ft.Container(
-                                ft.Text(key,color = "white"),
-                                width = 50,
-                                height = 100,
-                                bgcolor = ft.colors.BLUE_GREY_500,
-                            ),
-                            ),
-                        comments[e.control.data["num"]],
-                        create_counter(e.control.data["time"]),
-                    ],
-                    height=300,
-                    spacing=0,
-                    data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
-                )
-                e.control.update()
-                
-            else:
-                e.control.content = ft.Column(
-                    controls=[
-                        delete_buttons[e.control.data["num"]],
-                        ft.Draggable(
-                            group = "timeline",
-                            content = ft.Container(
-                                ft.Text(key,color = "white"),
-                                width = 50,
-                                height = 140,
-                                bgcolor = ft.colors.BLUE_GREY_500,
-                            ),
-                            ),
-                        create_counter(e.control.data["time"]),
-                    ],
-                    height=300,
-                    spacing=0,
-                    data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
-                )
-                e.control.update()
-            if src_id not in draggable_data:
-                draggable_data[src_id] = {'task':key}
-        else:
-            new_key = columns[e.control.data["num"]].data["task"]
-            key = new_key
-            
-            if key == "その他":
-                e.control.content = ft.Column(
-                    controls=[
-                        delete_buttons[e.control.data["num"]],
-                        ft.Draggable(
-                            group = "timeline",
-                            content = ft.Container(
-                                ft.Text(key,color = "white"),
-                                width = 50,
-                                height = 100,
-                                bgcolor = ft.colors.BLUE_GREY_500,
-                            ),
-                            ),
-                        comments[e.control.data["num"]],
-                        create_counter(e.control.data["time"]),
-                    ],
-                    height=300,
-                    spacing=0,
-                    data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
-                )
-                e.control.update()
-                
-            else:
-                e.control.content = ft.Column(
-                    controls=[
-                        delete_buttons[e.control.data["num"]],
-                        ft.Draggable(
-                            group = "timeline",
-                            content = ft.Container(
-                                ft.Text(key,color = "white"),
-                                width = 50,
-                                height = 140,
-                                bgcolor = ft.colors.BLUE_GREY_500,
-                            ),
-                            ),
-                        create_counter(e.control.data["time"]),
-                    ],
-                    height=300,
-                    spacing=0,
-                    data = {"time":e.control.data["time"],"num":e.control.data["num"],"task":key},
-                )
-                e.control.update()
-            if src_id not in draggable_data:
-                draggable_data[src_id] = {'task':key}
-                
-        drag_data[e.control.data["time"]] = {'task':key}
-        delete_buttons[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"]}
-        
-        if comment:
-            comments[e.control.data["num"]].data = {"time":e.control.data["time"],"num":e.control.data["num"]}  
     
-    def drag_accepted(e):
-        data = json.loads(e.data)
-        src_id = data.get("src_id", "")
-        key =  draggable_data.get(src_id, "")
-        
-    def write_csv_file(e):
-        #最後にデータベースに保管する
-
-        #入力された辞書データの長さ
-        #print(len(drag_data.keys()))
-        #first_key = list(drag_data.keys())[0]
-        #first_value = drag_data[first_key]
-        #print(first_key)
     
-        #初期ベースの作成
-        #時間
-        time_for_label = times
-        #初期ベースの作成
-        set_data = [
-            {"time":time_for_label[i],"task":"","count":0,"locate":"AM" if time_for_label[i] in amTime else "PM","date":str(today),"PhName":"","comment":""}
-            for i in range(len(columns))
-        ]
-        #リストを辞書形式に変換
-        data_dict = {record['time']:record for record in set_data}
-        #辞書データの更新
-        #taskデータの書き込み
-        print("drag_data",drag_data.items())
-        for time,task_data in drag_data.items():
-            if time in data_dict:
-                data_dict[time]["task"] = task_data["task"]
-        #countデータの書き込み
-        for time,count in count_dict.items():
-            if time in data_dict:
-                data_dict[time]["count"] = count["count"]
-        #病棟データの書き込み
-        for time in data_dict.keys():    
-            if amDropDown.value != None:
-                if data_dict[time]["locate"] == "AM":
-                    data_dict[time]["locate"] = amDropDown.value
-            else: None
-        for time in data_dict.keys():    
-            if pmDropDown.value != None:
-                if data_dict[time]["locate"] == "PM":
-                    data_dict[time]["locate"] =pmDropDown.value
-            else: None
-        # phName データの書き込み
-        for time in data_dict.keys():
-            if phName.value != None:
-                data_dict[time]["phName"] = phName.value
-            else: data_dict[time]["phName"] = ""
-        page.client_storage.set("timeline_data",json.dumps(data_dict,ensure_ascii=False))
-        # その他コメントの書き込み
-        print("comment_data",comment_dict.items())
-        for time,comment_data in comment_dict.items():
-            if time in data_dict:
-                data_dict[time]["comment"] = comment_data["comment"]
-            
-        #csvファイルの書き込み  
-        if select_directory.result and select_directory.result.path:
-            file_path = select_directory.result.path + f"/{today}.csv"
-            with open(file_path, "w", newline="") as f:
-                writer = csv.writer(f)
-                writer.writerow(["Time", "Task", "Count", "locate", "date","PhName","Comment"])
-                for time, record in data_dict.items():
-                    writer.writerow([record["time"], record["task"], record["count"], record["locate"], record["date"],record["phName"],record["comment"]])
-
     save_button = ft.ElevatedButton(text="Save", on_click=lambda e:select_directory.get_directory_path())
-    select_directory = ft.FilePicker(on_result = write_csv_file)
+    select_directory = ft.FilePicker(on_result = lambda e:Handlers.write_csv_file(e,DataModel().times(),DataModel().amTime(),today,columns,drag_data,count_dict,amDropDown,pmDropDown,phName,page,comment_dict,select_directory))
     page.overlay.append(select_directory)
         
     selectColumns = []
-    
-    for kind in draggable_data.values():
+    for kind in model.draggable_data().values():
         selectColumns.append(
             ft.Column(
                 [
@@ -512,17 +103,17 @@ def main(page: ft.Page):
                             bgcolor=ft.colors.BLUE_GREY_500,
                             border_radius=5,
                         ),
-                        data= json.dumps({"kind":kind}),
+                        data= {"task":kind},
                     ),
                 ],
                 spacing = 0,
-                data = {"kind":kind},
+                data = {"task":kind},
             )
         )
 
     
     time_for_visual_label  = []
-    for i in time_for_visual:
+    for i in model.time_for_visual():
         time_for_visual_label.append(
             ft.Container(
                 ft.Column(
@@ -533,8 +124,9 @@ def main(page: ft.Page):
             )
         )
         
-    columns =[ft.Container() for _ in range(len(times))]
-    
+    columns =[ft.Container() for _ in range(len(model.times()))]
+    #辞書データがmove関数発動ごとに更新されないようにmainにて定義しておく
+    dragabledata_formove = model.draggable_data()
     for i ,column in enumerate(columns):
         column.content = ft.DragTarget(
             group = "timeline",
@@ -544,71 +136,21 @@ def main(page: ft.Page):
                 bgcolor = None,
                 border_radius = 5,
             ),
-            on_accept = drag_accepted,
-            on_move = drag_move,
-            data = {"time":times[i],"num":i}
+            on_accept = Handlers.drag_accepted,
+            on_move = lambda e:Handlers.drag_move(e,page,dragabledata_formove,delete_buttons,columns,comments,model.times(),drag_data,comment,count_dict),
+            data = {"time":model.times()[i],"num":i}
         )
         
 
-    amDropDown = ft.Dropdown(
-        width=130,
-        options=[
-            ft.dropdown.Option("ICU"),
-            ft.dropdown.Option("3A"),
-            ft.dropdown.Option("3B"),
-            ft.dropdown.Option("3C"),
-            ft.dropdown.Option("CCU"),
-            ft.dropdown.Option("4A"),
-            ft.dropdown.Option("4B"),
-            ft.dropdown.Option("4C"),
-            ft.dropdown.Option("HCU"),
-            ft.dropdown.Option("5A"),
-            ft.dropdown.Option("5B"),
-            ft.dropdown.Option("5C"),
-            ft.dropdown.Option("5D"),
-        ],
-        label="AM",
-        text_size=12,
-        label_style=ft.TextStyle(size=12),
-        border_color=ft.colors.BLUE_GREY_100,
-        height=40,
-    )
-    pmDropDown = ft.Dropdown(
-        width=130,
-        options=[
-            ft.dropdown.Option("ICU"),
-            ft.dropdown.Option("3A"),
-            ft.dropdown.Option("3B"),
-            ft.dropdown.Option("3C"),
-            ft.dropdown.Option("CCU"),
-            ft.dropdown.Option("4A"),
-            ft.dropdown.Option("4B"),
-            ft.dropdown.Option("4C"),
-            ft.dropdown.Option("HCU"),
-            ft.dropdown.Option("5A"),
-            ft.dropdown.Option("5B"),
-            ft.dropdown.Option("5C"),
-            ft.dropdown.Option("5D"),
-        ],
-        label="PM",
-        text_size=12,
-        label_style=ft.TextStyle(size=12),
-        border_color=ft.colors.BLUE_GREY_100,
-        height=40,
-    )
+    
     
     #ampmSelecticon
     iconforampmselect = ft.Icon(ft.icons.SCHEDULE)
-
+    amDropDown = AmDropDown().create()
+    pmDropDown = PmDropDown().create()
     ampmSelect = ft.Row(
-        controls=[
-            amDropDown,
-            ft.Container(height=20, width=10),
-            pmDropDown,
-        ]
+        controls = [amDropDown,ft.Container(height = 20,width =10),pmDropDown],
     )
-    
-    #colampamSelect = ft.Column([iconforampmselect, ampmSelect])
 
     TimeLine = ft.Row(
         scroll=True,
@@ -621,50 +163,8 @@ def main(page: ft.Page):
             ),
         ],
     )
-    def pick_file_result(e: ft.FilePickerResultEvent):
-        if e.files:
-            selected_files.text = ",".join(map(lambda x: x.name, e.files))
-            file_paths = [f.path for f in e.files]
-            try:
-                # 空のデータフレームを作成
-                df = pd.DataFrame()
-                # ファイルの数だけ繰り返す
-                df = pd.concat([pd.read_csv(file_path) for file_path in file_paths])
-                # Task ごとにまとめる
-                groupby_task = df.groupby("Task").size().reset_index(name="Count")
-                #病棟ごとのデータに変換するならここからまとめ直す
-                bar_charts = [
-                        ft.BarChartGroup(
-                            x = i,
-                            bar_rods = [
-                                ft.BarChartRod(
-                                    from_y = 0,
-                                    to_y = row["Count"],
-                                    color = "blue",
-                                    border_radius = 0,
-                                    tooltip = ft.Tooltip(message = f"{row['Count']}:{row['Count']*15}"),
-                                )
-                            ]
-                        )
-                        for i, row in groupby_task.iterrows()
-                    ]
-                x_labels = [
-                    ft.ChartAxisLabel(
-                        value=i,
-                        label=ft.Container(
-                            ft.Text(row["Task"]), padding=ft.Padding(0, 0, 0, 0)
-                        ),
-                    )
-                    for i, row in groupby_task.iterrows()
-                ]
-                bar_chart.bar_groups = bar_charts
-                bar_chart.bottom_axis.labels = x_labels
-                bar_chart.update()
-            
-            except Exception as e:
-                print(e)
 
-    file_picker = ft.FilePicker(on_result=pick_file_result)
+    file_picker = ft.FilePicker(on_result=Handlers.pick_file_result)
     page.overlay.append(file_picker)
 
     selected_files = ft.Text()
@@ -688,8 +188,6 @@ def main(page: ft.Page):
         expand=True,
     )
     
-    def change_grapgh_mode(e):
-        print(e.data)
 
     def on_navigation_change(e):
         selected_index = e.control.selected_index
@@ -701,27 +199,89 @@ def main(page: ft.Page):
             page.go("/settings")
     
     
-    #Timelinepage        
-    Date = Date_Button(page)
-    Dialog = Pagedialog(page)
-    colPhName = ColphName(page)
-    colampmSelect = ColampamSelect(page)
+    #Timelinepage
+    name_dropdown = NameDropdown(page,phNameList,lambda e:Handlers.update_dropdown(NameDropdown,phNameList,page))      
+    phName = name_dropdown.create()
     
-    #chartPage
-    chartPage = ChartPage(page)
+    end_Drawer = EndDrawer(page)
+    endDrawer = end_Drawer.create()
+    iconforphName = ft.IconButton(ft.icons.ACCOUNT_CIRCLE,on_click = lambda e:Handlers.drawer_open(e,page,endDrawer))
+    colPhName  = ft.Column(
+        [
+            iconforphName,
+            phName,
+        ]
+    )
     
-    #settingPage
-    settings = SettingPage()
+    if phNameList is not None:
+        for name in phNameList:
+            endDrawer.controls.append(
+                ft.Row(
+                    [
+                        ft.Container(width = 10),
+                        ft.Text(name,size = 15),
+                        ft.IconButton(
+                            ft.icons.DELETE_OUTLINE,
+                            on_click = lambda e:Handlers.delete_name(e),
+                            data = name,
+                            ) 
+                    ]
+                )
+        )
+    colampmSelect = ft.Column([iconforampmselect,ampmSelect])
+    name_field = ft.TextField(label = "新しく追加する名前を入力してください")
     
+    dialog = ft.AlertDialog(
+        title = ft.Text("Add Name"),
+        content = name_field,
+        actions = [
+            ft.TextButton("追加",on_click= lambda e:Handlers.add_name(e,phNameList)),
+            ft.TextButton("キャンセル",on_click = lambda e:Handlers.close_dialog())
+        ],
+    )
+    
+    choice_button = ft.CupertinoSlidingSegmentedButton(
+        selected_index = 0,
+        thumb_color = ft.colors.BLUE_GREY_100,
+        on_change = lambda e:Handlers.change_choice_button(e,selectColumns,page),
+        padding = ft.padding.symmetric(0,10),
+        controls = [
+            ft.Text("病棟担当者"),
+            ft.Text("DI担当者"),
+            ft.Text("主任/副主任"),
+        ]
+    )
+    
+    special_choice =ft.CupertinoSlidingSegmentedButton(
+        selected_index = 2,
+        thumb_color = ft.colors.BLUE_GREY_100,
+        on_change = lambda e:Handlers.change_special_choice(e,selectColumns,page),
+        padding = ft.padding.symmetric(0,10),
+        controls = [
+            ft.Text("ICT/AST"),
+            ft.Text("NST"),
+            ft.Text("off"),
+        ]
+    )
+    
+
+
     def route_change(e):
         page.views.clear()
         page.views.append(
             View(
-                "/",
+                "/", #TimelinePage
                 [
                     Date,
-                    Dialog,
-                    ft.Row(controls = [colPhName,ft.Container(height=20, width=50),colampmSelect]),
+                    dialog,
+                    ft.Row(controls = [colPhName,ft.Container(height=20, width=50),colampmSelect,choice_button,special_choice]),
+                    ineditButton,
+                    TimeLine,
+                    ft.Row(scroll = True,controls = selectColumns),
+                    save_button,
+                    file_picker_Button,
+                    selected_files,
+                    bar_chart,
                     ft.CupertinoNavigationBar(
                         selected_index = 0,
                         bgcolor=ft.colors.BLUE_GREY_50,
@@ -734,7 +294,8 @@ def main(page: ft.Page):
                             ft.NavigationBarDestination(icon=ft.icons.SETTINGS,selected_icon= ft.icons.SETTINGS_SUGGEST,label="Settings",),
                         ]
                     )
-                ]
+                ],
+                scroll = ScrollMode.AUTO,
             )
         )
         if page.route == "/chart":
@@ -743,7 +304,7 @@ def main(page: ft.Page):
                 View(
                     "/chart",
                     [
-                        chartPage,
+                        #chartPage,
                         ft.CupertinoNavigationBar(
                             selected_index = 1,
                             bgcolor=ft.colors.BLUE_GREY_50,
@@ -765,7 +326,7 @@ def main(page: ft.Page):
                 View(
                     "/settings",
                     [
-                        settings,
+                        #settings,
                         ft.CupertinoNavigationBar(
                             selected_index = 2,
                             bgcolor=ft.colors.BLUE_GREY_50,
