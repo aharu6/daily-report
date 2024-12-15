@@ -14,7 +14,7 @@ from models.models import DataModel
 # main
 def main(page: ft.Page):
 
-    page.title = "Drag and Drop example"
+    page.title = "Daily Report"
     page.window.width = 1100
     page.scroll = "always"
     
@@ -58,6 +58,7 @@ def main(page: ft.Page):
     
     drag_data = {}
     
+>>>>>>> origin/main
     comments = [
         ft.IconButton(
             icon = ft.icons.COMMENT,
