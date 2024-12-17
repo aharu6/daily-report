@@ -24,6 +24,7 @@ def main(page: ft.Page):
     
     model = DataModel()
     phNameList = model.load_data(page)
+    print(phNameList)
     #oageにて共通のcount/dictを定義しておく
     count_dict = model.count_dict()
     
@@ -200,8 +201,10 @@ def main(page: ft.Page):
     
     
     #Timelinepage
-    name_dropdown = NameDropdown(page,phNameList,lambda e:Handlers.update_dropdown(NameDropdown,phNameList,page))      
+    name_dropdown = NameDropdown(page,phNameList,
+                                dropdown_changed=lambda e: Handlers.dropdown_changed(e,phName,dialog,page))      
     phName = name_dropdown.create()
+    Handlers.update_dropdown(phName,phNameList,page)
     
     end_Drawer = EndDrawer(page)
     endDrawer = end_Drawer.create()
@@ -235,7 +238,7 @@ def main(page: ft.Page):
         title = ft.Text("Add Name"),
         content = name_field,
         actions = [
-            ft.TextButton("追加",on_click= lambda e:Handlers.add_name(e,phNameList)),
+            ft.TextButton("追加",on_click= lambda e:Handlers.add_name(e,phNameList,name_field,page,phName,dialog)),
             ft.TextButton("キャンセル",on_click = lambda e:Handlers.close_dialog())
         ],
     )

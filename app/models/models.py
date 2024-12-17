@@ -1,9 +1,19 @@
 class DataModel:
+    def create_client_storage(self,page):
+        if not hasattr(page,"client_storage"):
+            page.client_storage.set("phName",[])
+            
     def __init__(self):
         self.phName = []
     
     def load_data(self,page):
+        #ストレージがなければ作成する
+        DataModel.create_client_storage(self,page)
         phNameList = page.client_storage.get("phName")
+        if phNameList == None:
+            phNameList = []
+        self.phName = phNameList
+        print(phNameList)
         return phNameList
     
     def times(self):

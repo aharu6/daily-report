@@ -1,7 +1,7 @@
 import flet as ft
 import datetime
 from models.models import DataModel
-
+from handlers.handlers import Handlers
 class DateComponent:
     def __init__(self,page,today,handle_change):
         self.page = page
@@ -23,16 +23,15 @@ class DateComponent:
         )
 
 class NameDropdown:
-    def __init__(self,page,phNameList,update_dropdown):
+    def __init__(self,page,phNameList,dropdown_changed):
         self.page = page
         self.phNameList = phNameList
-        self.update_dropdown = update_dropdown
-        
+        self.on_change = dropdown_changed        
     def create(self):
         return ft.Dropdown(
             width=130,
             options=[],
-            on_change=self.update_dropdown,
+            on_change = self.on_change,
             label="Name",
             text_size=12,
             label_style=ft.TextStyle(size=12),
