@@ -24,6 +24,7 @@ def main(page: ft.Page):
     
     model = DataModel()
     phNameList = model.load_data(page)
+    
     #oageにて共通のcount/dictを定義しておく
     count_dict = model.count_dict()
     
@@ -79,8 +80,8 @@ def main(page: ft.Page):
         title = ft.Text("Comment"),
         content = comment_field,
         actions = [
-            ft.TextButton("OK",on_click = lambda e:Handlers.add_comennt_for_dict(e)),
-            ft.TextButton("Cancel",on_click = lambda e:Handlers.dlg_close(e)),
+            ft.TextButton("OK",on_click = lambda e:Handlers.add_comment_for_dict(e,dlg,comment_dict,comment_field,page)),
+            ft.TextButton("Cancel",on_click = lambda e:Handlers.dlg_close(e,dlg,page)),
         ],
     )
     
@@ -145,7 +146,7 @@ def main(page: ft.Page):
     
     
     #ampmSelecticon
-    iconforampmselect = ft.Icon(ft.icons.SCHEDULE)
+    iconforampmselect = ft.IconButton(ft.icons.SCHEDULE,hover_color  =ft.colors.with_opacity(0.0,ft.colors.BLUE_GREY_500))
     amDropDown = AmDropDown().create()
     pmDropDown = PmDropDown().create()
     ampmSelect = ft.Row(
@@ -200,8 +201,10 @@ def main(page: ft.Page):
     
     
     #Timelinepage
-    name_dropdown = NameDropdown(page,phNameList,lambda e:Handlers.update_dropdown(NameDropdown,phNameList,page))      
+    name_dropdown = NameDropdown(page,phNameList,
+                                dropdown_changed=lambda e: Handlers.dropdown_changed(e,phName,dialog,page))      
     phName = name_dropdown.create()
+    Handlers.update_dropdown(phName,phNameList,page)
     
     end_Drawer = EndDrawer(page)
     endDrawer = end_Drawer.create()
@@ -235,8 +238,8 @@ def main(page: ft.Page):
         title = ft.Text("Add Name"),
         content = name_field,
         actions = [
-            ft.TextButton("追加",on_click= lambda e:Handlers.add_name(e,phNameList)),
-            ft.TextButton("キャンセル",on_click = lambda e:Handlers.close_dialog())
+            ft.TextButton("追加",on_click= lambda e:Handlers.add_name(e,phNameList,name_field,page,phName,dialog)),
+            ft.TextButton("キャンセル",on_click = lambda e:Handlers.close_dialog(e,dialog,page))
         ],
     )
     

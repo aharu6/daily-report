@@ -17,12 +17,26 @@ class Handlers:
         Date.update()
     
     @staticmethod
+    def dropdown_changed(e,phName,dialog,page):
+        if phName.value == "Add": 
+            dialog.open = True
+            page.update()
+        else:
+            page.update()
+    
+    @staticmethod
+    def close_dialog(e,dialog,page):
+        dialog.open = False
+        page.update()
+        
+    @staticmethod
     def update_dropdown(phName,phNameList,page):  
         try:
-            options = [ft.DropdownOption(item["name"]) for item in phNameList]
+            options = [ft.dropdown.Option(item["name"]) for item in phNameList]
         except:
-            options = []
-        options.append(ft.DropdownOption("Add"))
+            options =[]
+        options.append(ft.dropdown.Option("Add"))
+        
         phName.options = options
         page.update()
         
@@ -182,6 +196,7 @@ class Handlers:
     
     @staticmethod
     def dlg_close(e,dlg,page):
+        print("close")
         dlg.open = False
         page.update()
     
@@ -200,7 +215,23 @@ class Handlers:
     @staticmethod
     def dlg_open(e,dlg):
         dlg.visible = True
+        
+    @staticmethod
+    def add_name(e,phNameList,name_field,page,phName,dialog):
+        new_name = name_field.value.strip()
+        phName_List = phNameList
+        print("phnamelist",phNameList)
+        if new_name :
+            phName_List.append({"name":new_name})
+            page.client_storage.set("phName",phName_List)
+            print()
+            name_field.value = ""
+            Handlers.update_dropdown(phName,phName_List,page)
+            dialog.open = False
+            page.update()
+            
     
+            
     @staticmethod
     def add_comment_for_dict(e,dlg,comment_dict,comment_field,page):
         comment_time = dlg.data["time"]
@@ -329,7 +360,6 @@ class Handlers:
         
     @staticmethod
     def write_csv_file(e,times,amTime,today,columns,drag_data,count_dict,amDropDown,pmDropDown,phName,page,comment_dict,select_directory):
-        print(count_dict)
         #最後にデータベースに保管する
 
         #入力された辞書データの長さ
