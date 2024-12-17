@@ -23,7 +23,12 @@ class Handlers:
             page.update()
         else:
             page.update()
-            
+    
+    @staticmethod
+    def close_dialog(e,dialog,page):
+        dialog.open = False
+        page.update()
+        
     @staticmethod
     def update_dropdown(phName,phNameList,page):  
         try:
@@ -191,6 +196,7 @@ class Handlers:
     
     @staticmethod
     def dlg_close(e,dlg,page):
+        print("close")
         dlg.open = False
         page.update()
     
@@ -223,6 +229,8 @@ class Handlers:
             Handlers.update_dropdown(phName,phName_List,page)
             dialog.open = False
             page.update()
+            
+    
             
     @staticmethod
     def add_comment_for_dict(e,dlg,comment_dict,comment_field,page):
