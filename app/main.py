@@ -166,7 +166,7 @@ def main(page: ft.Page):
         ],
     )
 
-    file_picker = ft.FilePicker(on_result=Handlers.pick_file_result)
+    file_picker = ft.FilePicker(on_result=lambda e:Handlers.pick_file_result(e,selected_files,bar_chart))
     page.overlay.append(file_picker)
 
     selected_files = ft.Text()
@@ -281,10 +281,7 @@ def main(page: ft.Page):
                     ineditButton,
                     TimeLine,
                     ft.Row(scroll = True,controls = selectColumns),
-                    save_button,
-                    file_picker_Button,
-                    selected_files,
-                    bar_chart,
+                    save_button,                    
                     ft.CupertinoNavigationBar(
                         selected_index = 0,
                         bgcolor=ft.colors.BLUE_GREY_50,
@@ -307,6 +304,9 @@ def main(page: ft.Page):
                 View(
                     "/chart",
                     [
+                        file_picker_Button,
+                        selected_files,
+                        bar_chart,
                         #chartPage,
                         ft.CupertinoNavigationBar(
                             selected_index = 1,
