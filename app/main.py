@@ -120,7 +120,8 @@ def main(page: ft.Page):
                 ft.Column(
                     [
                         ft.Text(i, size=10),
-                    ]
+                    ],
+                    width = 50,
                 )
             )
         )
@@ -134,12 +135,12 @@ def main(page: ft.Page):
             content = ft.Container(
                 width = 50,
                 height = 300,
-                bgcolor = None,
+                bgcolor = ft.colors.BLUE_50,
                 border_radius = 5,
             ),
             on_accept = Handlers.drag_accepted,
             on_move = lambda e:Handlers.drag_move(e,page,dragabledata_formove,delete_buttons,columns,comments,model.times(),drag_data,comment,count_dict),
-            data = {"time":model.times()[i],"num":i}
+            data = {"time":model.times()[i],"num":i,"task":""}
         )
         
 
@@ -250,8 +251,7 @@ def main(page: ft.Page):
         padding = ft.padding.symmetric(0,10),
         controls = [
             ft.Text("病棟担当者"),
-            ft.Text("DI担当者"),
-            ft.Text("主任/副主任"),
+            ft.Text("1,2F"),
         ]
     )
     

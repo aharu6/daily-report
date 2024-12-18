@@ -54,20 +54,75 @@ class Handlers:
     def change_choice_button(e,selectColumns,page):
         #0 病棟担当者
         if int(e.data) ==0:
-            selectColumns[2].visible = True
+            selectColumns[16].visible = False#ICT/AST
+            selectColumns[17].visible = False#褥瘡
+            selectColumns[18].visible = False#TPN評価
+            selectColumns[19].visible = False#手術後使用薬剤確認
+            selectColumns[20].visible = False#手術使用薬剤準備
+            selectColumns[21].visible = False#周術期薬剤管理関連
+            selectColumns[22].visible = False#麻酔科収集術期外来
+            selectColumns[23].visible = False#手術使用麻薬確認・補充
+            selectColumns[24].visible = False#術後疼痛管理チーム回診
+            selectColumns[25].visible = False#脳卒中ホットライン対応
+            
+            #表示にするもの
+            selectColumns[0].visible = True#情報収集＋指導
+            selectColumns[1].visible = True#指導記録作成
+            selectColumns[2].visible = True#混注時間
+            selectColumns[3].visible = True#薬剤セット数
+            selectColumns[4].visible = True#持参薬を確認
+            selectColumns[5].visible = True#薬剤服用歴等について保険薬局へ照会
+            selectColumns[6].visible = True#処方代理修正
+            selectColumns[7].visible = True#TDM実施
+            selectColumns[8].visible = True#カンファレンス
+            selectColumns[9].visible = True#医師からの相談
+            selectColumns[10].visible = True#看護師からの相談
+            selectColumns[11].visible = True#その他の職種からの相談
+            selectColumns[12].visible = True#委員会
+            selectColumns[13].visible = True#勉強会参加
+            selectColumns[14].visible = True#WG活動
+            selectColumns[15].visible = True#1on1
+            selectColumns[26].visible = True#13:15業務調整
             page.update()
-        #1 DI担当者
-            #非表示にするもの：混注時間
-            #薬剤セット数
+        #1 1,2階担当
+            #表示にするもの：手術後使用薬剤確認、手術使用薬剤準備、周術期薬剤管理関連、麻酔科収集術期外来、手術使用麻薬確認・補充、
+            #術後疼痛管理チーム回診、脳卒中ホットライン対応
+            #他は非表示にする
         elif int(e.data) ==1:
-            selectColumns[2].visible = False
-            page.update()
+            selectColumns[0].visible = False#情報収集＋指導
+            selectColumns[1].visible = False#指導記録作成
+            selectColumns[2].visible = False#混注時間
+            selectColumns[3].visible = False#薬剤セット数
+            selectColumns[4].visible = False#持参薬を確認
+            selectColumns[5].visible = False#薬剤服用歴等について保険薬局へ照会
+            selectColumns[6].visible = False#処方代理修正
+            selectColumns[7].visible = False#TDM実施
+            selectColumns[8].visible = False#カンファレンス
+            selectColumns[9].visible = False#医師からの相談
+            selectColumns[10].visible = False#看護師からの相談
+            selectColumns[11].visible = False#その他の職種からの相談
+            selectColumns[12].visible = False#委員会
+            selectColumns[13].visible = False#勉強会参加
+            selectColumns[14].visible = False#WG活動
+            selectColumns[15].visible = False#1on1
+            selectColumns[16].visible = False#ICT/AST
+            selectColumns[17].visible = False#褥瘡
+            selectColumns[18].visible = False#TPN評価
+            selectColumns[26].visible = False#13:15業務調整
+            selectColumns[27].visible = False#休憩
+            selectColumns[28].visible = False#その他
             
-        #2 主任/副主任
-        elif int(e.data) ==2:
-            selectColumns[2].visible = True
-            page.update()
+            #表示にするもの
+            selectColumns[19].visible = True#手術後使用薬剤確認
+            selectColumns[20].visible = True#手術使用薬剤準備
+            selectColumns[21].visible = True#周術期薬剤管理関連
+            selectColumns[22].visible = True#麻酔科収集術期外来
+            selectColumns[23].visible = True#手術使用麻薬確認・補充
+            selectColumns[24].visible = True#術後疼痛管理チーム回診
+            selectColumns[25].visible = True#脳卒中ホットライン対応
             
+            page.update()
+
     @staticmethod
     def change_special_choice(e,selectColumns,page):
         #0 AST
@@ -277,7 +332,7 @@ class Handlers:
         )
         #ドラッグ時にコンテンツを更新する用
         columns[e.control.data["num"]].content.data["task"] = key
-        print("columns",columns[e.control.data["num"]].content.data["task"],e.src_id,"src_id")
+        print("columns",columns[e.control.data["num"]].content.data["task"])
         #moveにて新規src_idが追加された場合、その情報をdrag_dataに追加
         #elseに向けて辞書データを更新しておく
         draggable_data[e.src_id] = {"task":key}
@@ -324,10 +379,8 @@ class Handlers:
         #右のカラムも比較して、同じ業務内容の場合、右は非表示に
         #左のみ残して表示する
         right_column_num = e.control.data["num"] + 1
-        try:
-            right_key = columns[right_column_num].data["task"]
-        except:
-            pass
+        if right_column_num:
+            right_key = columns[right_column_num].content.data["task"]
         try:
             if right_key == key:
                 columns[right_column_num].content = ft.Column(
