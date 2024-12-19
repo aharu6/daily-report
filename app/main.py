@@ -10,7 +10,11 @@ import sys
 from tkinter import filedialog
 from components.components import DateComponent,NameDropdown,EndDrawer,AmDropDown,PmDropDown,EditButton,DeleteButtons
 from handlers.handlers import Handlers
+from handlers.handlers_chart import Handlers_Chart
 from models.models import DataModel
+from view.timeline_page import TimelinePage
+from view.setting_page import SettingPage
+
 # main
 def main(page: ft.Page):
 
@@ -25,7 +29,7 @@ def main(page: ft.Page):
     model = DataModel()
     phNameList = model.load_data(page)
     
-    #oageにて共通のcount/dictを定義しておく
+    #pageにて共通のcount/dictを定義しておく
     count_dict = model.count_dict()
     
     comment_dict = {}
@@ -166,7 +170,7 @@ def main(page: ft.Page):
         ],
     )
 
-    file_picker = ft.FilePicker(on_result=lambda e:Handlers.pick_file_result(e,selected_files,bar_chart))
+    file_picker = ft.FilePicker(on_result=lambda e:Handlers_Chart.pick_file_result(e,selected_files,bar_chart))
     page.overlay.append(file_picker)
 
     selected_files = ft.Text()
@@ -272,31 +276,7 @@ def main(page: ft.Page):
     def route_change(e):
         page.views.clear()
         page.views.append(
-            View(
-                "/", #TimelinePage
-                [
-                    Date,
-                    dialog,
-                    ft.Row(controls = [colPhName,ft.Container(height=20, width=50),colampmSelect,choice_button,special_choice]),
-                    ineditButton,
-                    TimeLine,
-                    ft.Row(scroll = True,controls = selectColumns),
-                    save_button,                    
-                    ft.CupertinoNavigationBar(
-                        selected_index = 0,
-                        bgcolor=ft.colors.BLUE_GREY_50,
-                        inactive_color=ft.colors.GREY,
-                        active_color=ft.colors.BLACK,
-                        on_change= on_navigation_change,
-                        destinations = [
-                            ft.NavigationBarDestination(icon=ft.icons.CREATE, label="Create",selected_icon = ft.icons.BORDER_COLOR),
-                            ft.NavigationBarDestination(icon=ft.icons.SHOW_CHART, label="Showchart",selected_icon = ft.icons.AUTO_GRAPH),
-                            ft.NavigationBarDestination(icon=ft.icons.SETTINGS,selected_icon= ft.icons.SETTINGS_SUGGEST,label="Settings",),
-                        ]
-                    )
-                ],
-                scroll = ScrollMode.AUTO,
-            )
+            TimelinePage(page).create()
         )
         if page.route == "/chart":
             page.views.clear()
@@ -329,6 +309,7 @@ def main(page: ft.Page):
                 View(
                     "/settings",
                     [
+                        SettingPage.create(page),
                         #settings,
                         ft.CupertinoNavigationBar(
                             selected_index = 2,
