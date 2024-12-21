@@ -1,40 +1,42 @@
-name: Flet Windows based on PyInstaller
+#ウイルス認識されるようになったのでgithubactionsでの開発は断念
+#ファイルだけもったいないので残しておく
+#name: Flet Windows based on PyInstaller
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+#on:
+#  push:
+  #  branches:
+ #     - main
+ # pull_request:
+ #   branches:
+ #     - main
 
-jobs:
-  build:
-    runs-on: windows-latest
+#jobs:
+#  build:
+#    runs-on: windows-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
+#      - name: Set up Python
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: '3.x'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pyinstaller flet==0.24.1
-          pip install pandas
-          pip install datetime
-          pip install numpy
+#      - name: Install dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          pip install pyinstaller flet==0.24.1
+#          pip install pandas
+#          pip install datetime
+#          pip install numpy
 
-      - name: Build executable
-        run: |
-          pyinstaller --onefile --hidden-import pandas --hidden-import numpy --hidden-import csv --hidden-import datetime app/main.py
+#      - name: Build executable
+#        run: |
+#          pyinstaller --onefile --hidden-import pandas --hidden-import numpy --hidden-import csv --hidden-import datetime app/main.py
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: executable
-          path: dist/main.exe
+#      - name: Upload artifact
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: executable
+#          path: dist/main.exe
