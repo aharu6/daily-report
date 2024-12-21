@@ -1,21 +1,21 @@
 class DataModel:
-    def create_client_storage(self,page):
-        if not hasattr(page,"client_storage"):
-            page.client_storage.set("phName",[])
-            
+    def create_client_storage(self, page):
+        if not hasattr(page, "client_storage"):
+            page.client_storage.set("phName", [])
+
     def __init__(self):
         self.phName = []
-    
-    def load_data(self,page):
-        #ストレージがなければ作成する
-        DataModel.create_client_storage(self,page)
+
+    def load_data(self, page):
+        # ストレージがなければ作成する
+        DataModel.create_client_storage(self, page)
         phNameList = page.client_storage.get("phName")
         if phNameList == None:
             phNameList = []
         self.phName = phNameList
         print(phNameList)
         return phNameList
-    
+
     def times(self):
         return [
             "8:30 8:45",
@@ -75,7 +75,7 @@ class DataModel:
             "22:00 22:15",
             "22:15 22:30",
         ]
-    
+
     def time_for_visual(self):
         return [
             "8:30",
@@ -156,9 +156,9 @@ class DataModel:
             "12:00 12:15",
             "12:15 12:30",
         ]
-    
+
     def pmTime(self):
-        return[
+        return [
             "12:30 12:45",
             "12:45 13:00",
             "13:00 13:15",
@@ -199,42 +199,87 @@ class DataModel:
             "21:45 22:00",
             "22:00 22:15",
             "22:15 22:30",
-        
         ]
-    
+
     def draggable_data(self):
         return {
-            '_402':{"task":"情報収集＋指導"},#0
-            '_406':{"task":"指導記録作成"},#1
-            '_410':{"task":"混注時間"},#2
-            '_414':{"task":"薬剤セット数"},#3
-            '_418':{"task":"持参薬を確認"},#4
-            '_422':{"task":"薬剤服用歴等について保険薬局へ照会"},#5
-            '_426':{"task":"処方代理修正"},#6
-            '_430':{"task":"TDM実施"},#7
-            '_434':{"task":"カンファレンス"},#8
-            '_438':{"task":"医師からの相談"},#9
-            '_442':{"task":"看護師からの相談"},#10
-            '_446':{"task":"その他の職種からの相談"},   #11　#部下からの相談応需、他部署からの相談応需を含めることとする
-            '_450':{"task":"委員会"},#12
-            '_454':{"task":"勉強会参加"},#13
-            '_459':{"task":"WG活動"},#14
-            '_463':{"task":"1on1"},#15
-            '_467':{"task":"ICT/AST"},#16
-            '_471':{"task":"褥瘡"},#17
-            '_475':{"task":"TPN評価"},#18
-            '_479':{"task":"手術後使用薬剤確認"},#19
-            '_483':{"task":"手術使用薬剤準備"},#20
-            '_487':{"task":"周術期薬剤管理関連"},#21
-            '_491':{"task":"麻酔科周術期外来"},#22
-            '_495':{"task":"手術使用麻薬確認・補充"},#23
-            '_499':{"task":"術後疼痛管理チーム回診"},#24
-            '_503':{"task":"脳卒中ホットライン対応"},#25
-            '_507':{"task":"13:15業務調整"},#26
-            '_511':{"task":"休憩"},#27
-            '_515':{"task":"その他"},#28
+            "_402": {"task": "情報収集＋指導"},  # 0
+            "_406": {"task": "指導記録作成"},  # 1
+            "_410": {"task": "混注時間"},  # 2
+            "_414": {"task": "薬剤セット数"},  # 3
+            "_418": {"task": "持参薬を確認"},  # 4
+            "_422": {"task": "薬剤服用歴等について保険薬局へ照会"},  # 5
+            "_426": {"task": "処方代理修正"},  # 6
+            "_430": {"task": "TDM実施"},  # 7
+            "_434": {"task": "カンファレンス"},  # 8
+            "_438": {"task": "医師からの相談"},  # 9
+            "_442": {"task": "看護師からの相談"},  # 10
+            "_446": {
+                "task": "その他の職種からの相談"
+            },  # 11　#部下からの相談応需、他部署からの相談応需を含めることとする
+            "_450": {"task": "委員会"},  # 12
+            "_454": {"task": "勉強会参加"},  # 13
+            "_459": {"task": "WG活動"},  # 14
+            "_463": {"task": "1on1"},  # 15
+            "_467": {"task": "ICT/AST"},  # 16
+            "_471": {"task": "褥瘡"},  # 17
+            "_475": {"task": "TPN評価"},  # 18
+            "_479": {"task": "手術後使用薬剤確認"},  # 19
+            "_483": {"task": "手術使用薬剤準備"},  # 20
+            "_487": {"task": "周術期薬剤管理関連"},  # 21
+            "_491": {"task": "麻酔科周術期外来"},  # 22
+            "_495": {"task": "手術使用麻薬確認・補充"},  # 23
+            "_499": {"task": "術後疼痛管理チーム回診"},  # 24
+            "_503": {"task": "脳卒中ホットライン対応"},  # 25
+            "_507": {"task": "13:15業務調整"},  # 26
+            "_511": {"task": "休憩"},  # 27
+            "_515": {"task": "その他"},  # 28
+            "_519": {"task": "管理業務"},  # 29
         }
-    
+
+    def draggable_data_byoto(self):
+        return {
+            "情報収集＋指導",
+            "指導記録作成",
+            "混注時間",
+            "薬剤セット数",
+            "持参薬を確認",
+            "薬剤服用歴等について保険薬局へ照会",
+            "処方代理修正",
+            "TDM実施",
+            "カンファレンス",
+            "医師からの相談",
+            "看護師からの相談",
+            "その他の職種からの相談",
+            "13:15業務調整",
+        }
+
+    def draggable_data_12(self):
+        return {
+            "手術後使用薬剤確認",
+            "手術使用薬剤準備",
+            "周術期薬剤管理関連",
+            "麻酔科周術期外来",
+            "手術使用麻薬確認・補充",
+            "術後疼痛管理チーム回診",
+            "脳卒中ホットライン対応",
+        }
+
+    def draggable_data_yakushoku(self):
+        return {
+            "相談応需",
+        }
+
+    def draggable_data_etc(self):
+        return {
+            "委員会",
+            "勉強会参加",
+            "WG活動",
+            "1on1",
+            "休憩",
+            "その他",
+        }
+
     def first_key(self):
         return {
             "情報収集+指導",
@@ -259,6 +304,6 @@ class DataModel:
             "休憩",
             "その他",
         }
-    
+
     def count_dict(self):
         return {}
