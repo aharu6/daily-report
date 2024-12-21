@@ -1,64 +1,63 @@
-name: build_flet_cross_platform
-on:
-    push:
-      branches:
-        - main
-    pull_request:
-      branches:
-        - main
+#name: build_flet_cross_platform
+#on:
+#    push:
+#      branches:
+#        - main
+#    pull_request:
+#      branches:
+#        - main
 
-jobs:
-    create-release:
-        runs-on: ubuntu-latest
-        permissions:
-            contents: write
-        steps:
-            - uses: actions/checkout@v2
-            - name: "Create Release"
-              run: gh release create ${{github.ref_name}} --draft --verify-tag --notes "Release ${{github.ref_name}}"
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    cross-build:
-        needs: create-release
-        strategy:
-            matrix:
-                include:
-                    - runs-on: ubuntu-latest
-                      flet-name: multi_assets_sim_linux
-                      binary-name: multi_assets_sim_linux
-                      binary-ext: tar.gz
-                    - runs-on: macos-latest
-                      flet-name: multi_assets_sim_mac
-                      binary-name: multi_assets_sim_mac
-                      binary-ext: tar.gz
-                    - runs-on: windows-latest
-                      flet-name: multi_assets_sim_windows
-                      binary-name: multi_assets_sim_windows
-                      binary-ext: zip
-        runs-on: ${{ matrix.runs-on }}
-        permissions:
-            contents: write
-        steps:
-            - uses: actions/checkout@v2
-            - name: "Set Date"
-              id: set-date
-              run: echo "DATETIME=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_ENV
-
-            - uses: actions/setup-python@v2
-              with:
-                python-version: "3.11"
-            - run: pip install -r app/requirements.txt
-            - run: flet pack app/main.py --name ${{ matrix.flet-name }}
-            - name: "Linux/MacOS compress"
-              if: runner.os != 'Windows'
-              run: tar -czvf ${{matrix.binary-name}}_${{ env.DATETIME }}.${{ matrix.binary-ext }} dist
-            - name: "Windows compress"
-              if: runner.os == 'Windows'
-              run: powershell Compress-Archive -Path dist\* -DestinationPath "${{matrix.binary-name}}_${{ env.DATETIME }}.${{ matrix.binary-ext }}"
-            - run: echo "DATETIME=${{ env.DATETIME }}"
-            - name: "List Dist Folder"
-              run: ls dist
-            - name: "Upload Release"
-              run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}_${{ env.DATETIME }}.${{ matrix.binary-ext }}　--clobber
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+#jobs:
+#    create-release:
+#        runs-on: ubuntu-latest
+#        permissions:
+#            contents: write
+#        steps:
+#            - uses: actions/checkout@v2
+#            - name: "Create Release"
+#              run: gh release create ${{github.ref_name}} --draft --verify-tag --notes "Release ${{github.ref_name}}"
+#              env:
+#                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#    cross-build:
+#        needs: create-release
+#        strategy:
+#            matrix:
+#                include:
+#                    - runs-on: ubuntu-latest
+#                      flet-name: multi_assets_sim_linux
+#                      binary-name: multi_assets_sim_linux
+#                    - runs-on: macos-latest
+#                      flet-name: multi_assets_sim_mac
+#                      binary-name: multi_assets_sim_mac
+#                      binary-ext: tar.gz
+#                    - runs-on: windows-latest
+#                      flet-name: multi_assets_sim_windows
+#                      binary-name: multi_assets_sim_windows
+#                      binary-ext: zip
+#        runs-on: ${{ matrix.runs-on }}
+#        permissions:
+#            contents: write
+#        steps:
+#            - uses: actions/checkout@v2
+#            - name: "Set Date"
+#              id: set-date
+#              run: echo "DATETIME=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_ENV
+#
+#            - uses: actions/setup-python@v2
+#              with:
+#                python-version: "3.11"
+#            - run: pip install -r app/requirements.txt
+#            - run: flet pack app/main.py --name ${{ matrix.flet-name }}
+#            - name: "Linux/MacOS compress"
+#              if: runner.os != 'Windows'
+#              run: tar -czvf ${{matrix.binary-name}}_${{ env.DATETIME }}.${{ matrix.binary-ext }} dist
+#            - name: "Windows compress"
+#              if: runner.os == 'Windows'
+#              run: powershell Compress-Archive -Path dist\* -DestinationPath "${{matrix.binary-name}}_${{ env.DATETIME }}.${{ matrix.binary-ext }}"
+#            - run: echo "DATETIME=${{ env.DATETIME }}"
+#            - name: "List Dist Folder"
+#              run: ls dist
+#            - name: "Upload Release"
+#              run: gh release upload ${{github.ref_name}} ${{matrix.binary-name}}_${{ env.DATETIME }}.${{ matrix.binary-ext }}　--clobber
+#              env:
+#                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
