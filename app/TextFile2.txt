@@ -1,0 +1,1 @@
+pyinstaller --onefile --hidden-import pandas --hidden-import numpy --hidden-import csv --hidden-import datetime "main.py"

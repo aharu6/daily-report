@@ -1,0 +1,16 @@
+セキュリティエラー解消法
+
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+
+
+コマンドプロンプト
+.venv\Scripts\activate.bat
+
+powershell
+.\.venv\Scripts\Activate.ps1
+
+
+
+rich の文字エンコーディングを制御
+Python の rich ライブラリにデフォルトエンコーディングを変更させる方法もあります。
+PYTHONUTF8=1 flet build windows
