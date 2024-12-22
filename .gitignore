@@ -4,3 +4,4 @@ dist/main.app/Contents/_CodeSignature/CodeResources
 dist/main.app/Contents/Resources/icon-windowed.icns
 dist/main.app/Contents/Info.plist
 /.venv
+/.vs
