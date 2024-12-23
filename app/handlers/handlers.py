@@ -168,6 +168,7 @@ class Handlers:
                 selectColumns[28].visible = False  # その他
 
                 page.update()
+
             case 3:  # off
                 # 表示
                 selectColumns[12].visible = True  # 委員会
@@ -296,6 +297,10 @@ class Handlers:
         count_dict,
         comment_dict,
         columns,
+        draggable_data_for_move,
+        comments,
+        times,
+        comment,
     ):
         # _move関数でdelete_button.dataに入れたのはdragtargetで設定したカラムの番号
         # columns[i]でそのカラムの情報を取得し、見た目上削除
@@ -303,19 +308,19 @@ class Handlers:
         col_num = delete_buttons[e.control.data["num"]].data["num"]
         print(col_num)
         # 同じ情報の新しいカラムに差し替える
-        columns[col_num].content = ft.DragTarget(
-            group="timeline",
-            content=ft.Container(
-                width=50,
-                height=300,
-                bgcolor=None,
-                border_radius=5,
-            ),
-            on_accept=Handlers.drag_accepted(e),
-            on_move=Handlers.drag_move,
-            data={"time": DataModel().times()[col_num], "num": col_num},
+        columns[col_num].content.content = ft.Container(
+            width=50,
+            height=300,
+            bgcolor=ft.colors.BLUE_50,
+            border_radius=5,
         )
-        columns[col_num].update()
+        page.update()
+        # アップデートしてからmove関数をセットする
+        # おそらくセットしている時のeを渡しているから変なことになる
+        # deletebuttons属しているカラムのデータを渡していない
+        # deletebuttons自体のデータが渡されている
+        # contentのcoontent（見た目だけを更新する）
+        # 中身のDraggtargetのonaccept,on_moveは残っていた
 
         # 同時に該当するdrag_dataのデータも削除する
         del drag_data[DataModel().times()[col_num]]
@@ -449,15 +454,20 @@ class Handlers:
         comment,
         count_dict,
     ):
-        print(e.src_id)
+        print(e.target)
         if page.get_control(e.src_id):
             src = page.get_control(e.src_id)
             try:
                 key = src.data["task"]["task"]
             except:
                 key = src.data["task"]
-        else:
+
+        elif draggable_data[e.src_id]["task"]:
             key = draggable_data[e.src_id]["task"]
+
+        elif page.get_control(e.target):
+            src = page.get_control(e.target)
+            key = src.data["task"]["task"]
 
         e.control.content = ft.Column(
             controls=[

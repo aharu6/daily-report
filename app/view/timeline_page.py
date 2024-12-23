@@ -55,6 +55,10 @@ class TimelinePage:
                     self.count_dict,
                     self.comment_dict,
                     self.columns,
+                    self.draggable_data_for_move,
+                    self.comments,
+                    self.model.times(),  # delete_contentでの引数ではtimes
+                    self.comment,
                 ),
             )
             for _ in range(len(self.model.times()))
@@ -70,7 +74,7 @@ class TimelinePage:
 
         self.ineditButton = ft.Row(
             controls=[self.editButton],
-            alignment=ft.MainAxisAlignment.END,
+            alignment=ft.alignment.center,
         )
 
         self.drag_data = {}
@@ -153,6 +157,42 @@ class TimelinePage:
                     data={"task": kind},
                 )
             )
+        # 初期状態は 3を選択した状態 offの状態
+        # 表示
+        self.selectColumns[12].visible = True  # 委員会
+        self.selectColumns[13].visible = True  # 勉強会参加
+        self.selectColumns[14].visible = True  # WG活動
+        self.selectColumns[15].visible = True  # 1on1
+
+        self.selectColumns[26].visible = True  # 13:15業務調整
+        self.selectColumns[27].visible = True  # 休憩
+        self.selectColumns[28].visible = True  # その他
+        # 非表示
+        self.selectColumns[0].visible = False  # 情報収集　指導
+        self.selectColumns[1].visible = False  # 指導記録作成
+        self.selectColumns[2].visible = False  # 混注時間
+        self.selectColumns[3].visible = False  # 薬剤セット数
+        self.selectColumns[4].visible = False  # 持参薬を確認
+        self.selectColumns[5].visible = False  # 薬剤服用歴等について保険k薬局へ照会
+        self.selectColumns[6].visible = False  # 処方代理修正
+        self.selectColumns[7].visible = False  # TDM実施
+        self.selectColumns[8].visible = False  # カンファレンス
+        self.selectColumns[9].visible = False  # 医師からの相談
+        self.selectColumns[10].visible = False  # 看護師からの相談
+        self.selectColumns[11].visible = False  # その他の職種からの相談
+
+        self.selectColumns[16].visible = False  # ICT/AST
+        self.selectColumns[17].visible = False  # 褥瘡
+        self.selectColumns[18].visible = False  # TPN評価
+        self.selectColumns[19].visible = False  # TPN評価
+        self.selectColumns[20].visible = False  # 手術使用薬剤確認
+        self.selectColumns[21].visible = False  # 手術使用薬剤準備
+        self.selectColumns[22].visible = False  # 周術期薬剤管理関連
+        self.selectColumns[23].visible = False  # 手術使用麻薬確認・補充
+        self.selectColumns[24].visible = False  # 術後疼痛管理チーム回診
+        self.selectColumns[25].visible = False  # 脳卒中ホットライン対応
+
+        self.selectColumns[29].visible = False  # 管理業務
 
         self.time_for_visual_label = []
 
@@ -211,7 +251,7 @@ class TimelinePage:
         )
 
         self.TimeLine = ft.Row(
-            scroll=True,
+            scroll="always",
             controls=[
                 ft.Column(
                     controls=[
@@ -323,8 +363,6 @@ class TimelinePage:
                 ft.Text("NST"),
             ],
         )
-
-    
 
     # TimelinePageのviewを返す
     def create(self):
