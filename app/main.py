@@ -30,7 +30,7 @@ def main(page: ft.Page):
 
     page.title = "Daily Report"
     page.window.width = 1400
-    page.scroll = "always"
+    page.scroll = True
 
     page.theme = ft.Theme(
         scrollbar_theme=ft.ScrollbarTheme(
@@ -42,7 +42,7 @@ def main(page: ft.Page):
             track_border_color=ft.colors.BLUE_GREY_50,
             thumb_visibility=True,
             thumb_color={
-                ft.MaterialState.HOVERED: ft.colors.BLUE_GREY_50,
+                ft.MaterialState.HOVERED: None,
                 ft.MaterialState.DEFAULT: ft.colors.GREY_300,
             },
             thickness=30,
