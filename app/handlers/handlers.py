@@ -314,7 +314,6 @@ class Handlers:
             bgcolor=ft.colors.BLUE_50,
             border_radius=5,
         )
-        page.update()
         # アップデートしてからmove関数をセットする
         # おそらくセットしている時のeを渡しているから変なことになる
         # deletebuttons属しているカラムのデータを渡していない
@@ -330,6 +329,10 @@ class Handlers:
         # 該当のその他のデータも削除する
         if DataModel().times()[col_num] in comment_dict:
             del comment_dict[DataModel().times()[col_num]]
+
+        # カラムのgroupを元に戻す
+        columns[col_num].content.group = "timeline"
+        page.update()
 
     # カウンターの関数
     @staticmethod
@@ -454,7 +457,7 @@ class Handlers:
         comment,
         count_dict,
     ):
-        print("on_move")
+        print(e.control.group)
         src_id_str = e.src_id.replace("_", "")
         try:
             src_id_int = int(src_id_str)
@@ -505,9 +508,6 @@ class Handlers:
                 "task": key,
             },
         )
-        e.control.update()
-        # 受け取ったらdragtargetのgroupを変更して再ドラッグ不可にする
-        e.control.group = "timeline_accepted"
 
         # ドラッグ時にコンテンツを更新する用
         columns[e.control.data["num"]].content.data["task"] = key
@@ -528,11 +528,9 @@ class Handlers:
         # 一番左のカラムだけ表示、後は非表示にする（カウンターはそもそも作成しない）
         try:
             if left_key == key:
-                print("equal move")
                 e.control.content.controls[1].content.content.visible = False
                 e.control.content.update()
             elif left_key != key:
-                print("not equal move")
                 e.control.content.controls[1].content.content.visible = True
                 e.control.content.update()
         except:
@@ -637,6 +635,10 @@ class Handlers:
         )
         columns[right_column_num].update()
 
+        # 受け取ったらdragtargetのgroupを変更して再ドラッグ不可にする
+        e.control.group = "timeline_accepted"
+        page.update()
+
     # acceptしたらカラムのデータを更新する
     # 隣のカラムにmove関数を追加する
     @staticmethod
@@ -710,7 +712,9 @@ class Handlers:
                 "num": e.control.data["num"],
                 "task": key,
             },
+            #カラムがクリックされた時に隣のカラムにon_move関数をセットできるようにしたい
         )
+
         # ドラッグ時にコンテンツを更新する用
         columns[e.control.data["num"]].content.data["task"] = key
         print("columns", columns[e.control.data["num"]].content.data["task"])
@@ -733,11 +737,9 @@ class Handlers:
         # 一番左のカラムだけ表示、後は非表示にする（カウンターはそもそも作成しない）
         try:
             if left_key == key:
-                print("equal accept")
                 e.control.content.controls[1].content.content.visible = False
                 e.control.content.update()
             elif left_key != key:
-                print("notequal accept")
                 e.control.content.controls[1].content.content.visible = True
                 e.control.content.update()
 
@@ -769,7 +771,6 @@ class Handlers:
                     e.control.content.controls.append(
                         Handlers.create_counter(e.control.data["time"], count_dict)
                     )
-        e.control.update()
 
         # move関数を追加する
         e.control.on_move = lambda e: Handlers.drag_move(
@@ -817,6 +818,7 @@ class Handlers:
 
         # 受け取ったらdragtargetのgroupを変更して再ドラッグ不可にする
         e.control.group = "timeline_accepted"
+        page.update()
 
     @staticmethod
     def write_csv_file(
