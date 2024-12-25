@@ -220,8 +220,7 @@ class TimelinePage:
                     bgcolor=ft.colors.BLUE_50,
                     border_radius=5,
                 ),
-                on_accept=lambda e: Handlers.drag_accepted,
-                on_move=lambda e: Handlers.drag_move(
+                on_accept=lambda e: Handlers.drag_accepted(
                     e,
                     self.page,
                     self.draggable_data_for_move,
@@ -251,7 +250,7 @@ class TimelinePage:
         )
 
         self.TimeLine = ft.Row(
-            scroll="always",
+            scroll=ft.ScrollMode.ALWAYS,
             controls=[
                 ft.Column(
                     controls=[

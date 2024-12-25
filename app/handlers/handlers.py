@@ -314,7 +314,6 @@ class Handlers:
             bgcolor=ft.colors.BLUE_50,
             border_radius=5,
         )
-        page.update()
         # アップデートしてからmove関数をセットする
         # おそらくセットしている時のeを渡しているから変なことになる
         # deletebuttons属しているカラムのデータを渡していない
@@ -330,6 +329,10 @@ class Handlers:
         # 該当のその他のデータも削除する
         if DataModel().times()[col_num] in comment_dict:
             del comment_dict[DataModel().times()[col_num]]
+
+        # カラムのgroupを元に戻す
+        columns[col_num].content.group = "timeline"
+        page.update()
 
     # カウンターの関数
     @staticmethod
@@ -454,7 +457,17 @@ class Handlers:
         comment,
         count_dict,
     ):
-        print(e.target)
+        print(e.control.group)
+        src_id_str = e.src_id.replace("_", "")
+        try:
+            src_id_int = int(src_id_str)
+            # 次カラム
+            print("nowid", e.src_id)
+            print(f"_{src_id_int + 4}")
+            next_id = f"_{src_id_int + 4}"
+        except:
+            pass
+
         if page.get_control(e.src_id):
             src = page.get_control(e.src_id)
             try:
@@ -462,7 +475,7 @@ class Handlers:
             except:
                 key = src.data["task"]
 
-        elif draggable_data[e.src_id]["task"]:
+        elif e.src_id in draggable_data and "task":
             key = draggable_data[e.src_id]["task"]
 
         elif page.get_control(e.target):
@@ -495,12 +508,10 @@ class Handlers:
                 "task": key,
             },
         )
+
         # ドラッグ時にコンテンツを更新する用
         columns[e.control.data["num"]].content.data["task"] = key
-        print("columns", columns[e.control.data["num"]].content.data["task"])
-        # moveにて新規src_idが追加された場合、その情報をdrag_dataに追加
-        # elseに向けて辞書データを更新しておく
-        draggable_data[e.src_id] = {"task": key}
+
         # delete_buttonsに渡すdata
         delete_buttons[e.control.data["num"]].data = {"num": e.control.data["num"]}
         e.control.update()
@@ -509,6 +520,19 @@ class Handlers:
         left_key = None
         try:
             left_key = columns[left_column_num].content.data["task"]
+        except:
+            pass
+
+        # 現在のカラムの番号はnum = e.control.data["num"]
+        # 左のカラム　num -1 のカラムの情報を取得
+        # 一番左のカラムだけ表示、後は非表示にする（カウンターはそもそも作成しない）
+        try:
+            if left_key == key:
+                e.control.content.controls[1].content.content.visible = False
+                e.control.content.update()
+            elif left_key != key:
+                e.control.content.controls[1].content.content.visible = True
+                e.control.content.update()
         except:
             pass
 
@@ -539,15 +563,10 @@ class Handlers:
                     )
         e.control.update()
 
-        # 現在のカラムの番号はnum = e.control.data["num"]
-        # 左のカラム　num -1 のカラムの情報を取得
-        # 一番左のカラムだけ表示、後は非表示にする（カウンターはそもそも作成しない）
-        try:
-            if left_key == key:
-                e.control.content.controls[1].content.content.visible = False
-                e.control.content.update()
-        except:
-            pass
+        # moveにて新規src_idが追加された場合、その情報をdrag_dataに追加
+        # elseに向けて辞書データを更新しておく
+        draggable_data[e.src_id] = {"task": key}
+        draggable_data[next_id] = {"task": key}
 
         # 左ではなくて、現在のカラム番号と左のカラム番号を比較する
         # 右のカラムも比較して、同じ業務内容の場合、右は非表示に
@@ -588,9 +607,196 @@ class Handlers:
                 "num": e.control.data["num"],
             }
 
+        # 右隣と左隣のカラムにmove関数を追加する
+        columns[left_column_num].content.on_move = lambda e: Handlers.drag_move(
+            e,
+            page,
+            draggable_data,
+            delete_buttons,
+            columns,
+            comments,
+            times,
+            drag_data,
+            comment,
+            count_dict,
+        )
+        columns[left_column_num].update()
+        columns[right_column_num].content.on_move = lambda e: Handlers.drag_move(
+            e,
+            page,
+            draggable_data,
+            delete_buttons,
+            columns,
+            comments,
+            times,
+            drag_data,
+            comment,
+            count_dict,
+        )
+        columns[right_column_num].update()
+
+        # 受け取ったらdragtargetのgroupを変更して再ドラッグ不可にする
+        e.control.group = "timeline_accepted"
+        page.update()
+
+    # acceptしたらカラムのデータを更新する
+    # 隣のカラムにmove関数を追加する
     @staticmethod
-    def drag_accepted(e):
-        data = e.data
+    def drag_accepted(
+        e,
+        page,
+        draggable_data,
+        delete_buttons,
+        columns,
+        comments,
+        times,
+        drag_data,
+        comment,
+        count_dict,
+    ):
+        print(e.target)
+        src_id_str = e.src_id.replace("_", "")
+        try:
+            src_id_int = int(src_id_str)
+            # 次カラム
+            print("nowid", e.src_id)
+            print(f"_{src_id_int + 4}")
+            next_id = f"_{src_id_int + 4}"
+        except:
+            pass
+        if page.get_control(e.src_id):
+            src = page.get_control(e.src_id)
+            try:
+                if isinstance(src.data["task"], dict):
+                    key = src.data["task"]["task"]
+                else:
+                    key = src.data["task"]
+            except:
+                key = src.data["task"]
+
+        elif e.src_id in draggable_data and "task":
+            key = draggable_data[e.src_id]["task"]
+
+        elif page.get_control(e.target):
+            src = page.get_control(e.target)
+            try:
+                if isinstance(src.data["task"], dict):
+                    key = src.data["task"]["task"]
+                else:
+                    key = src.data["task"]
+            except:
+                key = src.data["task"]
+
+        e.control.content = ft.Column(
+            controls=[
+                delete_buttons[e.control.data["num"]],
+                ft.Draggable(
+                    group="timeline",
+                    content=ft.Container(
+                        content=ft.Text(key, color="white"),
+                        width=50,
+                        height=140,
+                        bgcolor=ft.colors.BLUE_GREY_500,
+                    ),
+                    data={
+                        "time": e.control.data["time"],
+                        "num": e.control.data["num"],
+                        "task": key,
+                    },
+                ),
+            ],
+            height=300,
+            spacing=0,
+            data={
+                "time": e.control.data["time"],
+                "num": e.control.data["num"],
+                "task": key,
+            },
+            # カラムがクリックされた時に隣のカラムにon_move関数をセットできるようにしたい
+        )
+
+        # ドラッグ時にコンテンツを更新する用
+        columns[e.control.data["num"]].content.data["task"] = key
+        print("columns", columns[e.control.data["num"]].content.data["task"])
+        # moveにて新規src_idが追加された場合、その情報をdrag_dataに追加
+        # elseに向けて辞書データを更新しておく
+        draggable_data[e.src_id] = {"task": key}
+        draggable_data[next_id] = {"task": key}
+
+        left_column_num = e.control.data["num"] - 1
+        # left_keyの初期化
+        left_key = None
+
+        try:
+            left_key = columns[left_column_num].content.data["task"]
+        except:
+            pass
+
+        # 現在のカラムの番号はnum = e.control.data["num"]
+        # 左のカラム　num -1 のカラムの情報を取得
+        # 一番左のカラムだけ表示、後は非表示にする（カウンターはそもそも作成しない）
+        try:
+            if left_key == key:
+                e.control.content.controls[1].content.content.visible = False
+                e.control.content.update()
+            elif left_key != key:
+                e.control.content.controls[1].content.content.visible = True
+                e.control.content.update()
+
+        except:
+            pass
+
+        match key:
+            # key==その他の場合にはコメントボタンを追加する
+            case "その他":
+                # すでに左のカラムにコンテンツがある場合にはコメントボタンは作成しない
+                e.control.content.controls.append(comments[e.control.data["num"]])
+            # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
+            case (
+                "混注時間"
+                | "休憩"
+                | "委員会"
+                | "WG活動"
+                | "勉強会参加"
+                | "1on1"
+                | "カンファレンス"
+            ):
+                pass
+            # その他の場合にはカウンターを表示する
+            # 左カラムに同じデータはある場合にはカウンターは作成しない
+            case _:
+                if left_key == key:
+                    pass
+                else:
+                    e.control.content.controls.append(
+                        Handlers.create_counter(e.control.data["time"], count_dict)
+                    )
+
+        # move関数を追加する
+        e.control.on_move = lambda e: Handlers.drag_move(
+            e,
+            page,
+            draggable_data,
+            delete_buttons,
+            columns,
+            comments,
+            times,
+            drag_data,
+            comment,
+            count_dict,
+        )
+
+        # 左隣カラムと右隣カラムにもmove関数をオフにする
+        columns[left_column_num].content.on_move = None
+        columns[left_column_num].update()
+
+        right_column_num = e.control.data["num"] + 1
+        columns[right_column_num].content.on_move = None
+        columns[right_column_num].update()
+
+        # 受け取ったらdragtargetのgroupを変更して再ドラッグ不可にする
+        e.control.group = "timeline_accepted"
+        page.update()
 
     @staticmethod
     def write_csv_file(
