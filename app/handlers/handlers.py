@@ -712,7 +712,7 @@ class Handlers:
                 "num": e.control.data["num"],
                 "task": key,
             },
-            #カラムがクリックされた時に隣のカラムにon_move関数をセットできるようにしたい
+            # カラムがクリックされた時に隣のカラムにon_move関数をセットできるようにしたい
         )
 
         # ドラッグ時にコンテンツを更新する用
@@ -786,34 +786,12 @@ class Handlers:
             count_dict,
         )
 
-        # 左隣カラムと右隣カラムにもmove関数を追加する
-        columns[left_column_num].content.on_move = lambda e: Handlers.drag_move(
-            e,
-            page,
-            draggable_data,
-            delete_buttons,
-            columns,
-            comments,
-            times,
-            drag_data,
-            comment,
-            count_dict,
-        )
+        # 左隣カラムと右隣カラムにもmove関数をオフにする
+        columns[left_column_num].content.on_move = None
         columns[left_column_num].update()
 
         right_column_num = e.control.data["num"] + 1
-        columns[right_column_num].content.on_move = lambda e: Handlers.drag_move(
-            e,
-            page,
-            draggable_data,
-            delete_buttons,
-            columns,
-            comments,
-            times,
-            drag_data,
-            comment,
-            count_dict,
-        )
+        columns[right_column_num].content.on_move = None
         columns[right_column_num].update()
 
         # 受け取ったらdragtargetのgroupを変更して再ドラッグ不可にする
