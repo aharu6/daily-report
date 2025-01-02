@@ -30,6 +30,7 @@ def main(page: ft.Page):
 
     page.title = "Daily Report"
     page.window.width = 1400
+    page.window.height = 800
     page.scroll = True
 
     page.theme = ft.Theme(

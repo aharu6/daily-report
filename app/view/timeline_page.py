@@ -146,7 +146,7 @@ class TimelinePage:
                                 ft.Text(kind["task"], color="white"),
                                 width=100,
                                 height=70,
-                                bgcolor=ft.colors.BLUE_GREY_500,
+                                bgcolor=Handlers.change_color(kind["task"]),
                                 border_radius=5,
                             ),
                             data={"task": kind},
