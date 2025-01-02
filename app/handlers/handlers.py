@@ -560,7 +560,7 @@ class Handlers:
                         content=ft.Text(key, color="white"),
                         width=50,
                         height=140,
-                        bgcolor=ft.colors.BLUE_GREY_500,
+                        bgcolor=Handlers.change_color(key),
                     ),
                     data={
                         "time": e.control.data["time"],
@@ -653,7 +653,7 @@ class Handlers:
                             content=ft.Container(
                                 width=50,
                                 height=140,
-                                bgcolor=ft.colors.BLUE_GREY_500,
+                                bgcolor=Handlers.change_color(key),
                             ),
                         ),
                     ],
@@ -765,7 +765,7 @@ class Handlers:
                         content=ft.Text(key, color="white"),
                         width=50,
                         height=140,
-                        bgcolor=ft.colors.BLUE_GREY_500,
+                        bgcolor=Handlers.change_color(key), 
                     ),
                     data={
                         "time": e.control.data["time"],
