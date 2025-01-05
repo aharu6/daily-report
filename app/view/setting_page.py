@@ -16,6 +16,35 @@ class SettingPage:
         self.phNameList = self.model.load_data(page)
         self.panel = Panel(self).create(self.phNameList, page)
         Handlers_setting.update_ListTile(self.panel, self.phNameList, page)
+        # panelのcontrolsの最後のlistTileにon_click関数を追加する
+        self.panel.controls[0].content.controls[-1].on_click = (
+            lambda e: Handlers_setting.open_dialog(e, self.dialog, page)
+        )
+
+        self.name_filed = ft.TextField(label="新しく追加する名前を入力してください")
+        self.dialog = ft.AlertDialog(
+            title=ft.Text("Add Name"),
+            content=self.name_filed,
+            actions=[
+                ft.TextButton(
+                    "追加",
+                    on_click=lambda e: Handlers_setting.add_name(
+                        e,
+                        self.phNameList,
+                        self.name_filed,
+                        page,
+                        self.dialog,
+                        self.panel,
+                    ),
+                ),
+                ft.TextButton(
+                    "キャンセル",
+                    on_click=lambda e: Handlers_setting.close_dialog(
+                        e, self.dialog, page
+                    ),
+                ),
+            ],
+        )
 
     def create(self):
         return View(
@@ -24,6 +53,7 @@ class SettingPage:
                 self.title.create(),
                 self.horizon,
                 self.panel,
+                self.dialog,
                 ft.CupertinoNavigationBar(
                     selected_index=2,
                     bgcolor=ft.colors.BLUE_GREY_50,
@@ -51,4 +81,5 @@ class SettingPage:
                     ],
                 ),
             ],
+            scroll=True,
         )
