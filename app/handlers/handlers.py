@@ -33,7 +33,7 @@ class Handlers:
 
     @staticmethod
     def update_dropdown(phName, phNameList, page):
-        if isinstance(phNameList,str):
+        if isinstance(phNameList, str):
             phNameList = json.loads(phNameList)
         options = []
         try:
@@ -474,6 +474,7 @@ class Handlers:
 
     @staticmethod
     def create_dialog_for_comment(e, comments, dlg, comment_dict, comment_field, page):
+        print(e.control.data["time"])
         comment_time = comments[e.control.data["num"]].data["time"]
         comment_num = comments[e.control.data["num"]].data["num"]
         dlg.data = {"time": comment_time, "num": comment_num}
