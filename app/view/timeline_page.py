@@ -133,6 +133,8 @@ class TimelinePage:
                 self.count_dict,
                 self.amDropDown,
                 self.pmDropDown,
+                self.custumDrawerAm,
+                self.custumDrawerPm,
                 self.phName,
                 self.page,
                 self.comment_dict,
@@ -245,8 +247,14 @@ class TimelinePage:
         self.iconforampmselect = ft.Icon(
             ft.icons.SCHEDULE,
         )
-        self.amDropDown = AmDropDown().create()
-        self.pmDropDown = PmDropDown().create()
+        self.amDropDown = ft.TextButton(
+            "AM",
+            on_click=lambda e: Handlers.open_Drawer(e, self.custumDrawerAm, self.page),
+        )
+        self.pmDropDown = ft.TextButton(
+            "PM",
+            on_click=lambda e: Handlers.open_Drawer(e, self.custumDrawerPm, self.page),
+        )
         self.ampmSelect = ft.Row(
             controls=[
                 self.amDropDown,
@@ -254,6 +262,13 @@ class TimelinePage:
                 self.pmDropDown,
             ],
         )
+        self.custumDrawerAm = ft.Container()
+        self.custumDrawerAm.visible = False
+        self.custumDrawerAm.content = AmDropDown().create()
+
+        self.custumDrawerPm = ft.Container()
+        self.custumDrawerPm.visible = False
+        self.custumDrawerPm.content = PmDropDown().create()
 
         self.TimeLine = ft.Row(
             scroll=ft.ScrollMode.ALWAYS,
@@ -384,6 +399,8 @@ class TimelinePage:
                         self.choice_button,
                     ]
                 ),
+                self.custumDrawerAm,
+                self.custumDrawerPm,
                 self.ineditButton,
                 self.TimeLine,
                 ft.ResponsiveRow(

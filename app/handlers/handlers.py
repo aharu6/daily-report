@@ -517,6 +517,12 @@ class Handlers:
         page.update()
 
     @staticmethod
+    def open_Drawer(e, customDrawer, page):
+        print("open")
+        customDrawer.visible = not customDrawer.visible
+        page.update()
+
+    @staticmethod
     def drag_move(
         e,
         page,
@@ -889,6 +895,8 @@ class Handlers:
         count_dict,
         amDropDown,
         pmDropDown,
+        custumDrawerAm,
+        custumDrawerPm,
         phName,
         page,
         comment_dict,
@@ -931,16 +939,29 @@ class Handlers:
                 data_dict[time]["count"] = count["count"]
 
         # 病棟データの書き込み
+        # AMの場合
+        list_am_location_data = []
+        for i in range(len(custumDrawerAm.content.controls)):
+            if custumDrawerAm.content.controls[i].value == True:
+                list_am_location_data.append(custumDrawerAm.content.controls[i].label)
+
         for time in data_dict.keys():
-            if amDropDown.value != None:
+            if list_am_location_data is not None:
                 if data_dict[time]["locate"] == "AM":
-                    data_dict[time]["locate"] = amDropDown.value
+                    data_dict[time]["locate"] = list_am_location_data
             else:
                 None
+
+            # PMの場合
+        list_pm_location_data = []
+        for i in range(len(custumDrawerPm.content.controls)):
+            if custumDrawerPm.content.controls[i].value == True:
+                list_pm_location_data.append(custumDrawerPm.content.controls[i].label)
+
         for time in data_dict.keys():
-            if pmDropDown.value != None:
+            if list_pm_location_data is not None:
                 if data_dict[time]["locate"] == "PM":
-                    data_dict[time]["locate"] = pmDropDown.value
+                    data_dict[time]["locate"] = list_pm_location_data
             else:
                 None
 
