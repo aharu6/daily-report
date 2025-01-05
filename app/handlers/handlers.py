@@ -33,10 +33,14 @@ class Handlers:
 
     @staticmethod
     def update_dropdown(phName, phNameList, page):
+        if isinstance(phNameList,str):
+            phNameList = json.loads(phNameList)
+        options = []
         try:
             options = [ft.dropdown.Option(item["name"]) for item in phNameList]
         except:
-            options = []
+            options = [ft.dropdown.Option("名前が登録されていません")]
+
         options.append(ft.dropdown.Option("Add"))
 
         phName.options = options
