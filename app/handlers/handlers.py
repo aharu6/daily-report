@@ -51,10 +51,77 @@ class Handlers:
     @staticmethod
     def delete_name(e, phNameList, page):
         new_phNameList = phNameList.remove(e.control.data)
-        page.client_storage.set(
-            "phName", json.dumps(new_phNameList, ensure_ascli=False)
-        )
+        page.set("phName", json.dumps(new_phNameList, ensure_ascli=False))
         page.update()
+
+    # カラムの業務内容ごとの色分け
+    # 384B70
+    # 507687
+    # 508D4E
+    # 72BAA9
+    @staticmethod
+    def change_color(key):
+        match key:
+            case "情報収集＋指導":
+                return "#384B70"
+            case "指導記録作成":
+                return "#384B70"
+            case "混注時間":
+                return "#384B70"
+            case "薬剤セット数":
+                return "#384B70"
+            case "持参薬を確認":
+                return "#384B70"
+            case "薬剤服用歴等について保険薬局へ照会":
+                return "#384B70"
+            case "処方代理修正":
+                return "#384B70"
+            case "TDM実施":
+                return "#384B70"
+            case "カンファレンス":
+                return "#384B70"
+            case "医師からの相談":
+                return "#384B70"
+            case "看護師からの相談":
+                return "#384B70"
+            case "その他の職種からの相談":
+                return "#384B70"
+            case "委員会":
+                return "#507687"
+            case "勉強会参加":
+                return "#507687"
+            case "WG活動":
+                return "#507687"
+            case "1on1":
+                return "#507687"
+            case "ICT/AST":
+                return "#507687"
+            case "褥瘡":
+                return "#507687"
+            case "TPN評価":
+                return "#507687"
+            case "手術後使用薬剤確認":
+                return "#508D4E"
+            case "手術使用薬剤準備":
+                return "#508D4E"
+            case "周術期薬剤管理関連":
+                return "#508D4E"
+            case "麻酔科周術期外来":
+                return "#508D4E"
+            case "手術使用麻薬確認・補充":
+                return "#508D4E"
+            case "術後疼痛管理チーム回診":
+                return "#508D4E"
+            case "脳卒中ホットライン対応":
+                return "#508D4E"
+            case "13:15業務調整":
+                return "#72BAA9"
+            case "休憩":
+                return "#72BAA9"
+            case "その他":
+                return "#72BAA9"
+            case "管理業務":
+                return "#72BAA9"
 
     @staticmethod
     def change_choice_button(e, selectColumns, page):
@@ -420,8 +487,9 @@ class Handlers:
     @staticmethod
     def add_name(e, phNameList, name_field, page, phName, dialog):
         new_name = name_field.value.strip()
-        phName_List = phNameList
-        print("phnamelist", phNameList)
+        phName_List = (
+            json.loads(phNameList) if isinstance(phNameList, str) else phNameList
+        )
         if new_name:
             phName_List.append({"name": new_name})
             page.client_storage.set("phName", phName_List)
@@ -491,7 +559,7 @@ class Handlers:
                         content=ft.Text(key, color="white"),
                         width=50,
                         height=140,
-                        bgcolor=ft.colors.BLUE_GREY_500,
+                        bgcolor=Handlers.change_color(key),
                     ),
                     data={
                         "time": e.control.data["time"],
@@ -584,7 +652,7 @@ class Handlers:
                             content=ft.Container(
                                 width=50,
                                 height=140,
-                                bgcolor=ft.colors.BLUE_GREY_500,
+                                bgcolor=Handlers.change_color(key),
                             ),
                         ),
                     ],
@@ -696,7 +764,7 @@ class Handlers:
                         content=ft.Text(key, color="white"),
                         width=50,
                         height=140,
-                        bgcolor=ft.colors.BLUE_GREY_500,
+                        bgcolor=Handlers.change_color(key),
                     ),
                     data={
                         "time": e.control.data["time"],

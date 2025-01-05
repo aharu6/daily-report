@@ -146,7 +146,7 @@ class TimelinePage:
                                 ft.Text(kind["task"], color="white"),
                                 width=100,
                                 height=70,
-                                bgcolor=ft.colors.BLUE_GREY_500,
+                                bgcolor=Handlers.change_color(kind["task"]),
                                 border_radius=5,
                             ),
                             data={"task": kind},
@@ -217,7 +217,7 @@ class TimelinePage:
                 content=ft.Container(
                     width=50,
                     height=300,
-                    bgcolor=ft.colors.BLUE_50,
+                    bgcolor="#CBDCEB",
                     border_radius=5,
                 ),
                 on_accept=lambda e: Handlers.drag_accepted(
@@ -348,7 +348,7 @@ class TimelinePage:
         # 業務選択のcupertinoSlidingSegmentedButtonは全て一つにまとめる
         self.choice_button = ft.CupertinoSlidingSegmentedButton(
             selected_index=3,
-            thumb_color=ft.colors.BLUE_GREY_100,
+            thumb_color="#CBDCEB",
             on_change=lambda e: Handlers.change_choice_button(
                 e, self.selectColumns, page
             ),
