@@ -1,12 +1,54 @@
 import flet as ft
 from flet import View
-from components.components_setting import Panel
+from handlers.handlers import Handlers
+from handlers.handlersMain import Handlers_Main
+from handlers.handlers_setting import Handlers_setting
+from components.components_setting import Panel, Title
+from models.models import DataModel
 
 
 class SettingPage:
     def __init__(self, page):
         self.page = page
-        self.panel = Panel(page).create()
+        self.title = Title(self)
+        self.horizon = ft.Divider()
+        self.model = DataModel()
+        self.phNameList = self.model.load_data(page)
+        self.panel = Panel(self).create(self.phNameList, page)
+        Handlers_setting.update_ListTile(self.panel, self.phNameList, page)
 
     def create(self):
-        return ft.Container(ft.Text("Setting Page"), self.panel)
+        return View(
+            "/settings",
+            [
+                self.title.create(),
+                self.horizon,
+                self.panel,
+                ft.CupertinoNavigationBar(
+                    selected_index=2,
+                    bgcolor=ft.colors.BLUE_GREY_50,
+                    inactive_color=ft.colors.GREY,
+                    active_color=ft.colors.BLACK,
+                    on_change=lambda e: Handlers_Main().on_navigation_change(
+                        e, self.page
+                    ),
+                    destinations=[
+                        ft.NavigationBarDestination(
+                            icon=ft.icons.CREATE,
+                            label="Create",
+                            selected_icon=ft.icons.BORDER_COLOR,
+                        ),
+                        ft.NavigationBarDestination(
+                            icon=ft.icons.SHOW_CHART,
+                            label="Showchart",
+                            selected_icon=ft.icons.AUTO_GRAPH,
+                        ),
+                        ft.NavigationBarDestination(
+                            icon=ft.icons.SETTINGS,
+                            selected_icon=ft.icons.SETTINGS_SUGGEST,
+                            label="Settings",
+                        ),
+                    ],
+                ),
+            ],
+        )

@@ -145,7 +145,7 @@ class CreateCounter:
                 ft.IconButton(
                     ft.icons.ARROW_DROP_DOWN_OUTLINED,
                     icon_size = 25,
-                    on_click = lambda _: self.counterMinus(e,self.count_field,cont_dict),
+                    on_click = lambda _: self.counterMinus(e,self.count_field,count_dict),
                     style = ft.ButtonStyle(shape=ft.RoundedReactangleBorder(radius=5)),
                 ),
             ]

@@ -51,9 +51,7 @@ class Handlers:
     @staticmethod
     def delete_name(e, phNameList, page):
         new_phNameList = phNameList.remove(e.control.data)
-        page.client_storage.set(
-            "phName", json.dumps(new_phNameList, ensure_ascli=False)
-        )
+        page.set("phName", json.dumps(new_phNameList, ensure_ascli=False))
         page.update()
 
     # カラムの業務内容ごとの色分け
@@ -489,8 +487,9 @@ class Handlers:
     @staticmethod
     def add_name(e, phNameList, name_field, page, phName, dialog):
         new_name = name_field.value.strip()
-        phName_List = phNameList
-        print("phnamelist", phNameList)
+        phName_List = (
+            json.loads(phNameList) if isinstance(phNameList, str) else phNameList
+        )
         if new_name:
             phName_List.append({"name": new_name})
             page.client_storage.set("phName", phName_List)
@@ -765,7 +764,7 @@ class Handlers:
                         content=ft.Text(key, color="white"),
                         width=50,
                         height=140,
-                        bgcolor=Handlers.change_color(key), 
+                        bgcolor=Handlers.change_color(key),
                     ),
                     data={
                         "time": e.control.data["time"],

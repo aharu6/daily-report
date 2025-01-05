@@ -13,7 +13,6 @@ class DataModel:
         if phNameList == None:
             phNameList = []
         self.phName = phNameList
-        print(phNameList)
         return phNameList
 
     def times(self):

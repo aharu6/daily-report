@@ -128,41 +128,7 @@ def main(page: ft.Page):
                 )
             )
         if page.route == "/settings":
-            page.views.append(
-                View(
-                    "/settings",
-                    [
-                        SettingPage.create(page),
-                        # settings,
-                        ft.CupertinoNavigationBar(
-                            selected_index=2,
-                            bgcolor=ft.colors.BLUE_GREY_50,
-                            inactive_color=ft.colors.GREY,
-                            active_color=ft.colors.BLACK,
-                            on_change=lambda e: Handlers_Main().on_navigation_change(
-                                e, page
-                            ),
-                            destinations=[
-                                ft.NavigationBarDestination(
-                                    icon=ft.icons.CREATE,
-                                    label="Create",
-                                    selected_icon=ft.icons.BORDER_COLOR,
-                                ),
-                                ft.NavigationBarDestination(
-                                    icon=ft.icons.SHOW_CHART,
-                                    label="Showchart",
-                                    selected_icon=ft.icons.AUTO_GRAPH,
-                                ),
-                                ft.NavigationBarDestination(
-                                    icon=ft.icons.SETTINGS,
-                                    selected_icon=ft.icons.SETTINGS_SUGGEST,
-                                    label="Settings",
-                                ),
-                            ],
-                        ),
-                    ],
-                )
-            )
+            page.views.append(SettingPage(page).create())
         page.update()
 
     def view_pop(e):
