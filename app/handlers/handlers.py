@@ -727,7 +727,7 @@ class Handlers:
         comment,
         count_dict,
     ):
-        print(e.target)
+        # print(e.target)
         src_id_str = e.src_id.replace("_", "")
         try:
             src_id_int = int(src_id_str)
@@ -866,6 +866,14 @@ class Handlers:
         right_column_num = e.control.data["num"] + 1
         columns[right_column_num].content.on_move = None
         columns[right_column_num].update()
+
+        # ドラッグデータの保存
+        drag_data[e.control.data["time"]] = {"task": key}
+        if comment:
+            comments[e.control.data["num"]].data = {
+                "time": e.control.data["time"],
+                "num": e.control.data["num"],
+            }
 
         # 受け取ったらdragtargetのgroupを変更して再ドラッグ不可にする
         e.control.group = "timeline_accepted"
