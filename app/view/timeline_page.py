@@ -83,10 +83,16 @@ class TimelinePage:
             ft.IconButton(
                 icon=ft.icons.COMMENT,
                 on_click=lambda e: Handlers.create_dialog_for_comment(
-                    e, self.comments, self.dlg, self.comment_dict, self.page
+                    e,
+                    self.comments,
+                    self.dlg,
+                    self.comment_dict,
+                    self.comment_field,
+                    self.page,
                 ),
+                data={"time": self.model.times()[i], "num": i},
             )
-            for _ in range(len(self.model.times()))
+            for i in range(len(self.model.times()))
         ]
 
         self.comment = ft.IconButton(
@@ -103,7 +109,7 @@ class TimelinePage:
                 ft.TextButton(
                     "OK",
                     on_click=lambda e: Handlers.add_comment_for_dict(
-                        e, self.dlg, self.comment_field, self.page
+                        e, self.dlg, self.comment_dict, self.comment_field, self.page
                     ),
                 ),
                 ft.TextButton(
