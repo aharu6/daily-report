@@ -48,8 +48,26 @@ class Handlers_setting:
         controls.append(
             ft.ListTile(
                 title=ft.Text("名前を追加"),
-                on_click=lambda e: DataModel().add_name(page, panel),
             )
         )
         panel.controls[0].content.controls = controls
         page.update()
+    
+    @staticmethod
+    def open_dialog(e,dialog,page):
+        dialog.open = True
+        page.update()
+
+    @staticmethod
+    def add_name(e, phNameList, name_field, page, diaog, panel):
+        new_name = name_field.value.strip()
+        phName_List = (
+            json.loads(phNameList) if isinstance(phNameList, str) else phNameList
+        )
+        if new_name:
+            phName_List.append({"name": new_name})
+            page.client_storage.set("phName", json.dumps(phName_List))
+            name_field.value = ""
+            Handlers_setting.update_ListTile(panel, phNameList=phName_List, page=page)
+            diaog.open = False
+            page.update()

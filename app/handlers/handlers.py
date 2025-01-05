@@ -498,7 +498,6 @@ class Handlers:
         if new_name:
             phName_List.append({"name": new_name})
             page.client_storage.set("phName", phName_List)
-            print()
             name_field.value = ""
             Handlers.update_dropdown(phName, phName_List, page)
             dialog.open = False
