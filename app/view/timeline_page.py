@@ -275,7 +275,7 @@ class TimelinePage:
         self.custumDrawerPm.content = PmDropDown().create()
 
         self.TimeLine = ft.Row(
-            scroll=ft.ScrollMode.ADAPTIVE,
+            scroll = ft.ScrollMode.ADAPTIVE,
             controls=[
                 ft.Column(
                     controls=[
@@ -285,19 +285,34 @@ class TimelinePage:
                 ),
             ],
         )
-        #スクロールポジションの設定
-        self.scroll_position = 0
-        
         #スクロールボタンを実装してみる
+        #コンテンツの左移動するボタン
         self.backscrollButton = ft.IconButton(
             icon = ft.icons.ARROW_BACK,
-            on_click = lambda e:Scroll.scroll_back(print("forward"))
+            on_click = lambda _:self.TimeLine.scroll_to(delta = -100,duration = 200)
         )
+        #コンテンツ右移動まで移動するボタン
         self.forwardscrollButton = ft.IconButton(
             icon = ft.icons.ARROW_FORWARD,
-            on_click = lambda e:Scroll.scroll_forward(print("back"))
+            on_click  = lambda _ :self.TimeLine.scroll_to(delta = 100,duration = 200) #self.TimeLine.scroll_to(delta = 40,duration = 200)
         )
-
+        #deltaが効くのなら+ と-で左右にスクロールできればいい
+        #Timelineの外側に置くたwめにさらに囲む必要
+        self.scrollButton = ft.Row(
+            [
+                self.backscrollButton,
+                self.forwardscrollButton,
+            ],
+            ft.MainAxisAlignment.SPACE_BETWEEN,
+        )
+        
+        #scrollmode的に難しい？
+        #オーバーレイ表示が聞けば上に載せられる？
+        #pageでなくて、Timeline上のオーバーレイとすれば効く？
+        #とりあえず下に配置してみて、オーバーレイ表示を実装する
+        #スクロールボタンはできたので一度コミット crossaxisalignment
+        #ボタンを並べた上でバラバラにalignmentを設定？
+        
         self.TimeLine.theme = ft.Theme(
             scrollbar_theme=ft.ScrollbarTheme(
                 track_color={
@@ -425,8 +440,7 @@ class TimelinePage:
                 self.custumDrawerPm,
                 self.ineditButton,
                 self.TimeLine,
-                self.backscrollButton,
-                self.forwardscrollButton,
+                self.scrollButton,
                 ft.ResponsiveRow(
                     controls=self.selectColumns,
                     run_spacing={"xs": 10},
@@ -463,9 +477,9 @@ class TimelinePage:
             on_scroll_interval = 4,
             end_drawer=self.reloadDrawer,
         )
-
+        
+        
     
-
     # TimelinePageのviewを返す
     def create(self):
         return self.contents_list

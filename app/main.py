@@ -21,7 +21,7 @@ def main(page: ft.Page):
 
     page.title = "Daily Report"
     page.window.width = 1400
-    page.window.height = 800
+    page.window.height = 1000
     page.scroll = True
 
     page.theme = ft.Theme(
@@ -37,7 +37,7 @@ def main(page: ft.Page):
                 ft.MaterialState.HOVERED: None,
                 ft.MaterialState.DEFAULT: ft.colors.GREY_300,
             },
-            thickness=30,
+            thickness=15,
             radius=15,
             main_axis_margin=5,
             cross_axis_margin=10,
