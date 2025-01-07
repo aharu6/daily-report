@@ -81,7 +81,7 @@ class TimelinePage:
         )
 
         self.ineditButton = ft.Row(
-            controls=[self.editButton],
+            controls=[self.editButton,self.reloadData],
             alignment=ft.alignment.center,
         )
 
@@ -418,7 +418,6 @@ class TimelinePage:
                 self.custumDrawerAm,
                 self.custumDrawerPm,
                 self.ineditButton,
-                self.reloadData,
                 self.TimeLine,
                 ft.ResponsiveRow(
                     controls=self.selectColumns,
