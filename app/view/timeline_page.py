@@ -9,8 +9,10 @@ from components.components import (
     PmDropDown,
     EditButton,
     DeleteButtons,
+    ReloadDrawer,
 )
 from handlers.handlers import Handlers
+from handlers.reload_data import ReloadDataHandler
 from handlers.handlersMain import Handlers_Main
 from handlers.handlers_chart import Handlers_Chart
 from models.models import DataModel
@@ -71,9 +73,15 @@ class TimelinePage:
             icon_size=20,
             on_click=lambda e: Handlers.toggle_delete_button(page, self.delete_buttons),
         )
+        
+        self.reloadData = ft.IconButton(
+            icon = ft.icons.REFRESH,
+            icon_size = 20,
+            on_click = lambda e:ReloadDataHandler.toggle_Reload_Data(e,self.page,self.reloadDrawer)
+        )
 
         self.ineditButton = ft.Row(
-            controls=[self.editButton],
+            controls=[self.editButton,self.reloadData],
             alignment=ft.alignment.center,
         )
 
@@ -315,9 +323,17 @@ class TimelinePage:
 
         self.end_Drawer = EndDrawer(page)
         self.endDrawer = self.end_Drawer.create()
+        #読み出し用ドロワーの作成
+        self.reloadDrawer = ReloadDrawer(page).create()
+        #page_client_dataがあるときに読み出し用ドロワーに保管しているデータを表示する
+        #コントロール部分　ft.Row ft.Containerを追加していく
+        if self.page.client_storage is not None:
+            print(self.page.client_storage.get("phNameList"))
+            
         self.iconforphName = ft.Icon(
             ft.icons.ACCOUNT_CIRCLE,
         )
+        
 
         self.colPhName = ft.Column(
             [
@@ -436,4 +452,5 @@ class TimelinePage:
                 ),
             ],
             scroll=ScrollMode.AUTO,
+            end_drawer=self.reloadDrawer,
         )

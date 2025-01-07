@@ -1,16 +1,10 @@
 import json
-import datetime
 import flet as ft
-import csv
 import pandas as pd
-from models.models import DataModel
-
 
 class Handlers_setting:
     @staticmethod
     def delete_name(e, phNameList, page, panel):
-        print("delete_name")
-        print(e.control.data)
         # e.control.dataに該当する名前をphNamelistから削除
         new_phNameList = [item for item in phNameList if item["name"] != e.control.data]
         page.client_storage.set("phName", json.dumps(new_phNameList))

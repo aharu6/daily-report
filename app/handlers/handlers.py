@@ -385,7 +385,6 @@ class Handlers:
             bgcolor=ft.colors.BLUE_50,
             border_radius=5,
         )
-        # アップデートしてからmove関数をセットする
         # おそらくセットしている時のeを渡しているから変なことになる
         # deletebuttons属しているカラムのデータを渡していない
         # deletebuttons自体のデータが渡されている
@@ -560,6 +559,7 @@ class Handlers:
             src = page.get_control(e.target)
             key = src.data["task"]["task"]
 
+        #コンテンツの名前は非表示にしておいて、あとで再表示にvisible  = trueで再表示できるように
         e.control.content = ft.Column(
             controls=[
                 delete_buttons[e.control.data["num"]],

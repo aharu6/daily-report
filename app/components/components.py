@@ -55,6 +55,20 @@ class EndDrawer:
         )
 
 
+        
+# データ読み出し用のドロワー
+class ReloadDrawer:
+    def __init__(self,page):
+        self.page = page
+        
+    def create(self):
+        return ft.NavigationDrawer(
+            position = ft.NavigationDrawerPosition.END,
+            controls = [
+                    ft.Container(ft.Text("読み出し"))
+                    ],
+        )
+        
 class AmDropDown:
     def create(self):
         return ft.Column(
