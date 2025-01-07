@@ -1,13 +1,6 @@
 import flet as ft
 from flet import Page, AppBar, View, Text, ScrollMode
-import json
-import calendar
-import csv
-import pandas as pd
-import sqlite3
 import datetime
-import sys
-from tkinter import filedialog
 from components.components import (
     DateComponent,
     NameDropdown,
@@ -17,9 +10,7 @@ from components.components import (
     EditButton,
     DeleteButtons,
 )
-from handlers.handlers import Handlers
 from handlers.handlersMain import Handlers_Main
-from handlers.handlers_chart import Handlers_Chart
 from models.models import DataModel
 from view.timeline_page import TimelinePage
 from view.setting_page import SettingPage

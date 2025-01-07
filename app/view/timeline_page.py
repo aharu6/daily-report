@@ -7,18 +7,13 @@ from components.components import (
     EndDrawer,
     AmDropDown,
     PmDropDown,
-    EditButton,
-    DeleteButtons,
     ReloadDrawer,
 )
 from handlers.handlers import Handlers
 from handlers.reload_data import ReloadDataHandler
 from handlers.handlersMain import Handlers_Main
-from handlers.handlers_chart import Handlers_Chart
+from handlers.pageScroll import Scroll
 from models.models import DataModel
-from view.setting_page import SettingPage
-
-
 # timelinepageのviewを定義
 # main.pyの内容をこちらに移動する
 class TimelinePage:
@@ -290,6 +285,18 @@ class TimelinePage:
                 ),
             ],
         )
+        #スクロールポジションの設定
+        self.scroll_position = 0
+        
+        #スクロールボタンを実装してみる
+        self.backscrollButton = ft.IconButton(
+            icon = ft.icons.ARROW_BACK,
+            on_click = lambda e:Scroll.scroll_back(print("forward"))
+        )
+        self.forwardscrollButton = ft.IconButton(
+            icon = ft.icons.ARROW_FORWARD,
+            on_click = lambda e:Scroll.scroll_forward(print("back"))
+        )
 
         self.TimeLine.theme = ft.Theme(
             scrollbar_theme=ft.ScrollbarTheme(
@@ -400,10 +407,8 @@ class TimelinePage:
                 ft.Text("NST"),
             ],
         )
-
-    # TimelinePageのviewを返す
-    def create(self):
-        return View(
+        
+        self.contents_list = View(
             "/",  # TimelinePageのURL
             [
                 self.Date,
@@ -420,6 +425,8 @@ class TimelinePage:
                 self.custumDrawerPm,
                 self.ineditButton,
                 self.TimeLine,
+                self.backscrollButton,
+                self.forwardscrollButton,
                 ft.ResponsiveRow(
                     controls=self.selectColumns,
                     run_spacing={"xs": 10},
@@ -453,5 +460,12 @@ class TimelinePage:
                 ),
             ],
             scroll=ScrollMode.AUTO,
+            on_scroll_interval = 4,
             end_drawer=self.reloadDrawer,
         )
+
+    
+
+    # TimelinePageのviewを返す
+    def create(self):
+        return self.contents_list
