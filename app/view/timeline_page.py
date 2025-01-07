@@ -7,18 +7,13 @@ from components.components import (
     EndDrawer,
     AmDropDown,
     PmDropDown,
-    EditButton,
-    DeleteButtons,
     ReloadDrawer,
 )
 from handlers.handlers import Handlers
 from handlers.reload_data import ReloadDataHandler
 from handlers.handlersMain import Handlers_Main
-from handlers.handlers_chart import Handlers_Chart
+from handlers.pageScroll import Scroll
 from models.models import DataModel
-from view.setting_page import SettingPage
-
-
 # timelinepageのviewを定義
 # main.pyの内容をこちらに移動する
 class TimelinePage:
@@ -62,8 +57,9 @@ class TimelinePage:
                     self.model.times(),  # delete_contentでの引数ではtimes
                     self.comment,
                 ),
+                data = {"num":i}
             )
-            for _ in range(len(self.model.times()))
+            for i in range(len(self.model.times()))
         ]
 
         # editbutton
@@ -279,7 +275,7 @@ class TimelinePage:
         self.custumDrawerPm.content = PmDropDown().create()
 
         self.TimeLine = ft.Row(
-            scroll=ft.ScrollMode.ALWAYS,
+            scroll = ft.ScrollMode.ADAPTIVE,
             controls=[
                 ft.Column(
                     controls=[
@@ -289,7 +285,36 @@ class TimelinePage:
                 ),
             ],
         )
-
+        #スクロールボタンを実装してみる
+        #コンテンツの左移動するボタン
+        self.backscrollButton = ft.ElevatedButton(
+            content = ft.Icon(ft.icons.ARROW_BACK),
+            width = 450,
+            on_click = lambda _:self.TimeLine.scroll_to(delta = -100,duration = 200)
+        )
+        #コンテンツ右移動まで移動するボタン
+        self.forwardscrollButton = ft.ElevatedButton(
+            content = ft.Icon(ft.icons.ARROW_FORWARD),
+            width = 450,
+            on_click  = lambda _ :self.TimeLine.scroll_to(delta = 100,duration = 200) #self.TimeLine.scroll_to(delta = 40,duration = 200)
+        )
+        #deltaが効くのなら+ と-で左右にスクロールできればいい
+        #Timelineの外側に置くたwめにさらに囲む必要
+        self.scrollButton = ft.Row(
+            [
+                self.backscrollButton,
+                self.forwardscrollButton,
+            ],
+            ft.MainAxisAlignment.SPACE_BETWEEN,
+        )
+        
+        #scrollmode的に難しい？
+        #オーバーレイ表示が聞けば上に載せられる？
+        #pageでなくて、Timeline上のオーバーレイとすれば効く？
+        #とりあえず下に配置してみて、オーバーレイ表示を実装する
+        #スクロールボタンはできたので一度コミット crossaxisalignment
+        #ボタンを並べた上でバラバラにalignmentを設定？
+        
         self.TimeLine.theme = ft.Theme(
             scrollbar_theme=ft.ScrollbarTheme(
                 track_color={
@@ -399,10 +424,8 @@ class TimelinePage:
                 ft.Text("NST"),
             ],
         )
-
-    # TimelinePageのviewを返す
-    def create(self):
-        return View(
+        
+        self.contents_list = View(
             "/",  # TimelinePageのURL
             [
                 self.Date,
@@ -419,6 +442,7 @@ class TimelinePage:
                 self.custumDrawerPm,
                 self.ineditButton,
                 self.TimeLine,
+                self.scrollButton,
                 ft.ResponsiveRow(
                     controls=self.selectColumns,
                     run_spacing={"xs": 10},
@@ -452,5 +476,12 @@ class TimelinePage:
                 ),
             ],
             scroll=ScrollMode.AUTO,
+            on_scroll_interval = 4,
             end_drawer=self.reloadDrawer,
         )
+        
+        
+    
+    # TimelinePageのviewを返す
+    def create(self):
+        return self.contents_list

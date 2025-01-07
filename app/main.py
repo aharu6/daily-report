@@ -1,13 +1,6 @@
 import flet as ft
 from flet import Page, AppBar, View, Text, ScrollMode
-import json
-import calendar
-import csv
-import pandas as pd
-import sqlite3
 import datetime
-import sys
-from tkinter import filedialog
 from components.components import (
     DateComponent,
     NameDropdown,
@@ -17,9 +10,7 @@ from components.components import (
     EditButton,
     DeleteButtons,
 )
-from handlers.handlers import Handlers
 from handlers.handlersMain import Handlers_Main
-from handlers.handlers_chart import Handlers_Chart
 from models.models import DataModel
 from view.timeline_page import TimelinePage
 from view.setting_page import SettingPage
@@ -30,7 +21,7 @@ def main(page: ft.Page):
 
     page.title = "Daily Report"
     page.window.width = 1400
-    page.window.height = 800
+    page.window.height = 1000
     page.scroll = True
 
     page.theme = ft.Theme(
@@ -46,7 +37,7 @@ def main(page: ft.Page):
                 ft.MaterialState.HOVERED: None,
                 ft.MaterialState.DEFAULT: ft.colors.GREY_300,
             },
-            thickness=30,
+            thickness=15,
             radius=15,
             main_axis_margin=5,
             cross_axis_margin=10,
