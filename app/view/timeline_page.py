@@ -62,8 +62,9 @@ class TimelinePage:
                     self.model.times(),  # delete_contentでの引数ではtimes
                     self.comment,
                 ),
+                data = {"num":i}
             )
-            for _ in range(len(self.model.times()))
+            for i in range(len(self.model.times()))
         ]
 
         # editbutton
@@ -279,7 +280,7 @@ class TimelinePage:
         self.custumDrawerPm.content = PmDropDown().create()
 
         self.TimeLine = ft.Row(
-            scroll=ft.ScrollMode.ALWAYS,
+            scroll=ft.ScrollMode.ADAPTIVE,
             controls=[
                 ft.Column(
                     controls=[

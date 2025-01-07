@@ -131,7 +131,6 @@ class Handlers:
     def change_choice_button(e, selectColumns, page):
         # visible falseで重くなるようであればclearの使用を検討する
         # selectColumns[0].controls.clear()
-        print(e.data)
         match int(e.data):
             case 0:  # 病棟担当
                 selectColumns[0].visible = True  # 情報収集　指導
@@ -377,12 +376,11 @@ class Handlers:
         # columns[i]でそのカラムの情報を取得し、見た目上削除
         # 正しくはcolumnsの初期化を行う。ドラッグする前の状態に戻す
         col_num = delete_buttons[e.control.data["num"]].data["num"]
-        print(col_num)
         # 同じ情報の新しいカラムに差し替える
         columns[col_num].content.content = ft.Container(
             width=50,
             height=300,
-            bgcolor=ft.colors.BLUE_50,
+            bgcolor="#CBDCEB",
             border_radius=5,
         )
         # おそらくセットしている時のeを渡しているから変なことになる
@@ -407,7 +405,6 @@ class Handlers:
     # カウンターの関数
     @staticmethod
     def counterPlus(e, count_field, count_dict, time):
-        print(e)
         old_Count = int(count_field.value)
         new_Count = old_Count + 1
         # 更新した値にてカウンター内を更新
@@ -415,7 +412,6 @@ class Handlers:
         count_field.update()
         # dict内の値を更新
         count_dict[time]["count"] = new_Count
-        print(count_dict)
 
     @staticmethod
     def counterMinus(e, count_field, count_dict, time):
@@ -426,7 +422,6 @@ class Handlers:
         count_field.value = new_Count
         count_field.update()
         # dict内の値を更新
-        print(e.control.data)
         count_dict[time]["count"] = new_Count
 
     @staticmethod
@@ -467,13 +462,11 @@ class Handlers:
 
     @staticmethod
     def dlg_close(e, dlg, page):
-        print("close")
         dlg.open = False
         page.update()
 
     @staticmethod
     def create_dialog_for_comment(e, comments, dlg, comment_dict, comment_field, page):
-        print(e.control.data["time"])
         comment_time = comments[e.control.data["num"]].data["time"]
         comment_num = comments[e.control.data["num"]].data["num"]
         dlg.data = {"time": comment_time, "num": comment_num}
@@ -517,7 +510,6 @@ class Handlers:
 
     @staticmethod
     def open_Drawer(e, customDrawer, page):
-        print("open")
         customDrawer.visible = not customDrawer.visible
         page.update()
 
@@ -534,13 +526,10 @@ class Handlers:
         comment,
         count_dict,
     ):
-        print(e.control.group)
         src_id_str = e.src_id.replace("_", "")
         try:
             src_id_int = int(src_id_str)
             # 次カラム
-            print("nowid", e.src_id)
-            print(f"_{src_id_int + 4}")
             next_id = f"_{src_id_int + 4}"
         except:
             pass
@@ -737,8 +726,6 @@ class Handlers:
         try:
             src_id_int = int(src_id_str)
             # 次カラム
-            print("nowid", e.src_id)
-            print(f"_{src_id_int + 4}")
             next_id = f"_{src_id_int + 4}"
         except:
             pass
@@ -795,7 +782,6 @@ class Handlers:
 
         # ドラッグ時にコンテンツを更新する用
         columns[e.control.data["num"]].content.data["task"] = key
-        print("columns", columns[e.control.data["num"]].content.data["task"])
         # moveにて新規src_idが追加された場合、その情報をdrag_dataに追加
         # elseに向けて辞書データを更新しておく
         draggable_data[e.src_id] = {"task": key}
@@ -905,10 +891,8 @@ class Handlers:
         # 最後にデータベースに保管する
 
         # 入力された辞書データの長さ
-        # print(len(drag_data.keys()))
         # first_key = list(drag_data.keys())[0]
         # first_value = drag_data[first_key]
-        # print(first_key)
 
         # 初期ベースの作成
         # 時間
