@@ -287,13 +287,15 @@ class TimelinePage:
         )
         #スクロールボタンを実装してみる
         #コンテンツの左移動するボタン
-        self.backscrollButton = ft.IconButton(
-            icon = ft.icons.ARROW_BACK,
+        self.backscrollButton = ft.ElevatedButton(
+            content = ft.Icon(ft.icons.ARROW_BACK),
+            width = 450,
             on_click = lambda _:self.TimeLine.scroll_to(delta = -100,duration = 200)
         )
         #コンテンツ右移動まで移動するボタン
-        self.forwardscrollButton = ft.IconButton(
-            icon = ft.icons.ARROW_FORWARD,
+        self.forwardscrollButton = ft.ElevatedButton(
+            content = ft.Icon(ft.icons.ARROW_FORWARD),
+            width = 450,
             on_click  = lambda _ :self.TimeLine.scroll_to(delta = 100,duration = 200) #self.TimeLine.scroll_to(delta = 40,duration = 200)
         )
         #deltaが効くのなら+ と-で左右にスクロールできればいい
