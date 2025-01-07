@@ -435,4 +435,23 @@ class TimelinePage:
                     ),
                     destinations=[
                         ft.NavigationBarDestination(
-                         
+                            icon=ft.icons.CREATE,
+                            label="Create",
+                            selected_icon=ft.icons.BORDER_COLOR,
+                        ),
+                        ft.NavigationBarDestination(
+                            icon=ft.icons.SHOW_CHART,
+                            label="Showchart",
+                            selected_icon=ft.icons.AUTO_GRAPH,
+                        ),
+                        ft.NavigationBarDestination(
+                            icon=ft.icons.SETTINGS,
+                            selected_icon=ft.icons.SETTINGS_SUGGEST,
+                            label="Settings",
+                        ),
+                    ],
+                ),
+            ],
+            scroll=ScrollMode.AUTO,
+            end_drawer=self.reloadDrawer,
+        )
