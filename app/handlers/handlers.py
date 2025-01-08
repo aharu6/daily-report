@@ -416,15 +416,39 @@ class Handlers:
         
         #カラムのデータは初期化したから何もないはず　空になる
         key = columns[col_num].content.data["task"]
-        print(key)
         try:
             if right_key != key:
-                #削除するとカラムのデータはなくなるので、右カラムと削除カラムにてdataが異なるようになる
+                #削除するとカラムのデータはなくなるので、右カラムと削除カラムにてdataが異なる
+                #カラムの文字を再表示
                 columns[right_col_num].content.content.controls[1].content.content.visible = True
         except:
             pass
         
+        #カウンターを再表示、再追加
+        #keyによってカウンターの追加、非追加が異なる
+        #カウンター必要なkey
         
+        #現在カラムのkeyは削除ずみ
+        #右カラムのrightcolumn[key]を取得
+        match right_key:
+            case "その他":
+                #
+                pass
+            case (
+                "混注時間"
+                | "休憩"
+                | "委員会"
+                | "WG活動"
+                | "勉強会参加"
+                | "1on1"
+                | "カンファレンス"
+            ):
+                #カウンター表示不要
+                pass
+            case _:
+                columns[right_col_num].content.content.controls.append(
+                    Handlers.create_counter(columns[right_col_num].content.data["time"],count_dict)
+                )
         page.update()
 
     # カウンターの関数
