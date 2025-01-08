@@ -3,3 +3,4 @@
 /.vs
 /dist
 /build
+app/dist/main.exe
