@@ -393,7 +393,7 @@ class Handlers:
         del drag_data[DataModel().times()[col_num]]
         # 該当のカウントデータも削除する
         if DataModel().times()[col_num] in count_dict:
-            del comment_dict[DataModel.times()[col_num]]
+            del count_dict[DataModel().times()[col_num]]
         # 該当のその他のデータも削除する
         if DataModel().times()[col_num] in comment_dict:
             del comment_dict[DataModel().times()[col_num]]
