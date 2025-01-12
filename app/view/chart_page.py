@@ -3,45 +3,74 @@ from flet import View
 import datetime
 from handlers.handlersMain import Handlers_Main
 from handlers.handlers_chart import Handlers_Chart
-from components.compoments_chart import ComponentChart
-from tkinter import filedialog
+from components.compoments_chart import ComponentChart, FilePick_card
+import asyncio as aio
+
+
 class ChartPage:
-    def  __init__(self,page):
+    def __init__(self, page):
         self.page = page
+
+        # データフレームを定義しておく
+        # ファイルのアップロードにてデータフレームの作成まで
+        self.dataframe = None
         self.file_picker = ft.FilePicker(
             on_result=lambda e: Handlers_Chart.pick_file_result(
-                e, self.selected_files, self.bar_chart
+                e, self.selected_files, self
             )
         )
-        self.file_picker_Button = ft.ElevatedButton(
+        self.file_picker_Button = ft.TextButton(
             "ファイルを選択",
             on_click=lambda _: self.file_picker.pick_files(allow_multiple=True),
         )
-        self.selected_files = ft.Text()
-        self.bar_chart = ft.BarChart(
-            bar_groups=[],
-            border=ft.border.all(1, ft.colors.GREEN_100),
-            left_axis=ft.ChartAxis(labels_size=40, title=ft.Text("Count"), title_size=20),
-            bottom_axis=ft.ChartAxis(labels_size=40),
-            horizontal_grid_lines=ft.ChartGridLines(
-                color=ft.colors.GREEN_100, width=1, dash_pattern=[3, 3]
-            ),
-            tooltip_bgcolor=ft.colors.with_opacity(0.5, ft.colors.GREEN_100),
-            max_y=10,
-            interactive=True,
-            expand=True,
+        self.select = ft.Row(
+            controls=[
+                FilePick_card(self.file_picker_Button).create(),
+            ],
+            alignment=ft.MainAxisAlignment.END,
         )
+        self.selected_files = ft.Text()
+
         self.page.overlay.append(self.file_picker)
 
-        
-        
+        self.subtitle2 = ft.Text("病棟ごとの集計")
+        self.horizon_subtitle = ft.Divider()
+        self.chart2_field = ft.ResponsiveRow(controls=[])
+        self.chart2card = ft.Card(
+            content=ft.TextButton(
+                "グラフを生成",
+                on_click=lambda _: Handlers_Chart.ComponentChart_for_location(
+                    self.dataframe, self.chart2_field.controls,page
+                ),
+            )
+        )
+
+        self.subtitle3 = ft.Text("個人ごとの集計")
+        self.chart3_field = ft.ResponsiveRow()
+        # あとでファイルを選択していない状態でボタンを押したときにはエラーメッセージを表示するようにする
+        self.chart3card = ft.Card(
+            content=ft.TextButton(
+                "グラフを生成",
+                on_click=lambda _: Handlers_Chart.ComponentChart_for_self(
+                    self.dataframe, self.chart3_field
+                ),
+            )
+        )
+
     def create(self):
         return View(
             "/chart",
             [
-                self.file_picker_Button,
+                self.select,
                 self.selected_files,
-                self.bar_chart,
+                self.subtitle2,
+                self.horizon_subtitle,
+                self.chart2card,
+                self.chart2_field,
+                self.subtitle3,
+                self.horizon_subtitle,
+                self.chart3card,
+                self.chart3_field,
                 # chartPage,
                 ft.CupertinoNavigationBar(
                     selected_index=1,
@@ -69,5 +98,5 @@ class ChartPage:
                         ),
                     ],
                 ),
-            ]
+            ],
         )
