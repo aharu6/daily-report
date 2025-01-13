@@ -251,6 +251,7 @@ class TimelinePage:
         self.iconforampmselect = ft.Icon(
             ft.icons.SCHEDULE,
         )
+        
         self.amDropDown = ft.TextButton(
             "AM",
             on_click=lambda e: Handlers.open_Drawer(e, self.custumDrawerAm, self.page),
