@@ -3,7 +3,7 @@ from flet import View
 import datetime
 from handlers.handlersMain import Handlers_Main
 from handlers.handlers_chart import Handlers_Chart
-from components.compoments_chart import ComponentChart, FilePick_card
+from components.compoments_chart import FilePickCard
 import asyncio as aio
 
 
@@ -25,7 +25,7 @@ class ChartPage:
         )
         self.select = ft.Row(
             controls=[
-                FilePick_card(self.file_picker_Button).create(),
+                FilePickCard(self.file_picker_Button).create(),
             ],
             alignment=ft.MainAxisAlignment.END,
         )
@@ -40,7 +40,7 @@ class ChartPage:
             content=ft.TextButton(
                 "グラフを生成",
                 on_click=lambda _: Handlers_Chart.ComponentChart_for_location(
-                    self.dataframe, self.chart2_field.controls,page
+                    self.dataframe, self.chart2_field.controls, page
                 ),
             )
         )
@@ -99,4 +99,5 @@ class ChartPage:
                     ],
                 ),
             ],
+            scroll=True,
         )

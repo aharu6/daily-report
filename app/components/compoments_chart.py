@@ -4,7 +4,7 @@ import flet as ft
 class ComponentChart:
     pass
 
-class FilePick_card:
+class FilePickCard:
     def __init__(self,textButton):
         """_summary_
 
