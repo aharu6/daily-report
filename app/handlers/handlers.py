@@ -9,6 +9,13 @@ from handlers.drag_move import DragMoveHandler
 class Handlers:
     @staticmethod
     def handle_change(e, today, Date):
+        """_summary_
+
+        Args:
+            e (_type_): _description_
+            today (_type_): _description_
+            Date (_type_): _description_
+        """
         selected_date = e.control.value  # 例えば2021-01-01のような形式
 
         # 文字列を日付オブジェクトに変換
@@ -20,6 +27,14 @@ class Handlers:
 
     @staticmethod
     def dropdown_changed(e, phName, dialog, page):
+        """_summary_
+
+        Args:
+            e (_type_): _description_
+            phName (_type_): _description_
+            dialog (_type_): _description_
+            page (_type_): _description_
+        """
         if phName.value == "Add":
             dialog.open = True
             page.update()
@@ -33,6 +48,13 @@ class Handlers:
 
     @staticmethod
     def update_dropdown(phName, phNameList, page):
+        """_summary_
+
+        Args:
+            phName (_type_): _description_
+            phNameList (_type_): _description_
+            page (_type_): _description_
+        """
         if isinstance(phNameList, str):
             phNameList = json.loads(phNameList)
         options = []
@@ -50,10 +72,24 @@ class Handlers:
     # setting pageに移動予定
     @staticmethod
     def drawer_open(e, page, endDrawer):
+        """_summary_
+
+        Args:
+            e (_type_): _description_
+            page (_type_): _description_
+            endDrawer (_type_): _description_
+        """
         page.open(endDrawer)
 
     @staticmethod
     def delete_name(e, phNameList, page):
+        """_summary_
+
+        Args:
+            e (_type_): _description_
+            phNameList (_type_): _description_
+            page (_type_): _description_
+        """
         new_phNameList = phNameList.remove(e.control.data)
         page.set("phName", json.dumps(new_phNameList, ensure_ascli=False))
         page.update()

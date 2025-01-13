@@ -14,6 +14,20 @@ class DragMoveHandler:
         comment,
         count_dict,
     ):
+        """_summary_
+
+        Args:
+            e (_type_): _description_
+            page (_type_): _description_
+            draggable_data (_type_): _description_
+            delete_buttons (_type_): _description_
+            columns (_type_): _description_
+            comments (_type_): _description_
+            times (_type_): _description_
+            drag_data (_type_): _description_
+            comment (_type_): _description_
+            count_dict (_type_): _description_
+        """
         src_id_str = e.src_id.replace("_", "")
         try:
             src_id_int = int(src_id_str)
