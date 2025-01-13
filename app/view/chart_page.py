@@ -52,7 +52,7 @@ class ChartPage:
             content=ft.TextButton(
                 "グラフを生成",
                 on_click=lambda _: Handlers_Chart.ComponentChart_for_self(
-                    self.dataframe, self.chart3_field
+                    self.dataframe, self.chart3_field.controls,page
                 ),
             )
         )

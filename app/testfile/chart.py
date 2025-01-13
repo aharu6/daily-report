@@ -2,7 +2,7 @@ import pandas as pd
 import ast
 
 read_csv = pd.read_csv(
-    "/Users/aizawaharuka/Documents/GitHub/dailyreport/daily-report/app/output_csv/2025-01-12.csv"
+    "/Users/aizawaharuka/Documents/GitHub/daily/app/output_csv/2025-01-13.csv"
 )
 
 # テスト
@@ -35,4 +35,20 @@ import plotly.express as px
 import plotly
 
 fig = px.pie(group_df[group_df["locate"] == "3B"], values="counts", names="Task")
+print(group_df)
 fig.show()
+
+
+#個人グラフの作成
+# horizontal bar chart orientation = "h"にて作成可能
+fig_bar_test = px.bar(group_df, x="counts", y="locate", color="Task", barmode="stack",orientation="h")
+print(group_df)
+fig_bar_test.show()
+
+#　個人ごとにデータをまとめ直す
+# csvファイルは個人ごとに保存する必要があるから、あとでcsvファイル保存名を変更する
+gorup_by_person = df.groupby(["PhName","Task"]).size().reset_index(name="counts")
+print(gorup_by_person)
+fig_bar = px.bar(gorup_by_person,x = "counts",y = "PhName",color = "Task",barmode = "stack",orientation = "h")
+fig_bar.show()
+print(gorup_by_person)

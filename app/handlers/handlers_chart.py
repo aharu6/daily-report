@@ -63,7 +63,6 @@ class Handlers_Chart:
         group_df_locate = (
             df.groupby(["locate", "Task"]).size().reset_index(name="counts")
         )
-        print(group_df_locate)
         for locate in group_df_locate["locate"].unique():
             fig = px.pie(
                 group_df_locate[group_df_locate["locate"] == locate],
@@ -86,20 +85,35 @@ class Handlers_Chart:
                     col={"sm": 10, "md": 6, "xl": 4},
                 )
             )
-            print(locate)
-
         page.update()
         # その上にplotlyにて円グラフを作成する
 
     @staticmethod
-    def ComponentChart_for_self(dataframe):
+    def ComponentChart_for_self(dataframe,chart_field,page):
         """_summary_
 
         Args:
             dataframe (_type_): pick_file_resultで返されるデータフレーム
         """
-        # データフレームを渡してグラフを生成する
-        print(dataframe)
-        # まずグラフを描画するcardを作成
+        #データフレームの作成
+        new_rows = []
+        for index, row in dataframe.iterrows():
+            tarn_row = ast.literal_eval(row["locate"])
+            for loc in range(len(tarn_row)):
+                new_row = row.copy()
+                new_row["locate"] = tarn_row[loc]
+                new_rows.append(new_row)
 
+        df = pd.DataFrame(new_rows)
+        
+        # 個人ごとにデータをまとめ直す
+        gorup_by_person = df.groupby(["PhName","Task"]).size().reset_index(name="counts")
+        
+        
         # その上にplotlyにて円グラフを作成する
+        fig_bar = px.bar(gorup_by_person,x = "counts",y = "PhName",color = "Task",barmode = "stack",orientation = "h")
+        # まずグラフを描画するcardを作成
+        chart_field.append(ft.Card(content = 
+            PlotlyChart(fig_bar,expand = True,original_size = False,isolated = True)
+        ))
+        page.update()
