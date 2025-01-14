@@ -27,7 +27,6 @@ df = pd.DataFrame(new_rows)
 # 病棟かつ業務内容ごとにgroupbyして集計する
 group_df = df.groupby(["locate", "Task"]).size().reset_index(name="counts")
 group_df_locate = df.groupby(["locate"]).size().reset_index(name="counts")
-print(group_df_locate["locate"].unique())
 
 
 # 病棟分円グラフを作成する
@@ -35,20 +34,32 @@ import plotly.express as px
 import plotly
 
 fig = px.pie(group_df[group_df["locate"] == "3B"], values="counts", names="Task")
-print(group_df)
 fig.show()
 
 
 #個人グラフの作成
 # horizontal bar chart orientation = "h"にて作成可能
 fig_bar_test = px.bar(group_df, x="counts", y="locate", color="Task", barmode="stack",orientation="h")
-print(group_df)
 fig_bar_test.show()
 
 #　個人ごとにデータをまとめ直す
 # csvファイルは個人ごとに保存する必要があるから、あとでcsvファイル保存名を変更する
 gorup_by_person = df.groupby(["PhName","Task"]).size().reset_index(name="counts")
-print(gorup_by_person)
 fig_bar = px.bar(gorup_by_person,x = "counts",y = "PhName",color = "Task",barmode = "stack",orientation = "h")
 fig_bar.show()
-print(gorup_by_person)
+
+# bubble chart
+group_bubble = df.groupby(["locate","Task","Count"]).size().reset_index(name="times")
+#Countsが0の場合とそれ以外に分かれるので、それぞれを合計する
+group_bubble2 = group_bubble.groupby(["locate","Task"]).sum(numeric_only=True).reset_index()
+#times*15 = かかった時間となるので計算しなおす
+group_bubble2["times"] = group_bubble2["times"]*15
+print(group_bubble2)
+fig_bubble = px.scatter(group_bubble2,x = "times",y = "Count",color = "Task",text = "Task" ,
+                        )
+fig_bubble.update_layout(yaxis =dict(title = "件数"),
+                        xaxis = dict(title = "かかった時間")
+                        )
+fig_bubble.update_traces(textposition='top center')
+fig_bubble.show()
+
