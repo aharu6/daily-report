@@ -866,7 +866,11 @@ class Handlers:
 
         # csvファイルの書き込み
         if select_directory.result and select_directory.result.path:
-            file_path = select_directory.result.path + f"/{today}.csv"
+            print(phName.value)
+            try:
+                file_path = select_directory.result.path + f"/{today}"+f"{phName.value}"+".csv"
+            except:
+                file_path = select_directory.result.path + f"/{today}.csv"
             with open(file_path, "w", newline="") as f:
                 writer = csv.writer(f)
                 writer.writerow(
