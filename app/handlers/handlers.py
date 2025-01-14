@@ -594,7 +594,8 @@ class Handlers:
         page.update()
 
     @staticmethod
-    def open_Drawer(e, customDrawer, page):
+    def open_Drawer(e,customDrawerTile, customDrawer, page):
+        customDrawerTile.visible = not customDrawerTile.visible
         customDrawer.visible = not customDrawer.visible
         page.update()
 
