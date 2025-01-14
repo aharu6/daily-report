@@ -1,1 +1,2 @@
-pyinstaller --onefile --hidden-import pandas --hidden-import numpy --hidden-import csv --hidden-import datetime "main.py"
+pyinstaller --onefile --icon=appicon\diary-left-svgrepo-com.ico --hidden-import pandas --hidden-import numpy --hidden-import csv --hidden-import datetime "main.py"
+
