@@ -26,7 +26,7 @@ class Handlers:
         Date.update()
 
     @staticmethod
-    def dropdown_changed(e, phName, dialog, page):
+    def dropdown_changed(e, phName, dialog, page,require_error_message):
         """_summary_
 
         Args:
@@ -39,6 +39,7 @@ class Handlers:
             dialog.open = True
             page.update()
         else:
+            require_error_message.content = None
             page.update()
 
     @staticmethod
@@ -780,111 +781,118 @@ class Handlers:
         page,
         comment_dict,
         select_directory,
+        save_error_message,
     ):
-        # 最後にデータベースに保管する
+        #名前が入力されていない場合にはエラーを表示する
+        if phName.value == None:
+            save_error_message.content = ft.Text("名前を入力してください", color="red")
+            page.update()
+        else:
+            save_error_message.content = None
+            page.update()
+            # 最後にデータベースに保管する
 
-        # 入力された辞書データの長さ
-        # first_key = list(drag_data.keys())[0]
-        # first_value = drag_data[first_key]
+            # 入力された辞書データの長さ
+            # first_key = list(drag_data.keys())[0]
+            # first_value = drag_data[first_key]
 
-        # 初期ベースの作成
-        # 時間
-        time_for_label = times
-        # 初期ベースの作成
-        set_data = [
-            {
-                "time": time_for_label[i],
-                "task": "",
-                "count": 0,
-                "locate": "AM" if time_for_label[i] in amTime else "PM",
-                "date": str(today),
-                "PhName": "",
-                "comment": "",
-            }
-            for i in range(len(columns))
-        ]
-        # リストを辞書形式に変換
-        data_dict = {record["time"]: record for record in set_data}
-        # 辞書データの更新
-        # taskデータの書き込み
-        for time, task_data in drag_data.items():
-            if time in data_dict:
-                data_dict[time]["task"] = task_data["task"]
-        # countデータの書き込み
-        for time, count in count_dict.items():
-            if time in data_dict:
-                data_dict[time]["count"] = count["count"]
+            # 初期ベースの作成
+            # 時間
+            time_for_label = times
+            # 初期ベースの作成
+            set_data = [
+                {
+                    "time": time_for_label[i],
+                    "task": "",
+                    "count": 0,
+                    "locate": "AM" if time_for_label[i] in amTime else "PM",
+                    "date": str(today),
+                    "PhName": "",
+                    "comment": "",
+                }
+                for i in range(len(columns))
+            ]
+            # リストを辞書形式に変換
+            data_dict = {record["time"]: record for record in set_data}
+            # 辞書データの更新
+            # taskデータの書き込み
+            for time, task_data in drag_data.items():
+                if time in data_dict:
+                    data_dict[time]["task"] = task_data["task"]
+            # countデータの書き込み
+            for time, count in count_dict.items():
+                if time in data_dict:
+                    data_dict[time]["count"] = count["count"]
 
-        # 病棟データの書き込み
-        # AMの場合
-        list_am_location_data = []
-        for i in range(len(custumDrawerAm.content.controls)):
-            if custumDrawerAm.content.controls[i].value == True:
-                list_am_location_data.append(custumDrawerAm.content.controls[i].label)
+            # 病棟データの書き込み
+            # AMの場合
+            list_am_location_data = []
+            for i in range(len(custumDrawerAm.content.controls)):
+                if custumDrawerAm.content.controls[i].value == True:
+                    list_am_location_data.append(custumDrawerAm.content.controls[i].label)
 
-        for time in data_dict.keys():
-            if list_am_location_data is not None:
-                if data_dict[time]["locate"] == "AM":
-                    data_dict[time]["locate"] = list_am_location_data
-            else:
-                None
+            for time in data_dict.keys():
+                if list_am_location_data is not None:
+                    if data_dict[time]["locate"] == "AM":
+                        data_dict[time]["locate"] = list_am_location_data
+                else:
+                    None
 
-            # PMの場合
-        list_pm_location_data = []
-        for i in range(len(custumDrawerPm.content.controls)):
-            if custumDrawerPm.content.controls[i].value == True:
-                list_pm_location_data.append(custumDrawerPm.content.controls[i].label)
+                # PMの場合
+            list_pm_location_data = []
+            for i in range(len(custumDrawerPm.content.controls)):
+                if custumDrawerPm.content.controls[i].value == True:
+                    list_pm_location_data.append(custumDrawerPm.content.controls[i].label)
 
-        for time in data_dict.keys():
-            if list_pm_location_data is not None:
-                if data_dict[time]["locate"] == "PM":
-                    data_dict[time]["locate"] = list_pm_location_data
-            else:
-                None
+            for time in data_dict.keys():
+                if list_pm_location_data is not None:
+                    if data_dict[time]["locate"] == "PM":
+                        data_dict[time]["locate"] = list_pm_location_data
+                else:
+                    None
 
-        list_pm_location_data = []
-        for time in data_dict.keys():
-            if list_pm_location_data is not None:
-                if data_dict[time]["locate"] == "PM":
-                    data_dict[time]["locate"] = list_pm_location_data
-            else:
-                None
+            list_pm_location_data = []
+            for time in data_dict.keys():
+                if list_pm_location_data is not None:
+                    if data_dict[time]["locate"] == "PM":
+                        data_dict[time]["locate"] = list_pm_location_data
+                else:
+                    None
 
-        # phName データの書き込み
-        for time in data_dict.keys():
-            if phName.value != None:
-                data_dict[time]["phName"] = phName.value
-            else:
-                data_dict[time]["phName"] = ""
-        page.client_storage.set(
-            "timeline_data", json.dumps(data_dict, ensure_ascii=False)
-        )
-        # その他コメントの書き込み
-        for time, comment_data in comment_dict.items():
-            if time in data_dict:
-                data_dict[time]["comment"] = comment_data["comment"]
+            # phName データの書き込み
+            for time in data_dict.keys():
+                if phName.value != None:
+                    data_dict[time]["phName"] = phName.value
+                else:
+                    data_dict[time]["phName"] = ""
+            page.client_storage.set(
+                "timeline_data", json.dumps(data_dict, ensure_ascii=False)
+            )
+            # その他コメントの書き込み
+            for time, comment_data in comment_dict.items():
+                if time in data_dict:
+                    data_dict[time]["comment"] = comment_data["comment"]
 
-        # csvファイルの書き込み
-        if select_directory.result and select_directory.result.path:
-            print(phName.value)
-            try:
-                file_path = select_directory.result.path + f"/{today}"+f"{phName.value}"+".csv"
-            except:
-                file_path = select_directory.result.path + f"/{today}.csv"
-            with open(file_path, "w", newline="") as f:
-                writer = csv.writer(f)
-                writer.writerow(
-                    ["Time", "Task", "Count", "locate", "date", "PhName", "Comment"]
-                )
-                for time, record in data_dict.items():
+            # csvファイルの書き込み
+            if select_directory.result and select_directory.result.path:
+                try:
+                    file_path = select_directory.result.path + f"/{today}"+f"{phName.value}"+".csv"
+                except:
+                    file_path = select_directory.result.path + f"/{today}.csv"
+                with open(file_path, "w", newline="") as f:
+                    writer = csv.writer(f)
                     writer.writerow(
-                        [
-                            record["time"],
-                            record["task"],
-                            record["count"],
-                            record["locate"],
-                            record["date"],
-                            record["phName"],
-                            record["comment"],
-                        ]
+                        ["Time", "Task", "Count", "locate", "date", "PhName", "Comment"]
                     )
+                    for time, record in data_dict.items():
+                        writer.writerow(
+                            [
+                                record["time"],
+                                record["task"],
+                                record["count"],
+                                record["locate"],
+                                record["date"],
+                                record["phName"],
+                                record["comment"],
+                            ]
+                        )
