@@ -122,10 +122,13 @@ class TimelinePage:
                 ),
             ],
         )
-
+        
+        self.require_name = ft.Container(ft.Text("名前を選択してください", color="red"))
         self.save_button = ft.ElevatedButton(
-            text="Save", on_click=lambda e: self.select_directory.get_directory_path()
+            text="保存", on_click=lambda e: self.select_directory.get_directory_path()
         )
+        
+        self.save_error_message = ft.Container()
         self.select_directory = ft.FilePicker(
             on_result=lambda e: Handlers.write_csv_file(
                 e,
@@ -143,8 +146,10 @@ class TimelinePage:
                 self.page,
                 self.comment_dict,
                 self.select_directory,
+                self.save_error_message,
             )
         )
+        
         page.overlay.append(self.select_directory)
 
         self.selectColumns = []
@@ -356,7 +361,7 @@ class TimelinePage:
             self.page,
             self.phNameList,
             dropdown_changed=lambda e: Handlers.dropdown_changed(
-                e, self.phName, self.dialog, self.page
+                e, self.phName, self.dialog, self.page,self.require_name
             ),
         )
         self.phName = self.name_dropdown.create()
@@ -465,7 +470,9 @@ class TimelinePage:
                     controls=self.selectColumns,
                     run_spacing={"xs": 10},
                 ),
+                self.require_name,
                 self.save_button,
+                self.save_error_message,
                 ft.CupertinoNavigationBar(
                     selected_index=0,
                     bgcolor=ft.colors.BLUE_GREY_50,
