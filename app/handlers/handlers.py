@@ -315,6 +315,7 @@ class Handlers:
 
                 page.update()
             case 4:  # ICT/AST
+                print("ICT/AST")
                 # 表示
                 selectColumns[16].visible = True  # ICT/AST
                 # 非表示
@@ -330,10 +331,10 @@ class Handlers:
                 selectColumns[9].visible = False  # 医師からの相談
                 selectColumns[10].visible = False  # 看護師からの相談
                 selectColumns[11].visible = False  # その他の職種からの相談
-                selectColumns[12].visible = True  # 委員会
-                selectColumns[13].visible = True  # 勉強会参加
-                selectColumns[14].visible = True  # WG活動
-                selectColumns[15].visible = True  # 1on1
+                selectColumns[12].visible = False  # 委員会
+                selectColumns[13].visible = False  # 勉強会参加
+                selectColumns[14].visible = False  # WG活動
+                selectColumns[15].visible = False  # 1on1
 
                 selectColumns[17].visible = False  # 褥瘡
                 selectColumns[18].visible = False  # TPN評価
@@ -348,6 +349,7 @@ class Handlers:
                 selectColumns[27].visible = False  # 休憩
                 selectColumns[28].visible = False  # その他
                 selectColumns[29].visible = False  # 管理業務
+                page.update()
 
             case 5:  # NST
                 # 表示
