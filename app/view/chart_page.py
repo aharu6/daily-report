@@ -32,9 +32,20 @@ class ChartPage:
         self.selected_files = ft.Text()
 
         self.page.overlay.append(self.file_picker)
-
-        self.subtitle2 = ft.Text("病棟ごとの集計")
+        
+        self.subtitle = ft.Text("集計", size = 20)
         self.horizon_subtitle = ft.Divider()
+        self.chart1_field = ft.ResponsiveRow()
+        self.chart1card = ft.Card(
+            content=ft.TextButton(
+                "グラフを生成",
+                on_click=lambda _: Handlers_Chart.ComponentChart_for_standard(
+                    self.dataframe, self.chart1_field.controls, page
+                ),
+            )
+        )
+
+        self.subtitle2 = ft.Text("病棟ごとの集計",size = 20)
         self.chart2_field = ft.ResponsiveRow(controls=[])
         self.chart2card = ft.Card(
             content=ft.TextButton(
@@ -45,7 +56,7 @@ class ChartPage:
             )
         )
 
-        self.subtitle3 = ft.Text("個人ごとの集計")
+        self.subtitle3 = ft.Text("個人ごとの集計",size = 20)
         self.chart3_field = ft.ResponsiveRow()
         # あとでファイルを選択していない状態でボタンを押したときにはエラーメッセージを表示するようにする
         self.chart3card = ft.Card(
@@ -63,6 +74,10 @@ class ChartPage:
             [
                 self.select,
                 self.selected_files,
+                self.subtitle,
+                self.horizon_subtitle,
+                self.chart1card,
+                self.chart1_field,
                 self.subtitle2,
                 self.horizon_subtitle,
                 self.chart2card,
