@@ -254,11 +254,11 @@ class TimelinePage:
         
         self.amDropDown = ft.TextButton(
             "AM",
-            on_click=lambda e: Handlers.open_Drawer(e, self.custumDrawerAm, self.page),
+            on_click=lambda e: Handlers.open_Drawer(e,self.custumDrawerAmTitle ,self.custumDrawerAm, self.page),
         )
         self.pmDropDown = ft.TextButton(
             "PM",
-            on_click=lambda e: Handlers.open_Drawer(e, self.custumDrawerPm, self.page),
+            on_click=lambda e: Handlers.open_Drawer(e,self.custumDrawerPmTitle, self.custumDrawerPm, self.page),
         )
         self.ampmSelect = ft.Row(
             controls=[
@@ -267,10 +267,25 @@ class TimelinePage:
                 self.pmDropDown,
             ],
         )
+        self.custumDrawerAmTitle = ft.ResponsiveRow(
+            controls=[
+                ft.Text("AM"),
+                ft.Divider(),
+            ]
+        )
+        self.custumDrawerAmTitle.visible = False
+        
         self.custumDrawerAm = ft.Container()
         self.custumDrawerAm.visible = False
         self.custumDrawerAm.content = AmDropDown().create()
 
+        self.custumDrawerPmTitle = ft.ResponsiveRow(
+            controls = [
+                ft.Text("PM"),
+                ft.Divider(),
+            ]
+        )
+        self.custumDrawerPmTitle.visible = False
         self.custumDrawerPm = ft.Container()
         self.custumDrawerPm.visible = False
         self.custumDrawerPm.content = PmDropDown().create()
@@ -439,7 +454,9 @@ class TimelinePage:
                         self.choice_button,
                     ]
                 ),
+                self.custumDrawerAmTitle,
                 self.custumDrawerAm,
+                self.custumDrawerPmTitle,
                 self.custumDrawerPm,
                 self.ineditButton,
                 self.TimeLine,

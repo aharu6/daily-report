@@ -73,8 +73,6 @@ class AmDropDown:
     def create(self):
         return ft.ResponsiveRow(
             [
-                ft.Text("AM"),
-                ft.Divider(),
                 ft.Checkbox(label="ICU",col = {"sm": 6, "md": 4, "xl": 2}),
                 ft.Checkbox(label="3A",col = {"sm": 6, "md": 4, "xl": 2}),
                 ft.Checkbox(label="3B",col = {"sm": 6, "md": 4, "xl": 2}),
@@ -97,8 +95,6 @@ class PmDropDown:
     def create(self):
         return ft.ResponsiveRow(
             [
-                ft.Text("PM"),
-                ft.Divider(),
                 ft.Checkbox(label="ICU",col = {"sm": 6, "md": 4, "xl": 2}),
                 ft.Checkbox(label="3A",col = {"sm": 6, "md": 4, "xl": 2}),
                 ft.Checkbox(label="3B",col = {"sm": 6, "md": 4, "xl": 2}),
