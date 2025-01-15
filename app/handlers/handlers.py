@@ -481,6 +481,7 @@ class Handlers:
                 | "勉強会参加"
                 | "1on1"
                 | "カンファレンス"
+                |"13:15業務調整"
             ):
                 #カウンター表示不要
                 pass
@@ -892,9 +893,7 @@ class Handlers:
             page.client_storage.set(
                 "timeline_data", json.dumps(save_data, ensure_ascii=False)
                 )
-            
-            print("timeline_data", page.client_storage.get("timeline_data"))
-            
+                        
             # その他コメントの書き込み
             for time, comment_data in comment_dict.items():
                 if time in data_dict:
