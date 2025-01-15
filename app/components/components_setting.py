@@ -26,6 +26,9 @@ class Panel:
         if isinstance(phNameList, str):
             phNameList = json.loads(phNameList)
 
+        load_data = page.client_storage.get("timeline_data")
+        key = list(json.loads(load_data).keys())
+        
         return ft.ExpansionPanelList(
             elevation=8,
             divider_color="#D6EFD8",
@@ -57,7 +60,31 @@ class Panel:
                         leading=ft.Icon(ft.icons.STORAGE),
                         title=ft.Text("保存データの削除"),
                     ),
+                    content = ft.DataTable(
+                        width = 700,
+                        #Time,Task,Count,locate,date,PhName,Comment
+                        columns = [
+                            ft.DataColumn(ft.Text("日付_名前")),
+                            ft.DataColumn(ft.Text("")),
+                        ],
+                        rows = [
+                            ft.DataRow(
+                                    cells = [
+                                        ft.DataCell(ft.Text(i)),
+                                        ft.DataCell(ft.IconButton(
+                                            ft.icons.DELETE,
+                                            on_click = lambda e:print("delete"),
+                                            ))
+                                    ]
+                                )
+                            for i in key
+                        ],
+                    ),
                 ),
             ],
         )
 
+
+        
+            
+        

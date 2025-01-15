@@ -45,6 +45,7 @@ class SettingPage:
                 ),
             ],
         )
+        
 
     def create(self):
         return View(
