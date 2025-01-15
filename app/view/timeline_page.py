@@ -75,6 +75,7 @@ class TimelinePage:
             on_click = lambda e:ReloadDataHandler.toggle_Reload_Data(
                 e,
                 self.page,
+                self.Date,
                 self.reloadDrawer,
                 self.columns, #open_saved_data内で使用
                 self.delete_buttons,
