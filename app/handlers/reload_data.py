@@ -140,6 +140,31 @@ class ReloadDataHandler:
                         "task": load_data[key]["task"],
                     }
                 )
+                
+                #カウンター保存データが1以上ある場合にはカウンターの追加
+                if load_data[key]["count"] >1:
+                    columns[i].content.controls.append(Handlers.create_counter(load_data[key]["time"],count_dict))
+                #カウンターデータ0のときには何も表示されない
+                #一番左のカラムだけは0でもカウンターが必要になるから、1以上の指定ではなくて、
+                #カウンター内の値も保存データに基づいて更新
+                
+                #コメントがある場合にはコメントボタンを追加
+                match load_data[key]["task"]:
+                    case "その他":
+                        columns[i].content.contorls.append(comments[i])
+                    # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
+                    case (
+                        "混注時間",
+                        "休憩",
+                        "委員会",
+                        "WG活動",
+                        "勉強会参加",
+                        "1on1",
+                        "カンファレンス",
+                    ):
+                        pass
+                
+                #コメント記載がある場合には内容更新もできる？
             else:
                 #元々のDraggable状態を保持する
                 columns[i].content = ft.DragTarget(
