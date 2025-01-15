@@ -17,7 +17,6 @@ class Handlers_setting:
             phNameList = json.loads(phNameList)
 
         try:
-
             controls = [
                 ft.ListTile(
                     title=ft.Text(f"{item['name']}"),
@@ -65,3 +64,41 @@ class Handlers_setting:
             Handlers_setting.update_ListTile(panel, phNameList=phName_List, page=page)
             diaog.open = False
             page.update()
+            
+    @staticmethod
+    def update_datatable(panel,page):
+        cells = []
+        load_data = page.client_storage.get("timeline_data")
+        dat = json.loads(load_data) 
+        
+        cells = [
+            ft.DataRow(
+                cells = [
+                    ft.DataCell(ft.Text(i)),
+                    ft.DataCell(ft.IconButton(
+                        ft.icons.DELETE,
+                        on_click = lambda e:Handlers_setting.delete_data(e,page,panel),
+                        data = i,
+                        ))
+                ]
+            )
+            for i in list(dat.keys())
+        ]
+        panel.controls[1].content.rows = cells
+
+    @staticmethod   
+    def delete_data(e,page,panel):
+        #client_storageから該当データを削除する
+        load_data = page.client_storage.get("timeline_data")
+        dat = json.loads(load_data)
+        #該当のkey
+        key = e.control.data
+        del dat[key]
+        #削除した新しいデータをclient_storageに保存
+        page.client_storage.set("timeline_data",json.dumps(dat))
+        #Datatableから該当の行を削除する
+        Handlers_setting.update_datatable(panel,page)
+        
+        page.update()
+        
+    

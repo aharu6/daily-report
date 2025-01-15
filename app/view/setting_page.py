@@ -45,6 +45,8 @@ class SettingPage:
                 ),
             ],
         )
+        Handlers_setting.update_datatable(self.panel, page)
+        
 
     def create(self):
         return View(
