@@ -70,11 +70,6 @@ class Panel:
                         rows = [
                             ft.DataRow(
                                     cells = [
-                                        ft.DataCell(ft.Text(i)),
-                                        ft.DataCell(ft.IconButton(
-                                            ft.icons.DELETE,
-                                            on_click = lambda e:print("delete"),
-                                            ))
                                     ]
                                 )
                             for i in key
