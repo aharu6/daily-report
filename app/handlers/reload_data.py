@@ -6,7 +6,7 @@ import flet as ft
 #右側にtimeline適用用のボタンを合わせて表示する
 class ReloadDataHandler:
     @staticmethod
-    def toggle_Reload_Data(e,page,drawer,columns):
+    def toggle_Reload_Data(e,page,drawer,columns,delete_buttons):
         page.open(drawer)
         #保存しているデータを読み出す
         #write csv時の保存名：timeline_data
@@ -26,7 +26,7 @@ class ReloadDataHandler:
                 title = ft.Text(i),
                 trailing = ft.IconButton(
                     ft.icons.EDIT_SQUARE, 
-                    on_click = lambda e:ReloadDataHandler.open_saved_data(e,page,columns,dat),
+                    on_click = lambda e:ReloadDataHandler.open_saved_data(e,page,columns,dat,delete_buttons),
                     data = i
                     ),
                 data = i,
@@ -35,12 +35,11 @@ class ReloadDataHandler:
         
     #保存したデータを開いてcolumnに再転記する
     @staticmethod
-    def open_saved_data(e,page,columns,dat):
+    def open_saved_data(e,page,columns,dat,delete_buttons):
         #columns = self.columns
         #選択したkeyに該当するデータを取り出す
         selected_key = e.control.data
         load_data = dat[selected_key]
-        print(load_data)
         #取り出したデータの長さに従ってcolumns[0] = data[0] の辞書データにてcontentsを更新していく
         """
         columns.contentのメモ
@@ -71,5 +70,40 @@ class ReloadDataHandler:
             },
         )
         """
+        len_load_data = len(list(load_data.keys()) ) 
+        print(len_load_data)    
         
-        pass
+        from handlers.handlers import Handlers
+        for i in range(len_load_data):
+            #keyがあれば基づいてcolumns内容を更新するが、ない場合には元々のDraggable状態を保持する
+            key = list(load_data.keys())[i]
+            if load_data[key]["task"] != "":
+                columns[i].content = ft.Column(
+                    controls  = [
+                        delete_buttons[i],   
+                        ft.Draggable(
+                            group = "timeline",
+                            content = ft.Container(
+                                content = ft.Text(load_data[key]["task"],color = "white"),
+                                width = 50,
+                                height = 140,
+                                bgcolor = Handlers.change_color(load_data[key]["task"]),
+                            ),
+                            data = {
+                                "time": load_data[key]["time"],
+                                "num": i,
+                                "task": load_data[key]["task"],
+                            },
+                        ),
+                    ],
+                    height = 300,
+                    spacing = 0,
+                    data = {
+                        "time": load_data[key]["time"],
+                        "num": i,
+                        "task": load_data[key]["task"],
+                    }
+                )
+            else:
+                pass
+        page.update()
