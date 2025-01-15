@@ -8,22 +8,21 @@ from handlers.drag_move import DragMoveHandler
 
 class Handlers:
     @staticmethod
-    def handle_change(e, today, Date):
+    def handle_change(e, today, Date,page):
         """_summary_
-
+        選択した日付にてカレンダーを更新する
+        デフォルトは今日の日付
         Args:
-            e (_type_): _description_
+            e (_type_): 日付選択
             today (_type_): _description_
             Date (_type_): _description_
+            page (_type_): _description_
         """
         selected_date = e.control.value  # 例えば2021-01-01のような形式
-
-        # 文字列を日付オブジェクトに変換
-        today = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
-
+        print(selected_date.month)
         # 年月日を取得して表示用のテキストに変換
-        Date.text = f"{today.year}/{today.month}/{today.day}"
-        Date.update()
+        Date.text = f"{selected_date.year}/{selected_date.month}/{selected_date.day}"
+        page.update() 
 
     @staticmethod
     def dropdown_changed(e, phName, dialog, page,require_error_message):
