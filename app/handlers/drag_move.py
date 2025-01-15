@@ -48,7 +48,10 @@ class DragMoveHandler:
 
         elif page.get_control(e.target):
             src = page.get_control(e.target)
-            key = src.data["task"]["task"]
+            if isinstance(src.data["task"], dict):
+                key = src.data["task"]["task"]
+            else:
+                key = src.data["task"]
 
         from handlers.handlers import Handlers
         #コンテンツの名前は非表示にしておいて、あとで再表示にvisible  = trueで再表示できるように
