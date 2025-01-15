@@ -78,6 +78,8 @@ class DragMoveHandler:
                 "task": key,
             },
         )
+        page.add(e.control.content)
+        e.control.content.update()
 
         # ドラッグ時にコンテンツを更新する用
         columns[e.control.data["num"]].content.data["task"] = key
@@ -97,7 +99,7 @@ class DragMoveHandler:
         # 一番左のカラムだけ表示、後は非表示にする（カウンターはそもそも作成しない）
         try:
             if left_key == key:
-                e.control.content.controls[1].content.content.visible = False
+                e.control.content.controls[1].content.content.visible = True
                 e.control.content.update()
             elif left_key != key:
                 e.control.content.controls[1].content.content.visible = True
@@ -119,6 +121,7 @@ class DragMoveHandler:
                 | "勉強会参加"
                 | "1on1"
                 | "カンファレンス"
+                | "13:15業務調整"
             ):
                 pass
             # その他の場合にはカウンターを表示する
