@@ -222,3 +222,11 @@ class ReloadDataHandler:
             except:
                 pass   
         page.update()
+        
+        #カウンターデータが1以上ある場合には値に応じてカウンターの値を更新する
+        #カウンターデータが0のときには0のまま
+        for i in range(len_load_data):
+            key = list(load_data.keys())[i]
+            if load_data[key]["count"] > 0:
+                columns[i].content.controls[2].controls[1].value = load_data[key]["count"]
+        page.update()

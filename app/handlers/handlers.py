@@ -893,9 +893,7 @@ class Handlers:
             page.client_storage.set(
                 "timeline_data", json.dumps(save_data, ensure_ascii=False)
                 )
-            
-            print("timeline_data", page.client_storage.get("timeline_data"))
-            
+                        
             # その他コメントの書き込み
             for time, comment_data in comment_dict.items():
                 if time in data_dict:
