@@ -65,7 +65,9 @@ class ReloadDrawer:
         return ft.NavigationDrawer(
             position = ft.NavigationDrawerPosition.END,
             controls = [
-                    ft.Container(ft.Text("保存済データ"))
+                    ft.Container(ft.ListTile(
+                        title = ft.Text("この端末に保管されているデータ")
+                    ))
                     ],
         )
         
