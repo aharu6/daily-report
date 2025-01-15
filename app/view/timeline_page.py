@@ -22,7 +22,7 @@ class TimelinePage:
         self.today = datetime.date.today()
         self.handle_change = Handlers.handle_change
         self.date_component = DateComponent(
-            page, self.today, lambda e: self.handle_change(e, self.today, self.Date)
+            page, self.today, lambda e: self.handle_change(e, self.today, self.Date,page)
         )
         self.Date = self.date_component.create()
 
