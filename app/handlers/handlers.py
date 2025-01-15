@@ -658,7 +658,7 @@ class Handlers:
             controls=[
                 delete_buttons[e.control.data["num"]],
                 ft.Draggable(
-                    group="timeline",
+                    group="timeline_accepted",
                     content=ft.Container(
                         content=ft.Text(key, color="white"),
                         width=50,
@@ -681,7 +681,8 @@ class Handlers:
             },
             # カラムがクリックされた時に隣のカラムにon_move関数をセットできるようにしたい
         )
-
+        page.add(e.control.content) 
+        e.control.content.update()
         # ドラッグ時にコンテンツを更新する用
         columns[e.control.data["num"]].content.data["task"] = key
         # moveにて新規src_idが追加された場合、その情報をdrag_dataに追加
