@@ -426,6 +426,7 @@ class Handlers:
             border_radius=5,
         )
         page.add(columns[col_num].content.content)
+        page.update()
         columns[col_num].content.content.update()
     
         # deletebuttons属しているカラムのデータを渡していない
@@ -704,7 +705,7 @@ class Handlers:
         # 一番左のカラムだけ表示、後は非表示にする（カウンターはそもそも作成しない）
         try:
             if left_key == key:
-                e.control.content.controls[1].content.content.visible = False
+                e.control.content.controls[1].content.content.visible = True
                 e.control.content.update()
             elif left_key != key:
                 e.control.content.controls[1].content.content.visible = True
