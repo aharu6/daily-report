@@ -9,6 +9,7 @@ class ReloadDataHandler:
     def toggle_Reload_Data(
         e,
         page,
+        calender,
         drawer,
         columns,
         delete_buttons,
@@ -41,6 +42,7 @@ class ReloadDataHandler:
                     on_click = lambda e:ReloadDataHandler.open_saved_data(
                         e,
                         page,
+                        calender,
                         columns,
                         dat,
                         delete_buttons,
@@ -62,6 +64,7 @@ class ReloadDataHandler:
     def open_saved_data(
         e,
         page,
+        calender,
         columns,
         dat,
         delete_buttons,
@@ -188,6 +191,13 @@ class ReloadDataHandler:
                     ),
                     data={"time": model_times[i], "num": i, "task": ""},
                 )
+                
+        #カレンダーの更新
+        #適応に最初のkey
+        key_for_calender = list(load_data.keys())[0]
+        update_date = load_data[key_for_calender]["date"]
+        calender.text = update_date
+        calender.data = update_date 
         page.update() #updateしてからカウンターの追加
         
         #columnsにてループする

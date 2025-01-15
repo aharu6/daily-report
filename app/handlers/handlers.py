@@ -12,6 +12,7 @@ class Handlers:
         """_summary_
         選択した日付にてカレンダーを更新する
         デフォルトは今日の日付
+        カレンダーは過去の日付も選択できるように
         Args:
             e (_type_): 日付選択
             today (_type_): _description_
@@ -19,9 +20,9 @@ class Handlers:
             page (_type_): _description_
         """
         selected_date = e.control.value  # 例えば2021-01-01のような形式
-        print(selected_date.month)
         # 年月日を取得して表示用のテキストに変換
         Date.text = f"{selected_date.year}/{selected_date.month}/{selected_date.day}"
+        Date.data = selected_date
         page.update() 
 
     @staticmethod
@@ -771,7 +772,7 @@ class Handlers:
         e,
         times,
         amTime,
-        today,
+        select_day,
         columns,
         drag_data,
         count_dict,
@@ -785,6 +786,7 @@ class Handlers:
         select_directory,
         save_error_message,
     ):
+        date = f"{select_day.data.year}-{select_day.data.month}-{select_day.data.day}"
         #名前が入力されていない場合にはエラーを表示する
         if phName.value == None:
             save_error_message.content = ft.Text("名前を入力してください", color="red")
@@ -808,7 +810,7 @@ class Handlers:
                     "task": "",
                     "count": 0,
                     "locate": "AM" if time_for_label[i] in amTime else "PM",
-                    "date": str(today),
+                    "date": str(date),
                     "PhName": "",
                     "comment": "",
                 }
@@ -876,9 +878,9 @@ class Handlers:
             #形式：日付と名前にて一意に
             #{date_phName}:data_dict} 
             try:
-                data_key = f"{today}_{phName.value}"
+                data_key = f"{date}_{phName.value}"
             except:
-                data_key = f"{today}_NoName"
+                data_key = f"{date}_NoName"
             
             try:
                 old_data = page.client_storage.get("timeline_data")
@@ -901,9 +903,9 @@ class Handlers:
             # csvファイルの書き込み
             if select_directory.result and select_directory.result.path:
                 try:
-                    file_path = select_directory.result.path + f"/{today}"+f"{phName.value}"+".csv"
+                    file_path = select_directory.result.path + f"/{date}"+f"{phName.value}"+".csv"
                 except:
-                    file_path = select_directory.result.path + f"/{today}.csv"
+                    file_path = select_directory.result.path + f"/{date}.csv"
                 with open(file_path, "w", newline="") as f:
                     writer = csv.writer(f)
                     writer.writerow(

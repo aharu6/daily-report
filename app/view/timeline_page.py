@@ -19,13 +19,12 @@ from models.models import DataModel
 class TimelinePage:
     def __init__(self, page):
         self.page = page
-        self.today = datetime.date.today()
         self.handle_change = Handlers.handle_change
+        self.today = datetime.date.today()
         self.date_component = DateComponent(
             page, self.today, lambda e: self.handle_change(e, self.today, self.Date,page)
         )
         self.Date = self.date_component.create()
-
         self.model = DataModel()
         self.phNameList = self.model.load_data(page)
 
@@ -76,6 +75,7 @@ class TimelinePage:
             on_click = lambda e:ReloadDataHandler.toggle_Reload_Data(
                 e,
                 self.page,
+                self.Date,
                 self.reloadDrawer,
                 self.columns, #open_saved_data内で使用
                 self.delete_buttons,
@@ -146,7 +146,7 @@ class TimelinePage:
                 e,
                 self.model.times(),
                 self.model.amTime(),
-                self.today,
+                self.Date,
                 self.columns,
                 self.drag_data,
                 self.count_dict,
