@@ -16,12 +16,10 @@ class DateComponent:
             icon=ft.icons.CALENDAR_MONTH,
             on_click=lambda e: self.page.open(
                 ft.DatePicker(
-                    first_date=datetime.date(
-                        year=self.today.year, month=self.today.month, day=self.today.day
-                    ),
                     on_change=self.handle_change,
                 )
             ),
+            data = self.today,
         )
 
 
