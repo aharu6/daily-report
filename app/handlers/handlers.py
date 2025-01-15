@@ -863,10 +863,36 @@ class Handlers:
 
             # phName データの書き込み
             for time in data_dict.keys():
-                if phName.value != None:
+                try:
                     data_dict[time]["phName"] = phName.value
-                else:
+                except:
                     data_dict[time]["phName"] = ""
+                    
+                    
+            #前のデータに追加していく形式へ
+            #追加前のデータ
+            
+            #pre_dataにdata_dictを追加
+            #形式：日付と名前にて一意に
+            #{date_phName}:data_dict} 
+            try:
+                data_key = f"{today}_{phName.value}"
+            except:
+                data_key = f"{today}_NoName"
+            
+            try:
+                old_data = page.client_storage.get("timeline_data")
+                save_data = json.loads(old_data)
+                save_data[data_key] = data_dict
+            except:
+                save_data = {}  
+                save_data[data_key] = data_dict
+                
+            page.client_storage.set(
+                "timeline_data", json.dumps(save_data, ensure_ascii=False)
+                )
+            
+            #変更後のデータを保管する
             page.client_storage.set(
                 "timeline_data", json.dumps(data_dict, ensure_ascii=False)
             )
