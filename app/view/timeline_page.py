@@ -73,7 +73,19 @@ class TimelinePage:
         self.reloadData = ft.IconButton(
             icon = ft.icons.REFRESH,
             icon_size = 20,
-            on_click = lambda e:ReloadDataHandler.toggle_Reload_Data(e,self.page,self.reloadDrawer,self.columns,self.delete_buttons)
+            on_click = lambda e:ReloadDataHandler.toggle_Reload_Data(
+                e,
+                self.page,
+                self.reloadDrawer,
+                self.columns, #open_saved_data内で使用
+                self.delete_buttons,
+                self.draggable_data_for_move,
+                self.comments,
+                self.model.times(),
+                self.drag_data,
+                self.comment,
+                self.count_dict,
+                )
         )
 
         self.ineditButton = ft.Row(

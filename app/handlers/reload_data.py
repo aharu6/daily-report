@@ -6,7 +6,19 @@ import flet as ft
 #右側にtimeline適用用のボタンを合わせて表示する
 class ReloadDataHandler:
     @staticmethod
-    def toggle_Reload_Data(e,page,drawer,columns,delete_buttons):
+    def toggle_Reload_Data(
+        e,
+        page,
+        drawer,
+        columns,
+        delete_buttons,
+        draggable_data_for_move,
+        comments,
+        model_times,
+        drag_data,
+        comment,
+        count_dict,
+        ):
         page.open(drawer)
         #保存しているデータを読み出す
         #write csv時の保存名：timeline_data
@@ -26,7 +38,19 @@ class ReloadDataHandler:
                 title = ft.Text(i),
                 trailing = ft.IconButton(
                     ft.icons.EDIT_SQUARE, 
-                    on_click = lambda e:ReloadDataHandler.open_saved_data(e,page,columns,dat,delete_buttons),
+                    on_click = lambda e:ReloadDataHandler.open_saved_data(
+                        e,
+                        page,
+                        columns,
+                        dat,
+                        delete_buttons,
+                        draggable_data_for_move,
+                        comments,
+                        model_times,
+                        drag_data,
+                        comment,
+                        count_dict,
+                        ),
                     data = i
                     ),
                 data = i,
@@ -35,7 +59,19 @@ class ReloadDataHandler:
         
     #保存したデータを開いてcolumnに再転記する
     @staticmethod
-    def open_saved_data(e,page,columns,dat,delete_buttons):
+    def open_saved_data(
+        e,
+        page,
+        columns,
+        dat,
+        delete_buttons,
+        draggable_data_for_move,
+        comments,
+        model_times,
+        drag_data,
+        comment,
+        count_dict,
+        ):
         #columns = self.columns
         #選択したkeyに該当するデータを取り出す
         selected_key = e.control.data
@@ -105,5 +141,27 @@ class ReloadDataHandler:
                     }
                 )
             else:
-                pass
+                #元々のDraggable状態を保持する
+                columns[i].content = ft.DragTarget(
+                    group="timeline",
+                    content=ft.Container(
+                        width=50,
+                        height=300,
+                        bgcolor="#CBDCEB",
+                        border_radius=5,
+                    ),
+                    on_accept=lambda e: Handlers.drag_accepted(
+                        e,
+                        page,
+                        draggable_data_for_move,
+                        delete_buttons,
+                        columns,
+                        comments,
+                        model_times,
+                        drag_data,
+                        comment,
+                        count_dict,
+                    ),
+                    data={"time": model_times[i], "num": i, "task": ""},
+                )
         page.update()
