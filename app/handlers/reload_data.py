@@ -107,7 +107,6 @@ class ReloadDataHandler:
         )
         """
         len_load_data = len(list(load_data.keys()) ) 
-        print(len_load_data)    
         
         from handlers.handlers import Handlers
         for i in range(len_load_data):
@@ -141,11 +140,11 @@ class ReloadDataHandler:
                     }
                 )
                 
-                #カウンター保存データが1以上ある場合にはカウンターの追加
-                if load_data[key]["count"] >1:
-                    columns[i].content.controls.append(Handlers.create_counter(load_data[key]["time"],count_dict))
                 #カウンターデータ0のときには何も表示されない
-                #一番左のカラムだけは0でもカウンターが必要になるから、1以上の指定ではなくて、
+                #一番左のカラムだけは0でもカウンターが必要になるから、1以上の指定ではなくて、 key の比較
+                # move関数とaccepted関数と同じように左のカラムkeyと比較して表示する　update前だからcolumnsに保管されているkeyは使えない
+                #load_dataのうち、最初にkeyが出てきた辞書データを取り出してnum countsを取得、更新する
+                
                 #カウンター内の値も保存データに基づいて更新
                 
                 #コメントがある場合にはコメントボタンを追加
@@ -189,4 +188,37 @@ class ReloadDataHandler:
                     ),
                     data={"time": model_times[i], "num": i, "task": ""},
                 )
+        page.update() #updateしてからカウンターの追加
+        
+        #columnsにてループする
+        for i in range(len_load_data):
+            try:
+                key = list(load_data.keys())[i]
+                left_key = (list(load_data.keys()))[i-1]
+                #カウンターの追加
+                #左のカラムと同じkey の場合にはカウンターを追加しない
+                #カウンターを追加する必要のない業務には追加しない
+                current_key = load_data[key]["task"]
+                left_key = load_data[left_key]["task"]
+                
+                if current_key == left_key:
+                    pass
+                else:
+                    #カウンターを追加する必要のない業務には追加しない
+                    match key:
+                        case  (
+                            "混注時間"
+                            | "休憩"
+                            | "委員会"
+                            | "WG活動"
+                            | "勉強会参加"
+                            | "1on1"
+                            | "カンファレンス"
+                            |"13:15業務調整"
+                        ):
+                            pass
+                        case _:
+                            columns[i].content.controls.append(Handlers.create_counter(load_data[key]["time"],count_dict))
+            except:
+                pass   
         page.update()
