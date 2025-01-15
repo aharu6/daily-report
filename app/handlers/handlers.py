@@ -416,13 +416,18 @@ class Handlers:
         # 正しくはcolumnsの初期化を行う。ドラッグする前の状態に戻す
         col_num = delete_buttons[e.control.data["num"]].data["num"]
         # 同じ情報の新しいカラムに差し替える
+        #columns[col_num].content.content.clean()
+        #columns[col_num].content.content.update()
+        
         columns[col_num].content.content = ft.Container(
             width=50,
             height=300,
             bgcolor="#CBDCEB",
             border_radius=5,
         )
-        # おそらくセットしている時のeを渡しているから変なことになる
+        page.add(columns[col_num].content.content)
+        columns[col_num].content.content.update()
+    
         # deletebuttons属しているカラムのデータを渡していない
         # deletebuttons自体のデータが渡されている
         # contentのcoontent（見た目だけを更新する）
@@ -441,6 +446,7 @@ class Handlers:
         columns[col_num].content.group = "timeline"
         # カラムのデータを初期化
         columns[col_num].content.data["task"] = ""
+        print(columns[col_num].content.data)
         
         #消したときに左右のカラムを比較して、同じ業務内容がない場合にはカウンター上の文字を再表示する
         #left_keyの初期化
@@ -449,7 +455,7 @@ class Handlers:
         left_key = None
         try:
             left_key = columns[left_col_num].content.data["task"]
-            right_key = columns[col_num+1].content.data["task"]
+            right_key = columns[right_col_num].content.data["task"]
         except:
             pass
         
@@ -486,9 +492,8 @@ class Handlers:
                 #カウンター表示不要
                 pass
             case _:
-                columns[right_col_num].content.content.controls.append(
-                    Handlers.create_counter(columns[right_col_num].content.data["time"],count_dict)
-                )
+                pass
+            
         page.update()
 
     # カウンターの関数
