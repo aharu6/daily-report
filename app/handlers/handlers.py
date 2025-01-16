@@ -60,9 +60,9 @@ class Handlers:
             phNameList = json.loads(phNameList)
         options = []
         try:
-            options = [ft.dropdown.Option(item["name"]) for item in phNameList]
+            options = [ft.dropdown.Option(item["name"],data = item["name"]) for item in phNameList]
         except:
-            options = [ft.dropdown.Option("名前が登録されていません")]
+            options = [ft.dropdown.Option("名前が登録されていません",data = "noName")]
 
         options.append(ft.dropdown.Option("Add"))
 

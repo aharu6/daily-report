@@ -35,10 +35,7 @@ class NameDropdown:
             options=[],
             on_change=self.on_change,
             label="Name",
-            text_size=12,
-            label_style=ft.TextStyle(size=12),
-            border_color=ft.colors.BLUE_GREY_100,
-            height=40,
+            border_color=ft.colors.BLUE_GREY_100
         )
 
 
@@ -73,20 +70,20 @@ class AmDropDown:
     def create(self):
         return ft.ResponsiveRow(
             [
-                ft.Checkbox(label="ICU",col = {"sm": 6, "md": 4, "xl": 2}),
-                ft.Checkbox(label="3A",col = {"sm": 6, "md": 4, "xl": 2}),
-                ft.Checkbox(label="3B",col = {"sm": 6, "md": 4, "xl": 2}),
-                ft.Checkbox(label="3C",col = {"sm": 6, "md": 4, "xl": 2}),
-                ft.Checkbox(label="CCU",col = {"sm": 6, "md": 4, "xl": 2}),
-                ft.Checkbox(label="4A",col = {"sm": 6, "md": 4, "xl": 2}),
-                ft.Checkbox(label="4B",col = {"sm": 6, "md": 4, "xl": 2}),
-                ft.Checkbox(label="4C",col = {"sm": 6, "md": 4, "xl": 2}),
-                ft.Checkbox(label="4D",col = {"sm": 6, "md": 4, "xl": 2}),
-                ft.Checkbox(label="HCU",col = {"sm": 6, "md": 4, "xl": 2}),
-                ft.Checkbox(label="5A",col = {"sm": 6, "md": 4, "xl": 2}),
-                ft.Checkbox(label="5B",col = {"sm": 6, "md": 4, "xl": 2}),
-                ft.Checkbox(label="5C",col = {"sm": 6, "md": 4, "xl": 2}),
-                ft.Checkbox(label="5D",col = {"sm": 6, "md": 4, "xl": 2}),
+                ft.Checkbox(label="ICU",col = {"sm": 6, "md": 4, "xl": 2},data = "ICU"),
+                ft.Checkbox(label="3A",col = {"sm": 6, "md": 4, "xl": 2},data = "3A"),
+                ft.Checkbox(label="3B",col = {"sm": 6, "md": 4, "xl": 2},data = "3B"),
+                ft.Checkbox(label="3C",col = {"sm": 6, "md": 4, "xl": 2},data = "3C"),
+                ft.Checkbox(label="CCU",col = {"sm": 6, "md": 4, "xl": 2},data = "CCU"),
+                ft.Checkbox(label="4A",col = {"sm": 6, "md": 4, "xl": 2},data = "4A"),
+                ft.Checkbox(label="4B",col = {"sm": 6, "md": 4, "xl": 2},data = "4B"),
+                ft.Checkbox(label="4C",col = {"sm": 6, "md": 4, "xl": 2},data  = "4C"),
+                ft.Checkbox(label="4D",col = {"sm": 6, "md": 4, "xl": 2},data = "4D"),
+                ft.Checkbox(label="HCU",col = {"sm": 6, "md": 4, "xl": 2},data = "HCU"),
+                ft.Checkbox(label="5A",col = {"sm": 6, "md": 4, "xl": 2},data = "5A"),
+                ft.Checkbox(label="5B",col = {"sm": 6, "md": 4, "xl": 2},data = "5B"),
+                ft.Checkbox(label="5C",col = {"sm": 6, "md": 4, "xl": 2},data = "5C"),
+                ft.Checkbox(label="5D",col = {"sm": 6, "md": 4, "xl": 2},data = "5D"),
             ]
         )
 

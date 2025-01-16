@@ -19,6 +19,9 @@ class ReloadDataHandler:
         drag_data,
         comment,
         count_dict,
+        phName,
+        custumDrawerAm,
+        custumDrawerPm,
         ):
         page.open(drawer)
         #保存しているデータを読み出す
@@ -52,6 +55,9 @@ class ReloadDataHandler:
                         drag_data,
                         comment,
                         count_dict,
+                        phName,
+                        custumDrawerAm,
+                        custumDrawerPm,
                         ),
                     data = i
                     ),
@@ -74,6 +80,9 @@ class ReloadDataHandler:
         drag_data,
         comment,
         count_dict,
+        phName,
+        custumDrawerAm,
+        custumDrawerPm,
         ):
         #columns = self.columns
         #選択したkeyに該当するデータを取り出す
@@ -194,11 +203,39 @@ class ReloadDataHandler:
                 
         #カレンダーの更新
         #適応に最初のkey
-        key_for_calender = list(load_data.keys())[0]
-        update_date = load_data[key_for_calender]["date"]
+        key_for_reload = list(load_data.keys())[0]
+        update_date = load_data[key_for_reload]["date"]
         calender.text = update_date
         calender.data = update_date 
+        
+        #薬剤師名の再表示
+        update_phName = load_data[key_for_reload]["phName"] 
+        phName.value = update_phName
+        
+        #病棟名の再表示
+        #56のうち、columns[0] == am,columns[56] == pmのデータを取り出す
+        key_for_first = list(load_data.keys())[0]
+        key_for_last = list(load_data.keys())[-1]
+        am_data = load_data[key_for_first]["locate"]
+        pm_data = load_data[key_for_last]["locate"]
+        for j in range(len(am_data)):            
+            for i in range(len(custumDrawerAm.content.controls)):
+                if custumDrawerAm.content.controls[i].label == am_data[j]:
+                    custumDrawerAm.content.controls[i].value = True
+                else:
+                    pass
+        
+        for j in range(len(pm_data)):
+            for i in range(len(custumDrawerPm.content.controls)):
+                if custumDrawerPm.content.controls[i].label == pm_data[j]:
+                    custumDrawerPm.content.controls[i].value = True
+                else:
+                    pass
+        
+        
         page.update() #updateしてからカウンターの追加
+        
+        
         
         #columnsにてループする
         for i in range(len_load_data):
@@ -231,6 +268,7 @@ class ReloadDataHandler:
                             columns[i].content.controls.append(Handlers.create_counter(load_data[key]["time"],count_dict))
             except:
                 pass   
+            
         page.update()
         
         #カウンターデータが1以上ある場合には値に応じてカウンターの値を更新する
@@ -239,4 +277,6 @@ class ReloadDataHandler:
             key = list(load_data.keys())[i]
             if load_data[key]["count"] > 0:
                 columns[i].content.controls[2].controls[1].value = load_data[key]["count"]
+        
+        
         page.update()
