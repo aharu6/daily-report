@@ -143,7 +143,7 @@ class DragMoveHandler:
         draggable_data[next_id] = {"task": key}
 
         # 左ではなくて、現在のカラム番号と左のカラム番号を比較する
-        # 右のカラムも比較して、同じ業務内容の場合、右は非表示に
+        # 右のカラムも比較して、同じ業務内容の場合、右は非表示に→業務内容名表示ありに変更
         # 左のみ残して表示する
         right_column_num = e.control.data["num"] + 1
         if right_column_num:
@@ -156,7 +156,7 @@ class DragMoveHandler:
                         ft.Draggable(
                             group="timeline",
                             content=ft.Container(
-                                content = ft.Text(key, color="white",visible=False),
+                                content = ft.Text(key, color="white",visible=True),
                                 width=50,
                                 height=140,
                                 bgcolor=Handlers.change_color(key),
