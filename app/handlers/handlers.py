@@ -447,7 +447,6 @@ class Handlers:
         columns[col_num].content.group = "timeline"
         # カラムのデータを初期化
         columns[col_num].content.data["task"] = ""
-        print(columns[col_num].content.data)
         
         #消したときに左右のカラムを比較して、同じ業務内容がない場合にはカウンター上の文字を再表示する
         #left_keyの初期化
