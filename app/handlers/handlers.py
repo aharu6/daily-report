@@ -427,7 +427,6 @@ class Handlers:
         )
         page.add(columns[col_num].content.content)
         page.update()
-        columns[col_num].content.content.update()
     
         # deletebuttons属しているカラムのデータを渡していない
         # deletebuttons自体のデータが渡されている
