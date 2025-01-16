@@ -19,6 +19,7 @@ class ReloadDataHandler:
         drag_data,
         comment,
         count_dict,
+        phName,
         ):
         page.open(drawer)
         #保存しているデータを読み出す
@@ -52,6 +53,7 @@ class ReloadDataHandler:
                         drag_data,
                         comment,
                         count_dict,
+                        phName,
                         ),
                     data = i
                     ),
@@ -74,6 +76,7 @@ class ReloadDataHandler:
         drag_data,
         comment,
         count_dict,
+        phName,
         ):
         #columns = self.columns
         #選択したkeyに該当するデータを取り出す
@@ -194,10 +197,14 @@ class ReloadDataHandler:
                 
         #カレンダーの更新
         #適応に最初のkey
-        key_for_calender = list(load_data.keys())[0]
-        update_date = load_data[key_for_calender]["date"]
+        key_for_reload = list(load_data.keys())[0]
+        update_date = load_data[key_for_reload]["date"]
         calender.text = update_date
         calender.data = update_date 
+        
+        #薬剤師名の再表示
+        update_phName = load_data[key_for_reload]["phName"] 
+        phName.value = update_phName
         page.update() #updateしてからカウンターの追加
         
         #columnsにてループする
@@ -231,6 +238,7 @@ class ReloadDataHandler:
                             columns[i].content.controls.append(Handlers.create_counter(load_data[key]["time"],count_dict))
             except:
                 pass   
+            
         page.update()
         
         #カウンターデータが1以上ある場合には値に応じてカウンターの値を更新する
@@ -239,4 +247,6 @@ class ReloadDataHandler:
             key = list(load_data.keys())[i]
             if load_data[key]["count"] > 0:
                 columns[i].content.controls[2].controls[1].value = load_data[key]["count"]
+        
+        
         page.update()

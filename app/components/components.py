@@ -35,10 +35,7 @@ class NameDropdown:
             options=[],
             on_change=self.on_change,
             label="Name",
-            text_size=12,
-            label_style=ft.TextStyle(size=12),
-            border_color=ft.colors.BLUE_GREY_100,
-            height=40,
+            border_color=ft.colors.BLUE_GREY_100
         )
 
 
