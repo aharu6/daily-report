@@ -20,6 +20,8 @@ class ReloadDataHandler:
         comment,
         count_dict,
         phName,
+        custumDrawerAm,
+        custumDrawerPm,
         ):
         page.open(drawer)
         #保存しているデータを読み出す
@@ -54,6 +56,8 @@ class ReloadDataHandler:
                         comment,
                         count_dict,
                         phName,
+                        custumDrawerAm,
+                        custumDrawerPm,
                         ),
                     data = i
                     ),
@@ -77,6 +81,8 @@ class ReloadDataHandler:
         comment,
         count_dict,
         phName,
+        custumDrawerAm,
+        custumDrawerPm,
         ):
         #columns = self.columns
         #選択したkeyに該当するデータを取り出す
@@ -205,7 +211,31 @@ class ReloadDataHandler:
         #薬剤師名の再表示
         update_phName = load_data[key_for_reload]["phName"] 
         phName.value = update_phName
+        
+        #病棟名の再表示
+        #56のうち、columns[0] == am,columns[56] == pmのデータを取り出す
+        key_for_first = list(load_data.keys())[0]
+        key_for_last = list(load_data.keys())[-1]
+        am_data = load_data[key_for_first]["locate"]
+        pm_data = load_data[key_for_last]["locate"]
+        for j in range(len(am_data)):            
+            for i in range(len(custumDrawerAm.content.controls)):
+                if custumDrawerAm.content.controls[i].label == am_data[j]:
+                    custumDrawerAm.content.controls[i].value = True
+                else:
+                    pass
+        
+        for j in range(len(pm_data)):
+            for i in range(len(custumDrawerPm.content.controls)):
+                if custumDrawerPm.content.controls[i].label == pm_data[j]:
+                    custumDrawerPm.content.controls[i].value = True
+                else:
+                    pass
+        
+        
         page.update() #updateしてからカウンターの追加
+        
+        
         
         #columnsにてループする
         for i in range(len_load_data):

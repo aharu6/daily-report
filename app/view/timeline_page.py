@@ -86,6 +86,8 @@ class TimelinePage:
                 self.comment,
                 self.count_dict,
                 self.phName,
+                self.custumDrawerAm,
+                self.custumDrawerPm,
                 )
         )
 
