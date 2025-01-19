@@ -11,6 +11,7 @@ from components.components import (
 )
 from handlers.handlers import Handlers
 from handlers.handdrag_will_accept import Add_will_accept
+from handlers.drag_leave import DragLeave
 from handlers.reload_data import ReloadDataHandler
 from handlers.handlersMain import Handlers_Main
 from handlers.pageScroll import Scroll
@@ -271,6 +272,7 @@ class TimelinePage:
                         self.columns,
                         self.drag_data,
                         ),
+                on_leave = lambda e:DragLeave.drag_leave(e,page),
                 data={"time": self.model.times()[i], "num": i, "task": ""},
             )
         # ampmSelecticon
