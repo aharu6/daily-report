@@ -5,7 +5,7 @@ import csv
 import pandas as pd
 from models.models import DataModel
 from handlers.drag_move import DragMoveHandler
-
+from handlers.drag_move_add import DragMoveAddHandler
 class Handlers:
     @staticmethod
     def handle_change(e, today, Date,page):
@@ -652,12 +652,12 @@ class Handlers:
                     key = src.data["task"]
             except:
                 key = src.data["task"]
-
+        
         e.control.content = ft.Column(
             controls=[
                 delete_buttons[e.control.data["num"]],
                 ft.Draggable(
-                    group="timeline_accepted",
+                    group="timeline",
                     content=ft.Container(
                         content=ft.Text(key, color="white"),
                         width=50,
@@ -678,17 +678,58 @@ class Handlers:
                 "num": e.control.data["num"],
                 "task": key,
             },
-            # カラムがクリックされた時に隣のカラムにon_move関数をセットできるようにしたい
+            # カラムがクリックされた時
         )
+        
+        for i in range(len(columns)):
+            print(columns[i].content.data)
+            if columns[i].content.data["task"] == 'will_accept':
+                columns[i].content = ft.Column(
+                    controls=[
+                        delete_buttons[e.control.data["num"]],
+                        ft.Draggable(
+                            group="timeline",
+                            content=ft.Container(
+                                content=ft.Text(key, color="white"),
+                                width=50,
+                                height=140,
+                                bgcolor=Handlers.change_color(key),
+                            ),
+                            data={
+                                "time": e.control.data["time"],
+                                "num": e.control.data["num"],
+                                "task": key,
+                            },
+                        ),
+                    ],
+                    height=300,
+                    spacing=0,
+                    data={
+                        "time": e.control.data["time"],
+                        "num": e.control.data["num"],
+                        "task": key,
+                    },
+                    # カラムがクリックされた時
+                )
+
+        #columns全てで実施する
+        #columns data≒"will_accept"があったcolumnsのみcontentsを更新する
+        
+        #受け取ったらon_accept自体は働かないようにする
+        #deletecontentのときには元に戻す
+        #e.control.on_accept = None
+        e.control.on_will_accept = None
         page.add(e.control.content) 
         e.control.content.update()
         # ドラッグ時にコンテンツを更新する用
         columns[e.control.data["num"]].content.data["task"] = key
+        """
         # moveにて新規src_idが追加された場合、その情報をdrag_dataに追加
         # elseに向けて辞書データを更新しておく
         draggable_data[e.src_id] = {"task": key}
         draggable_data[next_id] = {"task": key}
-
+        """
+        
         left_column_num = e.control.data["num"] - 1
         # left_keyの初期化
         left_key = None
@@ -701,6 +742,7 @@ class Handlers:
         # 現在のカラムの番号はnum = e.control.data["num"]
         # 左のカラム　num -1 のカラムの情報を取得
         # 一番左のカラムだけ表示、後は非表示にする（カウンターはそもそも作成しない）
+        """
         try:
             if left_key == key:
                 e.control.content.controls[1].content.content.visible = True
@@ -711,7 +753,10 @@ class Handlers:
 
         except:
             pass
-
+        """
+        
+        #Dataが渡されたcolumnsにのみcontentsを更新する
+        
         match key:
             # key==その他の場合にはコメントボタンを追加する
             case "その他":
@@ -737,28 +782,9 @@ class Handlers:
                     e.control.content.controls.append(
                         Handlers.create_counter(e.control.data["time"], count_dict)
                     )
-
-        # move関数を追加する
-        e.control.on_move = lambda e: DragMoveHandler.drag_move(
-            e,
-            page,
-            draggable_data,
-            delete_buttons,
-            columns,
-            comments,
-            times,
-            drag_data,
-            comment,
-            count_dict,
-        )
-
-        # 左隣カラムと右隣カラムにもmove関数をオフにする
-        columns[left_column_num].content.on_move = None
-        columns[left_column_num].update()
-
-        right_column_num = e.control.data["num"] + 1
-        columns[right_column_num].content.on_move = None
-        columns[right_column_num].update()
+        
+        # move関数を追加しない
+        #再クリックしたときのみmove関数を追加する
 
         # ドラッグデータの保存
         drag_data[e.control.data["time"]] = {"task": key}

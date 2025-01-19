@@ -10,6 +10,7 @@ from components.components import (
     ReloadDrawer,
 )
 from handlers.handlers import Handlers
+from handlers.handdrag_will_accept import Add_will_accept
 from handlers.reload_data import ReloadDataHandler
 from handlers.handlersMain import Handlers_Main
 from handlers.pageScroll import Scroll
@@ -264,9 +265,14 @@ class TimelinePage:
                     self.comment,
                     self.count_dict,
                 ),
+                on_will_accept=lambda e: Add_will_accept.drag_will_accept(
+                        e,
+                        self.page,
+                        self.columns,
+                        self.drag_data,
+                        ),
                 data={"time": self.model.times()[i], "num": i, "task": ""},
             )
-
         # ampmSelecticon
         self.iconforampmselect = ft.Icon(
             ft.icons.SCHEDULE,
@@ -388,8 +394,7 @@ class TimelinePage:
         self.reloadDrawer = ReloadDrawer(page).create()
         #page_client_dataがあるときに読み出し用ドロワーに保管しているデータを表示する
         #コントロール部分　ft.Row ft.Containerを追加していく
-        if self.page.client_storage is not None:
-            print(self.page.client_storage.get("phNameList"))
+
             
         self.iconforphName = ft.Icon(
             ft.icons.ACCOUNT_CIRCLE,
