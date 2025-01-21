@@ -2,7 +2,7 @@ import flet as ft
 import re
 class Add_will_accept:
     @staticmethod
-    def drag_will_accept(e,page,columns,drag_data,delete_buttons):
+    def drag_will_accept(e,page,columns,drag_data):
         #TrueかFalseで帰ってくるはず
         #Falseならgroup = "timeline"に変更してon_moveを追加する
         #on_moveコンテンツを減らして、・だけにする、data = {"time","task","num"}だけ渡しておく

@@ -68,7 +68,7 @@ class TimelinePage:
         self.editButton = ft.IconButton(
             icon=ft.icons.DELETE_OUTLINE,
             icon_size=20,
-            on_click=lambda e: Handlers.toggle_delete_button(page, self.delete_buttons),
+            on_click=lambda e: Handlers.toggle_delete_button(page, self.columns),
         )
         
         self.reloadData = ft.IconButton(
@@ -265,13 +265,16 @@ class TimelinePage:
                     self.drag_data,
                     self.comment,
                     self.count_dict,
+                    self.phNameList,
+                    self.phName,
+                    self.comment_dict,
+                    self.draggable_data_for_move,
                 ),
                 on_will_accept=lambda e: Add_will_accept.drag_will_accept(
                         e,
                         self.page,
                         self.columns,
                         self.drag_data,
-                        self.delete_buttons,
                         ),
                 on_leave = lambda e:DragLeave.drag_leave(e,page),
                 data={"time": self.model.times()[i], "num": i, "task": ""},

@@ -392,9 +392,13 @@ class Handlers:
                 page.update()
 
     @staticmethod
-    def toggle_delete_button(page, delete_buttons):
-        for button in delete_buttons:
-            button.visible = not button.visible
+    def toggle_delete_button(page, columns):
+        for  i in range(len(columns)):
+            if columns[i].content.data["task"] != "":
+                print(columns[i].content.data)  
+                columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
+            
+            #button.visible = not button.visible
         page.update()
 
     @staticmethod
@@ -437,22 +441,33 @@ class Handlers:
         except:
             pass
     
+        page.add(columns[col_num].content.content)
 
         #右方向に広がるcontent.data["task"] == "will_accept"のコンテンツは全て削除
         #while文を使用する
         while right_key =="will_accept":
-            print(right_key)
             columns[right_col_num].content.content = ft.Container(
                 width = 50,
                 height = 300,
                 bgcolor = "#CBDCEB",
                 border_radius = 5,
             )
+            del drag_data[DataModel().times()[right_col_num]]
+            if DataModel().times()[right_col_num] in count_dict:
+                del count_dict[DataModel.times()[right_col_num]]
+            if DataModel().times()[right_col_num] in comment_dict:
+                del comment_dict[DataModel.times()[right_col_num]]
+                
+            columns[right_col_num].content.group = "timeline"
+            columns[right_col_num].group = "timeline"
+            
+            columns[right_col_num].content.on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns,drag_data)
+            columns[right_col_num].on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns,drag_data)
+            
             right_col_num += 1
             right_key = columns[right_col_num].content.data["task"]
         else:
             print("right_key is will_accept")
-        page.add(columns[col_num].content.content)
         page.update()
     
         # deletebuttons属しているカラムのデータを渡していない
@@ -470,12 +485,16 @@ class Handlers:
             del comment_dict[DataModel().times()[col_num]]
 
         # カラムのgroupを元に戻す
+        columns[col_num].group = "timeline"
         columns[col_num].content.group = "timeline"
         # カラムのデータを初期化
         columns[col_num].content.data["task"] = ""
         
         # on_will_acceptを元に戻す
-        columns[col_num].content.on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page)
+        columns[col_num].content.on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns=columns,drag_data=drag_data)
+        
+        #accept関数を元に戻す
+        columns[col_num].content.on_accept = lambda e: Handlers.drag_accepted(e, page, columns, drag_data, count_dict, comment_dict, draggable_data_for_move, comments, times, comment)
         
         #カラムのデータは初期化したから何もないはず　空になる
         key = columns[col_num].content.data["task"]
@@ -511,7 +530,7 @@ class Handlers:
                 pass
             case _:
                 pass
-            
+        
         page.update()
 
     # カウンターの関数
@@ -640,6 +659,10 @@ class Handlers:
         drag_data,
         comment,
         count_dict,
+        phNameList,
+        phName,
+        comment_dict,
+        draggable_data_for_move,
     ):
         # print(e.target)
         src_id_str = e.src_id.replace("_", "")
@@ -672,10 +695,30 @@ class Handlers:
             except:
                 key = src.data["task"]
                 
-        
         e.control.content = ft.Column(
             controls=[
-                delete_buttons[e.control.data["num"]],
+                ft.IconButton(
+                    icon=ft.icons.DELETE_OUTLINE,
+                    visible=False,
+                    icon_size=20,
+                    icon_color="red",
+                    on_click=lambda e: Handlers.delete_content(
+                        e,
+                        page,
+                        phNameList,
+                        phName,
+                        delete_buttons,
+                        drag_data,
+                        count_dict,
+                        comment_dict,
+                        columns,
+                        draggable_data_for_move,
+                        comments,
+                        DataModel().times(),  # delete_contentでの引数ではtimes
+                        comment,
+                    ),
+                    data = {"num":e.control.data["num"]}
+                ),
                 ft.Draggable(
                     group="timeline_accepted",
                     content=ft.Container(
@@ -710,11 +753,10 @@ class Handlers:
         
         for i in range(len(columns)):
             if columns[i].content.data["task"] == 'will_accept':
-                columns[i].content.controls[0].content.content = ft.Text(key, color="white")
-                columns[i].content.controls[0].content.width  =50
-                columns[i].content.controls[0].content.height  =140
-                columns[i].content.controls[0].content.bgcolor = Handlers.change_color(key)
-                columns[i].content.controls[0].data["task"] = key
+                columns[i].content.content = ft.Text(key, color="white")
+                columns[i].content.width  =50
+                columns[i].content.height  =140
+                columns[i].content.bgcolor = Handlers.change_color(key)
                 columns[i].content.data["task"] = key
                 
                 
@@ -788,15 +830,20 @@ class Handlers:
                 | "カンファレンス"
             ):
                 pass
+            
+            case _:
+                pass
+            
+            
             # その他の場合にはカウンターを表示する
             # 左カラムに同じデータはある場合にはカウンターは作成しない
-            case _:
-                if left_key == key:
-                    pass
-                else:
-                    e.control.content.controls.append(
-                        Handlers.create_counter(e.control.data["time"], count_dict)
-                    )
+            #case _:
+            #   if left_key == key:
+            #       pass
+            #   else:
+            #      e.control.content.controls.append(
+            #          Handlers.create_counter(e.control.data["time"], count_dict)
+            #      )
         
         # move関数を追加しない
         #再クリックしたときのみmove関数を追加する
