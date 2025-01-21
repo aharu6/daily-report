@@ -2,7 +2,7 @@ import flet as ft
 import re
 class Add_will_accept:
     @staticmethod
-    def drag_will_accept(e,page,columns,draggable_data,delete_buttons):
+    def drag_will_accept(e,page,columns,drag_data,delete_buttons):
         #TrueかFalseで帰ってくるはず
         #Falseならgroup = "timeline"に変更してon_moveを追加する
         #on_moveコンテンツを減らして、・だけにする、data = {"time","task","num"}だけ渡しておく
@@ -18,7 +18,6 @@ class Add_will_accept:
             if e.data == 'false':
                 e.control.content = ft.Column(
                     controls=[
-                        delete_buttons[e.control.data["num"]],
                         ft.Draggable(
                             group = "timeline_accepted",
                             content = ft.Container(
@@ -50,4 +49,7 @@ class Add_will_accept:
                 # e.controlに新しいdrag_accceptを追加する
                 #無理なら先にpage.updateする
                 e.control.group = "timeline_accepted" 
+                
+                drag_data[e.control.data["time"]] = {"task":"will_accept"}
+                
         page.update()

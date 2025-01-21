@@ -417,7 +417,6 @@ class Handlers:
         # columns[i]でそのカラムの情報を取得し、見た目上削除
         # 正しくはcolumnsの初期化を行う。ドラッグする前の状態に戻す
         col_num = delete_buttons[e.control.data["num"]].data["num"]
-        print(col_num)
         # 同じ情報の新しいカラムに差し替える
         #columns[col_num].content.content.clean()
         #columns[col_num].content.content.update()
@@ -428,6 +427,31 @@ class Handlers:
             bgcolor="#CBDCEB",
             border_radius=5,
         )
+        
+        left_col_num = e.control.data["num"]-1
+        right_col_num = e.control.data["num"]+1
+        left_key = None
+        try:
+            left_key = columns[left_col_num].content.data["task"]
+            right_key = columns[right_col_num].content.data["task"]
+        except:
+            pass
+    
+
+        #右方向に広がるcontent.data["task"] == "will_accept"のコンテンツは全て削除
+        #while文を使用する
+        while right_key =="will_accept":
+            print(right_key)
+            columns[right_col_num].content.content = ft.Container(
+                width = 50,
+                height = 300,
+                bgcolor = "#CBDCEB",
+                border_radius = 5,
+            )
+            right_col_num += 1
+            right_key = columns[right_col_num].content.data["task"]
+        else:
+            print("right_key is will_accept")
         page.add(columns[col_num].content.content)
         page.update()
     
@@ -437,8 +461,6 @@ class Handlers:
         # 中身のDraggtargetのonaccept,on_moveは残っていた
 
         # 同時に該当するdrag_dataのデータも削除する
-        print(drag_data)
-        print(drag_data)
         del drag_data[DataModel().times()[col_num]]
         # 該当のカウントデータも削除する
         if DataModel().times()[col_num] in count_dict:
@@ -454,17 +476,6 @@ class Handlers:
         
         # on_will_acceptを元に戻す
         columns[col_num].content.on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page)
-        
-        #消したときに左右のカラムを比較して、同じ業務内容がない場合にはカウンター上の文字を再表示する
-        #left_keyの初期化
-        left_col_num = e.control.data["num"]-1
-        right_col_num = e.control.data["num"]+1
-        left_key = None
-        try:
-            left_key = columns[left_col_num].content.data["task"]
-            right_key = columns[right_col_num].content.data["task"]
-        except:
-            pass
         
         #カラムのデータは初期化したから何もないはず　空になる
         key = columns[col_num].content.data["task"]
