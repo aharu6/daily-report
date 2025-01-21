@@ -271,6 +271,7 @@ class TimelinePage:
                         self.page,
                         self.columns,
                         self.drag_data,
+                        self.delete_buttons,
                         ),
                 on_leave = lambda e:DragLeave.drag_leave(e,page),
                 data={"time": self.model.times()[i], "num": i, "task": ""},

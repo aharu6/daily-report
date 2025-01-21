@@ -6,6 +6,8 @@ import pandas as pd
 from models.models import DataModel
 from handlers.drag_move import DragMoveHandler
 from handlers.drag_move_add import DragMoveAddHandler
+from handlers.handdrag_will_accept import Add_will_accept
+
 class Handlers:
     @staticmethod
     def handle_change(e, today, Date,page):
@@ -415,6 +417,7 @@ class Handlers:
         # columns[i]でそのカラムの情報を取得し、見た目上削除
         # 正しくはcolumnsの初期化を行う。ドラッグする前の状態に戻す
         col_num = delete_buttons[e.control.data["num"]].data["num"]
+        print(col_num)
         # 同じ情報の新しいカラムに差し替える
         #columns[col_num].content.content.clean()
         #columns[col_num].content.content.update()
@@ -434,6 +437,8 @@ class Handlers:
         # 中身のDraggtargetのonaccept,on_moveは残っていた
 
         # 同時に該当するdrag_dataのデータも削除する
+        print(drag_data)
+        print(drag_data)
         del drag_data[DataModel().times()[col_num]]
         # 該当のカウントデータも削除する
         if DataModel().times()[col_num] in count_dict:
@@ -446,6 +451,9 @@ class Handlers:
         columns[col_num].content.group = "timeline"
         # カラムのデータを初期化
         columns[col_num].content.data["task"] = ""
+        
+        # on_will_acceptを元に戻す
+        columns[col_num].content.on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page)
         
         #消したときに左右のカラムを比較して、同じ業務内容がない場合にはカウンター上の文字を再表示する
         #left_keyの初期化
@@ -652,12 +660,13 @@ class Handlers:
                     key = src.data["task"]
             except:
                 key = src.data["task"]
+                
         
         e.control.content = ft.Column(
             controls=[
                 delete_buttons[e.control.data["num"]],
                 ft.Draggable(
-                    group="timeline",
+                    group="timeline_accepted",
                     content=ft.Container(
                         content=ft.Text(key, color="white"),
                         width=50,
@@ -680,47 +689,40 @@ class Handlers:
             },
             # カラムがクリックされた時
         )
-        
-        for i in range(len(columns)):
-            print(columns[i].content.data)
-            if columns[i].content.data["task"] == 'will_accept':
-                columns[i].content = ft.Column(
-                    controls=[
-                        delete_buttons[e.control.data["num"]],
-                        ft.Draggable(
-                            group="timeline",
-                            content=ft.Container(
-                                content=ft.Text(key, color="white"),
-                                width=50,
-                                height=140,
-                                bgcolor=Handlers.change_color(key),
-                            ),
-                            data={
-                                "time": e.control.data["time"],
-                                "num": e.control.data["num"],
-                                "task": key,
-                            },
-                        ),
-                    ],
-                    height=300,
-                    spacing=0,
-                    data={
-                        "time": e.control.data["time"],
-                        "num": e.control.data["num"],
-                        "task": key,
-                    },
-                    # カラムがクリックされた時
-                )
-
-        #columns全てで実施する
-        #columns data≒"will_accept"があったcolumnsのみcontentsを更新する
-        
         #受け取ったらon_accept自体は働かないようにする
         #deletecontentのときには元に戻す
         #e.control.on_accept = None
         e.control.on_will_accept = None
+        e.control.on_accept = None
         page.add(e.control.content) 
-        e.control.content.update()
+        page.update()
+        
+        for i in range(len(columns)):
+            if columns[i].content.data["task"] == 'will_accept':
+                columns[i].content.controls[0].content.content = ft.Text(key, color="white")
+                columns[i].content.controls[0].content.width  =50
+                columns[i].content.controls[0].content.height  =140
+                columns[i].content.controls[0].content.bgcolor = Handlers.change_color(key)
+                columns[i].content.controls[0].data["task"] = key
+                columns[i].content.data["task"] = key
+                
+                
+                #will_accept = noneにする
+                columns[i].content.on_will_accept = None
+                #ドラッグデータの保存
+                drag_data[columns[i].content.data["time"]] = {"task":key}
+                if comment:
+                    comments[columns[i].content.data["num"]].data = {
+                        "time":columns[i].content.data["time"],
+                        "num":columns[i].content.data["num"]
+                    }
+                    
+            else:pass
+
+        #columns全てで実施する
+        #columns data≒"will_accept"があったcolumnsのみcontentsを更新する
+        
+        
         # ドラッグ時にコンテンツを更新する用
         columns[e.control.data["num"]].content.data["task"] = key
         """
@@ -738,6 +740,8 @@ class Handlers:
             left_key = columns[left_column_num].content.data["task"]
         except:
             pass
+        
+        #隣のからむにwill
 
         # 現在のカラムの番号はnum = e.control.data["num"]
         # 左のカラム　num -1 のカラムの情報を取得
@@ -793,7 +797,6 @@ class Handlers:
                 "time": e.control.data["time"],
                 "num": e.control.data["num"],
             }
-
         # 受け取ったらdragtargetのgroupを変更して再ドラッグ不可にする
         e.control.group = "timeline_accepted"
         page.update()
@@ -851,6 +854,8 @@ class Handlers:
             data_dict = {record["time"]: record for record in set_data}
             # 辞書データの更新
             # taskデータの書き込み
+            # willacceptのみの記載の場合、前後のtaskを埋める挙動を書かないといけない
+            
             for time, task_data in drag_data.items():
                 if time in data_dict:
                     data_dict[time]["task"] = task_data["task"]
