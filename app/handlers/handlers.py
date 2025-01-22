@@ -317,7 +317,6 @@ class Handlers:
 
                 page.update()
             case 4:  # ICT/AST
-                print("ICT/AST")
                 # 表示
                 selectColumns[16].visible = True  # ICT/AST
                 # 非表示
@@ -395,7 +394,7 @@ class Handlers:
     def toggle_delete_button(page, columns):
         for  i in range(len(columns)):
             if columns[i].content.data["task"] != "":
-                print(columns[i].content.data)  
+                print(columns[i].content.content)
                 columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
             
             #button.visible = not button.visible
@@ -407,7 +406,6 @@ class Handlers:
         page,
         phNameList,
         phName,
-        delete_buttons,
         drag_data,
         count_dict,
         comment_dict,
@@ -416,20 +414,25 @@ class Handlers:
         comments,
         times,
         comment,
+        draggable_data
     ):
         # _move関数でdelete_button.dataに入れたのはdragtargetで設定したカラムの番号
         # columns[i]でそのカラムの情報を取得し、見た目上削除
         # 正しくはcolumnsの初期化を行う。ドラッグする前の状態に戻す
-        col_num = delete_buttons[e.control.data["num"]].data["num"]
+        col_num = e.control.data["num"]
         # 同じ情報の新しいカラムに差し替える
         #columns[col_num].content.content.clean()
         #columns[col_num].content.content.update()
         
-        columns[col_num].content.content = ft.Container(
-            width=50,
-            height=300,
-            bgcolor="#CBDCEB",
-            border_radius=5,
+        columns[col_num].content.content = ft.Column(
+            controls=[
+                ft.Container(
+                    width=50,
+                    height=300,
+                    bgcolor="#CBDCEB",
+                    border_radius=5,
+                ),
+            ]
         )
         
         left_col_num = e.control.data["num"]-1
@@ -446,11 +449,15 @@ class Handlers:
         #右方向に広がるcontent.data["task"] == "will_accept"のコンテンツは全て削除
         #while文を使用する
         while right_key =="will_accept":
-            columns[right_col_num].content.content = ft.Container(
-                width = 50,
-                height = 300,
-                bgcolor = "#CBDCEB",
-                border_radius = 5,
+            columns[right_col_num].content.content = ft.Column(
+                controls=[
+                    ft.Container(
+                        width = 50,
+                        height = 300,
+                        bgcolor = "#CBDCEB",
+                        border_radius = 5,
+                    ),
+                ]
             )
             del drag_data[DataModel().times()[right_col_num]]
             if DataModel().times()[right_col_num] in count_dict:
@@ -467,13 +474,11 @@ class Handlers:
             right_col_num += 1
             right_key = columns[right_col_num].content.data["task"]
         else:
-            print("right_key is will_accept")
+            pass
         page.update()
     
-        # deletebuttons属しているカラムのデータを渡していない
         # deletebuttons自体のデータが渡されている
         # contentのcoontent（見た目だけを更新する）
-        # 中身のDraggtargetのonaccept,on_moveは残っていた
 
         # 同時に該当するdrag_dataのデータも削除する
         del drag_data[DataModel().times()[col_num]]
@@ -492,9 +497,41 @@ class Handlers:
         
         # on_will_acceptを元に戻す
         columns[col_num].content.on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns=columns,drag_data=drag_data)
+        columns[col_num].on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns=columns,drag_data=drag_data)
+        
         
         #accept関数を元に戻す
-        columns[col_num].content.on_accept = lambda e: Handlers.drag_accepted(e, page, columns, drag_data, count_dict, comment_dict, draggable_data_for_move, comments, times, comment)
+        columns[col_num].content.on_accept = lambda e: Handlers.drag_accepted(
+            e, 
+            page=page, 
+            draggable_data=draggable_data,
+            columns=columns, 
+            comments=comments,
+            times=times,
+            drag_data = drag_data, 
+            comment = comment,
+            count_dict = count_dict,
+            comment_dict= comment_dict, 
+            phNameList=phNameList,
+            phName=phName,
+            draggable_data_for_move=draggable_data_for_move
+            )
+        
+        columns[col_num].on_accept = lambda e: Handlers.drag_accepted(
+            e, 
+            page=page, 
+            draggable_data=draggable_data,
+            columns=columns, 
+            comments=comments,
+            times=times,
+            drag_data = drag_data, 
+            comment = comment,
+            count_dict = count_dict,
+            comment_dict= comment_dict, 
+            phNameList=phNameList,
+            phName=phName,
+            draggable_data_for_move=draggable_data_for_move
+            )
         
         #カラムのデータは初期化したから何もないはず　空になる
         key = columns[col_num].content.data["task"]
@@ -652,7 +689,6 @@ class Handlers:
         e,
         page,
         draggable_data,
-        delete_buttons,
         columns,
         comments,
         times,
@@ -707,7 +743,6 @@ class Handlers:
                         page,
                         phNameList,
                         phName,
-                        delete_buttons,
                         drag_data,
                         count_dict,
                         comment_dict,
@@ -716,6 +751,7 @@ class Handlers:
                         comments,
                         DataModel().times(),  # delete_contentでの引数ではtimes
                         comment,
+                        draggable_data,
                     ),
                     data = {"num":e.control.data["num"]}
                 ),

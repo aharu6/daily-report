@@ -258,7 +258,6 @@ class TimelinePage:
                     e,
                     self.page,
                     self.draggable_data_for_move,
-                    self.delete_buttons,
                     self.columns,
                     self.comments,
                     self.model.times(),
