@@ -435,11 +435,8 @@ class Handlers:
             ]
         )
         
-        left_col_num = e.control.data["num"]-1
         right_col_num = e.control.data["num"]+1
-        left_key = None
         try:
-            left_key = columns[left_col_num].content.data["task"]
             right_key = columns[right_col_num].content.data["task"]
         except:
             pass
@@ -784,9 +781,10 @@ class Handlers:
         #e.control.on_accept = None
         e.control.on_will_accept = None
         e.control.on_accept = None
-        page.add(e.control.content) 
         page.update()
         
+        
+        """
         for i in range(len(columns)):
             if columns[i].content.data["task"] == 'will_accept':
                 columns[i].content.content = ft.Text(key, color="white")
@@ -810,7 +808,7 @@ class Handlers:
 
         #columns全てで実施する
         #columns data≒"will_accept"があったcolumnsのみcontentsを更新する
-        
+        """
         
         # ドラッグ時にコンテンツを更新する用
         columns[e.control.data["num"]].content.data["task"] = key

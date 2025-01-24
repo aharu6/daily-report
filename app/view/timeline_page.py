@@ -37,6 +37,7 @@ class TimelinePage:
 
         # deletebutton
         # main.pyを参照にdeleteButtonを追加
+        """
         self.delete_buttons = [
             ft.IconButton(
                 icon=ft.icons.DELETE_OUTLINE,
@@ -62,7 +63,7 @@ class TimelinePage:
             )
             for i in range(len(self.model.times()))
         ]
-
+        """
         # editbutton
         # main.pyを参照にeditButtonを追加
         self.editButton = ft.IconButton(
@@ -80,7 +81,6 @@ class TimelinePage:
                 self.Date,
                 self.reloadDrawer,
                 self.columns, #open_saved_data内で使用
-                self.delete_buttons,
                 self.draggable_data_for_move,
                 self.comments,
                 self.model.times(),
