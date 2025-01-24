@@ -22,6 +22,9 @@ class ReloadDataHandler:
         phName,
         custumDrawerAm,
         custumDrawerPm,
+        phNameList,
+        comment_dict,
+        draggable_data,
         ):
         page.open(drawer)
         #保存しているデータを読み出す
@@ -58,6 +61,9 @@ class ReloadDataHandler:
                         phName,
                         custumDrawerAm,
                         custumDrawerPm,
+                        phNameList,
+                        comment_dict,
+                        draggable_data,
                         ),
                     data = i
                     ),
@@ -122,6 +128,11 @@ class ReloadDataHandler:
         )
         """
         len_load_data = len(list(load_data.keys()) ) 
+        print(load_data)
+        
+        #load dataを編集　最初のtask名は残して、2番目以降はwill_accept
+        #willacceptの時は矢印ボタンだけを表示する もしくは続く間はwhileにて継続する
+        # matchにて分岐する？
         
         from handlers.handlers import Handlers
         for i in range(len_load_data):
@@ -150,7 +161,7 @@ class ReloadDataHandler:
                                 comment,
                                 draggable_data,
                             ),
-                            data = {"num":e.control.data["num"]}
+                            data = {"num":i}
                         ),   
                         ft.Draggable(
                             group = "timeline",
@@ -214,7 +225,6 @@ class ReloadDataHandler:
                         e,
                         page,
                         draggable_data_for_move,
-                        delete_buttons,
                         columns,
                         comments,
                         model_times,

@@ -90,6 +90,9 @@ class TimelinePage:
                 self.phName,
                 self.custumDrawerAm,
                 self.custumDrawerPm,
+                self.phNameList,
+                self.comment_dict,
+                self.model.draggable_data(),
                 )
         )
 
