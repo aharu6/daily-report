@@ -73,7 +73,7 @@ class TimelinePage:
         )
         
         self.reloadData = ft.IconButton(
-            icon = ft.icons.REFRESH,
+            icon = ft.icons.STORAGE,
             icon_size = 20,
             on_click = lambda e:ReloadDataHandler.toggle_Reload_Data(
                 e,
@@ -465,7 +465,7 @@ class TimelinePage:
                 ft.Text("病棟担当者"),
                 ft.Text("1,2F"),
                 ft.Text("役職者・管理業務"),
-                ft.Text("off"),
+                ft.Text("その他"),
                 ft.Text("ICT/AST"),
                 ft.Text("NST"),
             ],

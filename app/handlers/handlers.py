@@ -866,7 +866,9 @@ class Handlers:
                 pass
             
             case _:
-                pass
+                e.control.content.controls.append(
+                    Handlers.create_counter(e.control.data["time"],count_dict)
+                )
             
             
             # その他の場合にはカウンターを表示する
