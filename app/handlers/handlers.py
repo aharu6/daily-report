@@ -953,6 +953,8 @@ class Handlers:
             for time, task_data in drag_data.items():
                 if time in data_dict:
                     data_dict[time]["task"] = task_data["task"]
+                    
+            
             # countデータの書き込み
             for time, count in count_dict.items():
                 if time in data_dict:
@@ -1021,6 +1023,8 @@ class Handlers:
                 save_data[data_key] = data_dict
                 
             #変更後のデータを保管する
+            #コメントのデータが入っている？
+            #save_client_storageの時はwill_acceptを変換する前の状態にて保存すれば読み込み時に再度変換する必要なく楽かも
             page.client_storage.set(
                 "timeline_data", json.dumps(save_data, ensure_ascii=False)
                 )
@@ -1030,12 +1034,20 @@ class Handlers:
                 if time in data_dict:
                     data_dict[time]["comment"] = comment_data["comment"]
 
+            #辞書データをdfに変換
+            df  = pd.DataFrame.from_dict(data_dict,orient='index')
+            #will_acceptは前のタスクにて補完する
+            df['task'] = df['task'].replace('will_accept',method='ffill')
+            
             # csvファイルの書き込み
             if select_directory.result and select_directory.result.path:
                 try:
                     file_path = select_directory.result.path + f"/{date}"+f"{phName.value}"+".csv"
                 except:
                     file_path = select_directory.result.path + f"/{date}.csv"
+                
+                df.to_csv(file_path)
+                """
                 with open(file_path, "w", newline="") as f:
                     writer = csv.writer(f)
                     writer.writerow(
@@ -1053,3 +1065,5 @@ class Handlers:
                                 record["comment"],
                             ]
                         )
+                        
+                    """
