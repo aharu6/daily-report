@@ -10,6 +10,8 @@ from components.components import (
     ReloadDrawer,
 )
 from handlers.handlers import Handlers
+from handlers.handdrag_will_accept import Add_will_accept
+from handlers.drag_leave import DragLeave
 from handlers.reload_data import ReloadDataHandler
 from handlers.handlersMain import Handlers_Main
 from handlers.pageScroll import Scroll
@@ -35,6 +37,7 @@ class TimelinePage:
 
         # deletebutton
         # main.pyを参照にdeleteButtonを追加
+        """
         self.delete_buttons = [
             ft.IconButton(
                 icon=ft.icons.DELETE_OUTLINE,
@@ -60,17 +63,17 @@ class TimelinePage:
             )
             for i in range(len(self.model.times()))
         ]
-
+        """
         # editbutton
         # main.pyを参照にeditButtonを追加
         self.editButton = ft.IconButton(
             icon=ft.icons.DELETE_OUTLINE,
             icon_size=20,
-            on_click=lambda e: Handlers.toggle_delete_button(page, self.delete_buttons),
+            on_click=lambda e: Handlers.toggle_delete_button(page, self.columns),
         )
         
         self.reloadData = ft.IconButton(
-            icon = ft.icons.REFRESH,
+            icon = ft.icons.STORAGE,
             icon_size = 20,
             on_click = lambda e:ReloadDataHandler.toggle_Reload_Data(
                 e,
@@ -78,7 +81,6 @@ class TimelinePage:
                 self.Date,
                 self.reloadDrawer,
                 self.columns, #open_saved_data内で使用
-                self.delete_buttons,
                 self.draggable_data_for_move,
                 self.comments,
                 self.model.times(),
@@ -88,6 +90,9 @@ class TimelinePage:
                 self.phName,
                 self.custumDrawerAm,
                 self.custumDrawerPm,
+                self.phNameList,
+                self.comment_dict,
+                self.model.draggable_data(),
                 )
         )
 
@@ -256,17 +261,26 @@ class TimelinePage:
                     e,
                     self.page,
                     self.draggable_data_for_move,
-                    self.delete_buttons,
                     self.columns,
                     self.comments,
                     self.model.times(),
                     self.drag_data,
                     self.comment,
                     self.count_dict,
+                    self.phNameList,
+                    self.phName,
+                    self.comment_dict,
+                    self.draggable_data_for_move,
                 ),
+                on_will_accept=lambda e: Add_will_accept.drag_will_accept(
+                        e,
+                        self.page,
+                        self.columns,
+                        self.drag_data,
+                        ),
+                on_leave = lambda e:DragLeave.drag_leave(e,page),
                 data={"time": self.model.times()[i], "num": i, "task": ""},
             )
-
         # ampmSelecticon
         self.iconforampmselect = ft.Icon(
             ft.icons.SCHEDULE,
@@ -388,8 +402,7 @@ class TimelinePage:
         self.reloadDrawer = ReloadDrawer(page).create()
         #page_client_dataがあるときに読み出し用ドロワーに保管しているデータを表示する
         #コントロール部分　ft.Row ft.Containerを追加していく
-        if self.page.client_storage is not None:
-            print(self.page.client_storage.get("phNameList"))
+
             
         self.iconforphName = ft.Icon(
             ft.icons.ACCOUNT_CIRCLE,
@@ -455,7 +468,7 @@ class TimelinePage:
                 ft.Text("病棟担当者"),
                 ft.Text("1,2F"),
                 ft.Text("役職者・管理業務"),
-                ft.Text("off"),
+                ft.Text("その他"),
                 ft.Text("ICT/AST"),
                 ft.Text("NST"),
             ],

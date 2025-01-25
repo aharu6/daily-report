@@ -1,6 +1,6 @@
 import json
 import flet as ft
-
+import models.models as DataModel
 #ドロワーを展開する
 #保管しているデータを取得して表示する
 #右側にtimeline適用用のボタンを合わせて表示する
@@ -12,7 +12,7 @@ class ReloadDataHandler:
         calender,
         drawer,
         columns,
-        delete_buttons,
+        #delete_buttons,
         draggable_data_for_move,
         comments,
         model_times,
@@ -22,6 +22,9 @@ class ReloadDataHandler:
         phName,
         custumDrawerAm,
         custumDrawerPm,
+        phNameList,
+        comment_dict,
+        draggable_data,
         ):
         page.open(drawer)
         #保存しているデータを読み出す
@@ -48,7 +51,7 @@ class ReloadDataHandler:
                         calender,
                         columns,
                         dat,
-                        delete_buttons,
+                        #delete_buttons,
                         draggable_data_for_move,
                         comments,
                         model_times,
@@ -58,6 +61,9 @@ class ReloadDataHandler:
                         phName,
                         custumDrawerAm,
                         custumDrawerPm,
+                        phNameList,
+                        comment_dict,
+                        draggable_data,
                         ),
                     data = i
                     ),
@@ -73,7 +79,7 @@ class ReloadDataHandler:
         calender,
         columns,
         dat,
-        delete_buttons,
+        #delete_buttons,
         draggable_data_for_move,
         comments,
         model_times,
@@ -83,6 +89,9 @@ class ReloadDataHandler:
         phName,
         custumDrawerAm,
         custumDrawerPm,
+        phNameList,
+        comment_dict,
+        draggable_data,
         ):
         #columns = self.columns
         #選択したkeyに該当するデータを取り出す
@@ -119,6 +128,11 @@ class ReloadDataHandler:
         )
         """
         len_load_data = len(list(load_data.keys()) ) 
+        print(load_data)
+        
+        #load dataを編集　最初のtask名は残して、2番目以降はwill_accept
+        #willacceptの時は矢印ボタンだけを表示する もしくは続く間はwhileにて継続する
+        # matchにて分岐する？
         
         from handlers.handlers import Handlers
         for i in range(len_load_data):
@@ -127,7 +141,28 @@ class ReloadDataHandler:
             if load_data[key]["task"] != "":
                 columns[i].content = ft.Column(
                     controls  = [
-                        delete_buttons[i],   
+                        ft.IconButton(
+                            icon=ft.icons.DELETE_OUTLINE,
+                            visible=False,
+                            icon_size=20,
+                            icon_color="red",
+                            on_click=lambda e: Handlers.delete_content(
+                                e,
+                                page,
+                                phNameList,
+                                phName,
+                                drag_data,
+                                count_dict,
+                                comment_dict,
+                                columns,
+                                draggable_data_for_move,
+                                comments,
+                                DataModel().times(),  # delete_contentでの引数ではtimes
+                                comment,
+                                draggable_data,
+                            ),
+                            data = {"num":i}
+                        ),   
                         ft.Draggable(
                             group = "timeline",
                             content = ft.Container(
@@ -190,7 +225,6 @@ class ReloadDataHandler:
                         e,
                         page,
                         draggable_data_for_move,
-                        delete_buttons,
                         columns,
                         comments,
                         model_times,

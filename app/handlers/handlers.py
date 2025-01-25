@@ -5,6 +5,8 @@ import csv
 import pandas as pd
 from models.models import DataModel
 from handlers.drag_move import DragMoveHandler
+from handlers.drag_move_add import DragMoveAddHandler
+from handlers.handdrag_will_accept import Add_will_accept
 
 class Handlers:
     @staticmethod
@@ -315,7 +317,6 @@ class Handlers:
 
                 page.update()
             case 4:  # ICT/AST
-                print("ICT/AST")
                 # 表示
                 selectColumns[16].visible = True  # ICT/AST
                 # 非表示
@@ -390,9 +391,13 @@ class Handlers:
                 page.update()
 
     @staticmethod
-    def toggle_delete_button(page, delete_buttons):
-        for button in delete_buttons:
-            button.visible = not button.visible
+    def toggle_delete_button(page, columns):
+        for  i in range(len(columns)):
+            if columns[i].content.data["task"] != "":
+                print(columns[i].content.content)
+                columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
+            
+            #button.visible = not button.visible
         page.update()
 
     @staticmethod
@@ -401,7 +406,6 @@ class Handlers:
         page,
         phNameList,
         phName,
-        delete_buttons,
         drag_data,
         count_dict,
         comment_dict,
@@ -410,28 +414,68 @@ class Handlers:
         comments,
         times,
         comment,
+        draggable_data
     ):
         # _move関数でdelete_button.dataに入れたのはdragtargetで設定したカラムの番号
         # columns[i]でそのカラムの情報を取得し、見た目上削除
         # 正しくはcolumnsの初期化を行う。ドラッグする前の状態に戻す
-        col_num = delete_buttons[e.control.data["num"]].data["num"]
+        col_num = e.control.data["num"]
         # 同じ情報の新しいカラムに差し替える
         #columns[col_num].content.content.clean()
         #columns[col_num].content.content.update()
         
-        columns[col_num].content.content = ft.Container(
-            width=50,
-            height=300,
-            bgcolor="#CBDCEB",
-            border_radius=5,
+        columns[col_num].content.content = ft.Column(
+            controls=[
+                ft.Container(
+                    width=50,
+                    height=300,
+                    bgcolor="#CBDCEB",
+                    border_radius=5,
+                ),
+            ]
         )
+        
+        right_col_num = e.control.data["num"]+1
+        try:
+            right_key = columns[right_col_num].content.data["task"]
+        except:
+            pass
+    
         page.add(columns[col_num].content.content)
+
+        #右方向に広がるcontent.data["task"] == "will_accept"のコンテンツは全て削除
+        #while文を使用する
+        while right_key =="will_accept":
+            columns[right_col_num].content.content = ft.Column(
+                controls=[
+                    ft.Container(
+                        width = 50,
+                        height = 300,
+                        bgcolor = "#CBDCEB",
+                        border_radius = 5,
+                    ),
+                ]
+            )
+            del drag_data[DataModel().times()[right_col_num]]
+            if DataModel().times()[right_col_num] in count_dict:
+                del count_dict[DataModel.times()[right_col_num]]
+            if DataModel().times()[right_col_num] in comment_dict:
+                del comment_dict[DataModel.times()[right_col_num]]
+                
+            columns[right_col_num].content.group = "timeline"
+            columns[right_col_num].group = "timeline"
+            
+            columns[right_col_num].content.on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns,drag_data)
+            columns[right_col_num].on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns,drag_data)
+            
+            right_col_num += 1
+            right_key = columns[right_col_num].content.data["task"]
+        else:
+            pass
         page.update()
     
-        # deletebuttons属しているカラムのデータを渡していない
         # deletebuttons自体のデータが渡されている
         # contentのcoontent（見た目だけを更新する）
-        # 中身のDraggtargetのonaccept,on_moveは残っていた
 
         # 同時に該当するdrag_dataのデータも削除する
         del drag_data[DataModel().times()[col_num]]
@@ -443,20 +487,48 @@ class Handlers:
             del comment_dict[DataModel().times()[col_num]]
 
         # カラムのgroupを元に戻す
+        columns[col_num].group = "timeline"
         columns[col_num].content.group = "timeline"
         # カラムのデータを初期化
         columns[col_num].content.data["task"] = ""
         
-        #消したときに左右のカラムを比較して、同じ業務内容がない場合にはカウンター上の文字を再表示する
-        #left_keyの初期化
-        left_col_num = e.control.data["num"]-1
-        right_col_num = e.control.data["num"]+1
-        left_key = None
-        try:
-            left_key = columns[left_col_num].content.data["task"]
-            right_key = columns[right_col_num].content.data["task"]
-        except:
-            pass
+        # on_will_acceptを元に戻す
+        columns[col_num].content.on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns=columns,drag_data=drag_data)
+        columns[col_num].on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns=columns,drag_data=drag_data)
+        
+        
+        #accept関数を元に戻す
+        columns[col_num].content.on_accept = lambda e: Handlers.drag_accepted(
+            e, 
+            page=page, 
+            draggable_data=draggable_data,
+            columns=columns, 
+            comments=comments,
+            times=times,
+            drag_data = drag_data, 
+            comment = comment,
+            count_dict = count_dict,
+            comment_dict= comment_dict, 
+            phNameList=phNameList,
+            phName=phName,
+            draggable_data_for_move=draggable_data_for_move
+            )
+        
+        columns[col_num].on_accept = lambda e: Handlers.drag_accepted(
+            e, 
+            page=page, 
+            draggable_data=draggable_data,
+            columns=columns, 
+            comments=comments,
+            times=times,
+            drag_data = drag_data, 
+            comment = comment,
+            count_dict = count_dict,
+            comment_dict= comment_dict, 
+            phNameList=phNameList,
+            phName=phName,
+            draggable_data_for_move=draggable_data_for_move
+            )
         
         #カラムのデータは初期化したから何もないはず　空になる
         key = columns[col_num].content.data["task"]
@@ -492,7 +564,7 @@ class Handlers:
                 pass
             case _:
                 pass
-            
+        
         page.update()
 
     # カウンターの関数
@@ -614,13 +686,16 @@ class Handlers:
         e,
         page,
         draggable_data,
-        delete_buttons,
         columns,
         comments,
         times,
         drag_data,
         comment,
         count_dict,
+        phNameList,
+        phName,
+        comment_dict,
+        draggable_data_for_move,
     ):
         # print(e.target)
         src_id_str = e.src_id.replace("_", "")
@@ -652,10 +727,31 @@ class Handlers:
                     key = src.data["task"]
             except:
                 key = src.data["task"]
-
+                
         e.control.content = ft.Column(
             controls=[
-                delete_buttons[e.control.data["num"]],
+                ft.IconButton(
+                    icon=ft.icons.DELETE_OUTLINE,
+                    visible=False,
+                    icon_size=20,
+                    icon_color="red",
+                    on_click=lambda e: Handlers.delete_content(
+                        e,
+                        page,
+                        phNameList,
+                        phName,
+                        drag_data,
+                        count_dict,
+                        comment_dict,
+                        columns,
+                        draggable_data_for_move,
+                        comments,
+                        DataModel().times(),  # delete_contentでの引数ではtimes
+                        comment,
+                        draggable_data,
+                    ),
+                    data = {"num":e.control.data["num"]}
+                ),
                 ft.Draggable(
                     group="timeline_accepted",
                     content=ft.Container(
@@ -678,17 +774,51 @@ class Handlers:
                 "num": e.control.data["num"],
                 "task": key,
             },
-            # カラムがクリックされた時に隣のカラムにon_move関数をセットできるようにしたい
+            # カラムがクリックされた時
         )
-        page.add(e.control.content) 
-        e.control.content.update()
+        #受け取ったらon_accept自体は働かないようにする
+        #deletecontentのときには元に戻す
+        #e.control.on_accept = None
+        e.control.on_will_accept = None
+        e.control.on_accept = None
+        page.update()
+        
+        
+        """
+        for i in range(len(columns)):
+            if columns[i].content.data["task"] == 'will_accept':
+                columns[i].content.content = ft.Text(key, color="white")
+                columns[i].content.width  =50
+                columns[i].content.height  =140
+                columns[i].content.bgcolor = Handlers.change_color(key)
+                columns[i].content.data["task"] = key
+                
+                
+                #will_accept = noneにする
+                columns[i].content.on_will_accept = None
+                #ドラッグデータの保存
+                drag_data[columns[i].content.data["time"]] = {"task":key}
+                if comment:
+                    comments[columns[i].content.data["num"]].data = {
+                        "time":columns[i].content.data["time"],
+                        "num":columns[i].content.data["num"]
+                    }
+                    
+            else:pass
+
+        #columns全てで実施する
+        #columns data≒"will_accept"があったcolumnsのみcontentsを更新する
+        """
+        
         # ドラッグ時にコンテンツを更新する用
         columns[e.control.data["num"]].content.data["task"] = key
+        """
         # moveにて新規src_idが追加された場合、その情報をdrag_dataに追加
         # elseに向けて辞書データを更新しておく
         draggable_data[e.src_id] = {"task": key}
         draggable_data[next_id] = {"task": key}
-
+        """
+        
         left_column_num = e.control.data["num"] - 1
         # left_keyの初期化
         left_key = None
@@ -697,10 +827,13 @@ class Handlers:
             left_key = columns[left_column_num].content.data["task"]
         except:
             pass
+        
+        #隣のからむにwill
 
         # 現在のカラムの番号はnum = e.control.data["num"]
         # 左のカラム　num -1 のカラムの情報を取得
         # 一番左のカラムだけ表示、後は非表示にする（カウンターはそもそも作成しない）
+        """
         try:
             if left_key == key:
                 e.control.content.controls[1].content.content.visible = True
@@ -711,7 +844,10 @@ class Handlers:
 
         except:
             pass
-
+        """
+        
+        #Dataが渡されたcolumnsにのみcontentsを更新する
+        
         match key:
             # key==その他の場合にはコメントボタンを追加する
             case "その他":
@@ -728,37 +864,25 @@ class Handlers:
                 | "カンファレンス"
             ):
                 pass
+            
+            case _:
+                e.control.content.controls.append(
+                    Handlers.create_counter(e.control.data["time"],count_dict)
+                )
+            
+            
             # その他の場合にはカウンターを表示する
             # 左カラムに同じデータはある場合にはカウンターは作成しない
-            case _:
-                if left_key == key:
-                    pass
-                else:
-                    e.control.content.controls.append(
-                        Handlers.create_counter(e.control.data["time"], count_dict)
-                    )
-
-        # move関数を追加する
-        e.control.on_move = lambda e: DragMoveHandler.drag_move(
-            e,
-            page,
-            draggable_data,
-            delete_buttons,
-            columns,
-            comments,
-            times,
-            drag_data,
-            comment,
-            count_dict,
-        )
-
-        # 左隣カラムと右隣カラムにもmove関数をオフにする
-        columns[left_column_num].content.on_move = None
-        columns[left_column_num].update()
-
-        right_column_num = e.control.data["num"] + 1
-        columns[right_column_num].content.on_move = None
-        columns[right_column_num].update()
+            #case _:
+            #   if left_key == key:
+            #       pass
+            #   else:
+            #      e.control.content.controls.append(
+            #          Handlers.create_counter(e.control.data["time"], count_dict)
+            #      )
+        
+        # move関数を追加しない
+        #再クリックしたときのみmove関数を追加する
 
         # ドラッグデータの保存
         drag_data[e.control.data["time"]] = {"task": key}
@@ -767,7 +891,6 @@ class Handlers:
                 "time": e.control.data["time"],
                 "num": e.control.data["num"],
             }
-
         # 受け取ったらdragtargetのgroupを変更して再ドラッグ不可にする
         e.control.group = "timeline_accepted"
         page.update()
@@ -825,9 +948,13 @@ class Handlers:
             data_dict = {record["time"]: record for record in set_data}
             # 辞書データの更新
             # taskデータの書き込み
+            # willacceptのみの記載の場合、前後のtaskを埋める挙動を書かないといけない
+            
             for time, task_data in drag_data.items():
                 if time in data_dict:
                     data_dict[time]["task"] = task_data["task"]
+                    
+            
             # countデータの書き込み
             for time, count in count_dict.items():
                 if time in data_dict:
@@ -896,6 +1023,8 @@ class Handlers:
                 save_data[data_key] = data_dict
                 
             #変更後のデータを保管する
+            #コメントのデータが入っている？
+            #save_client_storageの時はwill_acceptを変換する前の状態にて保存すれば読み込み時に再度変換する必要なく楽かも
             page.client_storage.set(
                 "timeline_data", json.dumps(save_data, ensure_ascii=False)
                 )
@@ -905,12 +1034,20 @@ class Handlers:
                 if time in data_dict:
                     data_dict[time]["comment"] = comment_data["comment"]
 
+            #辞書データをdfに変換
+            df  = pd.DataFrame.from_dict(data_dict,orient='index')
+            #will_acceptは前のタスクにて補完する
+            df['task'] = df['task'].replace('will_accept',method='ffill')
+            
             # csvファイルの書き込み
             if select_directory.result and select_directory.result.path:
                 try:
                     file_path = select_directory.result.path + f"/{date}"+f"{phName.value}"+".csv"
                 except:
                     file_path = select_directory.result.path + f"/{date}.csv"
+                
+                df.to_csv(file_path)
+                """
                 with open(file_path, "w", newline="") as f:
                     writer = csv.writer(f)
                     writer.writerow(
@@ -928,3 +1065,5 @@ class Handlers:
                                 record["comment"],
                             ]
                         )
+                        
+                    """
