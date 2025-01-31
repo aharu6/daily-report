@@ -135,106 +135,115 @@ class ReloadDataHandler:
         # matchにて分岐する？
         
         from handlers.handlers import Handlers
+        import re
         for i in range(len_load_data):
-            #keyがあれば基づいてcolumns内容を更新するが、ない場合には元々のDraggable状態を保持する
+            #taskがあれば基づいてcolumns内容を更新するが、will_acceptの場合には矢印ボタンだけを表示する
             key = list(load_data.keys())[i]
-            if load_data[key]["task"] != "":
-                columns[i].content = ft.Column(
-                    controls  = [
-                        ft.IconButton(
-                            icon=ft.icons.DELETE_OUTLINE,
-                            visible=False,
-                            icon_size=20,
-                            icon_color="red",
-                            on_click=lambda e: Handlers.delete_content(
-                                e,
-                                page,
-                                phNameList,
-                                phName,
-                                drag_data,
-                                count_dict,
-                                comment_dict,
-                                columns,
-                                draggable_data_for_move,
-                                comments,
-                                DataModel().times(),  # delete_contentでの引数ではtimes
-                                comment,
-                                draggable_data,
+            match key:
+                case "will_accept":
+                    columns[i].content = ft.Column(
+                        controls = [
+                            ft.IconButton(
+                                icon=ft.icons.ARROW_DOWN,
+                                visible=True,
+                                icon_size=20,
+                                icon_color="blue",
+                                on_click=lambda e: Handlers.move(
+                                    e,
+                                    page,
+                                    draggable_data_for_move,
+                                    columns,
+                                    comments,
+                                    model_times,
+                                    drag_data,
+                                    comment,
+                                    count_dict,
+                                ),
+                                data = {"num":i}
                             ),
-                            data = {"num":i}
-                        ),   
-                        ft.Draggable(
-                            group = "timeline",
-                            content = ft.Container(
-                                content = ft.Text(load_data[key]["task"],color = "white"),
-                                width = 50,
-                                height = 140,
-                                bgcolor = Handlers.change_color(load_data[key]["task"]),
+                        ],
+                        height = 300,
+                        spacing = 0,
+                        data = {
+                            "time": load_data[key]["time"],
+                            "num": i,
+                            "task": load_data[key]["task"],
+                        },
+                    )
+                case r".+":
+                    columns[i].content = ft.Column(
+                        controls = [
+                            ft.IconButton(
+                                icon=ft.icons.DELETE_OUTLINE,
+                                visible=False,
+                                icon_size=20,
+                                icon_color="red",
+                                on_click=lambda e: Handlers.delete_content(
+                                    e,
+                                    page,
+                                    phNameList,
+                                    phName,
+                                    drag_data,
+                                    count_dict,
+                                    comment_dict,
+                                    columns,
+                                    draggable_data_for_move,
+                                    comments,
+                                    DataModel().times(),  # delete_contentでの引数ではtimes
+                                    comment,
+                                    draggable_data,
+                                ),
+                                data = {"num":i}
+                            ),   
+                            ft.Draggable(
+                                group = "timeline",
+                                content = ft.Container(
+                                    content = ft.Text(load_data[key]["task"],color = "white"),
+                                    width = 50,
+                                    height = 140,
+                                    bgcolor = Handlers.change_color(load_data[key]["task"]),
+                                ),
+                                data = {
+                                    "time": load_data[key]["time"],
+                                    "num": i,
+                                    "task": load_data[key]["task"],
+                                },
                             ),
-                            data = {
-                                "time": load_data[key]["time"],
-                                "num": i,
-                                "task": load_data[key]["task"],
-                            },
-                        ),
-                    ],
-                    height = 300,
-                    spacing = 0,
-                    data = {
-                        "time": load_data[key]["time"],
-                        "num": i,
-                        "task": load_data[key]["task"],
-                    }
-                )
-                
-                #カウンターデータ0のときには何も表示されない
-                #一番左のカラムだけは0でもカウンターが必要になるから、1以上の指定ではなくて、 key の比較
-                # move関数とaccepted関数と同じように左のカラムkeyと比較して表示する　update前だからcolumnsに保管されているkeyは使えない
-                #load_dataのうち、最初にkeyが出てきた辞書データを取り出してnum countsを取得、更新する
-                
-                #カウンター内の値も保存データに基づいて更新
-                
-                #コメントがある場合にはコメントボタンを追加
-                match load_data[key]["task"]:
-                    case "その他":
-                        columns[i].content.contorls.append(comments[i])
-                    # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
-                    case (
-                        "混注時間",
-                        "休憩",
-                        "委員会",
-                        "WG活動",
-                        "勉強会参加",
-                        "1on1",
-                        "カンファレンス",
-                    ):
-                        pass
-                
-                #コメント記載がある場合には内容更新もできる？
-            else:
-                #元々のDraggable状態を保持する
-                columns[i].content = ft.DragTarget(
-                    group="timeline",
-                    content=ft.Container(
-                        width=50,
-                        height=300,
-                        bgcolor="#CBDCEB",
-                        border_radius=5,
-                    ),
-                    on_accept=lambda e: Handlers.drag_accepted(
-                        e,
-                        page,
-                        draggable_data_for_move,
-                        columns,
-                        comments,
-                        model_times,
-                        drag_data,
-                        comment,
-                        count_dict,
-                    ),
-                    data={"time": model_times[i], "num": i, "task": ""},
-                )
-                
+                        ],
+                        height = 300,
+                        spacing = 0,
+                        data = {
+                            "time": load_data[key]["time"],
+                            "num": i,
+                            "task": load_data[key]["task"],
+                        }
+                    )
+                    
+                    #カウンターデータ0のときには何も表示されない
+                    #一番左のカラムだけは0でもカウンターが必要になるから、1以上の指定ではなくて、 key の比較
+                    # move関数とaccepted関数と同じように左のカラムkeyと比較して表示する　update前だからcolumnsに保管されているkeyは使えない
+                    #load_dataのうち、最初にkeyが出てきた辞書データを取り出してnum countsを取得、更新する
+                    
+                    #カウンター内の値も保存データに基づいて更新
+                    
+                    #コメントがある場合にはコメントボタンを追加
+                    match load_data[key]["task"]:
+                        case "その他":
+                            columns[i].content.contorls.append(comments[i])
+                        # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
+                        case (
+                            "混注時間",
+                            "休憩",
+                            "委員会",
+                            "WG活動",
+                            "勉強会参加",
+                            "1on1",
+                            "カンファレンス",
+                        ):
+                            pass
+                    
+                    #コメント記載がある場合には内容更新もできる？
+            
         #カレンダーの更新
         #適応に最初のkey
         key_for_reload = list(load_data.keys())[0]

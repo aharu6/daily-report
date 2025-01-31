@@ -127,7 +127,7 @@ class TimelinePage:
         self.comment_field = ft.TextField(label="その他")
 
         self.dlg = ft.AlertDialog(
-            title=ft.Text("Comment"),
+            title=ft.Text("内容を入力"),
             content=self.comment_field,
             actions=[
                 ft.TextButton(
