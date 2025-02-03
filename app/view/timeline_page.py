@@ -15,6 +15,7 @@ from handlers.drag_leave import DragLeave
 from handlers.reload_data import ReloadDataHandler
 from handlers.handlersMain import Handlers_Main
 from handlers.pageScroll import Scroll
+from handlers.setting.task_set import Set_Default_task
 from models.models import DataModel
 # timelinepageのviewを定義
 # main.pyの内容をこちらに移動する
@@ -340,6 +341,8 @@ class TimelinePage:
                 ),
             ],
         )
+        
+        
         #スクロールボタンを実装してみる
         #コンテンツの左移動するボタン
         self.backscrollButton = ft.ElevatedButton(
@@ -399,6 +402,22 @@ class TimelinePage:
             ),
         )
         self.phName = self.name_dropdown.create()
+        
+        #settingpageの設定に基づいてデフォルトで業務を登録する
+        Set_Default_task.set_default_task(
+            page,
+            self.columns,
+            self.phNameList,
+            self.phName,
+            self.drag_data,
+            self.count_dict,
+            self.comment_dict,
+            self.draggable_data_for_move,
+            self.comments,
+            self.model.times(),
+            self.comment,
+            self.model.draggable_data())
+        
         Handlers.update_dropdown(self.phName, self.phNameList, page)
 
         self.end_Drawer = EndDrawer(page)

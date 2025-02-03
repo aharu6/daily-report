@@ -3,7 +3,8 @@ import datetime
 import json
 from models.models import DataModel
 from handlers.handlers_setting import Handlers_setting
-
+from flet import TextAlign
+from handlers.setting.reload_set_data import ReloadSetDataButton
 
 class Title:
     def __init__(self, page):
@@ -11,7 +12,7 @@ class Title:
 
     def create(self):
         return ft.Text(
-            "保存データの削除など",
+            "保存データの削除,起動時の設定",
             size=20,
             weight=ft.FontWeight.BOLD,
         )
@@ -76,6 +77,31 @@ class Panel:
                         ],
                     ),
                 ),
+                ft.ExpansionPanel(
+                    bgcolor = None,
+                    header = ft.ListTile(
+                        leading = ft.Icon(ft.icons.VISIBILITY),
+                        title = ft.Text("デフォルトの表示設定"),
+                    ),
+                    content = ft.Column(
+                        controls = [
+                            ft.ListTile(
+                                title = ft.Text("13:15業務調整のデフォルト追加"),
+                                subtitle = ft.Text("ONにすると起動時にデフォルトで表示されます"),
+                                trailing = ft.CupertinoSlidingSegmentedButton(
+                                    controls = [
+                                        ft.Text("ON"),
+                                        ft.Text("OFF"),
+                                    ],
+                                    selected_index =ReloadSetDataButton.select_index(page),
+                                    on_change = lambda e:ReloadSetDataButton.reload_set_data_button(e,page),
+                                    data = "13:15業務調整"
+                                )
+                            )
+                        ]
+                    )
+                
+                )
             ],
         )
 
