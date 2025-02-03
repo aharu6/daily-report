@@ -22,7 +22,11 @@ class Set_Default_task:
         #settingpageでセットしたclient_storageの内容に従って、デフォルトでの追加タスクを設定する
         #0 on /1 off
         change_set = page.client_storage.get("default_task")
-        set_task1  = int(change_set["13:15業務調整"]) #業務調整のセットon/off
+        if int(change_set["13:15業務調整"])is None:
+            set_task1 = 0
+        else:
+            set_task1  = int(change_set["13:15業務調整"]) #業務調整のセットon/off
+        
         match set_task1:
             case 0: #on 13:15業務調整を 13:15の時間帯にデフォルトで追加する
                 #columns 19 が 13:15の時間帯
