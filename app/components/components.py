@@ -11,7 +11,25 @@ class DateComponent:
         self.handle_change = handle_change
 
     def create(self):
-        return ft.ElevatedButton(
+        
+        return ft.Column(
+            [
+                ft.Icon(ft.icons.CALENDAR_MONTH),
+                ft.TextButton(
+                    text = f"{self.today.year}/{self.today.month}/{self.today.day}",
+                    on_click = lambda e: self.page.open(
+                        ft.DatePicker(
+                            on_change = self.handle_change,
+                        )
+                    ),
+                    data = self.today,
+                )
+            ],
+            width = 130,
+        )
+
+    """
+    ft.ElevatedButton(
             text=f"{self.today.year}/{self.today.month}/{self.today.day}",
             icon=ft.icons.CALENDAR_MONTH,
             on_click=lambda e: self.page.open(
@@ -22,7 +40,7 @@ class DateComponent:
             data = self.today,
         )
 
-
+"""
 class NameDropdown:
     def __init__(self, page, phNameList, dropdown_changed):
         self.page = page
@@ -35,7 +53,9 @@ class NameDropdown:
             options=[],
             on_change=self.on_change,
             label="Name",
-            border_color=ft.colors.BLUE_GREY_100
+            label_style = ft.TextStyle(color = "#2a4d7b"),
+            border_color=ft.colors.BLUE_GREY_100,
+            color = "#2a4d7b",
         )
 
 
