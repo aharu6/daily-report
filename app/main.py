@@ -19,7 +19,7 @@ from view.chart_page import ChartPage
 # main
 def main(page: ft.Page):
 
-    page.title = "Daily Report"
+    page.title = "業務日誌"
     page.window.width = 1400
     page.window.height = 1000
     page.scroll = True

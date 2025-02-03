@@ -69,13 +69,13 @@ class TimelinePage:
         # main.pyを参照にeditButtonを追加
         self.editButton = ft.IconButton(
             icon=ft.icons.DELETE_OUTLINE,
-            icon_size=20,
+            icon_size=25,
             on_click=lambda e: Handlers.toggle_delete_button(page, self.columns),
         )
         
         self.reloadData = ft.IconButton(
             icon = ft.icons.STORAGE,
-            icon_size = 20,
+            icon_size = 25,
             on_click = lambda e:ReloadDataHandler.toggle_Reload_Data(
                 e,
                 self.page,
@@ -99,7 +99,7 @@ class TimelinePage:
 
         self.ineditButton = ft.Row(
             controls=[self.editButton,self.reloadData],
-            alignment=ft.alignment.center,
+            alignment=ft.MainAxisAlignment.END,
         )
 
         self.drag_data = {}
@@ -481,34 +481,37 @@ class TimelinePage:
         )
 
         # 業務選択のcupertinoSlidingSegmentedButtonは全て一つにまとめる
-        self.choice_button = ft.CupertinoSlidingSegmentedButton(
-            selected_index=3,
-            thumb_color="#CBDCEB",
-            on_change=lambda e: Handlers.change_choice_button(
-                e, self.selectColumns, page
+        self.choice_button = ft.Container(
+            content=ft.CupertinoSlidingSegmentedButton(
+                selected_index=3,
+                thumb_color="#CBDCEB",
+                on_change=lambda e: Handlers.change_choice_button(
+                    e, self.selectColumns, page
+                ),
+                padding=ft.padding.symmetric(0, 10),
+                controls=[
+                    ft.Text("病棟担当者"),
+                    ft.Text("1,2F"),
+                    ft.Text("役職者・管理業務"),
+                    ft.Text("その他"),
+                    ft.Text("ICT/AST"),
+                    ft.Text("NST"),
+                ],
             ),
-            padding=ft.padding.symmetric(0, 10),
-            controls=[
-                ft.Text("病棟担当者"),
-                ft.Text("1,2F"),
-                ft.Text("役職者・管理業務"),
-                ft.Text("その他"),
-                ft.Text("ICT/AST"),
-                ft.Text("NST"),
-            ],
+            alignment = ft.alignment.center,
         )
         
         self.contents_list = View(
             "/",  # TimelinePageのURL
             [
-                self.Date,
                 self.dialog,
                 ft.Row(
                     controls=[
                         self.colPhName,
                         ft.Container(height=20, width=50),
+                        self.Date,
+                        ft.Container(height=20, width=50),
                         self.colampmSelect,
-                        self.choice_button,
                     ]
                 ),
                 self.custumDrawerAmTitle,
@@ -516,6 +519,7 @@ class TimelinePage:
                 self.custumDrawerPmTitle,
                 self.custumDrawerPm,
                 self.ineditButton,
+                self.choice_button, 
                 self.TimeLine,
                 self.scrollButton,
                 ft.ResponsiveRow(
