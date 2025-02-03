@@ -1,6 +1,6 @@
 import json
 import flet as ft
-import models.models as DataModel
+from models.models import DataModel
 #ドロワーを展開する
 #保管しているデータを取得して表示する
 #右側にtimeline適用用のボタンを合わせて表示する
@@ -176,7 +176,7 @@ class ReloadDataHandler:
                                 columns,
                                 draggable_data_for_move,
                                 comments,
-                                DataModel().times(),  # delete_contentでの引数ではtimes
+                                DataModel().times(),
                                 comment,
                                 draggable_data,
                             ),
@@ -239,7 +239,14 @@ class ReloadDataHandler:
                         if load_data[key]["count"] >0:
                             columns[i].content.controls[2].controls[1].value = load_data[key]["count"]
                 #コメント記載がある場合には内容更新もできる？
-        
+                
+            #辞書データの更新
+            #delete contentで使用する辞書データを読み込みデータに合わせて更新する
+            #使用辞書：drag_data,comment_dict,count_dict
+            drag_data[load_data[key]["time"]] = {"task":load_data[key]["task"]}
+            if load_data[key]["comment"]!= "":
+                comment_dict[load_data[key]["time"]] = {"comment":comment}
+
         #カレンダーの更新
         #適応に最初のkey
         key_for_reload = list(load_data.keys())[0]
@@ -270,5 +277,7 @@ class ReloadDataHandler:
                     custumDrawerPm.content.controls[i].value = True
                 else:
                     pass
-        
+                
         page.update()
+        
+        #カラムのgroupを受け取り後の状態に

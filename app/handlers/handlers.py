@@ -401,7 +401,12 @@ class Handlers:
                 case "":
                     pass
                 case _:
-                    columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
+                    try:
+                        #初回ドラッグコンテンツ用のdeletebutton visible
+                        columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
+                    except:
+                        #reload時のdeletebutton visible
+                        columns[i].content.controls[0].visible = not columns[i].content.controls[0].visible
             
             #button.visible = not button.visible
         page.update()
@@ -824,18 +829,6 @@ class Handlers:
         draggable_data[e.src_id] = {"task": key}
         draggable_data[next_id] = {"task": key}
         """
-        
-        left_column_num = e.control.data["num"] - 1
-        # left_keyの初期化
-        left_key = None
-
-        try:
-            left_key = columns[left_column_num].content.data["task"]
-        except:
-            pass
-        
-        #隣のからむにwill
-
         # 現在のカラムの番号はnum = e.control.data["num"]
         # 左のカラム　num -1 のカラムの情報を取得
         # 一番左のカラムだけ表示、後は非表示にする（カウンターはそもそも作成しない）
@@ -954,7 +947,7 @@ class Handlers:
             data_dict = {record["time"]: record for record in set_data}
             # 辞書データの更新
             # taskデータの書き込み
-            # willacceptのみの記載の場合、前後のtaskを埋める挙動を書かないといけない
+            # willacceptのみの記載の場合、前後のtaskを埋める挙動
             
             for time, task_data in drag_data.items():
                 if time in data_dict:
