@@ -1,6 +1,7 @@
 import json
 import flet as ft
 from models.models import DataModel
+
 #ドロワーを展開する
 #保管しているデータを取得して表示する
 #右側にtimeline適用用のボタンを合わせて表示する
@@ -135,6 +136,7 @@ class ReloadDataHandler:
         #前のコンテンツが残っていて、追加される形式となっているので全てクリアしてから追加する
         
         from handlers.handlers import Handlers
+        from handlers.timeline.delete_content_reload import DeleteContentReloadHandler
         import re
         for i in range(len_load_data):
             #taskがあれば基づいてcolumns内容を更新するが、will_acceptの場合には矢印ボタンだけを表示する
@@ -165,22 +167,19 @@ class ReloadDataHandler:
                             visible=False,
                             icon_size=20,
                             icon_color="red",
-                            on_click=lambda e: Handlers.delete_content(
+                            on_click=lambda e: DeleteContentReloadHandler.delete_content_for_reload(
                                 e,
                                 page,
-                                phNameList,
-                                phName,
                                 drag_data,
                                 count_dict,
                                 comment_dict,
                                 columns,
-                                draggable_data_for_move,
-                                comments,
-                                DataModel().times(),
-                                comment,
-                                draggable_data,
                             ),
-                            data = {"num":i}
+                            data = {
+                                "time": load_data[key]["time"],
+                                "num":i,
+                                "task":load_data[key]["task"],
+                                }
                         ),   
                         ft.Draggable(
                             group = "timeline",
