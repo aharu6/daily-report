@@ -1,6 +1,7 @@
 import json
 import datetime
 import flet as ft
+from flet import BoxShape
 import csv
 import pandas as pd
 from models.models import DataModel
@@ -10,7 +11,7 @@ from handlers.handdrag_will_accept import Add_will_accept
 
 class Handlers:
     @staticmethod
-    def handle_change(e, today, Date,page):
+    def handle_change(e, Date,page):
         """_summary_
         選択した日付にてカレンダーを更新する
         デフォルトは今日の日付
@@ -514,6 +515,7 @@ class Handlers:
         columns[col_num].content.data["task"] = ""
         
         # on_will_acceptを元に戻す
+        #ドラッグできるけど、表示が元に戻っていない
         columns[col_num].content.on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns=columns,drag_data=drag_data)
         columns[col_num].on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns=columns,drag_data=drag_data)
         
@@ -550,20 +552,6 @@ class Handlers:
             phName=phName,
             draggable_data_for_move=draggable_data_for_move
             )
-        
-        #カラムのデータは初期化したから何もないはず　空になる
-        key = columns[col_num].content.data["task"]
-        try:
-            if right_key != key:
-                #削除するとカラムのデータはなくなるので、右カラムと削除カラムにてdataが異なる
-                #カラムの文字を再表示
-                columns[right_col_num].content.content.controls[1].content.content.visible = True
-        except:
-            pass
-        
-        #カウンターを再表示、再追加
-        #keyによってカウンターの追加、非追加が異なる
-        #カウンター必要なkey
         
         #現在カラムのkeyは削除ずみ
         #右カラムのrightcolumn[key]を取得
@@ -776,10 +764,12 @@ class Handlers:
                 ft.Draggable(
                     group="timeline_accepted",
                     content=ft.Container(
-                        content=ft.Text(key, color="white"),
+                        content=ft.Text(key, color="white", text_align=ft.TextAlign.CENTER),
                         width=50,
                         height=140,
                         bgcolor=Handlers.change_color(key),
+                        border_radius=ft.border_radius.only(top_left = 5,bottom_left = 5),
+                        shape = BoxShape.RECTANGLE,
                     ),
                     data={
                         "time": e.control.data["time"],
@@ -895,6 +885,7 @@ class Handlers:
 
         # ドラッグデータの保存
         drag_data[e.control.data["time"]] = {"task": key}
+        print(e.control.data)
         if comment:
             comments[e.control.data["num"]].data = {
                 "time": e.control.data["time"],
@@ -922,7 +913,9 @@ class Handlers:
         comment_dict,
         select_directory,
         save_error_message,
+        today,
     ):
+        
         date = f"{select_day.data.year}-{select_day.data.month}-{select_day.data.day}"
         #名前が入力されていない場合にはエラーを表示する
         if phName.value == None:
