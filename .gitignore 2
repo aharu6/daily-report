@@ -1,0 +1,14 @@
+
+/.venv
+/.vs
+/dist
+/build
+app/dist/main.exe
+app/output_csv/2025-01-12.csv
+app/output_csv/2025-01-13.csv
+README.html
+app/output_csv/2025-01-14.csv
+**/__pycache__/**
+app/output_csv/2025-01-15name10.csv
+/app/output_csv
+app/testfile/test.json

@@ -128,19 +128,38 @@ class ReloadDataHandler:
         )
         """
         len_load_data = len(list(load_data.keys()) ) 
-        print(load_data)
         
         #load dataを編集　最初のtask名は残して、2番目以降はwill_accept
         #willacceptの時は矢印ボタンだけを表示する もしくは続く間はwhileにて継続する
         # matchにて分岐する？
+        #前のコンテンツが残っていて、追加される形式となっているので全てクリアしてから追加する
         
         from handlers.handlers import Handlers
+        import re
         for i in range(len_load_data):
-            #keyがあれば基づいてcolumns内容を更新するが、ない場合には元々のDraggable状態を保持する
+            #taskがあれば基づいてcolumns内容を更新するが、will_acceptの場合には矢印ボタンだけを表示する
             key = list(load_data.keys())[i]
-            if load_data[key]["task"] != "":
+            if load_data[key]["task"] ==  "will_accept":
+                columns[i].content  = ft.Column(
+                    controls = [
+                        ft.Container(
+                            bgcolor = "blue",
+                            content = ft.Icon(ft.icons.ARROW_RIGHT,color = "white"),
+                            width = 50,
+                            height = 50,
+                            border_radius = 50,
+                        ),
+                    ],
+                    data = {
+                        "time": load_data[key]["time"],
+                        "num": i,
+                        "task": load_data[key]["task"],
+                    }
+                )
+                
+            elif re.search(r'.+',load_data[key]["task"]):
                 columns[i].content = ft.Column(
-                    controls  = [
+                    controls = [
                         ft.IconButton(
                             icon=ft.icons.DELETE_OUTLINE,
                             visible=False,
@@ -195,9 +214,11 @@ class ReloadDataHandler:
                 #カウンター内の値も保存データに基づいて更新
                 
                 #コメントがある場合にはコメントボタンを追加
+                
                 match load_data[key]["task"]:
                     case "その他":
-                        columns[i].content.contorls.append(comments[i])
+                        #columns
+                        columns[i].content.controls.append(comments[i])
                     # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
                     case (
                         "混注時間",
@@ -207,34 +228,19 @@ class ReloadDataHandler:
                         "勉強会参加",
                         "1on1",
                         "カンファレンス",
+                        "will_accept",
                     ):
                         pass
-                
+                    #カウンターの再表示
+                    case _:
+                        columns[i].content.controls.append(Handlers.create_counter(load_data[key]["time"],count_dict))
+                        print(columns[i].content.controls)
+                        #カウンターデータの再表示
+                        #１以上の場合には表示する
+                        if load_data[key]["count"] >0:
+                            columns[i].content.controls[2].controls[1].value = load_data[key]["count"]
                 #コメント記載がある場合には内容更新もできる？
-            else:
-                #元々のDraggable状態を保持する
-                columns[i].content = ft.DragTarget(
-                    group="timeline",
-                    content=ft.Container(
-                        width=50,
-                        height=300,
-                        bgcolor="#CBDCEB",
-                        border_radius=5,
-                    ),
-                    on_accept=lambda e: Handlers.drag_accepted(
-                        e,
-                        page,
-                        draggable_data_for_move,
-                        columns,
-                        comments,
-                        model_times,
-                        drag_data,
-                        comment,
-                        count_dict,
-                    ),
-                    data={"time": model_times[i], "num": i, "task": ""},
-                )
-                
+        
         #カレンダーの更新
         #適応に最初のkey
         key_for_reload = list(load_data.keys())[0]
@@ -265,52 +271,5 @@ class ReloadDataHandler:
                     custumDrawerPm.content.controls[i].value = True
                 else:
                     pass
-        
-        
-        page.update() #updateしてからカウンターの追加
-        
-        
-        
-        #columnsにてループする
-        for i in range(len_load_data):
-            try:
-                key = list(load_data.keys())[i]
-                left_key = (list(load_data.keys()))[i-1]
-                #カウンターの追加
-                #左のカラムと同じkey の場合にはカウンターを追加しない
-                #カウンターを追加する必要のない業務には追加しない
-                current_key = load_data[key]["task"]
-                left_key = load_data[left_key]["task"]
-                
-                if current_key == left_key:
-                    pass
-                else:
-                    #カウンターを追加する必要のない業務には追加しない
-                    match key:
-                        case  (
-                            "混注時間"
-                            | "休憩"
-                            | "委員会"
-                            | "WG活動"
-                            | "勉強会参加"
-                            | "1on1"
-                            | "カンファレンス"
-                            |"13:15業務調整"
-                        ):
-                            pass
-                        case _:
-                            columns[i].content.controls.append(Handlers.create_counter(load_data[key]["time"],count_dict))
-            except:
-                pass   
-            
-        page.update()
-        
-        #カウンターデータが1以上ある場合には値に応じてカウンターの値を更新する
-        #カウンターデータが0のときには0のまま
-        for i in range(len_load_data):
-            key = list(load_data.keys())[i]
-            if load_data[key]["count"] > 0:
-                columns[i].content.controls[2].controls[1].value = load_data[key]["count"]
-        
         
         page.update()
