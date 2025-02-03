@@ -174,6 +174,13 @@ class ReloadDataHandler:
                                 count_dict,
                                 comment_dict,
                                 columns,
+                                comments,
+                                model_times,
+                                drag_data,
+                                comment,
+                                phNameList,
+                                phName,
+                                draggable_data_for_move,
                             ),
                             data = {
                                 "time": load_data[key]["time"],

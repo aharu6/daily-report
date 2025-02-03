@@ -25,12 +25,12 @@ class TimelinePage:
         self.handle_change = Handlers.handle_change
         self.today = datetime.date.today()
         self.date_component = DateComponent(
-            page, self.today, lambda e: self.handle_change(e, self.today, self.Date,page)
+            page, self.today, lambda e: self.handle_change(e, self.Date,page)
         )
         self.Date = self.date_component.create()
         self.model = DataModel()
         self.phNameList = self.model.load_data(page)
-
+        self.today = datetime.date.today()
         # pageにて共通のcount_dictを定義しておく
         self.count_dict = self.model.count_dict()
 
@@ -168,6 +168,7 @@ class TimelinePage:
                 self.comment_dict,
                 self.select_directory,
                 self.save_error_message,
+                self.today,
             )
         )
         

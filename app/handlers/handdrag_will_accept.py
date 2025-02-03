@@ -27,8 +27,8 @@ class Add_will_accept:
                             #コピーの方向は右移動だけに限定する？　データ編集が楽
                             #右と左それぞれからドラッグされた時バッティングするため
                             #表示矢印も右矢印だけですむ
-                            bgcolor = "blue",
-                            content = ft.Icon(ft.icons.ARROW_RIGHT,color = "white"),
+                            content = ft.Icon(ft.icons.DOUBLE_ARROW,color = "#2D6E7E"),
+                            alignment = ft.alignment.top_center,
                         ),
                         data = {
                             "time":e.control.data["time"],

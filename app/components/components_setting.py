@@ -12,7 +12,7 @@ class Title:
 
     def create(self):
         return ft.Text(
-            "保存データの削除,起動時の設定",
+            "設定、保存データの編集",
             size=20,
             weight=ft.FontWeight.BOLD,
         )
