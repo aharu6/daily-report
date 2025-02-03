@@ -74,5 +74,9 @@ class Set_Default_task:
                         "task":"13:15業務調整",
                     }
                 )
+                #drag_dataに追加
+                drag_data["13:15"] = {"task":"13:15業務調整","num":19}
+                #コメントはないから不要
+                #カウントデータも不要
             case 1:
                 pass
