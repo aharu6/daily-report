@@ -34,7 +34,7 @@ class Add_will_accept:
                                 #右と左それぞれからドラッグされた時バッティングするため
                                 #表示矢印も右矢印だけですむ
                                 bgcolor = "blue",
-                                content = ft.Icon(ft.icons.ARROW_RIGHT,color = "ehite"),
+                                content = ft.Icon(ft.icons.ARROW_RIGHT,color = "white"),
                             ),
                             data = {
                                 "time":e.control.data["time"],
@@ -51,5 +51,10 @@ class Add_will_accept:
                 e.control.group = "timeline_accepted" 
                 
                 drag_data[e.control.data["time"]] = {"task":"will_accept"}
+                
+                #trueの時（初回ドラッグの時はドラッグ可能であることを示す色をつける）
+                
+            elif e.data == "true":
+                e.control.content.bgcolor = "green"
                 
         page.update()
