@@ -393,22 +393,23 @@ class Handlers:
     @staticmethod
     def toggle_delete_button(page, columns):
         for  i in range(len(columns)):
-            task = columns[i].content.data["task"]
+            if columns[i].content.data is not None:
+                task = columns[i].content.data["task"]
             
-            match task:
-                case "will_accept":
-                    pass
-                case "":
-                    pass
-                case _:
-                    try:
-                        #初回ドラッグコンテンツ用のdeletebutton visible
-                        columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
-                    except:
-                        #reload時のdeletebutton visible
-                        columns[i].content.controls[0].visible = not columns[i].content.controls[0].visible
-            
-            #button.visible = not button.visible
+                match task:
+                    case "will_accept":
+                        pass
+                    case "":
+                        pass
+                    case _:
+                        try:
+                            #初回ドラッグコンテンツ用のdeletebutton visible
+                            columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
+                        except:
+                            #reload時のdeletebutton visible
+                            columns[i].content.controls[0].visible = not columns[i].content.controls[0].visible
+                
+                #button.visible = not button.visible
         page.update()
 
     @staticmethod
