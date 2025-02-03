@@ -393,9 +393,15 @@ class Handlers:
     @staticmethod
     def toggle_delete_button(page, columns):
         for  i in range(len(columns)):
-            if columns[i].content.data["task"] != "":
-                print(columns[i].content.content)
-                columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
+            task = columns[i].content.data["task"]
+            
+            match task:
+                case "will_accept":
+                    pass
+                case "":
+                    pass
+                case _:
+                    columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
             
             #button.visible = not button.visible
         page.update()
