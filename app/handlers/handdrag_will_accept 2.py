@@ -14,7 +14,6 @@ class Add_will_accept:
         left_num = e.control.data["num"] - 1    
         left_column_data = columns[left_num].content.data["task"]
         if re.search(r'.+',left_column_data):
-            
             if e.data == 'false':
                 e.control.content = ft.Column(
                     controls=[
@@ -51,5 +50,6 @@ class Add_will_accept:
                 e.control.group = "timeline_accepted" 
                 
                 drag_data[e.control.data["time"]] = {"task":"will_accept"}
+                
                 
         page.update()

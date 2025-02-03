@@ -234,7 +234,6 @@ class ReloadDataHandler:
                     #カウンターの再表示
                     case _:
                         columns[i].content.controls.append(Handlers.create_counter(load_data[key]["time"],count_dict))
-                        print(columns[i].content.controls)
                         #カウンターデータの再表示
                         #１以上の場合には表示する
                         if load_data[key]["count"] >0:
