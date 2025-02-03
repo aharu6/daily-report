@@ -105,9 +105,9 @@ class Handlers:
     @staticmethod
     def change_color(key):
         match key:
-            case "情報収集＋指導":
+            case "薬剤使用状況の把握等（情報収集）":
                 return "#384B70"
-            case "指導記録作成":
+            case "服薬指導＋指導記録作成":
                 return "#384B70"
             case "混注時間":
                 return "#384B70"
