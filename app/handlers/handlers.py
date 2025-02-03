@@ -105,9 +105,9 @@ class Handlers:
     @staticmethod
     def change_color(key):
         match key:
-            case "情報収集＋指導":
+            case "薬剤使用状況の把握等（情報収集）":
                 return "#384B70"
-            case "指導記録作成":
+            case "服薬指導＋指導記録作成":
                 return "#384B70"
             case "混注時間":
                 return "#384B70"
@@ -165,6 +165,8 @@ class Handlers:
                 return "#72BAA9"
             case "管理業務":
                 return "#72BAA9"
+            case "NST":
+                return "#507687"
 
     @staticmethod
     def change_choice_button(e, selectColumns, page):
@@ -204,6 +206,7 @@ class Handlers:
                 selectColumns[27].visible = False  # 休憩
                 selectColumns[28].visible = False  # その他
                 selectColumns[29].visible = False  # 管理業務
+                selectColumns[30].visible = False  # NST
 
                 page.update()
             case 1:  # 12階
@@ -240,6 +243,7 @@ class Handlers:
                 selectColumns[27].visible = False  # 休憩
                 selectColumns[28].visible = False  # その他
                 selectColumns[29].visible = False  # 管理業務
+                selectColumns[30].visible = False  # NST
 
                 page.update()
 
@@ -275,10 +279,12 @@ class Handlers:
                 selectColumns[26].visible = False  # 13:15業務調整
                 selectColumns[27].visible = False  # 休憩
                 selectColumns[28].visible = False  # その他
+                
+                selectColumns[30].visible = False  # NST
 
                 page.update()
 
-            case 3:  # off
+            case 3:  # その他
                 # 表示
                 selectColumns[12].visible = True  # 委員会
                 selectColumns[13].visible = True  # 勉強会参加
@@ -314,6 +320,7 @@ class Handlers:
                 selectColumns[25].visible = False  # 脳卒中ホットライン対応
 
                 selectColumns[29].visible = False  # 管理業務
+                selectColumns[30].visible = False  # NST
 
                 page.update()
             case 4:  # ICT/AST
@@ -350,12 +357,14 @@ class Handlers:
                 selectColumns[27].visible = False  # 休憩
                 selectColumns[28].visible = False  # その他
                 selectColumns[29].visible = False  # 管理業務
+                selectColumns[30].visible = False  # NST
                 page.update()
 
             case 5:  # NST
                 # 表示
                 selectColumns[17].visible = True  # 褥瘡
                 selectColumns[18].visible = True  # TPN評価
+                selectColumns[30].visible = True  # NST
 
                 # 非表示
                 selectColumns[0].visible = False  # 情報収集　指導
