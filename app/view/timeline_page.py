@@ -173,6 +173,7 @@ class TimelinePage:
         page.overlay.append(self.select_directory)
 
         self.selectColumns = []
+        from flet import TextAlign
         for kind in self.model.draggable_data().values():
             self.selectColumns.append(
                 ft.Column(
@@ -180,7 +181,11 @@ class TimelinePage:
                         ft.Draggable(
                             group="timeline",
                             content=ft.Container(
-                                ft.Text(kind["task"], color="white"),
+                                ft.Text(
+                                    kind["task"],
+                                    color="white",
+                                    text_align = TextAlign.CENTER,
+                                    ),
                                 width=100,
                                 height=70,
                                 bgcolor=Handlers.change_color(kind["task"]),
@@ -190,7 +195,7 @@ class TimelinePage:
                         ),
                     ],
                     col={"sm": 3, "md": 2, "xl": 1},
-                    spacing=0,
+                    spacing=3,
                     data={"task": kind},
                 )
             )
