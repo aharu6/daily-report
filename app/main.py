@@ -43,9 +43,6 @@ def main(page: ft.Page):
             cross_axis_margin=10,
         )
     )
-    today = datetime.date.today()
-
-    model = DataModel()
 
     def route_change(e):
         page.on_view_pop = view_pop
