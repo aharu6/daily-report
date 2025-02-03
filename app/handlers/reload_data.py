@@ -145,8 +145,7 @@ class ReloadDataHandler:
                 columns[i].content  = ft.Column(
                     controls = [
                         ft.Container(
-                            bgcolor = "blue",
-                            content = ft.Icon(ft.icons.ARROW_RIGHT,color = "white"),
+                            content = ft.Icon(ft.icons.DOUBLE_ARROW,color = "#2D6E7E"),
                             width = 50,
                             height = 50,
                             border_radius = 50,
