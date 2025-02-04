@@ -26,6 +26,7 @@ class ReloadDataHandler:
         phNameList,
         comment_dict,
         draggable_data,
+        require_name,
         ):
         page.open(drawer)
         #保存しているデータを読み出す
@@ -47,24 +48,25 @@ class ReloadDataHandler:
                 trailing = ft.IconButton(
                     ft.icons.EDIT_SQUARE, 
                     on_click = lambda e:ReloadDataHandler.open_saved_data(
-                        e,
-                        page,
-                        calender,
-                        columns,
-                        dat,
+                        e=e,
+                        page=page,
+                        calender=calender,
+                        columns=columns,
+                        dat=dat,
                         #delete_buttons,
-                        draggable_data_for_move,
-                        comments,
-                        model_times,
-                        drag_data,
-                        comment,
-                        count_dict,
-                        phName,
-                        custumDrawerAm,
-                        custumDrawerPm,
-                        phNameList,
-                        comment_dict,
-                        draggable_data,
+                        draggable_data_for_move=draggable_data_for_move,
+                        comments=comments,
+                        model_times=model_times,
+                        drag_data = drag_data,
+                        comment=comment,
+                        count_dict=count_dict,
+                        phName=phName,
+                        custumDrawerAm=custumDrawerAm,
+                        custumDrawerPm=custumDrawerPm,
+                        phNameList=phNameList,
+                        comment_dict=comment_dict,
+                        draggable_data=draggable_data,
+                        require_name=require_name,
                         ),
                     data = i
                     ),
@@ -93,6 +95,7 @@ class ReloadDataHandler:
         phNameList,
         comment_dict,
         draggable_data,
+        require_name,
         ):
         #columns = self.columns
         #選択したkeyに該当するデータを取り出す
@@ -291,6 +294,9 @@ class ReloadDataHandler:
                     custumDrawerPm.content.controls[i].value = True
                 else:
                     pass
+                
+        #名前を入力してくださいの表示は消す
+        require_name.visible = False
                 
         page.update()
         

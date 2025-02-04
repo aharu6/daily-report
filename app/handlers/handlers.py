@@ -405,8 +405,6 @@ class Handlers:
         for  i in range(len(columns)):
             if columns[i].content.data is not None:
                 task = columns[i].content.data["task"]
-                print(columns[i].content.data)
-                print(task)
                 match task:
                     case "will_accept":
                         pass
