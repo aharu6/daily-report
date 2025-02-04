@@ -401,7 +401,23 @@ class Handlers:
                 page.update()
 
     @staticmethod
-    def toggle_delete_button(page, columns):
+    def toggle_delete_button(e,page, columns):
+        e.control.selected = not e.control.selected
+        #全てのselect columnsを選択不可能にする
+        #disabled = Trueにする
+        print(columns[0].content.group)
+        for i in range(len(columns)):
+            #columns[i].disabled = not columns[i].disabled
+            #disabled効かない
+            #特定のグループ名にして、falseの中で分ける？
+            #seeletcolumnの方ではなくて、columnsの方
+            if columns[i].content.group =="timeline":
+                columns[i].content.group ="delete_toggle"
+            elif columns[i].content.group == "delete_toggle":
+                columns[i].content.group = "timeline"
+            
+        print(columns[0].content.group)
+        
         for  i in range(len(columns)):
             if columns[i].content.data is not None:
                 task = columns[i].content.data["task"]
@@ -414,12 +430,8 @@ class Handlers:
                         try:
                             #初回ドラッグコンテンツ用のdeletebutton visible
                             #全てのカラムで押すたびにtrueとfalseを揃える
-                            if columns[i].content.content.controls[0].visible == True:
-                                columns[i].content.content.controls[0].visible = False
-                            elif columns[i].content.content.controls[0].visible == False:
-                                columns[i].content.content.controls[0].visible = True
-                            #反転させる方式だとどこかでズレる
-                            #columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
+                            #ゴミ箱アイコンがonのときにはドラッグできないように編集する
+                            columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
                         except:
                             #reload時のdeletebutton visible
                             pass
