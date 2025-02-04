@@ -81,6 +81,7 @@ class TimelinePage:
             icon=ft.icons.DELETE_OUTLINE,
             icon_size=25,
             selected_icon  = ft.icons.DELETE,
+            selected_icon_color = "red",
             on_click=lambda e: Handlers.toggle_delete_button(e=e,page=page, columns=self.columns),
         )
         
@@ -114,7 +115,7 @@ class TimelinePage:
             controls=[
                 self.editButton,
                 self.reloadData,
-                ft.Container(width = 40),
+                ft.Container(width = 60),
                 ],
             alignment=ft
             .MainAxisAlignment.END,

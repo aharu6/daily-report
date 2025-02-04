@@ -406,7 +406,6 @@ class Handlers:
         e.control.selected = not e.control.selected
         #全てのselect columnsを選択不可能にする
         #disabled = Trueにする
-        print(columns[0].content.group)
         for i in range(len(columns)):
             #columns[i].disabled = not columns[i].disabled
             #disabled効かない
@@ -417,7 +416,6 @@ class Handlers:
             elif columns[i].content.group == "delete_toggle":
                 columns[i].content.group = "timeline"
             
-        print(columns[0].content.group)
         
         for  i in range(len(columns)):
             if columns[i].content.data is not None:
