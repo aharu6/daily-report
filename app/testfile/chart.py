@@ -4,7 +4,6 @@ import ast
 read_csv = pd.read_csv(
     "/Users/aizawaharuka/Documents/GitHub/daily-report/output_csv/2025-2-4name.csv"
 )
-print(read_csv)
 # テスト
 df1 = read_csv["locate"].apply(ast.literal_eval)
 # locateはリスト形式になっているからバラす必要がある

@@ -359,7 +359,7 @@ class TimelinePage:
         self.custumDrawerPmTitle.visible = False
         self.custumDrawerPm = ft.Container()
         self.custumDrawerPm.visible = False
-        self.custumDrawerPm.content = PmDropDown().create()
+        self.custumDrawerPm.content = PmDropDown().create(self.require_location,self.page)
 
         self.TimeLine = ft.Row(
             scroll = ft.ScrollMode.ADAPTIVE,
