@@ -6,12 +6,12 @@ class ReloadSetDataButton:
     def reload_set_data_button(e,page):
         change_set = page.client_storage.get("default_task")
         if change_set == None:
-            page.client_storage.set("default_task",{"13:15業務調整":0}) #0でon 1でoff
-        page.client_storage.set("default_task",{"13:15業務調整":e.data})
+            page.client_storage.set("default_task",{"業務調整":0}) #0でon 1でoff
+        page.client_storage.set("default_task",{"業務調整":e.data})
     
     @staticmethod
     def select_index(page):
         selected_data = page.client_storage.get("default_task")
         if selected_data == None:
             return 0
-        return int(selected_data["13:15業務調整"])
+        return int(selected_data["業務調整"])

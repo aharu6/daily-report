@@ -256,7 +256,7 @@ class TimelinePage:
         self.selectColumns[14].visible = True  # WG活動
         self.selectColumns[15].visible = True  # 1on1
 
-        self.selectColumns[26].visible = True  # 13:15業務調整
+        self.selectColumns[26].visible = True  # 業務調整
         self.selectColumns[27].visible = True  # 休憩
         self.selectColumns[28].visible = True  # その他
         # 非表示
