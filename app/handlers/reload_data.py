@@ -27,6 +27,7 @@ class ReloadDataHandler:
         comment_dict,
         draggable_data,
         require_name,
+        require_location,
         ):
         page.open(drawer)
         #保存しているデータを読み出す
@@ -67,6 +68,7 @@ class ReloadDataHandler:
                         comment_dict=comment_dict,
                         draggable_data=draggable_data,
                         require_name=require_name,
+                        require_location=require_location,
                         ),
                     data = i
                     ),
@@ -96,6 +98,7 @@ class ReloadDataHandler:
         comment_dict,
         draggable_data,
         require_name,
+        require_location,
         ):
         #columns = self.columns
         #選択したkeyに該当するデータを取り出す
@@ -297,6 +300,8 @@ class ReloadDataHandler:
                 
         #名前を入力してくださいの表示は消す
         require_name.visible = False
+        #病棟を選択してくださいの表示は消す
+        require_location.visible = False
                 
         page.update()
         
