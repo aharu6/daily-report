@@ -203,7 +203,7 @@ class Handlers:
                 selectColumns[23].visible = False  # 手術使用麻薬確認・補充
                 selectColumns[24].visible = False  # 術後疼痛管理チーム回診
                 selectColumns[25].visible = False  # 脳卒中ホットライン対応
-                selectColumns[26].visible = False  # 13:15業務調整
+                selectColumns[26].visible = False  # 業務調整
                 selectColumns[27].visible = False  # 休憩
                 selectColumns[28].visible = False  # その他
                 selectColumns[29].visible = False  # 管理業務
@@ -240,7 +240,7 @@ class Handlers:
                 selectColumns[17].visible = False  # 褥瘡
                 selectColumns[18].visible = False  # TPN評価
 
-                selectColumns[26].visible = False  # 13:15業務調整
+                selectColumns[26].visible = False  # 業務調整
                 selectColumns[27].visible = False  # 休憩
                 selectColumns[28].visible = False  # その他
                 selectColumns[29].visible = False  # 管理業務
@@ -277,7 +277,7 @@ class Handlers:
                 selectColumns[23].visible = False  # 手術使用麻薬確認・補充
                 selectColumns[24].visible = False  # 術後疼痛管理チーム回診
                 selectColumns[25].visible = False  # 脳卒中ホットライン対応
-                selectColumns[26].visible = False  # 13:15業務調整
+                selectColumns[26].visible = False  # 業務調整
                 selectColumns[27].visible = False  # 休憩
                 selectColumns[28].visible = False  # その他
                 
@@ -293,7 +293,7 @@ class Handlers:
                 selectColumns[14].visible = True  # WG活動
                 selectColumns[15].visible = True  # 1on1
 
-                selectColumns[26].visible = True  # 13:15業務調整
+                selectColumns[26].visible = True  # 業務調整
                 selectColumns[27].visible = True  # 休憩
                 selectColumns[28].visible = True  # その他
                 # 非表示
@@ -355,7 +355,7 @@ class Handlers:
                 selectColumns[23].visible = False  # 手術使用麻薬確認・補充
                 selectColumns[24].visible = False  # 術後疼痛管理チーム回診
                 selectColumns[25].visible = False  # 脳卒中ホットライン対応
-                selectColumns[26].visible = False  # 13:15業務調整
+                selectColumns[26].visible = False  # 業務調整
                 selectColumns[27].visible = False  # 休憩
                 selectColumns[28].visible = False  # その他
                 selectColumns[29].visible = False  # 管理業務
@@ -394,7 +394,7 @@ class Handlers:
                 selectColumns[23].visible = False  # 手術使用麻薬確認・補充
                 selectColumns[24].visible = False  # 術後疼痛管理チーム回診
                 selectColumns[25].visible = False  # 脳卒中ホットライン対応
-                selectColumns[26].visible = False  # 13:15業務調整
+                selectColumns[26].visible = False  # 業務調整
                 selectColumns[27].visible = False  # 休憩
                 selectColumns[28].visible = False  # その他
                 selectColumns[29].visible = False  # 管理業務
@@ -613,7 +613,7 @@ class Handlers:
                 | "勉強会参加"
                 | "1on1"
                 | "カンファレンス"
-                |"13:15業務調整"
+                |"業務調整"
             ):
                 #カウンター表示不要
                 pass

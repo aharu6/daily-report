@@ -86,7 +86,7 @@ class Panel:
                     content = ft.Column(
                         controls = [
                             ft.ListTile(
-                                title = ft.Text("13:15業務調整のデフォルト追加"),
+                                title = ft.Text("業務調整のデフォルト追加"),
                                 subtitle = ft.Text("ONにすると起動時にデフォルトで表示されます"),
                                 trailing = ft.CupertinoSlidingSegmentedButton(
                                     controls = [
@@ -95,7 +95,7 @@ class Panel:
                                     ],
                                     selected_index =ReloadSetDataButton.select_index(page),
                                     on_change = lambda e:ReloadSetDataButton.reload_set_data_button(e,page),
-                                    data = "13:15業務調整"
+                                    data = "業務調整"
                                 )
                             )
                         ]
