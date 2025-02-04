@@ -111,8 +111,14 @@ class TimelinePage:
         )
 
         self.ineditButton = ft.Row(
-            controls=[self.editButton,self.reloadData],
-            alignment=ft.MainAxisAlignment.END,
+            controls=[
+                self.editButton,
+                self.reloadData,
+                ft.Container(width = 40),
+                ],
+            alignment=ft
+            .MainAxisAlignment.END,
+            spacing = 10,
         )
 
         self.drag_data = {}
@@ -278,6 +284,7 @@ class TimelinePage:
         self.selectColumns[25].visible = False  # 脳卒中ホットライン対応
 
         self.selectColumns[29].visible = False  # 管理業務
+        self.selectColumns[30].visible = False  # NST
 
         self.time_for_visual_label = []
 

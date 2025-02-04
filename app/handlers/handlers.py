@@ -286,6 +286,7 @@ class Handlers:
                 page.update()
 
             case 3:  # その他
+                
                 # 表示
                 selectColumns[12].visible = True  # 委員会
                 selectColumns[13].visible = True  # 勉強会参加
@@ -839,8 +840,6 @@ class Handlers:
         #e.control.on_accept = None
         e.control.on_will_accept = None
         e.control.on_accept = None
-        page.update()
-        
         
         """
         for i in range(len(columns)):
