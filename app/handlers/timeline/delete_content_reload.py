@@ -20,6 +20,7 @@ class DeleteContentReloadHandler:
                                 phNameList,
                                 phName,
                                 draggable_data_for_move,
+                                save_error_message,
                                 ):
         col_num = e.control.data["num"]
         columns[col_num].content = ft.DragTarget(
@@ -120,5 +121,9 @@ class DeleteContentReloadHandler:
             pass
             
         #accept 関数は元に戻す
+        
+        #保存ボタン上部の名前を入力してくださいのエラーは削除する
+        #save_error_message
+        save_error_message.visible = False
         
         page.update()

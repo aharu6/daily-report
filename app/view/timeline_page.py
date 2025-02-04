@@ -94,6 +94,7 @@ class TimelinePage:
                 phNameList=self.phNameList,
                 comment_dict=self.comment_dict,
                 draggable_data=self.model.draggable_data(),
+                require_name=self.require_name,
                 )
         )
 
