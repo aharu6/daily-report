@@ -2,9 +2,9 @@ import pandas as pd
 import ast
 
 read_csv = pd.read_csv(
-    "/Users/aizawaharuka/Documents/GitHub/daily/app/output_csv/2025-01-13.csv"
+    "/Users/aizawaharuka/Documents/GitHub/daily-report/output_csv/2025-2-4name19.csv"
 )
-
+print(read_csv)
 # テスト
 df1 = read_csv["locate"].apply(ast.literal_eval)
 # locateはリスト形式になっているからバラす必要がある
@@ -25,7 +25,7 @@ df = pd.DataFrame(new_rows)
 # データをまとめる
 # 病棟ごとに業務でかかった時間の割合を示す円グラフにしたい
 # 病棟かつ業務内容ごとにgroupbyして集計する
-group_df = df.groupby(["locate", "Task"]).size().reset_index(name="counts")
+group_df = df.groupby(["locate", "task"]).size().reset_index(name="counts")
 group_df_locate = df.groupby(["locate"]).size().reset_index(name="counts")
 
 
