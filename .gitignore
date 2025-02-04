@@ -7,5 +7,5 @@ app/dist/main.exe
 README.html
 **/__pycache__/**
 app/testfile/test.json
-output_csv/2025-2-4-name9.csv
-output_csv/2025-2-4-name19.csv
+output_csv/2025-2-4name9.csv
+output_csv/2025-2-4name19.csv
