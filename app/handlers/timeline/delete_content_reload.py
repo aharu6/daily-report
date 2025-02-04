@@ -3,6 +3,8 @@ import flet as ft
 from models.models import DataModel
 from handlers.handdrag_will_accept import Add_will_accept
 from handlers.handlers import Handlers
+from handlers.drag_leave import DragLeave
+
 class DeleteContentReloadHandler:
     @staticmethod
     def delete_content_for_reload(e,
@@ -44,7 +46,7 @@ class DeleteContentReloadHandler:
                 draggable_data_for_move,
             ),
             on_will_accept = lambda e:Add_will_accept.drag_will_accept(e,page,columns,drag_data),
-            on_leave = lambda e:Handlers.drag_leave(e,page,columns,drag_data),
+            on_leave = lambda e:DragLeave.drag_leave(e,page),
             data = {"time":DataModel().times()[col_num],"num":col_num,"task":""},
         )
         #該当するdrag_dataを削除
@@ -65,7 +67,6 @@ class DeleteContentReloadHandler:
             right_key = columns[right_col_num].content.data["task"]
         except:
             right_key = None
-        print(columns[col_num].content)
         #右方向に広がるcontent.data["task"] == "will_accept"のコンテンツは全て削除
         #while
         while right_key == "will_accept":
@@ -78,22 +79,27 @@ class DeleteContentReloadHandler:
                     border_radius = 5,
                 ),
                 on_accept = lambda e:Handlers.drag_accepted(
-                    e,
-                    page,
-                    draggable_data,
-                    columns,
-                    comments,
-                    times,
-                    drag_data,
-                    comment,
-                    count_dict,
-                    comment_dict,
-                    phNameList,
-                    phName,
-                    draggable_data_for_move,
+                    e=e,
+                    page=page,
+                    draggable_data=draggable_data,
+                    columns=columns,
+                    comments=comments,
+                    times=times,
+                    drag_data=drag_data,
+                    comment=comment,
+                    count_dict=count_dict,
+                    comment_dict=comment_dict,
+                    phNameList=phNameList,
+                    phName=phName,
+                    draggable_data_for_move=draggable_data_for_move,
                 ),
-                on_will_accept = lambda e:Add_will_accept.drag_will_accept(e,page,columns,drag_data),
-                on_leave = lambda e:Handlers.drag_leave(e,page,columns,drag_data),
+                on_will_accept = lambda e:Add_will_accept.drag_will_accept(
+                    e=e,
+                    page=page,
+                    columns=columns,
+                    drag_data=drag_data
+                    ),
+                on_leave = lambda e:DragLeave.drag_leave(e,page),
                 data = {"time":DataModel().times()[col_num],"num":col_num,"task":""},
             )
             
