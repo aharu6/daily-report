@@ -8,5 +8,4 @@ class Scroll:
     def scroll_back(pageContents,target_position):
         #target_positionにて目的の位置のカラムまで移動する
         pageContents.scroll_to(target_position)
-        print("scroll_back")
         
