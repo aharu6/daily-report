@@ -47,12 +47,12 @@ class Handlers_Chart:
         df = pd.DataFrame(new_rows) 
         
         # bubble chart
-        group_bubble = df.groupby(["locate","Task","Count"]).size().reset_index(name="times")
+        group_bubble = df.groupby(["locate","task","count"]).size().reset_index(name="times")
         #Countsが0の場合とそれ以外に分かれるので、それぞれを合計する
-        group_bubble2 = group_bubble.groupby(["locate","Task"]).sum(numeric_only=True).reset_index()
+        group_bubble2 = group_bubble.groupby(["locate","task"]).sum(numeric_only=True).reset_index()
         #times*15 = かかった時間となるので計算しなおす
         group_bubble2["times"] = group_bubble2["times"]*15
-        fig_bubble = px.scatter(group_bubble2,x = "times",y = "Count",color = "Task",text = "Task" ,
+        fig_bubble = px.scatter(group_bubble2,x = "times",y = "count",color = "task",text = "task" ,
                         )
         fig_bubble.update_layout(yaxis =dict(title = "件数"),
                                 xaxis = dict(title = "かかった時間")
@@ -90,13 +90,13 @@ class Handlers_Chart:
         # 算出したデータフレームから病棟数を算出し、病棟数分のcardを作成する
         # data =病棟名　でもつけて紐づけるできるように？
         group_df_locate = (
-            df.groupby(["locate", "Task"]).size().reset_index(name="counts")
+            df.groupby(["locate", "task"]).size().reset_index(name="counts")
         )
         for locate in group_df_locate["locate"].unique():
             fig = px.pie(
                 group_df_locate[group_df_locate["locate"] == locate],
                 values="counts",
-                names="Task",
+                names="task",
                 title=locate,
             )
             chart_field.append(
@@ -136,11 +136,11 @@ class Handlers_Chart:
         df = pd.DataFrame(new_rows)
         
         # 個人ごとにデータをまとめ直す
-        gorup_by_person = df.groupby(["PhName","Task"]).size().reset_index(name="counts")
+        gorup_by_person = df.groupby(["phName","task"]).size().reset_index(name="counts")
         
         
         # その上にplotlyにて円グラフを作成する
-        fig_bar = px.bar(gorup_by_person,x = "counts",y = "PhName",color = "Task",barmode = "stack",orientation = "h")
+        fig_bar = px.bar(gorup_by_person,x = "counts",y = "phName",color = "task",barmode = "stack",orientation = "h")
         # まずグラフを描画するcardを作成
         chart_field.append(ft.Card(content = 
             PlotlyChart(fig_bar,expand = True,original_size = False,isolated = True)

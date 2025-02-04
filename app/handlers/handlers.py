@@ -1069,6 +1069,7 @@ class Handlers:
             df  = pd.DataFrame.from_dict(data_dict,orient='index')
             #will_acceptは前のタスクにて補完する
             df['task'] = df['task'].replace('will_accept',method='ffill')
+            print(df)
             
             # csvファイルの書き込み
             if select_directory.result and select_directory.result.path:
@@ -1077,7 +1078,7 @@ class Handlers:
                 except:
                     file_path = select_directory.result.path + f"/{date}.csv"
                 
-                df.to_csv(file_path)
+                df.to_csv(file_path,index=False)
                 """
                 with open(file_path, "w", newline="") as f:
                     writer = csv.writer(f)

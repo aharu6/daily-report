@@ -2,9 +2,9 @@ import pandas as pd
 import ast
 
 read_csv = pd.read_csv(
-    "/Users/aizawaharuka/Documents/GitHub/daily/app/output_csv/2025-01-13.csv"
+    "/Users/aizawaharuka/Documents/GitHub/daily-report/output_csv/2025-2-4name.csv"
 )
-
+print(read_csv)
 # テスト
 df1 = read_csv["locate"].apply(ast.literal_eval)
 # locateはリスト形式になっているからバラす必要がある
@@ -25,7 +25,7 @@ df = pd.DataFrame(new_rows)
 # データをまとめる
 # 病棟ごとに業務でかかった時間の割合を示す円グラフにしたい
 # 病棟かつ業務内容ごとにgroupbyして集計する
-group_df = df.groupby(["locate", "Task"]).size().reset_index(name="counts")
+group_df = df.groupby(["locate", "task"]).size().reset_index(name="counts")
 group_df_locate = df.groupby(["locate"]).size().reset_index(name="counts")
 
 
@@ -33,28 +33,29 @@ group_df_locate = df.groupby(["locate"]).size().reset_index(name="counts")
 import plotly.express as px
 import plotly
 
-fig = px.pie(group_df[group_df["locate"] == "3B"], values="counts", names="Task")
+
+fig = px.pie(group_df[group_df["locate"] == "4B"], values="counts", names="task")
 fig.show()
 
 
 #個人グラフの作成
 # horizontal bar chart orientation = "h"にて作成可能
-fig_bar_test = px.bar(group_df, x="counts", y="locate", color="Task", barmode="stack",orientation="h")
+fig_bar_test = px.bar(group_df, x="counts", y="locate", color="task", barmode="stack",orientation="h")
 fig_bar_test.show()
 
 #　個人ごとにデータをまとめ直す
 # csvファイルは個人ごとに保存する必要があるから、あとでcsvファイル保存名を変更する
-gorup_by_person = df.groupby(["PhName","Task"]).size().reset_index(name="counts")
-fig_bar = px.bar(gorup_by_person,x = "counts",y = "PhName",color = "Task",barmode = "stack",orientation = "h")
+gorup_by_person = df.groupby(["phName","task"]).size().reset_index(name="counts")
+fig_bar = px.bar(gorup_by_person,x = "counts",y = "phName",color = "task",barmode = "stack",orientation = "h")
 fig_bar.show()
 
 # bubble chart
-group_bubble = df.groupby(["locate","Task","Count"]).size().reset_index(name="times")
+group_bubble = df.groupby(["locate","task","count"]).size().reset_index(name="times")
 #Countsが0の場合とそれ以外に分かれるので、それぞれを合計する
-group_bubble2 = group_bubble.groupby(["locate","Task"]).sum(numeric_only=True).reset_index()
+group_bubble2 = group_bubble.groupby(["locate","task"]).sum(numeric_only=True).reset_index()
 #times*15 = かかった時間となるので計算しなおす
 group_bubble2["times"] = group_bubble2["times"]*15
-fig_bubble = px.scatter(group_bubble2,x = "times",y = "Count",color = "Task",text = "Task" ,
+fig_bubble = px.scatter(group_bubble2,x = "times",y = "count",color = "task",text = "task" ,
                         )
 fig_bubble.update_layout(yaxis =dict(title = "件数"),
                         xaxis = dict(title = "かかった時間")
