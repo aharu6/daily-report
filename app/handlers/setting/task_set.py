@@ -30,7 +30,7 @@ class Set_Default_task:
             #業務調整のセットon/off
         
         match set_task1:
-            case 0: #on 13:15業務調整を 13:15の時間帯にデフォルトで追加する
+            case 0: #on 業務調整を 13:15の時間帯にデフォルトで追加する
                 #columns 19 が 13:15の時間帯
                 columns[19].content = ft.DragTarget(
                     content=ft.Column(
