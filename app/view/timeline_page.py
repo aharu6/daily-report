@@ -10,6 +10,7 @@ from components.components import (
     ReloadDrawer,
 )
 from handlers.handlers import Handlers
+from handlers.timeline.temp_save import Temp_Save
 from handlers.handdrag_will_accept import Add_will_accept
 from handlers.drag_leave import DragLeave
 from handlers.reload_data import ReloadDataHandler
@@ -161,6 +162,23 @@ class TimelinePage:
                         page=self.page),
                 ),
             ],
+        )
+        self.temp_save_button = ft.ElevatedButton(
+            text = "一時保存",
+            on_click = lambda e: Temp_Save.on_save(
+                e=e,
+                times = self.model.times(),
+                amTime = self.model.amTime(),
+                select_day = self.Date,
+                columns = self.columns,
+                drag_data = self.drag_data,
+                count_dict = self.count_dict,
+                custumDrawerAm = self.custumDrawerAm,
+                custumDrawerPm = self.custumDrawerPm,
+                phName = self.phName,
+                page = self.page,
+                comment_dict = self.comment_dict,
+            )
         )
         
         self.require_name = ft.Container(ft.Text("名前を選択してください", color="red"))
@@ -567,6 +585,7 @@ class TimelinePage:
                 ),
                 self.require_name,
                 self.require_location,
+                self.temp_save_button,
                 self.save_button,
                 self.save_error_message,
                 ft.CupertinoNavigationBar(
