@@ -405,6 +405,8 @@ class Handlers:
         for  i in range(len(columns)):
             if columns[i].content.data is not None:
                 task = columns[i].content.data["task"]
+                print(columns[i].content.data)
+                print(task)
                 match task:
                     case "will_accept":
                         pass
@@ -413,6 +415,7 @@ class Handlers:
                     case _:
                         try:
                             #初回ドラッグコンテンツ用のdeletebutton visible
+                            print("toggle_delete_button")
                             columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
                         except:
                             #reload時のdeletebutton visible

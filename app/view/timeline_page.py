@@ -434,7 +434,6 @@ class TimelinePage:
             comment_dict=self.comment_dict,
             draggable_data_for_move=self.draggable_data_for_move,
             comments=self.comments,
-            DataModel=self.model.times(),
             comment=self.comment,
             draggable_data=self.model.draggable_data()
             )
