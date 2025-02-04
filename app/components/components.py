@@ -124,7 +124,7 @@ class AmDropDown:
 
 
 class PmDropDown:
-    def create(self):
+    def create(self,require_location,page):
         return ft.ResponsiveRow(
             [
                 ft.Checkbox(label="ICU",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),

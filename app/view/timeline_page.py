@@ -79,7 +79,8 @@ class TimelinePage:
         self.editButton = ft.IconButton(
             icon=ft.icons.DELETE_OUTLINE,
             icon_size=25,
-            on_click=lambda e: Handlers.toggle_delete_button(page, self.columns),
+            selected_icon  = ft.icons.DELETE,
+            on_click=lambda e: Handlers.toggle_delete_button(e=e,page=page, columns=self.columns),
         )
         
         self.reloadData = ft.IconButton(
@@ -359,7 +360,7 @@ class TimelinePage:
         self.custumDrawerPmTitle.visible = False
         self.custumDrawerPm = ft.Container()
         self.custumDrawerPm.visible = False
-        self.custumDrawerPm.content = PmDropDown().create()
+        self.custumDrawerPm.content = PmDropDown().create(self.require_location,self.page)
 
         self.TimeLine = ft.Row(
             scroll = ft.ScrollMode.ADAPTIVE,

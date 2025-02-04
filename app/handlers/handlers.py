@@ -401,7 +401,23 @@ class Handlers:
                 page.update()
 
     @staticmethod
-    def toggle_delete_button(page, columns):
+    def toggle_delete_button(e,page, columns):
+        e.control.selected = not e.control.selected
+        #全てのselect columnsを選択不可能にする
+        #disabled = Trueにする
+        print(columns[0].content.group)
+        for i in range(len(columns)):
+            #columns[i].disabled = not columns[i].disabled
+            #disabled効かない
+            #特定のグループ名にして、falseの中で分ける？
+            #seeletcolumnの方ではなくて、columnsの方
+            if columns[i].content.group =="timeline":
+                columns[i].content.group ="delete_toggle"
+            elif columns[i].content.group == "delete_toggle":
+                columns[i].content.group = "timeline"
+            
+        print(columns[0].content.group)
+        
         for  i in range(len(columns)):
             if columns[i].content.data is not None:
                 task = columns[i].content.data["task"]
@@ -413,7 +429,8 @@ class Handlers:
                     case _:
                         try:
                             #初回ドラッグコンテンツ用のdeletebutton visible
-                            print("toggle_delete_button")
+                            #全てのカラムで押すたびにtrueとfalseを揃える
+                            #ゴミ箱アイコンがonのときにはドラッグできないように編集する
                             columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
                         except:
                             #reload時のdeletebutton visible
@@ -946,7 +963,6 @@ class Handlers:
         require_location,
         require_name,
     ):
-        print(select_day)
         date = f"{select_day.data.year}-{select_day.data.month}-{select_day.data.day}"
         #名前が入力されていない場合にはエラーを表示する
         if phName.value == None:
@@ -1024,14 +1040,6 @@ class Handlers:
                 else:
                     None
 
-            list_pm_location_data = []
-            for time in data_dict.keys():
-                if list_pm_location_data is not None:
-                    if data_dict[time]["locate"] == "PM":
-                        data_dict[time]["locate"] = list_pm_location_data
-                else:
-                    None
-
             # phName データの書き込み
             for time in data_dict.keys():
                 try:
@@ -1078,7 +1086,6 @@ class Handlers:
             
             # csvファイルの書き込み
             if select_directory.result and select_directory.result.path and phName.value and  list_am_location_data and  list_pm_location_data :
-                print(list_am_location_data)
                 try:
                     file_path = select_directory.result.path + f"/{date}"+f"{phName.value}"+".csv"
                 except:
@@ -1089,6 +1096,8 @@ class Handlers:
                 #両者ともエラーメッセージをtrueに設定しなおす
                 df.to_csv(file_path,index=False)
             elif not list_am_location_data or not list_pm_location_data : #薬剤師名がないとき、病棟データが入力されていないとき
+                print(list_am_location_data)
+                print(list_pm_location_data)
                 #csvファイルは書き出さずにエラーメッセージのみ表示に再設定する
                 require_location.visible  = True
                 page.update()
