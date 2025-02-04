@@ -33,7 +33,7 @@ class Handlers_Chart:
                 # 病棟ごとのデータに変換するならここからまとめ直す
 
             except Exception as e:
-                print(e)
+                pass
 
     @staticmethod
     def ComponentChart_for_standard(dataframe, chart_field, page):

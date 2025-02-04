@@ -54,7 +54,6 @@ group_bubble = df.groupby(["locate","Task","Count"]).size().reset_index(name="ti
 group_bubble2 = group_bubble.groupby(["locate","Task"]).sum(numeric_only=True).reset_index()
 #times*15 = かかった時間となるので計算しなおす
 group_bubble2["times"] = group_bubble2["times"]*15
-print(group_bubble2)
 fig_bubble = px.scatter(group_bubble2,x = "times",y = "Count",color = "Task",text = "Task" ,
                         )
 fig_bubble.update_layout(yaxis =dict(title = "件数"),

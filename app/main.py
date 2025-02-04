@@ -50,7 +50,6 @@ def main(page: ft.Page):
         if page.route == "/":
             page.views.append(TimelinePage(page).create())
         elif page.route == "/chart":
-            print("chart", page.views)
             page.views.append(ChartPage(page).create())
         if page.route == "/settings":
             page.views.append(SettingPage(page).create())

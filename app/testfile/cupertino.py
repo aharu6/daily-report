@@ -13,7 +13,6 @@ def main(page: ft.Page):
                 ],
                 alignment=ft.MainAxisAlignment.SPACE_AROUND,
             ),
-            on_click = print("clicked")
         ),
         ft.ElevatedButton(
             content=ft.Container(

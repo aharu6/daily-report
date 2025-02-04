@@ -12,7 +12,6 @@ class DragMoveAddHandler:
         comment,
         count_dict,
         ):
-        print("drag_move_handler_add")
         e.control.on_move = DragMoveHandler.drag_move(
             e,
             page,
