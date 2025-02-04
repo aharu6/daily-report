@@ -104,6 +104,7 @@ class TimelinePage:
                 comment_dict=self.comment_dict,
                 draggable_data=self.model.draggable_data(),
                 require_name=self.require_name,
+                require_location=self.require_location,
                 )
         )
 
@@ -162,9 +163,11 @@ class TimelinePage:
         )
         
         self.require_name = ft.Container(ft.Text("名前を選択してください", color="red"))
+        self.require_location = ft.Container(ft.Text("病棟を選択してください",color = "red"))
         self.save_button = ft.ElevatedButton(
             text="保存", on_click=lambda e: self.select_directory.get_directory_path()
         )
+        
         
         self.save_error_message = ft.Container()
         self.select_directory = ft.FilePicker(
@@ -186,6 +189,8 @@ class TimelinePage:
                 select_directory=self.select_directory,
                 save_error_message=self.save_error_message,
                 today=self.today,
+                require_location=self.require_location,
+                require_name=self.require_name,
             )
         )
         
@@ -343,7 +348,7 @@ class TimelinePage:
         
         self.custumDrawerAm = ft.Container()
         self.custumDrawerAm.visible = False
-        self.custumDrawerAm.content = AmDropDown().create()
+        self.custumDrawerAm.content = AmDropDown().create(self.require_location,self.page)
 
         self.custumDrawerPmTitle = ft.ResponsiveRow(
             controls = [
@@ -428,7 +433,7 @@ class TimelinePage:
                 phName=self.phName,
                 dialog=self.dialog, 
                 page=self.page,
-                require_error_message=self.require_name
+                require_error_message=self.require_name,
             ),
         )
         self.phName = self.name_dropdown.create()
@@ -560,6 +565,7 @@ class TimelinePage:
                     run_spacing={"xs": 10},
                 ),
                 self.require_name,
+                self.require_location,
                 self.save_button,
                 self.save_error_message,
                 ft.CupertinoNavigationBar(

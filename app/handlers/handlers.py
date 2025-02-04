@@ -943,6 +943,8 @@ class Handlers:
         select_directory,
         save_error_message,
         today,
+        require_location,
+        require_name,
     ):
         print(select_day)
         date = f"{select_day.data.year}-{select_day.data.month}-{select_day.data.day}"
@@ -997,6 +999,8 @@ class Handlers:
             for i in range(len(custumDrawerAm.content.controls)):
                 if custumDrawerAm.content.controls[i].value == True:
                     list_am_location_data.append(custumDrawerAm.content.controls[i].label)
+                else:
+                    None
 
             for time in data_dict.keys():
                 if list_am_location_data is not None:
@@ -1010,6 +1014,8 @@ class Handlers:
             for i in range(len(custumDrawerPm.content.controls)):
                 if custumDrawerPm.content.controls[i].value == True:
                     list_pm_location_data.append(custumDrawerPm.content.controls[i].label)
+                else:
+                    None
 
             for time in data_dict.keys():
                 if list_pm_location_data is not None:
@@ -1069,16 +1075,27 @@ class Handlers:
             df  = pd.DataFrame.from_dict(data_dict,orient='index')
             #will_acceptは前のタスクにて補完する
             df['task'] = df['task'].replace('will_accept',method='ffill')
-            print(df)
             
             # csvファイルの書き込み
-            if select_directory.result and select_directory.result.path:
+            if select_directory.result and select_directory.result.path and phName.value and  list_am_location_data and  list_pm_location_data :
+                print(list_am_location_data)
                 try:
                     file_path = select_directory.result.path + f"/{date}"+f"{phName.value}"+".csv"
                 except:
                     file_path = select_directory.result.path + f"/{date}.csv"
                 
+                #ファイル保存名に名前を使用しているので、名前が入力されていない場合にはエラーを表示する
+                #病棟データが何も入力されていないときも処理を中断する
+                #両者ともエラーメッセージをtrueに設定しなおす
                 df.to_csv(file_path,index=False)
+            elif not list_am_location_data or not list_pm_location_data : #薬剤師名がないとき、病棟データが入力されていないとき
+                #csvファイルは書き出さずにエラーメッセージのみ表示に再設定する
+                require_location.visible  = True
+                page.update()
+            else: #薬剤師名が入力されていない時
+                require_name.visible = True
+                page.update()
+                
                 """
                 with open(file_path, "w", newline="") as f:
                     writer = csv.writer(f)
