@@ -33,7 +33,7 @@ class TimelinePage:
         self.today = datetime.date.today()
         # pageにて共通のcount_dictを定義しておく
         self.count_dict = self.model.count_dict()
-
+        self.draggable_data = self.model.draggable_data()
         self.comment_dict = {}
 
         # deletebutton
@@ -77,23 +77,23 @@ class TimelinePage:
             icon = ft.icons.STORAGE,
             icon_size = 25,
             on_click = lambda e:ReloadDataHandler.toggle_Reload_Data(
-                e,
-                self.page,
-                self.Date,
-                self.reloadDrawer,
-                self.columns, #open_saved_data内で使用
-                self.draggable_data_for_move,
-                self.comments,
-                self.model.times(),
-                self.drag_data,
-                self.comment,
-                self.count_dict,
-                self.phName,
-                self.custumDrawerAm,
-                self.custumDrawerPm,
-                self.phNameList,
-                self.comment_dict,
-                self.model.draggable_data(),
+                e=e,
+                page=self.page,
+                calender=self.Date,
+                drawer=self.reloadDrawer,
+                columns=self.columns, #open_saved_data内で使用
+                draggable_data_for_move=self.draggable_data_for_move,
+                comments=self.comments,
+                model_times=self.model.times(),
+                drag_data=self.drag_data,
+                comment=self.comment,
+                count_dict=self.count_dict,
+                phName=self.phName,
+                custumDrawerAm= self.custumDrawerAm,
+                custumDrawerPm=self.custumDrawerPm,
+                phNameList=self.phNameList,
+                comment_dict=self.comment_dict,
+                draggable_data=self.model.draggable_data(),
                 )
         )
 
@@ -108,12 +108,12 @@ class TimelinePage:
             ft.IconButton(
                 icon=ft.icons.COMMENT,
                 on_click=lambda e: Handlers.create_dialog_for_comment(
-                    e,
-                    self.comments,
-                    self.dlg,
-                    self.comment_dict,
-                    self.comment_field,
-                    self.page,
+                    e=e,
+                    comments=self.comments,
+                    dlg=self.dlg,
+                    comment_dict=self.comment_dict,
+                    comment_field=self.comment_field,
+                    page=self.page,
                 ),
                 data={"time": self.model.times()[i], "num": i},
             )
@@ -122,7 +122,7 @@ class TimelinePage:
 
         self.comment = ft.IconButton(
             icon=ft.icons.COMMENT,
-            on_click=lambda e: Handlers.dlg_open(e),
+            on_click=lambda e: Handlers.dlg_open(e=e),
         )
 
         self.comment_field = ft.TextField(label="その他")
@@ -134,12 +134,19 @@ class TimelinePage:
                 ft.TextButton(
                     "OK",
                     on_click=lambda e: Handlers.add_comment_for_dict(
-                        e, self.dlg, self.comment_dict, self.comment_field, self.page
+                        e=e,
+                        dlg=self.dlg,
+                        comment_dict=self.comment_dict,
+                        comment_field=self.comment_field,
+                        page=self.page
                     ),
                 ),
                 ft.TextButton(
                     "Cancel",
-                    on_click=lambda e: Handlers.dlg_close(e, self.dlg, self.page),
+                    on_click=lambda e: Handlers.dlg_close(
+                        e=e, 
+                        dlg=self.dlg,
+                        page=self.page),
                 ),
             ],
         )
@@ -152,23 +159,23 @@ class TimelinePage:
         self.save_error_message = ft.Container()
         self.select_directory = ft.FilePicker(
             on_result=lambda e: Handlers.write_csv_file(
-                e,
-                self.model.times(),
-                self.model.amTime(),
-                self.Date,
-                self.columns,
-                self.drag_data,
-                self.count_dict,
-                self.amDropDown,
-                self.pmDropDown,
-                self.custumDrawerAm,
-                self.custumDrawerPm,
-                self.phName,
-                self.page,
-                self.comment_dict,
-                self.select_directory,
-                self.save_error_message,
-                self.today,
+                e=e,
+                times=self.model.times(),
+                amTime=self.model.amTime(),
+                select_day=self.Date,
+                columns=self.columns,
+                drag_data=self.drag_data,
+                count_dict=self.count_dict,
+                amDropDown=self.amDropDown,
+                pmDropDown=self.pmDropDown,
+                custumDrawerAm= self.custumDrawerAm,
+                custumDrawerPm=self.custumDrawerPm,
+                phName=self.phName,
+                page=self.page,
+                comment_dict=self.comment_dict,
+                select_directory=self.select_directory,
+                save_error_message=self.save_error_message,
+                today=self.today,
             )
         )
         
@@ -265,25 +272,25 @@ class TimelinePage:
                     border_radius=5,
                 ),
                 on_accept=lambda e: Handlers.drag_accepted(
-                    e,
-                    self.page,
-                    self.draggable_data_for_move,
-                    self.columns,
-                    self.comments,
-                    self.model.times(),
-                    self.drag_data,
-                    self.comment,
-                    self.count_dict,
-                    self.phNameList,
-                    self.phName,
-                    self.comment_dict,
-                    self.draggable_data_for_move,
+                    e=e,
+                    page=self.page,
+                    draggable_data_for_move=self.draggable_data_for_move,
+                    columns=self.columns,
+                    comments=self.comments,
+                    times=self.model.times(),
+                    drag_data=self.drag_data,
+                    comment=self.comment,
+                    count_dict=self.count_dict,
+                    phNameList=self.phNameList,
+                    phName=self.phName,
+                    comment_dict=self.comment_dict,
+                    draggable_data=self.draggable_data,
                 ),
                 on_will_accept=lambda e: Add_will_accept.drag_will_accept(
-                        e,
-                        self.page,
-                        self.columns,
-                        self.drag_data,
+                        e=e,
+                        page=self.page,
+                        columns=self.columns,
+                        drag_data=self.drag_data,
                         ),
                 on_leave = lambda e:DragLeave.drag_leave(e,page),
                 data={"time": self.model.times()[i], "num": i, "task": ""},
@@ -295,11 +302,19 @@ class TimelinePage:
         
         self.amDropDown = ft.TextButton(
             "AM",
-            on_click=lambda e: Handlers.open_Drawer(e,self.custumDrawerAmTitle ,self.custumDrawerAm, self.page),
+            on_click=lambda e: Handlers.open_Drawer(
+                e=e,
+                customDrawerTile=self.custumDrawerAmTitle ,
+                customDrawer= self.custumDrawerAm, 
+                page = self.page),
         )
         self.pmDropDown = ft.TextButton(
             "PM",
-            on_click=lambda e: Handlers.open_Drawer(e,self.custumDrawerPmTitle, self.custumDrawerPm, self.page),
+            on_click=lambda e: Handlers.open_Drawer(
+                e=e,
+                customDrawerTile=self.custumDrawerPmTitle,
+                customDrawer=self.custumDrawerPm,
+                page=self.page),
         )
         self.ampmSelect = ft.Row(
             controls=[
@@ -399,27 +414,35 @@ class TimelinePage:
             self.page,
             self.phNameList,
             dropdown_changed=lambda e: Handlers.dropdown_changed(
-                e, self.phName, self.dialog, self.page,self.require_name
+                e=e,
+                phName=self.phName,
+                dialog=self.dialog, 
+                page=self.page,
+                require_error_message=self.require_name
             ),
         )
         self.phName = self.name_dropdown.create()
         
         #settingpageの設定に基づいてデフォルトで業務を登録する
         Set_Default_task.set_default_task(
-            page,
-            self.columns,
-            self.phNameList,
-            self.phName,
-            self.drag_data,
-            self.count_dict,
-            self.comment_dict,
-            self.draggable_data_for_move,
-            self.comments,
-            self.model.times(),
-            self.comment,
-            self.model.draggable_data())
+            page=page,
+            columns=self.columns,
+            phNameList=self.phNameList,
+            phName=self.phName,
+            drag_data=self.drag_data,
+            count_dict=self.count_dict,
+            comment_dict=self.comment_dict,
+            draggable_data_for_move=self.draggable_data_for_move,
+            comments=self.comments,
+            DataModel=self.model.times(),
+            comment=self.comment,
+            draggable_data=self.model.draggable_data()
+            )
         
-        Handlers.update_dropdown(self.phName, self.phNameList, page)
+        Handlers.update_dropdown(
+            phName=self.phName,
+            phNameList=self.phNameList,
+            page=page)
 
         self.end_Drawer = EndDrawer(page)
         self.endDrawer = self.end_Drawer.create()

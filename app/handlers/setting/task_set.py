@@ -31,53 +31,55 @@ class Set_Default_task:
         match set_task1:
             case 0: #on 13:15業務調整を 13:15の時間帯にデフォルトで追加する
                 #columns 19 が 13:15の時間帯
-                columns[19].content = ft.Column(
-                    controls = [
-                        ft.IconButton(
-                            icon = ft.icons.DELETE_OUTLINE,
-                            visible = False,
-                            icon_size = 20,
-                            icon_color = "red",
-                            on_click = lambda e:Handlers.delete_content(
-                                e,
-                                page,
-                                phNameList,
-                                phName,
-                                drag_data,
-                                count_dict,
-                                comment_dict,
-                                columns,
-                                draggable_data_for_move,
-                                comments,
-                                DataModel().times(),  # delete_contentでの引数ではtimes
-                                comment,
-                                draggable_data,
+                columns[19].content = ft.DragTarget(
+                    content=ft.Column(
+                        controls = [
+                            ft.IconButton(
+                                icon = ft.icons.DELETE_OUTLINE,
+                                visible = False,
+                                icon_size = 20,
+                                icon_color = "red",
+                                on_click = lambda e:Handlers.delete_content(
+                                    e=e,
+                                    page=page,
+                                    phNameList=phNameList,
+                                    phName=phName,
+                                    drag_data=drag_data,
+                                    count_dict=count_dict,
+                                    comment_dict=comment_dict,
+                                    columns=columns,
+                                    draggable_data_for_move=draggable_data_for_move,
+                                    comments=comments,
+                                    times=DataModel().times(),  # delete_contentでの引数ではtimes
+                                    comment=comment,
+                                    draggable_data=draggable_data,
+                                ),
+                                data = {"num":19}
                             ),
-                            data = {"num":19}
-                        ),
-                        ft.Draggable(
-                            group = "timeline_accepted",
-                            content = ft.Container(
-                                content = ft.Text("13:15業務調整",color = "white"),
-                                width = 50,
-                                height = 140,
-                                bgcolor = Handlers.change_color("13:15業務調整"),
+                            ft.Draggable(
+                                group = "timeline_accepted",
+                                content = ft.Container(
+                                    content = ft.Text("13:15業務調整",color = "white"),
+                                    width = 50,
+                                    height = 140,
+                                    bgcolor = Handlers.change_color("13:15業務調整"),
+                                ),
+                                data = {
+                                    "time":"13:15",
+                                    "num":19,
+                                    "task":"13:15業務調整",
+                                },
                             ),
-                            data = {
-                                "time":"13:15",
-                                "num":19,
-                                "task":"13:15業務調整",
-                            },
-                        ),
-                        
-                    ],
-                    height = 300,
-                    spacing = 0,
-                    data = {
-                        "time":"13:15",
-                        "num":19,
-                        "task":"13:15業務調整",
-                    }
+                            
+                        ],
+                        height = 300,
+                        spacing = 0,
+                        data = {
+                            "time":"13:15",
+                            "num":19,
+                            "task":"13:15業務調整",
+                        }
+                    ),
                 )
                 #drag_dataに追加
                 drag_data["13:15"] = {"task":"13:15業務調整","num":19}

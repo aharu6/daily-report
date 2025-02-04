@@ -145,8 +145,7 @@ class ReloadDataHandler:
                 columns[i].content  = ft.Column(
                     controls = [
                         ft.Container(
-                            bgcolor = "blue",
-                            content = ft.Icon(ft.icons.ARROW_RIGHT,color = "white"),
+                            content = ft.Icon(ft.icons.DOUBLE_ARROW,color = "#2D6E7E"),
                             width = 50,
                             height = 50,
                             border_radius = 50,
@@ -160,55 +159,64 @@ class ReloadDataHandler:
                 )
                 
             elif re.search(r'.+',load_data[key]["task"]):
-                columns[i].content = ft.Column(
-                    controls = [
-                        ft.IconButton(
-                            icon=ft.icons.DELETE_OUTLINE,
-                            visible=False,
-                            icon_size=20,
-                            icon_color="red",
-                            on_click=lambda e: DeleteContentReloadHandler.delete_content_for_reload(
-                                e,
-                                page,
-                                drag_data,
-                                count_dict,
-                                comment_dict,
-                                columns,
-                                comments,
-                                model_times,
-                                drag_data,
-                                comment,
-                                phNameList,
-                                phName,
-                                draggable_data_for_move,
+                #DragTargetにて元のと揃えた方がいい
+                columns[i].content = ft.DragTarget(
+                    group  = "timeline_accepted",
+                    content=ft.Column(
+                        controls = [
+                            ft.IconButton(
+                                icon=ft.icons.DELETE_OUTLINE,
+                                visible=False,
+                                icon_size=20,
+                                icon_color="red",
+                                on_click=lambda e: Handlers.delete_content(
+                                    e=e,
+                                    page=page,
+                                    drag_data=drag_data,
+                                    count_dict=count_dict,
+                                    comment_dict=comment_dict,
+                                    columns=columns,
+                                    comments=comments,
+                                    times=model_times,
+                                    draggable_data=draggable_data,
+                                    comment=comment,
+                                    phNameList=phNameList,
+                                    phName=phName,
+                                    draggable_data_for_move=draggable_data_for_move,
+                                ),
+                                data = {
+                                    "time": load_data[key]["time"],
+                                    "num":i,
+                                    "task":load_data[key]["task"],
+                                    }
+                            ),   
+                            ft.Draggable(
+                                group = "timeline",
+                                content = ft.Container(
+                                    content = ft.Text(load_data[key]["task"],color = "white"),
+                                    width = 50,
+                                    height = 140,
+                                    bgcolor = Handlers.change_color(load_data[key]["task"]),
+                                ),
+                                data = {
+                                    "time": load_data[key]["time"],
+                                    "num": i,
+                                    "task": load_data[key]["task"],
+                                },
                             ),
-                            data = {
-                                "time": load_data[key]["time"],
-                                "num":i,
-                                "task":load_data[key]["task"],
-                                }
-                        ),   
-                        ft.Draggable(
-                            group = "timeline",
-                            content = ft.Container(
-                                content = ft.Text(load_data[key]["task"],color = "white"),
-                                width = 50,
-                                height = 140,
-                                bgcolor = Handlers.change_color(load_data[key]["task"]),
-                            ),
-                            data = {
-                                "time": load_data[key]["time"],
-                                "num": i,
-                                "task": load_data[key]["task"],
-                            },
-                        ),
-                    ],
-                    height = 300,
-                    spacing = 0,
+                        ],
+                        height = 300,
+                        spacing = 0,
+                        data = {
+                            "time": load_data[key]["time"],
+                            "num": i,
+                            "task": load_data[key]["task"],
+                        }
+                    ),
                     data = {
-                        "time": load_data[key]["time"],
-                        "num": i,
-                        "task": load_data[key]["task"],
+                        "time":load_data[key]["time"],
+                        "num":i,
+                        "task":load_data[key]["task"],
                     }
                 )
                 
@@ -224,7 +232,7 @@ class ReloadDataHandler:
                 match load_data[key]["task"]:
                     case "その他":
                         #columns
-                        columns[i].content.controls.append(comments[i])
+                        columns[i].content.content.controls.append(comments[i])
                     # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
                     case (
                         "混注時間",
@@ -239,11 +247,11 @@ class ReloadDataHandler:
                         pass
                     #カウンターの再表示
                     case _:
-                        columns[i].content.controls.append(Handlers.create_counter(load_data[key]["time"],count_dict))
+                        columns[i].content.content.controls.append(Handlers.create_counter(load_data[key]["time"],count_dict))
                         #カウンターデータの再表示
                         #１以上の場合には表示する
                         if load_data[key]["count"] >0:
-                            columns[i].content.controls[2].controls[1].value = load_data[key]["count"]
+                            columns[i].content.content.controls[2].controls[1].value = load_data[key]["count"]
                 #コメント記載がある場合には内容更新もできる？
                 
             #辞書データの更新

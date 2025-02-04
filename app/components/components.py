@@ -141,9 +141,20 @@ class EditButton:
 
 
 class DeleteButtons:
-    def __init__(self, page, delete_content):
+    def __init__(self, page, delete_content,phNameList, phName, drag_data, count_dict, comment_dict, columns, draggable_data_for_move, comments, times, comment, draggable):
         self.page = page
         self.delete_content = delete_content
+        self.phNameList = phNameList
+        self.phName = phName
+        self.drag_data = drag_data
+        self.count_dict = count_dict
+        self.comment_dict = comment_dict
+        self.columns = columns
+        self.draggable_data_for_move = draggable_data_for_move
+        self.comments = comments
+        self.times = times
+        self.comment = comment
+        self.draggable_data = draggable
 
     def create(self):
         return ft.IconButton(
@@ -151,7 +162,21 @@ class DeleteButtons:
             visible=False,
             icon_color="red",
             icon_size=20,
-            on_click=lambda e: self.delete_content(e),
+            on_click=lambda e: self.delete_content(
+                e,
+                self.page,
+                self.phNameList,
+                self.phName,
+                self.drag_data,
+                self.count_dict,
+                self.comment_dict,
+                self.columns,
+                self.draggable_data_for_move,
+                self.comments,
+                self.times,
+                self.comment,
+                self.draggable_data,
+                ),
         )
 
 

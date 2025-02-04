@@ -405,7 +405,6 @@ class Handlers:
         for  i in range(len(columns)):
             if columns[i].content.data is not None:
                 task = columns[i].content.data["task"]
-            
                 match task:
                     case "will_accept":
                         pass
@@ -417,7 +416,7 @@ class Handlers:
                             columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
                         except:
                             #reload時のdeletebutton visible
-                            columns[i].content.controls[0].visible = not columns[i].content.controls[0].visible
+                            pass
                 
                 #button.visible = not button.visible
         page.update()
@@ -438,23 +437,41 @@ class Handlers:
         comment,
         draggable_data
     ):
+        from handlers.drag_leave import DragLeave   
         # _move関数でdelete_button.dataに入れたのはdragtargetで設定したカラムの番号
         # columns[i]でそのカラムの情報を取得し、見た目上削除
         # 正しくはcolumnsの初期化を行う。ドラッグする前の状態に戻す
         col_num = e.control.data["num"]
         # 同じ情報の新しいカラムに差し替える
         #columns[col_num].content.content.clean()
-        #columns[col_num].content.content.update()
-        
-        columns[col_num].content.content = ft.Column(
-            controls=[
-                ft.Container(
-                    width=50,
-                    height=300,
-                    bgcolor="#CBDCEB",
-                    border_radius=5,
-                ),
-            ]
+        columns[col_num].content = ft.DragTarget(
+            group = "timeline",
+            content=ft.Container(
+                        width=50,
+                        height=300,
+                        bgcolor="#CBDCEB",
+                        border_radius=5,
+                    ),
+            on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns,drag_data),
+            on_accept = lambda e: Handlers.drag_accepted(
+                    e=e,
+                    page=page,
+                    draggable_data_for_move=draggable_data_for_move,
+                    columns=columns,
+                    comments = comments,
+                    times = times,
+                    drag_data=drag_data,
+                    comment=comment,
+                    count_dict=count_dict,
+                    phNameList=phNameList,
+                    phName=phName,
+                    comment_dict=comment_dict,
+                    draggable_data=draggable_data
+                    ),
+            on_leave = lambda e:DragLeave.drag_leave(e,page),
+            data = {"time":times[col_num],
+                    "num":col_num,
+                    "task":""}
         )
         
         right_col_num = e.control.data["num"]+1
@@ -468,15 +485,35 @@ class Handlers:
         #右方向に広がるcontent.data["task"] == "will_accept"のコンテンツは全て削除
         #while文を使用する
         while right_key =="will_accept":
-            columns[right_col_num].content.content = ft.Column(
-                controls=[
-                    ft.Container(
-                        width = 50,
-                        height = 300,
-                        bgcolor = "#CBDCEB",
-                        border_radius = 5,
+            columns[right_col_num].content = ft.DragTarget(
+                group = "timeline",
+                content=ft.Container(
+                
+                    width = 50,
+                    height = 300,
+                    bgcolor = "#CBDCEB",
+                    border_radius = 5,
+                ),
+                data = {"time":times[right_col_num],
+                        "num":right_col_num,
+                        "task":""},
+                on_accept = lambda e: Handlers.drag_accepted(
+                    e=e,
+                    page=page,
+                    draggable_data_for_move=draggable_data_for_move,
+                    columns=columns,
+                    comments = comments,
+                    times = times,
+                    drag_data=drag_data,
+                    comment=comment,
+                    count_dict=count_dict,
+                    phNameList=phNameList,
+                    phName=phName,
+                    comment_dict=comment_dict,
+                    draggable_data=draggable_data
                     ),
-                ]
+                on_leave = lambda e:DragLeave.drag_leave(e,page),
+                on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns,drag_data),
             )
             del drag_data[DataModel().times()[right_col_num]]
             if DataModel().times()[right_col_num] in count_dict:
@@ -484,12 +521,6 @@ class Handlers:
             if DataModel().times()[right_col_num] in comment_dict:
                 del comment_dict[DataModel.times()[right_col_num]]
                 
-            columns[right_col_num].content.group = "timeline"
-            columns[right_col_num].group = "timeline"
-            
-            columns[right_col_num].content.on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns,drag_data)
-            columns[right_col_num].on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns,drag_data)
-            
             right_col_num += 1
             right_key = columns[right_col_num].content.data["task"]
         else:
@@ -509,10 +540,8 @@ class Handlers:
             del comment_dict[DataModel().times()[col_num]]
 
         # カラムのgroupを元に戻す
-        columns[col_num].group = "timeline"
-        columns[col_num].content.group = "timeline"
+        
         # カラムのデータを初期化
-        columns[col_num].content.data["task"] = ""
         
         # on_will_acceptを元に戻す
         #ドラッグできるけど、表示が元に戻っていない
@@ -736,7 +765,7 @@ class Handlers:
                     key = src.data["task"]
             except:
                 key = src.data["task"]
-                
+        
         e.control.content = ft.Column(
             controls=[
                 ft.IconButton(
@@ -885,8 +914,7 @@ class Handlers:
 
         # ドラッグデータの保存
         drag_data[e.control.data["time"]] = {"task": key}
-        print(e.control.data)
-        if comment:
+        if e.control.data["task"] == "その他":
             comments[e.control.data["num"]].data = {
                 "time": e.control.data["time"],
                 "num": e.control.data["num"],

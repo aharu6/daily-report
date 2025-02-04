@@ -48,6 +48,7 @@ class Add_will_accept:
             
             #trueの時（初回ドラッグの時はドラッグ可能であることを示す色をつける）
         elif e.data == 'true':
+            print("drag_will_accept")
             e.control.content.border = ft.border.all("#B6EB7A")
             
         page.update()
