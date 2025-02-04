@@ -158,7 +158,7 @@ class Handlers:
                 return "#508D4E"
             case "脳卒中ホットライン対応":
                 return "#508D4E"
-            case "13:15業務調整":
+            case "業務調整":
                 return "#72BAA9"
             case "休憩":
                 return "#72BAA9"
@@ -286,6 +286,7 @@ class Handlers:
                 page.update()
 
             case 3:  # その他
+                
                 # 表示
                 selectColumns[12].visible = True  # 委員会
                 selectColumns[13].visible = True  # 勉強会参加
@@ -405,7 +406,6 @@ class Handlers:
         e.control.selected = not e.control.selected
         #全てのselect columnsを選択不可能にする
         #disabled = Trueにする
-        print(columns[0].content.group)
         for i in range(len(columns)):
             #columns[i].disabled = not columns[i].disabled
             #disabled効かない
@@ -416,7 +416,6 @@ class Handlers:
             elif columns[i].content.group == "delete_toggle":
                 columns[i].content.group = "timeline"
             
-        print(columns[0].content.group)
         
         for  i in range(len(columns)):
             if columns[i].content.data is not None:
@@ -839,8 +838,6 @@ class Handlers:
         #e.control.on_accept = None
         e.control.on_will_accept = None
         e.control.on_accept = None
-        page.update()
-        
         
         """
         for i in range(len(columns)):

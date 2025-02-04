@@ -81,6 +81,7 @@ class TimelinePage:
             icon=ft.icons.DELETE_OUTLINE,
             icon_size=25,
             selected_icon  = ft.icons.DELETE,
+            selected_icon_color = "red",
             on_click=lambda e: Handlers.toggle_delete_button(e=e,page=page, columns=self.columns),
         )
         
@@ -111,8 +112,14 @@ class TimelinePage:
         )
 
         self.ineditButton = ft.Row(
-            controls=[self.editButton,self.reloadData],
-            alignment=ft.MainAxisAlignment.END,
+            controls=[
+                self.editButton,
+                self.reloadData,
+                ft.Container(width = 60),
+                ],
+            alignment=ft
+            .MainAxisAlignment.END,
+            spacing = 10,
         )
 
         self.drag_data = {}
@@ -232,7 +239,7 @@ class TimelinePage:
                                 width=100,
                                 height=70,
                                 bgcolor=Handlers.change_color(kind["task"]),
-                                border_radius=5,
+                                border_radius=ft.border_radius.only(top_left = 10,bottom_right = 10),
                             ),
                             data={"task": kind},
                         ),
@@ -278,6 +285,7 @@ class TimelinePage:
         self.selectColumns[25].visible = False  # 脳卒中ホットライン対応
 
         self.selectColumns[29].visible = False  # 管理業務
+        self.selectColumns[30].visible = False  # NST
 
         self.time_for_visual_label = []
 
