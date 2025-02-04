@@ -45,8 +45,8 @@ fig_bar_test.show()
 
 #　個人ごとにデータをまとめ直す
 # csvファイルは個人ごとに保存する必要があるから、あとでcsvファイル保存名を変更する
-gorup_by_person = df.groupby(["PhName","task"]).size().reset_index(name="counts")
-fig_bar = px.bar(gorup_by_person,x = "counts",y = "PhName",color = "task",barmode = "stack",orientation = "h")
+gorup_by_person = df.groupby(["phName","task"]).size().reset_index(name="counts")
+fig_bar = px.bar(gorup_by_person,x = "counts",y = "phName",color = "task",barmode = "stack",orientation = "h")
 fig_bar.show()
 
 # bubble chart
