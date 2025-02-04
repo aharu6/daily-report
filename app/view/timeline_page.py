@@ -239,7 +239,7 @@ class TimelinePage:
                                 width=100,
                                 height=70,
                                 bgcolor=Handlers.change_color(kind["task"]),
-                                border_radius=5,
+                                border_radius=ft.border_radius.only(top_left = 10,bottom_right = 10),
                             ),
                             data={"task": kind},
                         ),
