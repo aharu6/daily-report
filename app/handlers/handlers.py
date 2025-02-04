@@ -158,7 +158,7 @@ class Handlers:
                 return "#508D4E"
             case "脳卒中ホットライン対応":
                 return "#508D4E"
-            case "13:15業務調整":
+            case "業務調整":
                 return "#72BAA9"
             case "休憩":
                 return "#72BAA9"
