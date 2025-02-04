@@ -2,7 +2,7 @@ import flet as ft
 from flet import View
 import datetime
 from handlers.handlersMain import Handlers_Main
-from handlers.handlers_chart import Handlers_Chart
+from handlers.chart.handlers_chart import Handlers_Chart
 from components.compoments_chart import FilePickCard
 import asyncio as aio
 

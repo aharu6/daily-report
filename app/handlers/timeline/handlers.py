@@ -1,13 +1,9 @@
 import json
-import datetime
 import flet as ft
 from flet import BoxShape
-import csv
 import pandas as pd
 from models.models import DataModel
-from handlers.drag_move import DragMoveHandler
-from handlers.drag_move_add import DragMoveAddHandler
-from handlers.handdrag_will_accept import Add_will_accept
+from handlers.timeline.handdrag_will_accept import Add_will_accept
 
 class Handlers:
     @staticmethod
@@ -454,7 +450,7 @@ class Handlers:
         comment,
         draggable_data
     ):
-        from handlers.drag_leave import DragLeave   
+        from handlers.timeline.drag_leave import DragLeave   
         # _move関数でdelete_button.dataに入れたのはdragtargetで設定したカラムの番号
         # columns[i]でそのカラムの情報を取得し、見た目上削除
         # 正しくはcolumnsの初期化を行う。ドラッグする前の状態に戻す

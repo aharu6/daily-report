@@ -1,8 +1,8 @@
 import flet as ft
 from flet import View
-from handlers.handlers import Handlers
+from handlers.timeline.handlers import Handlers
 from handlers.handlersMain import Handlers_Main
-from handlers.handlers_setting import Handlers_setting
+from handlers.setting.handlers_setting import Handlers_setting
 from components.components_setting import Panel, Title
 from models.models import DataModel
 

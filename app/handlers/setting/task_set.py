@@ -1,5 +1,5 @@
 import flet as ft
-from handlers.handlers import Handlers
+from handlers.timeline.handlers import Handlers
 from models.models import DataModel
 
 #settingoageの設定に基づいてデフォルトで業務を登録する
