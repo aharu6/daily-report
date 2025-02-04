@@ -12,7 +12,7 @@ class Add_will_accept:
         if e.data == 'false':
             #timelineの時は矢印表示
             #deleteiconがonになっているときは矢印も表示しない
-            print(e.control.group)
+            #編集できないようにする
             if e.control.group == "timeline":
                 e.control.content = ft.Column(
                     controls=[
