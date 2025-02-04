@@ -7,25 +7,21 @@ class DateComponent:
     def __init__(self, page, today, handle_change):
         self.page = page
         self.today = today
+        self.handle_change = handle_change
 
     def create(self):
-        return ft.Column(
-            [
-                ft.Icon(ft.icons.CALENDAR_MONTH),
-                ft.TextButton(
-                    text=f"{self.today.year}/{self.today.month}/{self.today.day}",
-                    on_click = lambda e: self.page.open(
-                        ft.DatePicker(
-                            on_change =lambda e: Handlers.handle_change,
-                            current_date = datetime.date(self.today.year, self.today.month, self.today.day)
-                        )
-                    ),
-                    data = self.today,
-                ),
-            ],
-            width = 130,
+        return ft.TextButton(
+            text=f"{self.today.year}/{self.today.month}/{self.today.day}",
+            on_click=lambda e: self.page.open(
+                ft.DatePicker(
+                    on_change=self.handle_change,
+                )
+            ),
             data = self.today,
         )
+        
+
+        
 
     """
     ft.ElevatedButton(
@@ -36,6 +32,23 @@ class DateComponent:
                     on_change=self.handle_change,
                 )
             ),
+            data = self.today,
+        )
+        
+        ft.Column(
+            [
+                ft.Icon(ft.icons.CALENDAR_MONTH),
+                ft.ElevatedButton(
+                    text=f"{self.today.year}/{self.today.month}/{self.today.day}",
+                    on_click = lambda e: self.page.open(
+                        ft.DatePicker(
+                            on_change =lambda e: self.handle_change,
+                        )
+                    ),
+                    data = self.today,
+                ),
+            ],
+            width = 130,
             data = self.today,
         )
 
