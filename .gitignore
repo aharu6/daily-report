@@ -8,3 +8,4 @@ README.html
 **/__pycache__/**
 app/testfile/test.json
 /output_csv
+output_csv/
