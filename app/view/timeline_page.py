@@ -189,6 +189,8 @@ class TimelinePage:
                 select_directory=self.select_directory,
                 save_error_message=self.save_error_message,
                 today=self.today,
+                require_location=self.require_location,
+                require_name=self.require_name,
             )
         )
         
