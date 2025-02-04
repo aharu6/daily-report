@@ -1,7 +1,7 @@
 import flet as ft
 import datetime
 from models.models import DataModel
-from handlers.handlers import Handlers
+from handlers.timeline.handlers import Handlers
 
 class DateComponent:
     def __init__(self, page, today, handle_change):

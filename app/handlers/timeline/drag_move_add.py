@@ -1,4 +1,4 @@
-from handlers.drag_move import DragMoveHandler
+from handlers.timeline.drag_move import DragMoveHandler
 class DragMoveAddHandler:
     @staticmethod
     def drag_move_handler_add(

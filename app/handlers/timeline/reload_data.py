@@ -141,7 +141,7 @@ class ReloadDataHandler:
         # matchにて分岐する？
         #前のコンテンツが残っていて、追加される形式となっているので全てクリアしてから追加する
         
-        from handlers.handlers import Handlers
+        from handlers.timeline.handlers import Handlers
         from handlers.timeline.delete_content_reload import DeleteContentReloadHandler
         import re
         for i in range(len_load_data):

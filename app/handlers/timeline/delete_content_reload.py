@@ -1,9 +1,9 @@
 #reloadした後のコンテンツにおけるdeleteの挙動
 import flet as ft
 from models.models import DataModel
-from handlers.handdrag_will_accept import Add_will_accept
-from handlers.handlers import Handlers
-from handlers.drag_leave import DragLeave
+from handlers.timeline.handdrag_will_accept import Add_will_accept
+from handlers.timeline.handlers import Handlers
+from handlers.timeline.drag_leave import DragLeave
 
 class DeleteContentReloadHandler:
     @staticmethod

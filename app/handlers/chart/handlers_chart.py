@@ -1,7 +1,7 @@
 import pandas as pd
 import flet as ft
 from models.models import DataModel
-from handlers.handlers import Handlers
+from handlers.timeline.handlers import Handlers
 from flet import FilePicker, FilePickerResultEvent
 import ast
 import plotly

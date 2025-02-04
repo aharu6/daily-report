@@ -2,7 +2,7 @@ import flet as ft
 import datetime
 import json
 from models.models import DataModel
-from handlers.handlers_setting import Handlers_setting
+from handlers.setting.handlers_setting import Handlers_setting
 from flet import TextAlign
 from handlers.setting.reload_set_data import ReloadSetDataButton
 
