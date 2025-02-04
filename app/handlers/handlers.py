@@ -944,7 +944,7 @@ class Handlers:
         save_error_message,
         today,
     ):
-        
+        print(select_day)
         date = f"{select_day.data.year}-{select_day.data.month}-{select_day.data.day}"
         #名前が入力されていない場合にはエラーを表示する
         if phName.value == None:

@@ -28,6 +28,15 @@ class TimelinePage:
             page, self.today, lambda e: self.handle_change(e, self.Date,page)
         )
         self.Date = self.date_component.create()
+        
+        self.date_component_includeicon = ft.Column(
+            controls = [
+                ft.Icon(ft.icons.CALENDAR_MONTH),
+                self.Date,
+                ],
+            width = 130,
+        )
+        
         self.model = DataModel()
         self.phNameList = self.model.load_data(page)
         self.today = datetime.date.today()
@@ -533,7 +542,7 @@ class TimelinePage:
                     controls=[
                         self.colPhName,
                         ft.Container(height=20, width=50),
-                        self.Date,
+                        self.date_component_includeicon,
                         ft.Container(height=20, width=50),
                         self.colampmSelect,
                     ]

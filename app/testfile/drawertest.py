@@ -9,7 +9,6 @@ def main(page: ft.Page):
 
     def handle_change(e):
         page.add(ft.Text(f"Selected Index changed: {e.control.selected_index}"))
-        # page.close(end_drawer)
 
     end_drawer = ft.NavigationDrawer(
         position=ft.NavigationDrawerPosition.END,
