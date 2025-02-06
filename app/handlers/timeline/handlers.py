@@ -4,6 +4,7 @@ from flet import BoxShape
 import pandas as pd
 from models.models import DataModel
 from handlers.timeline.handdrag_will_accept import Add_will_accept
+from handlers.timeline.show_message import ShowMessageHandler
 
 class Handlers:
     @staticmethod
@@ -1063,6 +1064,7 @@ class Handlers:
             #変更後のデータを保管する
             #コメントのデータが入っている？
             #save_client_storageの時はwill_acceptを変換する前の状態にて保存すれば読み込み時に再度変換する必要なく楽かも
+            #setなのでストレージがなくてもエラーにならない
             page.client_storage.set(
                 "timeline_data", json.dumps(save_data, ensure_ascii=False)
                 )
@@ -1088,6 +1090,11 @@ class Handlers:
                 #病棟データが何も入力されていないときも処理を中断する
                 #両者ともエラーメッセージをtrueに設定しなおす
                 df.to_csv(file_path,index=False)
+                #保存できたら完了メッセージを表示
+                save_message.visible = True
+                #時間経過後に消す
+                ShowMessageHandler.set_timer()
+                
             elif not list_am_location_data or not list_pm_location_data : #薬剤師名がないとき、病棟データが入力されていないとき
                 print(list_am_location_data)
                 print(list_pm_location_data)

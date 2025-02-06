@@ -18,6 +18,8 @@ timeline_pageにて書き出したcsvファイルを使用して、グラフの�
 
 exeファイルに書き出し　→ windows10以上
 
+64bitのみ対応
+
 ## 使い方
 
 pyinstaller にてexeファイルに書き出して使用
@@ -32,104 +34,10 @@ Python 3.11.11
 
 フレームワーク　flet 0.24.1
 
-## ファイル構成
+## 定義
 
-``` {.python .R}
-""""
-.
-├── README.md
-├── TextFile1.txt
-├── TextFile2.txt
-├── appicon
-│   ├── diary-left-svgrepo-com.png
-│   └── diary-left-svgrepo-com.svg
-├── assets
-│   └── icon.png
-├── components
-│   ├── __pycache__
-│   │   ├── compoments_chart.cpython-313.pyc
-│   │   ├── components.cpython-311.pyc
-│   │   ├── components.cpython-313.pyc
-│   │   ├── components_setting.cpython-311.pyc
-│   │   └── components_setting.cpython-313.pyc
-│   ├── compoments_chart.py
-│   ├── components.py
-│   └── components_setting.py
-├── handlers
-│   ├── __pycache__
-│   │   ├── drag_move.cpython-311.pyc
-│   │   ├── drag_move.cpython-313.pyc
-│   │   ├── handlers.cpython-311.pyc
-│   │   ├── handlers.cpython-313.pyc
-│   │   ├── handlersMain.cpython-311.pyc
-│   │   ├── handlersMain.cpython-313.pyc
-│   │   ├── handlers_chart.cpython-311.pyc
-│   │   ├── handlers_chart.cpython-313.pyc
-│   │   ├── handlers_setting.cpython-311.pyc
-│   │   ├── handlers_setting.cpython-313.pyc
-│   │   ├── pageScroll.cpython-311.pyc
-│   │   ├── pageScroll.cpython-313.pyc
-│   │   ├── reload_data.cpython-311.pyc
-│   │   └── reload_data.cpython-313.pyc
-│   ├── drag_move.py
-│   ├── handlers.py
-│   ├── handlersMain.py
-│   ├── handlers_chart.py
-│   ├── handlers_setting.py
-│   ├── pageScroll.py
-│   └── reload_data.py
-├── main.py
-├── models
-│   ├── __pycache__
-│   │   ├── models.cpython-311.pyc
-│   │   └── models.cpython-313.pyc
-│   └── models.py
-├── output_csv
-│   ├── 2024-11-22.csv
-│   ├── 2024-11-23.csv
-│   ├── 2024-11-24.csv
-│   ├── 2024-11-26.csv
-│   ├── 2024-11-27.csv
-│   ├── 2024-11-28.csv
-│   ├── 2024-11-29.csv
-│   ├── 2024-11-30.csv
-│   ├── 2024-12-05.csv
-│   ├── 2024-12-09.csv
-│   ├── 2024-12-14.csv
-│   ├── 2024-12-15.csv
-│   ├── 2024-12-18.csv
-│   ├── 2024-12-23.csv
-│   ├── 2024-12-24.csv
-│   ├── 2024-12-25.csv
-│   ├── 2025-01-05.csv
-│   └── 2025-01-13.csv
-├── requirements.txt
-├── testfile
-│   ├── chart.py
-│   ├── chartplotly.py
-│   ├── cupertino.py
-│   ├── drawer_memo.py
-│   ├── drawertest.py
-│   ├── layout.py
-│   └── requirements.txt
-├── timelime.db-journal
-└── view
-    ├── __pycache__
-    │   ├── chart_page.cpython-311.pyc
-    │   ├── chart_page.cpython-313.pyc
-    │   ├── setting_page.cpython-311.pyc
-    │   ├── setting_page.cpython-313.pyc
-    │   ├── timeline_page.cpython-311.pyc
-    │   └── timeline_page.cpython-313.pyc
-    ├── chart_page.py
-    ├── setting_page.py
-    └── timeline_page.py
+-   8:30-12:30:AM 
 
-13 directories, 75 files""""
-```
-
-## 
-
--   病棟データの午前午後の定義 ：午前午後ごとに病棟データをつける 本来 12:30-13:00 は空白だが、午後にまとめることにする
+-   13:00- :PM
 
 -   {時間 == time,業務種類 == task,件数 == count,病棟 == locate,薬剤師名 == PhName,その他コメント==comment}

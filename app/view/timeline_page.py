@@ -188,8 +188,10 @@ class TimelinePage:
             )
         )
         
+        
         self.require_name = ft.Container(ft.Text("名前を選択してください", color="red"))
         self.require_location = ft.Container(ft.Text("病棟を選択してください",color = "red"))
+        self.save_message = ft.Container(ft.Text("保存が完了しました"))
         self.save_button = ft.ElevatedButton(
             text="保存", on_click=lambda e: self.select_directory.get_directory_path()
         )
@@ -594,6 +596,7 @@ class TimelinePage:
                 self.require_name,
                 self.require_location,
                 self.temp_save_button,
+                self.save_message,
                 self.save_button,
                 self.save_error_message,
                 ft.CupertinoNavigationBar(
