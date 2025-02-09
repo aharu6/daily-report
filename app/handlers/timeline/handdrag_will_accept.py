@@ -9,50 +9,59 @@ class Add_will_accept:
         #on_acceptにて全てのからむに対して data = {}中身がある場合にのみcolumns.content を更新する
         #Falseの時だけ　 data = {}を渡してcolumnsに・を追加することはできる？
         #data = winllacceptだけ渡してaccept関数にて更新
-        if e.data == 'false':
-            #timelineの時は矢印表示
-            #deleteiconがonになっているときは矢印も表示しない
-            #編集できないようにする
-            if e.control.group == "timeline":
-                e.control.content = ft.Column(
-                    controls=[
-                        ft.Draggable(
-                            group = "timeline_accepted",
-                            content = ft.Container(
-                                #keyは受け取れないから後でaccept時に追加する
-                                width  = 50,
-                                height = 50,
-                                border_radius = 50,
-                                #colorもkeyによるのでacceptにて適用する
-                                #丸とか別の形にする？
-                                #右にスライドしたら右矢印、左にドラッグしたら左矢印　コンテンツのみの更新
-                                #データ保存時にどうにかする
-                                #方向は固定できる？
-                                #コピーの方向は右移動だけに限定する？　データ編集が楽
-                                #右と左それぞれからドラッグされた時バッティングするため
-                                #表示矢印も右矢印だけですむ
-                                content = ft.Icon(ft.icons.DOUBLE_ARROW,color = "#2D6E7E"),
-                                alignment = ft.alignment.top_center,
-                            ),
-                            data = {
-                                "time":e.control.data["time"],
-                                "num":e.control.data["num"],
-                                "task":"will_accept"
-                            },
-                            )
-                    ]
-                )
-                e.control.data["task"] = "will_accept"
-                e.control.on_will_accept = None
-                # e.controlに新しいdrag_accceptを追加する
-                #無理なら先にpage.updateする
-                e.control.group = "timeline_accepted" 
-                
-                drag_data[e.control.data["time"]] = {"task":"will_accept"}
-            elif e.control.group == "delete_toggle":
+        #左にドラッグしないようにする
+        left_key = columns[e.control.data["num"]-1].content.data["task"]
+        print(left_key)
+        #ドラッグ前はtaskは空
+        match left_key:
+            case ""        :
                 pass
-            #trueの時（初回ドラッグの時はドラッグ可能であることを示す色をつける）
-        elif e.data == 'true':
-            e.control.content.border = ft.border.all("#B6EB7A")
+            case _:
+                if e.data == 'false':
+                    #timelineの時は矢印表示
+                    #deleteiconがonになっているときは矢印も表示しない
+                    #編集できないようにする
+                    if e.control.group == "timeline":
+                        e.control.content = ft.Column(
+                            controls=[
+                                ft.Draggable(
+                                    group = "timeline_accepted",
+                                    content = ft.Container(
+                                        #keyは受け取れないから後でaccept時に追加する
+                                        width  = 50,
+                                        height = 50,
+                                        border_radius = 50,
+                                        #colorもkeyによるのでacceptにて適用する
+                                        #丸とか別の形にする？
+                                        #右にスライドしたら右矢印、左にドラッグしたら左矢印　コンテンツのみの更新
+                                        #データ保存時にどうにかする
+                                        #方向は固定できる？
+                                        #コピーの方向は右移動だけに限定する？　データ編集が楽
+                                        #右と左それぞれからドラッグされた時バッティングするため
+                                        #表示矢印も右矢印だけですむ
+                                        content = ft.Icon(ft.icons.DOUBLE_ARROW,color = "#2D6E7E"),
+                                        alignment = ft.alignment.top_center,
+                                    ),
+                                    data = {
+                                        "time":e.control.data["time"],
+                                        "num":e.control.data["num"],
+                                        "task":"will_accept"
+                                    },
+                                    )
+                            ]
+                        )
+                        e.control.data["task"] = "will_accept"
+                        e.control.on_will_accept = None
+                        # e.controlに新しいdrag_accceptを追加する
+                        #無理なら先にpage.updateする
+                        e.control.group = "timeline_accepted" 
+                        
+                        drag_data[e.control.data["time"]] = {"task":"will_accept"}
+                    elif e.control.group == "delete_toggle":
+                        pass
+        
+                #trueの時（初回ドラッグの時はドラッグ可能であることを示す色をつける）
+                elif e.data == 'true':
+                    e.control.content.border = ft.border.all("#B6EB7A")
             
         page.update()
