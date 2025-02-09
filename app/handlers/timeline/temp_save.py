@@ -16,6 +16,7 @@ class Temp_Save:
         phName,
         page,
         comment_dict,
+        message
     ):
         date = f"{select_day.data.year}-{select_day.data.month}-{select_day.data.day}"
         # 初期ベースの作成
@@ -120,4 +121,8 @@ class Temp_Save:
             if time in data_dict:
                 data_dict[time]["comment"] = comment_data["comment"]
         
+        #保存できたら完了メッセージを表示
+        message.content.controls[0].visible = True
+        message.content.controls[1].visible = True  
+        page.update()
         

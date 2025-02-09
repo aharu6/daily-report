@@ -170,6 +170,14 @@ class TimelinePage:
                 ),
             ],
         )
+        self.temp_save_message = ft.Container(
+            ft.Row(
+                controls = [
+                    ft.Icon(ft.icons.CHECK,color = "green",visible = False),
+                    ft.Text("一時保存が完了しました",color = "green",visible = False),
+                ]
+            )
+        )
         self.temp_save_button = ft.ElevatedButton(
             text = "一時保存",
             on_click = lambda e: Temp_Save.on_save(
@@ -185,6 +193,7 @@ class TimelinePage:
                 phName = self.phName,
                 page = self.page,
                 comment_dict = self.comment_dict,
+                message=self.temp_save_message,
             )
         )
         
@@ -601,6 +610,7 @@ class TimelinePage:
                 ),
                 self.require_name,
                 self.require_location,
+                self.temp_save_message,
                 self.temp_save_button,
                 self.save_message,
                 self.save_button,
