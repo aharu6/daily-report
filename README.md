@@ -16,7 +16,7 @@ timeline_pageにて書き出したcsvファイルを使用して、グラフの�
 
 ## 使用環境
 
-exeファイルに書き出し　→ windows10以上
+exeファイルに書き出し → windows10以上
 
 64bitのみ対応
 
@@ -30,9 +30,9 @@ pyinstaller にてexeファイルに書き出して使用
 
 Python 3.11.11
 
-パッケージ　→ requirements.txt
+パッケージ → requirements.txt
 
-フレームワーク　flet 0.24.1
+フレームワーク flet 0.24.1
 
 ## 定義
 

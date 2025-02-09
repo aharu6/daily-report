@@ -191,7 +191,12 @@ class TimelinePage:
         
         self.require_name = ft.Container(ft.Text("名前を選択してください", color="red"))
         self.require_location = ft.Container(ft.Text("病棟を選択してください",color = "red"))
-        self.save_message = ft.Container(ft.Text("保存が完了しました"))
+        self.save_message = ft.Container(ft.Row(
+            controls=[
+                ft.Icon(ft.icons.CHECK,color  = "green",visible = False ),
+                ft.Text("保存が完了しました", color="green", visible=False),
+            ]
+        ))
         self.save_button = ft.ElevatedButton(
             text="保存", on_click=lambda e: self.select_directory.get_directory_path()
         )
@@ -219,6 +224,7 @@ class TimelinePage:
                 today=self.today,
                 require_location=self.require_location,
                 require_name=self.require_name,
+                save_message = self.save_message,
             )
         )
         

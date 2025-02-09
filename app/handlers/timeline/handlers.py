@@ -1,4 +1,5 @@
 import json
+from handlers.timeline.hide_message import HideMessageHandler
 import flet as ft
 from flet import BoxShape
 import pandas as pd
@@ -934,7 +935,8 @@ class Handlers:
         # 受け取ったらdragtargetのgroupを変更して再ドラッグ不可にする
         e.control.group = "timeline_accepted"
         page.update()
-
+        
+    from handlers.timeline.hide_message import HideMessageHandler
     @staticmethod
     def write_csv_file(
         e,
@@ -956,6 +958,7 @@ class Handlers:
         today,
         require_location,
         require_name,
+        save_message,
     ):
         date = f"{select_day.data.year}-{select_day.data.month}-{select_day.data.day}"
         #名前が入力されていない場合にはエラーを表示する
@@ -1091,9 +1094,12 @@ class Handlers:
                 #両者ともエラーメッセージをtrueに設定しなおす
                 df.to_csv(file_path,index=False)
                 #保存できたら完了メッセージを表示
-                save_message.visible = True
+                save_message.content.controls[0].visible = True
+                save_message.content.controls[1].visible = True
+                page.update()
+                print("csvファイルを保存しました")
                 #時間経過後に消す
-                ShowMessageHandler.set_timer()
+                HideMessageHandler.hide_message(save_message,page)
                 
             elif not list_am_location_data or not list_pm_location_data : #薬剤師名がないとき、病棟データが入力されていないとき
                 print(list_am_location_data)
