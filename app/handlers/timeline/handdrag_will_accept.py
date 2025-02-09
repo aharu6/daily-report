@@ -11,17 +11,19 @@ class Add_will_accept:
         #data = winllacceptだけ渡してaccept関数にて更新
         #左にドラッグしないようにする
         left_key = columns[e.control.data["num"]-1].content.data["task"]
-        print(left_key)
         #ドラッグ前はtaskは空
-        match left_key:
-            case ""        :
-                pass
-            case _:
-                if e.data == 'false':
-                    #timelineの時は矢印表示
-                    #deleteiconがonになっているときは矢印も表示しない
-                    #編集できないようにする
-                    if e.control.group == "timeline":
+        
+        if e.data == 'false':
+            print(e.control.data)
+            #timelineの時は矢印表示
+            #deleteiconがonになっているときは矢印も表示しない
+            #編集できないようにする
+            if e.control.group == "timeline":
+                match left_key:
+                    case "":
+                        pass
+                    case _:
+                        
                         e.control.content = ft.Column(
                             controls=[
                                 ft.Draggable(
@@ -53,15 +55,14 @@ class Add_will_accept:
                         e.control.data["task"] = "will_accept"
                         e.control.on_will_accept = None
                         # e.controlに新しいdrag_accceptを追加する
-                        #無理なら先にpage.updateする
-                        e.control.group = "timeline_accepted" 
-                        
+                        #無理なら先にpage.updateする                        
                         drag_data[e.control.data["time"]] = {"task":"will_accept"}
-                    elif e.control.group == "delete_toggle":
-                        pass
-        
-                #trueの時（初回ドラッグの時はドラッグ可能であることを示す色をつける）
-                elif e.data == 'true':
-                    e.control.content.border = ft.border.all("#B6EB7A")
+                        print("false")
+            elif e.control.group == "delete_toggle":
+                pass
+        #trueの時（初回ドラッグの時はドラッグ可能であることを示す色をつける）
+        elif e.data == 'true':
+            e.control.content.border = ft.border.all("#B6EB7A")
+            print("true")
             
         page.update()

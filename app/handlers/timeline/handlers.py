@@ -403,7 +403,6 @@ class Handlers:
     def toggle_delete_button(e,page, columns):
         e.control.selected = not e.control.selected
         #全てのselect columnsを選択不可能にする
-        #disabled = Trueにする
         for i in range(len(columns)):
             #columns[i].disabled = not columns[i].disabled
             #disabled効かない
@@ -459,8 +458,9 @@ class Handlers:
         col_num = e.control.data["num"]
         # 同じ情報の新しいカラムに差し替える
         #columns[col_num].content.content.clean()
+        #削除した時点ではまだdeletebuttonがonになっている状態だから、draggableのgroup delete_toggleになるはず
         columns[col_num].content = ft.DragTarget(
-            group = "timeline",
+            group = "delete_toggle",
             content=ft.Container(
                         width=50,
                         height=300,
@@ -501,7 +501,7 @@ class Handlers:
         #while文を使用する
         while right_key =="will_accept":
             columns[right_col_num].content = ft.DragTarget(
-                group = "timeline",
+                group = "delete_toggle",
                 content=ft.Container(
                 
                     width = 50,
@@ -560,6 +560,7 @@ class Handlers:
         
         # on_will_acceptを元に戻す
         #ドラッグできるけど、表示が元に戻っていない
+        """
         columns[col_num].content.on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns=columns,drag_data=drag_data)
         columns[col_num].on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns=columns,drag_data=drag_data)
         
@@ -596,7 +597,6 @@ class Handlers:
             phName=phName,
             draggable_data_for_move=draggable_data_for_move
             )
-        
         #現在カラムのkeyは削除ずみ
         #右カラムのrightcolumn[key]を取得
         match right_key:
@@ -620,6 +620,7 @@ class Handlers:
         
         page.update()
 
+        """
     # カウンターの関数
     @staticmethod
     def counterPlus(e, count_field, count_dict, time):
