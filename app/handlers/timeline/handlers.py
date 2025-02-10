@@ -110,7 +110,7 @@ class Handlers:
                 return "#384B70"
             case "混注時間":
                 return "#384B70"
-            case "薬剤セット数":
+            case "薬剤セット・確認":
                 return "#384B70"
             case "持参薬を確認":
                 return "#384B70"
@@ -176,7 +176,7 @@ class Handlers:
                 selectColumns[0].visible = True  # 情報収集　指導
                 selectColumns[1].visible = True  # 指導記録作成
                 selectColumns[2].visible = True  # 混注時間
-                selectColumns[3].visible = True  # 薬剤セット数
+                selectColumns[3].visible = True  # 薬剤セット・確認
                 selectColumns[4].visible = True  # 持参薬を確認
                 selectColumns[5].visible = True  # 薬剤服用歴等について保険k薬局へ照会
                 selectColumns[6].visible = True  # 処方代理修正
@@ -221,7 +221,7 @@ class Handlers:
                 selectColumns[0].visible = False  # 情報収集　指導
                 selectColumns[1].visible = False  # 指導記録作成
                 selectColumns[2].visible = False  # 混注時間
-                selectColumns[3].visible = False  # 薬剤セット数
+                selectColumns[3].visible = False  # 薬剤セット・確認
                 selectColumns[4].visible = False  # 持参薬を確認
                 selectColumns[5].visible = False  # 薬剤服用歴等について保険k薬局へ照会
                 selectColumns[6].visible = False  # 処方代理修正
@@ -252,7 +252,7 @@ class Handlers:
                 selectColumns[0].visible = False  # 情報収集　指導
                 selectColumns[1].visible = False  # 指導記録作成
                 selectColumns[2].visible = False  # 混注時間
-                selectColumns[3].visible = False  # 薬剤セット数
+                selectColumns[3].visible = False  # 薬剤セット・確認
                 selectColumns[4].visible = False  # 持参薬を確認
                 selectColumns[5].visible = False  # 薬剤服用歴等について保険k薬局へ照会
                 selectColumns[6].visible = False  # 処方代理修正
@@ -298,7 +298,7 @@ class Handlers:
                 selectColumns[0].visible = False  # 情報収集　指導
                 selectColumns[1].visible = False  # 指導記録作成
                 selectColumns[2].visible = False  # 混注時間
-                selectColumns[3].visible = False  # 薬剤セット数
+                selectColumns[3].visible = False  # 薬剤セット・確認
                 selectColumns[4].visible = False  # 持参薬を確認
                 selectColumns[5].visible = False  # 薬剤服用歴等について保険k薬局へ照会
                 selectColumns[6].visible = False  # 処方代理修正
@@ -330,7 +330,7 @@ class Handlers:
                 selectColumns[0].visible = False  # 情報収集　指導
                 selectColumns[1].visible = False  # 指導記録作成
                 selectColumns[2].visible = False  # 混注時間
-                selectColumns[3].visible = False  # 薬剤セット数
+                selectColumns[3].visible = False  # 薬剤セット・確認
                 selectColumns[4].visible = False  # 持参薬を確認
                 selectColumns[5].visible = False  # 薬剤服用歴等について保険k薬局へ照会
                 selectColumns[6].visible = False  # 処方代理修正
@@ -370,7 +370,7 @@ class Handlers:
                 selectColumns[0].visible = False  # 情報収集　指導
                 selectColumns[1].visible = False  # 指導記録作成
                 selectColumns[2].visible = False  # 混注時間
-                selectColumns[3].visible = False  # 薬剤セット数
+                selectColumns[3].visible = False  # 薬剤セット・確認
                 selectColumns[4].visible = False  # 持参薬を確認
                 selectColumns[5].visible = False  # 薬剤服用歴等について保険k薬局へ照会
                 selectColumns[6].visible = False  # 処方代理修正
