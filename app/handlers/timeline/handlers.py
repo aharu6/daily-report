@@ -904,6 +904,7 @@ class Handlers:
                 | "勉強会参加"
                 | "1on1"
                 | "カンファレンス"
+                | "業務調整"
             ):
                 pass
             
@@ -1103,8 +1104,6 @@ class Handlers:
                 HideMessageHandler.hide_message(save_message,page)
                 
             elif not list_am_location_data or not list_pm_location_data : #薬剤師名がないとき、病棟データが入力されていないとき
-                print(list_am_location_data)
-                print(list_pm_location_data)
                 #csvファイルは書き出さずにエラーメッセージのみ表示に再設定する
                 require_location.visible  = True
                 page.update()

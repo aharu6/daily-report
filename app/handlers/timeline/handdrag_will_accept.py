@@ -14,7 +14,6 @@ class Add_will_accept:
         #ドラッグ前はtaskは空
         
         if e.data == 'false':
-            print(e.control.data)
             #timelineの時は矢印表示
             #deleteiconがonになっているときは矢印も表示しない
             #編集できないようにする
@@ -57,12 +56,10 @@ class Add_will_accept:
                         # e.controlに新しいdrag_accceptを追加する
                         #無理なら先にpage.updateする                        
                         drag_data[e.control.data["time"]] = {"task":"will_accept"}
-                        print("false")
             elif e.control.group == "delete_toggle":
                 pass
         #trueの時（初回ドラッグの時はドラッグ可能であることを示す色をつける）
         elif e.data == 'true':
             e.control.content.border = ft.border.all("#B6EB7A")
-            print("true")
             
         page.update()
