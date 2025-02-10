@@ -15,7 +15,6 @@ class HideMessageHandler:
     def _hide(message,page):
         message.visible =False
         page.update()
-        print("message hidden")
     
 def main(page: ft.Page):
     component = Component()
