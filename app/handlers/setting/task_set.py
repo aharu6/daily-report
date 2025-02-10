@@ -22,6 +22,8 @@ class Set_Default_task:
         #0 on /1 off
         change_set = page.client_storage.get("default_task")
         
+        model = DataModel()
+        
         try:
             set_task1 = int(change_set["業務調整"])
         except:
@@ -51,7 +53,7 @@ class Set_Default_task:
                                         columns=columns,
                                         draggable_data_for_move=draggable_data_for_move,
                                         comments=comments,
-                                        times=DataModel().times(),  # delete_contentでの引数ではtimes
+                                        times=model.times(),  # delete_contentでの引数ではtimes
                                         comment=comment,
                                         draggable_data=draggable_data,
                                     ),

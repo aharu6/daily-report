@@ -497,6 +497,8 @@ class Handlers:
     
         page.add(columns[col_num].content.content)
 
+        model = DataModel()
+        
         #右方向に広がるcontent.data["task"] == "will_accept"のコンテンツは全て削除
         #while文を使用する
         while right_key =="will_accept":
@@ -530,11 +532,11 @@ class Handlers:
                 on_leave = lambda e:DragLeave.drag_leave(e,page),
                 on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns,drag_data),
             )
-            del drag_data[DataModel().times()[right_col_num]]
-            if DataModel().times()[right_col_num] in count_dict:
-                del count_dict[DataModel.times()[right_col_num]]
-            if DataModel().times()[right_col_num] in comment_dict:
-                del comment_dict[DataModel.times()[right_col_num]]
+            del drag_data[model.times()[right_col_num]]
+            if model.times()[right_col_num] in count_dict:
+                del count_dict[model.times()[right_col_num]]
+            if model.times()[right_col_num] in comment_dict:
+                del comment_dict[model.times()[right_col_num]]
                 
             right_col_num += 1
             right_key = columns[right_col_num].content.data["task"]
@@ -546,13 +548,13 @@ class Handlers:
         # contentのcoontent（見た目だけを更新する）
 
         # 同時に該当するdrag_dataのデータも削除する
-        del drag_data[DataModel().times()[col_num]]
+        del drag_data[model.times()[col_num]]
         # 該当のカウントデータも削除する
-        if DataModel().times()[col_num] in count_dict:
-            del count_dict[DataModel().times()[col_num]]
+        if model.times()[col_num] in count_dict:
+            del count_dict[model.times()[col_num]]
         # 該当のその他のデータも削除する
-        if DataModel().times()[col_num] in comment_dict:
-            del comment_dict[DataModel().times()[col_num]]
+        if model.times()[col_num] in comment_dict:
+            del comment_dict[model.times()[col_num]]
 
         # カラムのgroupを元に戻す
         
@@ -751,6 +753,8 @@ class Handlers:
         comment_dict,
         draggable_data_for_move,
     ):
+        model = DataModel()
+        
         # print(e.target)
         src_id_str = e.src_id.replace("_", "")
         try:
@@ -800,7 +804,7 @@ class Handlers:
                         columns,
                         draggable_data_for_move,
                         comments,
-                        DataModel().times(),  # delete_contentでの引数ではtimes
+                        model.times(),  # delete_contentでの引数ではtimes
                         comment,
                         draggable_data,
                     ),
