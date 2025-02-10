@@ -5,7 +5,7 @@ from handlers.timeline.handdrag_will_accept import Add_will_accept
 from handlers.timeline.handlers import Handlers
 from handlers.timeline.drag_leave import DragLeave
 
-class DeleteContentReloadHandler:
+class DeleteContentReloadHandler:    
     @staticmethod
     def delete_content_for_reload(e,
                                 page,
@@ -22,6 +22,8 @@ class DeleteContentReloadHandler:
                                 draggable_data_for_move,
                                 save_error_message,
                                 ):
+        model = DataModel()
+        
         col_num = e.control.data["num"]
         columns[col_num].content = ft.DragTarget(
             group = "timeline",
@@ -48,16 +50,16 @@ class DeleteContentReloadHandler:
             ),
             on_will_accept = lambda e:Add_will_accept.drag_will_accept(e,page,columns,drag_data),
             on_leave = lambda e:DragLeave.drag_leave(e,page),
-            data = {"time":DataModel().times()[col_num],"num":col_num,"task":""},
+            data = {"time":model.times()[col_num],"num":col_num,"task":""},
         )
         #該当するdrag_dataを削除
         del drag_data[e.control.data["time"]]
         #該当のcountデータも削除
-        if DataModel().times()[col_num] in count_dict:
-            del count_dict[DataModel().times()[col_num]]
+        if model.times()[col_num] in count_dict:
+            del count_dict[model.times()[col_num]]
         #該当のcommentデータも削除
-        if DataModel().times()[col_num] in comment_dict:
-            del comment_dict[DataModel().times()[col_num]]
+        if model.times()[col_num] in comment_dict:
+            del comment_dict[model.times()[col_num]]
         #カラムのgroupを元に戻す
         #カラムのデータを初期化
         #on_will_acceptを元に戻す
@@ -101,14 +103,14 @@ class DeleteContentReloadHandler:
                     drag_data=drag_data
                     ),
                 on_leave = lambda e:DragLeave.drag_leave(e,page),
-                data = {"time":DataModel().times()[col_num],"num":col_num,"task":""},
+                data = {"time":model.times()[col_num],"num":col_num,"task":""},
             )
             
-            del drag_data[DataModel().times()[right_col_num]]
-            if DataModel().times()[right_col_num] in count_dict:
-                del count_dict[DataModel().times()[right_col_num]]
-            if DataModel().times()[right_col_num] in comment_dict:
-                del comment_dict[DataModel().times()[right_col_num]]
+            del drag_data[model.times()[right_col_num]]
+            if model.times()[right_col_num] in count_dict:
+                del count_dict[model.times()[right_col_num]]
+            if model.times()[right_col_num] in comment_dict:
+                del comment_dict[model.times()[right_col_num]]
                 
             columns[right_col_num].content.group = "timeline"
             columns[right_col_num].group = "timeline"
