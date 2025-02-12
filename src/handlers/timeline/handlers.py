@@ -1050,7 +1050,12 @@ class Handlers:
                 except:
                     data_dict[time]["phName"] = ""
                     
+            # その他コメントの書き込み
+            for time, comment_data in comment_dict.items():
+                if time in data_dict:
+                    data_dict[time]["comment"] = comment_data["comment"]
                     
+                            
             #前のデータに追加していく形式へ
             #追加前のデータ
             
@@ -1078,10 +1083,7 @@ class Handlers:
                 "timeline_data", json.dumps(save_data, ensure_ascii=False)
                 )
                         
-            # その他コメントの書き込み
-            for time, comment_data in comment_dict.items():
-                if time in data_dict:
-                    data_dict[time]["comment"] = comment_data["comment"]
+            
 
             #辞書データをdfに変換
             df  = pd.DataFrame.from_dict(data_dict,orient='index')
