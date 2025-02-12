@@ -280,7 +280,7 @@ class TimelinePage:
         self.selectColumns[0].visible = False  # 情報収集　指導
         self.selectColumns[1].visible = False  # 指導記録作成
         self.selectColumns[2].visible = False  # 混注時間
-        self.selectColumns[3].visible = False  # 薬剤セット数
+        self.selectColumns[3].visible = False  # 薬剤セット・確認
         self.selectColumns[4].visible = False  # 持参薬を確認
         self.selectColumns[5].visible = False  # 薬剤服用歴等について保険k薬局へ照会
         self.selectColumns[6].visible = False  # 処方代理修正
