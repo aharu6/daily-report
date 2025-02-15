@@ -5,7 +5,6 @@ from flet import BoxShape
 import pandas as pd
 from models.models import DataModel
 from handlers.timeline.handdrag_will_accept import Add_will_accept
-from handlers.timeline.show_message import ShowMessageHandler
 
 class Handlers:
     @staticmethod
