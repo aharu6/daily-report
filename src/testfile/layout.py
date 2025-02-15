@@ -102,6 +102,7 @@ def main(page:ft.Page):
         
     def reset_page(e):
         view_pop(e)
+        #クリアした後、再度ページを追加する
         page.views.append(
             View(
                 "/",
