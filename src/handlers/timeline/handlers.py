@@ -462,7 +462,7 @@ class Handlers:
             group = "delete_toggle",
             content=ft.Container(
                         width=50,
-                        height=300,
+                        height=350,
                         bgcolor="#CBDCEB",
                         border_radius=5,
                     ),
@@ -814,7 +814,7 @@ class Handlers:
                     content=ft.Container(
                         content=ft.Text(key, color="white", text_align=ft.TextAlign.CENTER),
                         width=50,
-                        height=140,
+                        height=130,
                         bgcolor=Handlers.change_color(key),
                         border_radius=ft.border_radius.only(top_left = 5,bottom_left = 5),
                         shape = BoxShape.RECTANGLE,
@@ -825,8 +825,15 @@ class Handlers:
                         "task": key,
                     },
                 ),
+                ft.PopupMenuButton(
+                    items = [
+                        ft.PopupMenuItem(
+                            text = "item1",
+                        )
+                    ]
+                )
             ],
-            height=300,
+            height=350,
             spacing=0,
             data={
                 "time": e.control.data["time"],

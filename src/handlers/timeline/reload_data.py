@@ -125,7 +125,7 @@ class ReloadDataHandler:
                     },
                 ),
             ],
-            height=300,
+            height=350,
             spacing=0,
             data={
                 "time": e.control.data["time"],

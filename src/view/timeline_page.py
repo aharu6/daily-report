@@ -326,7 +326,7 @@ class TimelinePage:
                 group="timeline",
                 content=ft.Container(
                     width=50,
-                    height=300,
+                    height=350,
                     bgcolor="#CBDCEB",
                     border_radius=5,
                 ),

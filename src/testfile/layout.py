@@ -33,6 +33,31 @@ def main(page:ft.Page):
         ]
     )
     
+    pop_up_button = ft.PopupMenuButton(
+        items = [
+            ft.PopupMenuItem(text = "item1"),
+            ft.PopupMenuItem(
+                text = "item2",
+                content = ft.Column(
+                    [
+                        ft.ListTile(
+                            title = ft.Text("item2"),
+                        ),
+                        ft.Radio(
+                            label = "item3",
+                            value = "item3",
+                        )
+                    ]
+                )
+                ),
+            ft.PopupMenuItem(
+                content = ft.Radio(
+                    label = "item4",
+                    value = "item4"
+                    )
+            )
+        ]
+    )
     #リセットボタンを追加する
     #画面の再描画を行う
     
@@ -50,6 +75,7 @@ def main(page:ft.Page):
                             ft.VerticalDivider(),
                             ft.Text("Home"),
                             text_field,
+                            pop_up_button,
                         ],
                         height = 600
                     )

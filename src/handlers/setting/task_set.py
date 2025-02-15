@@ -75,7 +75,7 @@ class Set_Default_task:
                                 ),
                                 
                             ],
-                            height = 300,
+                            height=350,
                             spacing = 0,
                             
                         ),
