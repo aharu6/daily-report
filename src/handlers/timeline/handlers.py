@@ -5,6 +5,7 @@ from flet import BoxShape
 import pandas as pd
 from models.models import DataModel
 from handlers.timeline.handdrag_will_accept import Add_will_accept
+from handlers.timeline.make_popup import MakePopup
 
 class Handlers:
     @staticmethod
@@ -751,6 +752,8 @@ class Handlers:
         phName,
         comment_dict,
         draggable_data_for_move,
+        customDrawerAm,
+        customDrawerPm,
     ):
         model = DataModel()
         
@@ -827,10 +830,11 @@ class Handlers:
                 ),
                 ft.PopupMenuButton(
                     items = [
-                        ft.PopupMenuItem(
-                            text = "item1",
-                        )
-                    ]
+                        MakePopup.add_popup(page = page,customDrawerAm = customDrawerAm,customDrawerPm = customDrawerPm,time = times),
+                        ft.PopupMenuItem(text = "reload",on_click = lambda e:MakePopup.pop_up_reload(e))
+                        ],
+                    icon = ft.icons.MORE_VERT,
+                    icon_size = 20,
                 )
             ],
             height=350,

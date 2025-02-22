@@ -344,6 +344,8 @@ class TimelinePage:
                     phName=self.phName,
                     comment_dict=self.comment_dict,
                     draggable_data=self.draggable_data,
+                    customDrawerAm=self.custumDrawerAm,
+                    customDrawerPm=self.custumDrawerPm,
                 ),
                 on_will_accept=lambda e: Add_will_accept.drag_will_accept(
                         e=e,
