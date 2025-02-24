@@ -830,11 +830,13 @@ class Handlers:
                 ),
                 ft.PopupMenuButton(
                     items = [
-                        MakePopup.add_popup(page = page,customDrawerAm = customDrawerAm,customDrawerPm = customDrawerPm,time = times),
-                        ft.PopupMenuItem(text = "reload",on_click = lambda e:MakePopup.pop_up_reload(e))
-                        ],
+                        MakePopup.add_popup(page = page,customDrawerAm = customDrawerAm,customDrawerPm = customDrawerPm,time = times)                       ],
                     icon = ft.icons.MORE_VERT,
                     icon_size = 20,
+                    on_open = lambda e:MakePopup.pop_up_reload(e=e,customDrawerAm=customDrawerAm,customDrawerPm=customDrawerPm,page=page),
+                    data = {
+                        "time": e.control.data["time"]
+                    }
                 )
             ],
             height=350,

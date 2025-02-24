@@ -17,20 +17,6 @@ class MakePopup:
             )
         )
         
-    
-    @staticmethod
-    def make_popup2():
-        return ft.PopupMenuItem(
-            content = ft.RadioGroup(
-                ft.Column(
-                    controls=[
-                        ft.Radio(value="test", label="test"),
-                        ft.Radio(value="test2", label="test2"),
-                        ft.Radio(value="test3", label="test3")
-                    ]
-                )
-            )
-        )
         #次回コントロールを追加した時がpopupmenuitem の追加タイミングになる
         #最初からitemsへの追加が良いかも
 
@@ -65,17 +51,36 @@ class MakePopup:
                 
         #病棟データがない場合
         else:
-            pop_up.content.content.controls.append(
-                    ft.Text("None")
-            )
+            pass
         
         #どちらにおいても病棟選択後のラジオボタン再描画用の読み込みボタンを追加
         return pop_up
     
+    #再描画用の読み込みハンドラ
+    #reloadボタンは不要
+    #noneはややこしいからいらないかも
     @staticmethod
-    def pop_up_reload(e):
-        pass
-    
+    def pop_up_reload(e,customDrawerAm,customDrawerPm,page):
+        list_am_location = []
+        for i in range(len(customDrawerAm.content.controls)):
+            if customDrawerAm.content.controls[i].value == True:
+                list_am_location.append(customDrawerAm.content.controls[i].label)
+        list_pm_location = []
+        for i in range(len(customDrawerPm.content.controls)):
+            if customDrawerPm.content.controls[i].value == True:
+                list_pm_location.append(customDrawerPm.content.controls[i].label)
+                
+        #午前と午後の判別
+        if len(list_am_location) > 0:
+            for i in range(len(list_am_location)):        
+                e.control.items[0].content.content.controls.append(
+                    ft.Radio(value=list_am_location[i], label=list_am_location[i])
+                )
+        else:
+            pass
+
+        page.update()
+            
     @staticmethod
     def radio_click(e, time):
         #クリックされた時は辞書データの更新を行う
@@ -85,4 +90,5 @@ class MakePopup:
         selected_location = e.value
         print(selected_location)
         #辞書データの更新
-        print("Radio button clicked")
+        #時間データに紐付ける
+        #午前と午後でそれぞれ別のデータ入力
