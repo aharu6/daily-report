@@ -1037,7 +1037,10 @@ class Handlers:
             for time in data_dict.keys():
                 if list_am_location_data is not None:
                     if data_dict[time]["locate"] == "AM":
-                        data_dict[time]["locate"] = list_am_location_data
+                        if data_dict[time]["task"] != "":
+                            data_dict[time]["locate"] = list_am_location_data
+                        else:
+                            pass
                 else:
                     None
 
@@ -1049,10 +1052,15 @@ class Handlers:
                 else:
                     None
 
+            #ラジオボタンでの病棟選択データを反映
+            #taskがある時のみ病棟データを書き込む
             for time in data_dict.keys():
                 if list_pm_location_data is not None:
                     if data_dict[time]["locate"] == "PM":
-                        data_dict[time]["locate"] = list_pm_location_data
+                        if data_dict[time]["task"] != "":
+                            data_dict[time]["locate"] = list_pm_location_data
+                        else:
+                            pass
                 else:
                     None
 
@@ -1118,8 +1126,7 @@ class Handlers:
                 save_message.content.controls[0].visible = True
                 save_message.content.controls[1].visible = True
                 page.update()
-                print("csvファイルを保存しました")
-                #時間経過後に消す
+                #時間経過後に消す 「csvファイルを保存しました」
                 HideMessageHandler.hide_message(save_message,page)
                 
             elif not list_am_location_data or not list_pm_location_data : #薬剤師名がないとき、病棟データが入力されていないとき
