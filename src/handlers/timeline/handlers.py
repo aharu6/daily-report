@@ -830,7 +830,8 @@ class Handlers:
                 ),
                 ft.PopupMenuButton(
                     items = [
-                        MakePopup.add_popup(page = page,customDrawerAm = customDrawerAm,customDrawerPm = customDrawerPm,time = times)                       ],
+                        MakePopup.add_popup(time = e.control.data["time"]), 
+                        ],
                     icon = ft.icons.MORE_VERT,
                     icon_size = 20,
                     on_open = lambda e:MakePopup.pop_up_reload(e=e,customDrawerAm=customDrawerAm,customDrawerPm=customDrawerPm,page=page),

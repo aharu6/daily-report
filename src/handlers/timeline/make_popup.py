@@ -1,4 +1,5 @@
 import flet as ft
+from models.models import DataModel
 class MakePopup:
     @staticmethod
     #選択した病棟名を取得し、ラジオボタンのメニューを作成する
@@ -11,6 +12,7 @@ class MakePopup:
                     controls = [
                         ft.RadioGroup(
                             ft.Radio(value = "test5",label ="test5"),
+                            data = {"time":"test5"},
                         )
                     ]
                 )
@@ -27,33 +29,22 @@ class MakePopup:
     
     
     @staticmethod
-    def add_popup(page, customDrawerAm, customDrawerPm, time):
-        #選択した病棟データを読み出し
-        list_am_locationdata = []
-        for i in range(len(customDrawerAm.content.controls)):
-            if customDrawerAm.content.controls[i].value == True:
-                list_am_locationdata.append(customDrawerAm.content.controls[i].label)
-
+    def add_popup(time):
+        
+        #午前と午後の判別
         pop_up = ft.PopupMenuItem(
             content = ft.RadioGroup(
                 ft.Column(
                     controls=[]
-                )
+                ),
+                data = {"time":time},
+                on_change = lambda e:MakePopup.radio_click(e,time)
+                
             )
         )
         
-        #病棟データがある場合
-        if len(list_am_locationdata) > 0:
-            for i in range(len(list_am_locationdata)):        
-                pop_up.content.content.controls.append(
-                    ft.Radio(value=list_am_locationdata[i], label=list_am_locationdata[i])
-                )
-                
-        #病棟データがない場合
-        else:
-            pass
-        
-        #どちらにおいても病棟選択後のラジオボタン再描画用の読み込みボタンを追加
+        #何かは追加しておかないとreload機能が機能しない
+        #popupmenuitem のみ追加しておく
         return pop_up
     
     #再描画用の読み込みハンドラ
@@ -71,11 +62,29 @@ class MakePopup:
                 list_pm_location.append(customDrawerPm.content.controls[i].label)
                 
         #午前と午後の判別
-        if len(list_am_location) > 0:
-            for i in range(len(list_am_location)):        
-                e.control.items[0].content.content.controls.append(
-                    ft.Radio(value=list_am_location[i], label=list_am_location[i])
-                )
+        time = e.control.data["time"]
+        time_model = DataModel()
+        amtime = time_model.amTime()
+        pmtime = time_model.pmTime()
+        
+        #前のラジオボタンのリセット
+        e.control.items[0].content.content.controls.clear()
+        if time in amtime:
+            if len(list_am_location) > 0:
+                for i in range(len(list_am_location)):        
+                    e.control.items[0].content.content.controls.append(
+                        ft.Radio(value=list_am_location[i], label=list_am_location[i])
+                    )
+            else:
+                pass
+        elif time in pmtime:
+            if len(list_pm_location) > 0:
+                for i in range(len(list_pm_location)):        
+                    e.control.items[0].content.content.controls.append(
+                        ft.Radio(value=list_pm_location[i], label=list_pm_location[i])
+                    )
+            else:
+                pass
         else:
             pass
 
@@ -85,10 +94,12 @@ class MakePopup:
     def radio_click(e, time):
         #クリックされた時は辞書データの更新を行う
         #時間データの取得
+        time = e.control.data["time"]
         print(time)
         #選択された病棟データの取得
-        selected_location = e.value
+        selected_location = e.control.value
         print(selected_location)
         #辞書データの更新
+        
         #時間データに紐付ける
         #午前と午後でそれぞれ別のデータ入力
