@@ -1071,13 +1071,13 @@ class Handlers:
             #ラジオボタンでの病棟選択データを反映,上書き
             #単選択と複数選択のデフォルト保存ではし集計時に影響があるかも
             #単選択時もリスト形式に変換して保存する
-            print(update_location_data)
+            update_loc_list = []
             for time in data_dict.keys():
                 if time in update_location_data:
-                    data_dict[time]["locate"] = f"['{update_location_data[time]}']"
+                    update_loc_list.append(update_location_data[time])
+                    data_dict[time]["locate"] = update_loc_list
                 else:
                     pass
-            print(data_dict)
             
             # phName データの書き込み
             for time in data_dict.keys():

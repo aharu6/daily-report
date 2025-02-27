@@ -16,7 +16,8 @@ class Temp_Save:
         phName,
         page,
         comment_dict,
-        message
+        message,
+        update_location_data,
     ):
         date = f"{select_day.data.year}-{select_day.data.month}-{select_day.data.day}"
         # 初期ベースの作成
@@ -52,6 +53,7 @@ class Temp_Save:
                 data_dict[time]["count"] = count["count"]
 
         # 病棟データの書き込み
+        #　taskがある時のみ書き込む
         # AMの場合
         list_am_location_data = []
         for i in range(len(custumDrawerAm.content.controls)):
@@ -63,7 +65,10 @@ class Temp_Save:
         for time in data_dict.keys():
             if list_am_location_data is not None:
                 if data_dict[time]["locate"] == "AM":
-                    data_dict[time]["locate"] = list_am_location_data
+                    if data_dict[time]["task"] != "":
+                        data_dict[time]["locate"] = list_am_location_data
+                    else:
+                        pass
             else:
                 None
 
@@ -78,20 +83,29 @@ class Temp_Save:
         for time in data_dict.keys():
             if list_pm_location_data is not None:
                 if data_dict[time]["locate"] == "PM":
-                    data_dict[time]["locate"] = list_pm_location_data
+                    if data_dict[time]["task"] != "":
+                        data_dict[time]["locate"] = list_pm_location_data
+                    else:
+                        pass
             else:
                 None
-
+                
+        #ラジオボタンでの病棟選択セータを反映
+        #単数選択時もリスト形式に変換して保存する
+        update_loc_list = []
+        for time in data_dict.keys():
+            if time in update_location_data:
+                update_loc_list.append(update_location_data[time])
+                data_dict[time]["locate"] = update_loc_list
+            else:
+                pass
+        print(data_dict)
         # phName データの書き込み
         for time in data_dict.keys():
             try:
                 data_dict[time]["phName"] = phName.value
             except:
                 data_dict[time]["phName"] = ""
-                
-                
-        #前のデータに追加していく形式へ
-        #追加前のデータ
         
         #pre_dataにdata_dictを追加
         #形式：日付と名前にて一意に

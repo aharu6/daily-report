@@ -195,6 +195,7 @@ class TimelinePage:
                 page = self.page,
                 comment_dict = self.comment_dict,
                 message=self.temp_save_message,
+                update_location_data=self.update_location_data,
             )
         )
         
