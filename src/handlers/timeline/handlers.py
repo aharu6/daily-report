@@ -9,14 +9,13 @@ from handlers.timeline.make_popup import MakePopup
 
 class Handlers:
     @staticmethod
-    def handle_change(e, Date,page):
+    def handle_change(e, Date, page):
         """_summary_
         選択した日付にてカレンダーを更新する
         デフォルトは今日の日付
         カレンダーは過去の日付も選択できるように
         Args:
             e (_type_): 日付選択
-            today (_type_): _description_
             Date (_type_): _description_
             page (_type_): _description_
         """
@@ -449,7 +448,8 @@ class Handlers:
         comments,
         times,
         comment,
-        draggable_data
+        draggable_data,
+        update_location_data,
     ):
         from handlers.timeline.drag_leave import DragLeave   
         # _move関数でdelete_button.dataに入れたのはdragtargetで設定したカラムの番号
@@ -481,7 +481,8 @@ class Handlers:
                     phNameList=phNameList,
                     phName=phName,
                     comment_dict=comment_dict,
-                    draggable_data=draggable_data
+                    draggable_data=draggable_data,
+                    update_location_data=update_location_data,
                     ),
             on_leave = lambda e:DragLeave.drag_leave(e,page),
             data = {"time":times[col_num],
@@ -527,7 +528,8 @@ class Handlers:
                     phNameList=phNameList,
                     phName=phName,
                     comment_dict=comment_dict,
-                    draggable_data=draggable_data
+                    draggable_data=draggable_data,
+                    update_location_data=update_location_data,
                     ),
                 on_leave = lambda e:DragLeave.drag_leave(e,page),
                 on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns,drag_data),
@@ -754,6 +756,7 @@ class Handlers:
         draggable_data_for_move,
         customDrawerAm,
         customDrawerPm,
+        update_location_data,
     ):
         model = DataModel()
         
@@ -796,21 +799,22 @@ class Handlers:
                     icon_size=20,
                     icon_color="red",
                     on_click=lambda e: Handlers.delete_content(
-                        e,
-                        page,
-                        phNameList,
-                        phName,
-                        drag_data,
-                        count_dict,
-                        comment_dict,
-                        columns,
-                        draggable_data_for_move,
-                        comments,
-                        model.times(),  # delete_contentでの引数ではtimes
-                        comment,
-                        draggable_data,
+                        e = e,
+                        page = page,
+                        phNameList=phNameList,
+                        phName=phName,
+                        drag_data=drag_data,
+                        count_dict=count_dict,
+                        comment_dict=comment_dict,
+                        columns=columns,
+                        draggable_data_for_move=draggable_data_for_move,
+                        comments=comments,
+                        times=model.times(),  # delete_contentでの引数ではtimes
+                        comment=comment,
+                        draggable_data=draggable_data,
+                        update_location_data=update_location_data,
                     ),
-                    data = {"num":e.control.data["num"]}
+                    data={"num": e.control.data["num"]}
                 ),
                 ft.Draggable(
                     group="timeline_accepted",
@@ -830,7 +834,7 @@ class Handlers:
                 ),
                 ft.PopupMenuButton(
                     items = [
-                        MakePopup.add_popup(time = e.control.data["time"]), 
+                        MakePopup.add_popup(time = e.control.data["time"],update_location_data=update_location_data), 
                         ],
                     icon = ft.icons.MORE_VERT,
                     icon_size = 20,
@@ -978,6 +982,7 @@ class Handlers:
         require_location,
         require_name,
         save_message,
+        update_location_data,
     ):
         date = f"{select_day.data.year}-{select_day.data.month}-{select_day.data.day}"
         #名前が入力されていない場合にはエラーを表示する
@@ -1052,7 +1057,6 @@ class Handlers:
                 else:
                     None
 
-            #ラジオボタンでの病棟選択データを反映
             #taskがある時のみ病棟データを書き込む
             for time in data_dict.keys():
                 if list_pm_location_data is not None:
@@ -1064,6 +1068,10 @@ class Handlers:
                 else:
                     None
 
+            #ラジオボタンでの病棟選択データを反映,上書き
+            radio_loc_data = update_location_data
+            print(radio_loc_data)
+            
             # phName データの書き込み
             for time in data_dict.keys():
                 try:

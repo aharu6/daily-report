@@ -28,6 +28,7 @@ class ReloadDataHandler:
         draggable_data,
         require_name,
         require_location,
+        update_location_data,
         ):
         page.open(drawer)
         #保存しているデータを読み出す
@@ -69,6 +70,7 @@ class ReloadDataHandler:
                         draggable_data=draggable_data,
                         require_name=require_name,
                         require_location=require_location,
+                        update_location_data=update_location_data,
                         ),
                     data = i
                     ),
@@ -99,6 +101,7 @@ class ReloadDataHandler:
         draggable_data,
         require_name,
         require_location,
+        update_location_data,
         ):
         #columns = self.columns
         #選択したkeyに該当するデータを取り出す
@@ -189,6 +192,7 @@ class ReloadDataHandler:
                                     phNameList=phNameList,
                                     phName=phName,
                                     draggable_data_for_move=draggable_data_for_move,
+                                    update_location_data=update_location_data,
                                 ),
                                 data = {
                                     "time": load_data[key]["time"],

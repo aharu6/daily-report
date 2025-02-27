@@ -29,7 +29,7 @@ class MakePopup:
     
     
     @staticmethod
-    def add_popup(time):
+    def add_popup(time,update_location_data):
         
         #午前と午後の判別
         pop_up = ft.PopupMenuItem(
@@ -38,7 +38,7 @@ class MakePopup:
                     controls=[]
                 ),
                 data = {"time":time},
-                on_change = lambda e:MakePopup.radio_click(e,time)
+                on_change = lambda e:MakePopup.radio_click(e,time,update_location_data)
                 
             )
         )
@@ -91,15 +91,16 @@ class MakePopup:
         page.update()
             
     @staticmethod
-    def radio_click(e, time):
+    def radio_click(e, time,update_location_data):
         #クリックされた時は辞書データの更新を行う
         #時間データの取得
         time = e.control.data["time"]
-        print(time)
         #選択された病棟データの取得
         selected_location = e.control.value
-        print(selected_location)
         #辞書データの更新
+        update_loc_data = update_location_data
         
         #時間データに紐付ける
+        update_loc_data[time] = selected_location
+        print(update_loc_data)
         #午前と午後でそれぞれ別のデータ入力

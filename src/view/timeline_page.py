@@ -108,6 +108,7 @@ class TimelinePage:
                 draggable_data=self.model.draggable_data(),
                 require_name=self.require_name,
                 require_location=self.require_location,
+                update_location_data=self.update_location_data,
                 )
         )
 
@@ -210,7 +211,8 @@ class TimelinePage:
             text="保存", on_click=lambda e: self.select_directory.get_directory_path()
         )
         
-        
+        #ラジオボタンで更新した病棟データの辞書
+        self.update_location_data = {}
         self.save_error_message = ft.Container()
         self.select_directory = ft.FilePicker(
             on_result=lambda e: Handlers.write_csv_file(
@@ -234,6 +236,7 @@ class TimelinePage:
                 require_location=self.require_location,
                 require_name=self.require_name,
                 save_message = self.save_message,
+                update_location_data=self.update_location_data,
             )
         )
         
@@ -346,6 +349,7 @@ class TimelinePage:
                     draggable_data=self.draggable_data,
                     customDrawerAm=self.custumDrawerAm,
                     customDrawerPm=self.custumDrawerPm,
+                    update_location_data=self.update_location_data,
                 ),
                 on_will_accept=lambda e: Add_will_accept.drag_will_accept(
                         e=e,
@@ -496,7 +500,8 @@ class TimelinePage:
             draggable_data_for_move=self.draggable_data_for_move,
             comments=self.comments,
             comment=self.comment,
-            draggable_data=self.model.draggable_data()
+            draggable_data=self.model.draggable_data(),
+            update_location_data=self.update_location_data,
             )
         
         Handlers.update_dropdown(
