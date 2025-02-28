@@ -2,6 +2,7 @@ import json
 import flet as ft
 from models.models import DataModel
 from handlers.timeline.make_popup import MakePopup
+from flet import BoxShape
 #ドロワーを展開する
 #保管しているデータを取得して表示する
 #右側にtimeline適用用のボタンを合わせて表示する
@@ -207,6 +208,8 @@ class ReloadDataHandler:
                                     width = 50,
                                     height = 140,
                                     bgcolor = Handlers.change_color(load_data[key]["task"]),
+                                    border_radius=ft.border_radius.only(top_left = 5,bottom_left=5),
+                                    shape=BoxShape.RECTANGLE,
                                 ),
                                 data = {
                                     "time": load_data[key]["time"],
@@ -226,7 +229,7 @@ class ReloadDataHandler:
                                 }
                             )
                         ],
-                        height = 300,
+                        height = 350,
                         spacing = 0,
                         data = {
                             "time": load_data[key]["time"],
