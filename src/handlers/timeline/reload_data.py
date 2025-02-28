@@ -1,7 +1,7 @@
 import json
 import flet as ft
 from models.models import DataModel
-
+from handlers.timeline.make_popup import MakePopup
 #ドロワーを展開する
 #保管しているデータを取得して表示する
 #右側にtimeline適用用のボタンを合わせて表示する
@@ -214,6 +214,17 @@ class ReloadDataHandler:
                                     "task": load_data[key]["task"],
                                 },
                             ),
+                            ft.PopupMenuButton(
+                                items = [
+                                    MakePopup.add_popup(time = load_data[key]["time"],update_location_data=update_location_data), 
+                                    ],
+                                icon = ft.icons.MORE_VERT,
+                                icon_size = 20,
+                                on_open = lambda e:MakePopup.pop_up_reload(e=e,customDrawerAm=custumDrawerAm,customDrawerPm=custumDrawerPm,page=page),
+                                data = {
+                                    "time": load_data[key]["time"]
+                                }
+                            )
                         ],
                         height = 300,
                         spacing = 0,

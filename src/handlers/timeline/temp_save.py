@@ -99,7 +99,7 @@ class Temp_Save:
                 data_dict[time]["locate"] = update_loc_list
             else:
                 pass
-        print(data_dict)
+
         # phName データの書き込み
         for time in data_dict.keys():
             try:
