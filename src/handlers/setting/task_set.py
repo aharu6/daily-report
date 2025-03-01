@@ -17,6 +17,7 @@ class Set_Default_task:
         comments,
         comment,
         draggable_data,
+        update_location_data,
         ):
         #settingpageでセットしたclient_storageの内容に従って、デフォルトでの追加タスクを設定する
         #0 on /1 off
@@ -56,6 +57,7 @@ class Set_Default_task:
                                         times=model.times(),  # delete_contentでの引数ではtimes
                                         comment=comment,
                                         draggable_data=draggable_data,
+                                        update_location_data=update_location_data,
                                     ),
                                     data = {"num":19}
                                 ),
@@ -75,7 +77,7 @@ class Set_Default_task:
                                 ),
                                 
                             ],
-                            height = 300,
+                            height=350,
                             spacing = 0,
                             
                         ),

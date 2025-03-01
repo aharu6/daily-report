@@ -73,7 +73,7 @@ class DragMoveHandler:
                     },
                 ),
             ],
-            height=300,
+            height=350,
             spacing=0,
             data={
                 "time": e.control.data["time"],
@@ -163,7 +163,7 @@ class DragMoveHandler:
                             ),
                         ),
                     ],
-                    height=300,
+                    height=350,
                     spacing=0,
                     data={
                         "time": times[right_column_num],

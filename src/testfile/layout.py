@@ -9,7 +9,11 @@ def main(page:ft.Page):
             page.go("/settings") 
         
     page.title = 'Hello World'
-    text  = ft.Text('Hello World')    
+    text  = ft.Text('Hello World')  
+    reset_button = ft.ElevatedButton(
+        text = "Reset",
+    )  
+    text_field = ft.TextField()
     rail = ft.NavigationRail(
         selected_index = 0,
         label_type = ft.NavigationRailLabelType.ALL,
@@ -17,8 +21,8 @@ def main(page:ft.Page):
         min_extended_width = 100,
         leading = ft.FloatingActionButton(
             icon = ft.icons.CREATE,text = "Create",
-            #timelimeページを展開する
-            on_click = lambda _: page.go("/")
+            #timelimeページを展開する,
+            on_click = lambda e:page.go("/")
             ),
         group_alignment = -0.9,
         extended = True,
@@ -29,6 +33,34 @@ def main(page:ft.Page):
         ]
     )
     
+    pop_up_button = ft.PopupMenuButton(
+        items = [
+            ft.PopupMenuItem(text = "item1"),
+            ft.PopupMenuItem(
+                text = "item2",
+                content = ft.Column(
+                    [
+                        ft.ListTile(
+                            title = ft.Text("item2"),
+                        ),
+                        ft.Radio(
+                            label = "item3",
+                            value = "item3",
+                        )
+                    ]
+                )
+                ),
+            ft.PopupMenuItem(
+                content = ft.Radio(
+                    label = "item4",
+                    value = "item4"
+                    )
+            )
+        ]
+    )
+    #リセットボタンを追加する
+    #画面の再描画を行う
+    
     #ページを更新する
     def route_change(e):
         page.views.clear()
@@ -37,10 +69,13 @@ def main(page:ft.Page):
                 "/",
                 [
                     ft.Row(
-                        [
+                        [   
+                            reset_button,
                             rail,
                             ft.VerticalDivider(),
                             ft.Text("Home"),
+                            text_field,
+                            pop_up_button,
                         ],
                         height = 600
                     )
@@ -89,7 +124,31 @@ def main(page:ft.Page):
     
     def view_pop(e):
         page.views.pop()
+        print("page_clear")
         
+    def reset_page(e):
+        view_pop(e)
+        #クリアした後、再度ページを追加する
+        page.views.append(
+            View(
+                "/",
+                [
+                    ft.Row(
+                        [   
+                            reset_button,
+                            rail,
+                            ft.VerticalDivider(),
+                            ft.Text("Home"),
+                            text_field,
+                        ],
+                        height = 600
+                    )
+                ],
+            )
+        )
+        page.update()
+    
+    reset_button.on_click = lambda e: reset_page(e)
     
     page.on_route_change = route_change
     page.on_view_pop = view_pop

@@ -1,7 +1,8 @@
 import json
 import flet as ft
 from models.models import DataModel
-
+from handlers.timeline.make_popup import MakePopup
+from flet import BoxShape
 #ドロワーを展開する
 #保管しているデータを取得して表示する
 #右側にtimeline適用用のボタンを合わせて表示する
@@ -28,6 +29,7 @@ class ReloadDataHandler:
         draggable_data,
         require_name,
         require_location,
+        update_location_data,
         ):
         page.open(drawer)
         #保存しているデータを読み出す
@@ -69,6 +71,7 @@ class ReloadDataHandler:
                         draggable_data=draggable_data,
                         require_name=require_name,
                         require_location=require_location,
+                        update_location_data=update_location_data,
                         ),
                     data = i
                     ),
@@ -99,6 +102,7 @@ class ReloadDataHandler:
         draggable_data,
         require_name,
         require_location,
+        update_location_data,
         ):
         #columns = self.columns
         #選択したkeyに該当するデータを取り出す
@@ -125,7 +129,7 @@ class ReloadDataHandler:
                     },
                 ),
             ],
-            height=300,
+            height=350,
             spacing=0,
             data={
                 "time": e.control.data["time"],
@@ -189,6 +193,7 @@ class ReloadDataHandler:
                                     phNameList=phNameList,
                                     phName=phName,
                                     draggable_data_for_move=draggable_data_for_move,
+                                    update_location_data=update_location_data,
                                 ),
                                 data = {
                                     "time": load_data[key]["time"],
@@ -203,6 +208,8 @@ class ReloadDataHandler:
                                     width = 50,
                                     height = 140,
                                     bgcolor = Handlers.change_color(load_data[key]["task"]),
+                                    border_radius=ft.border_radius.only(top_left = 5,bottom_left=5),
+                                    shape=BoxShape.RECTANGLE,
                                 ),
                                 data = {
                                     "time": load_data[key]["time"],
@@ -210,8 +217,19 @@ class ReloadDataHandler:
                                     "task": load_data[key]["task"],
                                 },
                             ),
+                            ft.PopupMenuButton(
+                                items = [
+                                    MakePopup.add_popup(time = load_data[key]["time"],update_location_data=update_location_data), 
+                                    ],
+                                icon = ft.icons.MORE_VERT,
+                                icon_size = 20,
+                                on_open = lambda e:MakePopup.pop_up_reload(e=e,customDrawerAm=custumDrawerAm,customDrawerPm=custumDrawerPm,page=page),
+                                data = {
+                                    "time": load_data[key]["time"]
+                                }
+                            )
                         ],
-                        height = 300,
+                        height = 350,
                         spacing = 0,
                         data = {
                             "time": load_data[key]["time"],
