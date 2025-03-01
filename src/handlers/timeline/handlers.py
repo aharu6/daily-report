@@ -1078,6 +1078,7 @@ class Handlers:
                     data_dict[time]["locate"] = update_loc_list
                 else:
                     pass
+                
             
             # phName データの書き込み
             for time in data_dict.keys():
@@ -1123,26 +1124,32 @@ class Handlers:
 
             #辞書データをdfに変換
             df  = pd.DataFrame.from_dict(data_dict,orient='index')
-            #will_acceptは前のタスクにて補完する
-            df['task'] = df['task'].replace('will_accept',method='ffill')
+            #will_accept時のlocationデータはデフォルト入力データで入っているため、ラジオボタンでの選択内容に書き換える
+            # df['task'] == "will_accept"の時、df['locate'] == "uncomplete"に変更する
+            df.loc[df['task'] == "will_accept", 'locate'] = "uncomplete"
+            # uncompleteは前のlocateにて補完する
+            df['locate'] = df["locate"].replace('uncomplete', method='ffill')
+            # will_acceptは前のタスクにて補完する
+            df['task'] = df['task'].replace('will_accept', method='ffill')
+            # 選択したラジオボタンでのデータに書き込み直し
             
             # csvファイルの書き込み
-            if select_directory.result and select_directory.result.path and phName.value and  list_am_location_data and  list_pm_location_data :
+            if select_directory.result and select_directory.result.path and phName.value and list_am_location_data and list_pm_location_data:
                 try:
-                    file_path = select_directory.result.path + f"/{date}"+f"{phName.value}"+".csv"
+                    file_path = select_directory.result.path + f"/{date}" + f"{phName.value}" + ".csv"
                 except:
                     file_path = select_directory.result.path + f"/{date}.csv"
                 
-                #ファイル保存名に名前を使用しているので、名前が入力されていない場合にはエラーを表示する
-                #病棟データが何も入力されていないときも処理を中断する
-                #両者ともエラーメッセージをtrueに設定しなおす
-                df.to_csv(file_path,index=False)
-                #保存できたら完了メッセージを表示
+                # ファイル保存名に名前を使用しているので、名前が入力されていない場合にはエラーを表示する
+                # 病棟データが何も入力されていないときも処理を中断する
+                # 両者ともエラーメッセージをtrueに設定しなおす
+                df.to_csv(file_path, index=False)
+                # 保存できたら完了メッセージを表示
                 save_message.content.controls[0].visible = True
                 save_message.content.controls[1].visible = True
                 page.update()
-                #時間経過後に消す 「csvファイルを保存しました」
-                HideMessageHandler.hide_message(save_message,page)
+                # 時間経過後に消す 「csvファイルを保存しました」
+                HideMessageHandler.hide_message(save_message, page)
                 
             elif not list_am_location_data or not list_pm_location_data : #薬剤師名がないとき、病棟データが入力されていないとき
                 #csvファイルは書き出さずにエラーメッセージのみ表示に再設定する
