@@ -7,6 +7,7 @@ from models.models import DataModel
 from handlers.timeline.handdrag_will_accept import Add_will_accept
 from handlers.timeline.make_popup import MakePopup
 
+
 class Handlers:
     @staticmethod
     def handle_change(e, Date, page):
@@ -23,10 +24,10 @@ class Handlers:
         # 年月日を取得して表示用のテキストに変換
         Date.text = f"{selected_date.year}/{selected_date.month}/{selected_date.day}"
         Date.data = selected_date
-        page.update() 
+        page.update()
 
     @staticmethod
-    def dropdown_changed(e, phName, dialog, page,require_error_message):
+    def dropdown_changed(e, phName, dialog, page, require_error_message):
         """_summary_
 
         Args:
@@ -60,9 +61,12 @@ class Handlers:
             phNameList = json.loads(phNameList)
         options = []
         try:
-            options = [ft.dropdown.Option(item["name"],data = item["name"]) for item in phNameList]
+            options = [
+                ft.dropdown.Option(item["name"], data=item["name"])
+                for item in phNameList
+            ]
         except:
-            options = [ft.dropdown.Option("名前が登録されていません",data = "noName")]
+            options = [ft.dropdown.Option("名前が登録されていません", data="noName")]
 
         options.append(ft.dropdown.Option("Add"))
 
@@ -277,13 +281,13 @@ class Handlers:
                 selectColumns[26].visible = False  # 業務調整
                 selectColumns[27].visible = False  # 休憩
                 selectColumns[28].visible = False  # その他
-                
+
                 selectColumns[30].visible = False  # NST
 
                 page.update()
 
             case 3:  # その他
-                
+
                 # 表示
                 selectColumns[12].visible = True  # 委員会
                 selectColumns[13].visible = True  # 勉強会参加
@@ -399,21 +403,20 @@ class Handlers:
                 page.update()
 
     @staticmethod
-    def toggle_delete_button(e,page, columns):
+    def toggle_delete_button(e, page, columns):
         e.control.selected = not e.control.selected
-        #全てのselect columnsを選択不可能にする
+        # 全てのselect columnsを選択不可能にする
         for i in range(len(columns)):
-            #columns[i].disabled = not columns[i].disabled
-            #disabled効かない
-            #特定のグループ名にして、falseの中で分ける？
-            #seeletcolumnの方ではなくて、columnsの方
-            if columns[i].content.group =="timeline":
-                columns[i].content.group ="delete_toggle"
+            # columns[i].disabled = not columns[i].disabled
+            # disabled効かない
+            # 特定のグループ名にして、falseの中で分ける？
+            # seeletcolumnの方ではなくて、columnsの方
+            if columns[i].content.group == "timeline":
+                columns[i].content.group = "delete_toggle"
             elif columns[i].content.group == "delete_toggle":
                 columns[i].content.group = "timeline"
-            
-        
-        for  i in range(len(columns)):
+
+        for i in range(len(columns)):
             if columns[i].content.data is not None:
                 task = columns[i].content.data["task"]
                 match task:
@@ -423,15 +426,17 @@ class Handlers:
                         pass
                     case _:
                         try:
-                            #初回ドラッグコンテンツ用のdeletebutton visible
-                            #全てのカラムで押すたびにtrueとfalseを揃える
-                            #ゴミ箱アイコンがonのときにはドラッグできないように編集する
-                            columns[i].content.content.controls[0].visible = not columns[i].content.content.controls[0].visible
+                            # 初回ドラッグコンテンツ用のdeletebutton visible
+                            # 全てのカラムで押すたびにtrueとfalseを揃える
+                            # ゴミ箱アイコンがonのときにはドラッグできないように編集する
+                            columns[i].content.content.controls[0].visible = (
+                                not columns[i].content.content.controls[0].visible
+                            )
                         except:
-                            #reload時のdeletebutton visible
+                            # reload時のdeletebutton visible
                             pass
-                
-                #button.visible = not button.visible
+
+                # button.visible = not button.visible
         page.update()
 
     @staticmethod
@@ -451,77 +456,75 @@ class Handlers:
         draggable_data,
         update_location_data,
     ):
-        from handlers.timeline.drag_leave import DragLeave   
+        from handlers.timeline.drag_leave import DragLeave
+
         # _move関数でdelete_button.dataに入れたのはdragtargetで設定したカラムの番号
         # columns[i]でそのカラムの情報を取得し、見た目上削除
         # 正しくはcolumnsの初期化を行う。ドラッグする前の状態に戻す
         col_num = e.control.data["num"]
         # 同じ情報の新しいカラムに差し替える
-        #columns[col_num].content.content.clean()
-        #削除した時点ではまだdeletebuttonがonになっている状態だから、draggableのgroup delete_toggleになるはず
+        # columns[col_num].content.content.clean()
+        # 削除した時点ではまだdeletebuttonがonになっている状態だから、draggableのgroup delete_toggleになるはず
         columns[col_num].content = ft.DragTarget(
-            group = "delete_toggle",
+            group="delete_toggle",
             content=ft.Container(
-                        width=50,
-                        height=350,
-                        bgcolor="#CBDCEB",
-                        border_radius=5,
-                    ),
-            on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns,drag_data),
-            on_accept = lambda e: Handlers.drag_accepted(
-                    e=e,
-                    page=page,
-                    draggable_data_for_move=draggable_data_for_move,
-                    columns=columns,
-                    comments = comments,
-                    times = times,
-                    drag_data=drag_data,
-                    comment=comment,
-                    count_dict=count_dict,
-                    phNameList=phNameList,
-                    phName=phName,
-                    comment_dict=comment_dict,
-                    draggable_data=draggable_data,
-                    update_location_data=update_location_data,
-                    ),
-            on_leave = lambda e:DragLeave.drag_leave(e,page),
-            data = {"time":times[col_num],
-                    "num":col_num,
-                    "task":""}
+                width=50,
+                height=350,
+                bgcolor="#CBDCEB",
+                border_radius=5,
+            ),
+            on_will_accept=lambda e: Add_will_accept.drag_will_accept(
+                e, page, columns, drag_data
+            ),
+            on_accept=lambda e: Handlers.drag_accepted(
+                e=e,
+                page=page,
+                draggable_data_for_move=draggable_data_for_move,
+                columns=columns,
+                comments=comments,
+                times=times,
+                drag_data=drag_data,
+                comment=comment,
+                count_dict=count_dict,
+                phNameList=phNameList,
+                phName=phName,
+                comment_dict=comment_dict,
+                draggable_data=draggable_data,
+                update_location_data=update_location_data,
+            ),
+            on_leave=lambda e: DragLeave.drag_leave(e, page),
+            data={"time": times[col_num], "num": col_num, "task": ""},
         )
-        
-        right_col_num = e.control.data["num"]+1
+
+        right_col_num = e.control.data["num"] + 1
         try:
             right_key = columns[right_col_num].content.data["task"]
         except:
             pass
-    
+
         page.add(columns[col_num].content.content)
 
         model = DataModel()
-        
-        #右方向に広がるcontent.data["task"] == "will_accept"のコンテンツは全て削除
-        #while文を使用する
-        while right_key =="will_accept":
+
+        # 右方向に広がるcontent.data["task"] == "will_accept"のコンテンツは全て削除
+        # while文を使用する
+        while right_key == "will_accept":
             columns[right_col_num].content = ft.DragTarget(
-                group = "delete_toggle",
+                group="delete_toggle",
                 content=ft.Container(
-                
-                    width = 50,
-                    height = 300,
-                    bgcolor = "#CBDCEB",
-                    border_radius = 5,
+                    width=50,
+                    height=300,
+                    bgcolor="#CBDCEB",
+                    border_radius=5,
                 ),
-                data = {"time":times[right_col_num],
-                        "num":right_col_num,
-                        "task":""},
-                on_accept = lambda e: Handlers.drag_accepted(
+                data={"time": times[right_col_num], "num": right_col_num, "task": ""},
+                on_accept=lambda e: Handlers.drag_accepted(
                     e=e,
                     page=page,
                     draggable_data_for_move=draggable_data_for_move,
                     columns=columns,
-                    comments = comments,
-                    times = times,
+                    comments=comments,
+                    times=times,
                     drag_data=drag_data,
                     comment=comment,
                     count_dict=count_dict,
@@ -530,22 +533,24 @@ class Handlers:
                     comment_dict=comment_dict,
                     draggable_data=draggable_data,
                     update_location_data=update_location_data,
-                    ),
-                on_leave = lambda e:DragLeave.drag_leave(e,page),
-                on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns,drag_data),
+                ),
+                on_leave=lambda e: DragLeave.drag_leave(e, page),
+                on_will_accept=lambda e: Add_will_accept.drag_will_accept(
+                    e, page, columns, drag_data
+                ),
             )
             del drag_data[model.times()[right_col_num]]
             if model.times()[right_col_num] in count_dict:
                 del count_dict[model.times()[right_col_num]]
             if model.times()[right_col_num] in comment_dict:
                 del comment_dict[model.times()[right_col_num]]
-                
+
             right_col_num += 1
             right_key = columns[right_col_num].content.data["task"]
         else:
             pass
         page.update()
-    
+
         # deletebuttons自体のデータが渡されている
         # contentのcoontent（見た目だけを更新する）
 
@@ -559,11 +564,11 @@ class Handlers:
             del comment_dict[model.times()[col_num]]
 
         # カラムのgroupを元に戻す
-        
+
         # カラムのデータを初期化
-        
+
         # on_will_acceptを元に戻す
-        #ドラッグできるけど、表示が元に戻っていない
+        # ドラッグできるけど、表示が元に戻っていない
         """
         columns[col_num].content.on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns=columns,drag_data=drag_data)
         columns[col_num].on_will_accept = lambda e: Add_will_accept.drag_will_accept(e, page,columns=columns,drag_data=drag_data)
@@ -625,6 +630,7 @@ class Handlers:
         page.update()
 
         """
+
     # カウンターの関数
     @staticmethod
     def counterPlus(e, count_field, count_dict, time):
@@ -732,7 +738,7 @@ class Handlers:
         page.update()
 
     @staticmethod
-    def open_Drawer(e,customDrawerTile, customDrawer, page):
+    def open_Drawer(e, customDrawerTile, customDrawer, page):
         customDrawerTile.visible = not customDrawerTile.visible
         customDrawer.visible = not customDrawer.visible
         page.update()
@@ -759,7 +765,7 @@ class Handlers:
         update_location_data,
     ):
         model = DataModel()
-        
+
         # print(e.target)
         src_id_str = e.src_id.replace("_", "")
         try:
@@ -790,7 +796,7 @@ class Handlers:
                     key = src.data["task"]
             except:
                 key = src.data["task"]
-        
+
         e.control.content = ft.Column(
             controls=[
                 ft.IconButton(
@@ -799,8 +805,8 @@ class Handlers:
                     icon_size=20,
                     icon_color="red",
                     on_click=lambda e: Handlers.delete_content(
-                        e = e,
-                        page = page,
+                        e=e,
+                        page=page,
                         phNameList=phNameList,
                         phName=phName,
                         drag_data=drag_data,
@@ -814,17 +820,19 @@ class Handlers:
                         draggable_data=draggable_data,
                         update_location_data=update_location_data,
                     ),
-                    data={"num": e.control.data["num"]}
+                    data={"num": e.control.data["num"]},
                 ),
                 ft.Draggable(
                     group="timeline_accepted",
                     content=ft.Container(
-                        content=ft.Text(key, color="white", text_align=ft.TextAlign.CENTER),
+                        content=ft.Text(
+                            key, color="white", text_align=ft.TextAlign.CENTER
+                        ),
                         width=50,
                         height=130,
                         bgcolor=Handlers.change_color(key),
-                        border_radius=ft.border_radius.only(top_left = 5,bottom_left = 5),
-                        shape = BoxShape.RECTANGLE,
+                        border_radius=ft.border_radius.only(top_left=5, bottom_left=5),
+                        shape=BoxShape.RECTANGLE,
                     ),
                     data={
                         "time": e.control.data["time"],
@@ -833,16 +841,29 @@ class Handlers:
                     },
                 ),
                 ft.PopupMenuButton(
-                    items = [
-                        MakePopup.add_popup(time = e.control.data["time"],update_location_data=update_location_data), 
-                        ],
-                    icon = ft.icons.MORE_VERT,
-                    icon_size = 20,
-                    on_open = lambda e:MakePopup.pop_up_reload(e=e,customDrawerAm=customDrawerAm,customDrawerPm=customDrawerPm,page=page),
-                    data = {
-                        "time": e.control.data["time"]
-                    }
-                )
+                    items=[
+                        MakePopup.add_popup(
+                            time=e.control.data["time"],
+                            update_location_data=update_location_data,
+                            num = e.control.data["num"],
+                            columns=columns,
+                            page = page,
+                        ),
+                    ],
+                    tooltip="編集",
+                    icon=ft.icons.MORE_VERT,
+                    icon_size=20,
+                    on_open=lambda e: MakePopup.pop_up_reload(
+                        e=e,
+                        customDrawerAm=customDrawerAm,
+                        customDrawerPm=customDrawerPm,
+                        page=page,
+                    ),
+                    data={
+                        "time": e.control.data["time"],
+                    },
+                ),
+                ft.Container(),
             ],
             height=350,
             spacing=0,
@@ -853,12 +874,12 @@ class Handlers:
             },
             # カラムがクリックされた時
         )
-        #受け取ったらon_accept自体は働かないようにする
-        #deletecontentのときには元に戻す
-        #e.control.on_accept = None
+        # 受け取ったらon_accept自体は働かないようにする
+        # deletecontentのときには元に戻す
+        # e.control.on_accept = None
         e.control.on_will_accept = None
         e.control.on_accept = None
-        
+
         """
         for i in range(len(columns)):
             if columns[i].content.data["task"] == 'will_accept':
@@ -884,7 +905,7 @@ class Handlers:
         #columns全てで実施する
         #columns data≒"will_accept"があったcolumnsのみcontentsを更新する
         """
-        
+
         # ドラッグ時にコンテンツを更新する用
         columns[e.control.data["num"]].content.data["task"] = key
         """
@@ -908,9 +929,9 @@ class Handlers:
         except:
             pass
         """
-        
-        #Dataが渡されたcolumnsにのみcontentsを更新する
-        
+
+        # Dataが渡されたcolumnsにのみcontentsを更新する
+
         match key:
             # key==その他の場合にはコメントボタンを追加する
             case "その他":
@@ -928,25 +949,24 @@ class Handlers:
                 | "業務調整"
             ):
                 pass
-            
+
             case _:
                 e.control.content.controls.append(
-                    Handlers.create_counter(e.control.data["time"],count_dict)
+                    Handlers.create_counter(e.control.data["time"], count_dict)
                 )
-            
-            
+
             # その他の場合にはカウンターを表示する
             # 左カラムに同じデータはある場合にはカウンターは作成しない
-            #case _:
+            # case _:
             #   if left_key == key:
             #       pass
             #   else:
             #      e.control.content.controls.append(
             #          Handlers.create_counter(e.control.data["time"], count_dict)
             #      )
-        
+
         # move関数を追加しない
-        #再クリックしたときのみmove関数を追加する
+        # 再クリックしたときのみmove関数を追加する
 
         # ドラッグデータの保存
         drag_data[e.control.data["time"]] = {"task": key}
@@ -958,8 +978,9 @@ class Handlers:
         # 受け取ったらdragtargetのgroupを変更して再ドラッグ不可にする
         e.control.group = "timeline_accepted"
         page.update()
-        
+
     from handlers.timeline.hide_message import HideMessageHandler
+
     @staticmethod
     def write_csv_file(
         e,
@@ -985,7 +1006,7 @@ class Handlers:
         update_location_data,
     ):
         date = f"{select_day.data.year}-{select_day.data.month}-{select_day.data.day}"
-        #名前が入力されていない場合にはエラーを表示する
+        # 名前が入力されていない場合にはエラーを表示する
         if phName.value == None:
             save_error_message.content = ft.Text("名前を入力してください", color="red")
             page.update()
@@ -1019,12 +1040,11 @@ class Handlers:
             # 辞書データの更新
             # taskデータの書き込み
             # willacceptのみの記載の場合、前後のtaskを埋める挙動
-            
+
             for time, task_data in drag_data.items():
                 if time in data_dict:
                     data_dict[time]["task"] = task_data["task"]
-                    
-            
+
             # countデータの書き込み
             for time, count in count_dict.items():
                 if time in data_dict:
@@ -1035,7 +1055,9 @@ class Handlers:
             list_am_location_data = []
             for i in range(len(custumDrawerAm.content.controls)):
                 if custumDrawerAm.content.controls[i].value == True:
-                    list_am_location_data.append(custumDrawerAm.content.controls[i].label)
+                    list_am_location_data.append(
+                        custumDrawerAm.content.controls[i].label
+                    )
                 else:
                     None
 
@@ -1053,11 +1075,13 @@ class Handlers:
             list_pm_location_data = []
             for i in range(len(custumDrawerPm.content.controls)):
                 if custumDrawerPm.content.controls[i].value == True:
-                    list_pm_location_data.append(custumDrawerPm.content.controls[i].label)
+                    list_pm_location_data.append(
+                        custumDrawerPm.content.controls[i].label
+                    )
                 else:
                     None
 
-            #taskがある時のみ病棟データを書き込む
+            # taskがある時のみ病棟データを書き込む
             for time in data_dict.keys():
                 if list_pm_location_data is not None:
                     if data_dict[time]["locate"] == "PM":
@@ -1068,9 +1092,9 @@ class Handlers:
                 else:
                     None
 
-            #ラジオボタンでの病棟選択データを反映,上書き
-            #単選択と複数選択のデフォルト保存ではし集計時に影響があるかも
-            #単選択時もリスト形式に変換して保存する
+            # ラジオボタンでの病棟選択データを反映,上書き
+            # 単選択と複数選択のデフォルト保存ではし集計時に影響があるかも
+            # 単選択時もリスト形式に変換して保存する
             update_loc_list = []
             for time in data_dict.keys():
                 if time in update_location_data:
@@ -1078,68 +1102,75 @@ class Handlers:
                     data_dict[time]["locate"] = update_loc_list
                 else:
                     pass
-                
-            
+
             # phName データの書き込み
             for time in data_dict.keys():
                 try:
                     data_dict[time]["phName"] = phName.value
                 except:
                     data_dict[time]["phName"] = ""
-                    
+
             # その他コメントの書き込み
             for time, comment_data in comment_dict.items():
                 if time in data_dict:
                     data_dict[time]["comment"] = comment_data["comment"]
-                    
-                            
-            #前のデータに追加していく形式へ
-            #追加前のデータ
-            
-            #pre_dataにdata_dictを追加
-            #形式：日付と名前にて一意に
-            #{date_phName}:data_dict} 
+
+            # 前のデータに追加していく形式へ
+            # 追加前のデータ
+
+            # pre_dataにdata_dictを追加
+            # 形式：日付と名前にて一意に
+            # {date_phName}:data_dict}
             try:
                 data_key = f"{date}_{phName.value}"
             except:
                 data_key = f"{date}_NoName"
-            
+
             try:
                 old_data = page.client_storage.get("timeline_data")
                 save_data = json.loads(old_data)
                 save_data[data_key] = data_dict
             except:
-                save_data = {}  
+                save_data = {}
                 save_data[data_key] = data_dict
-                
-            #変更後のデータを保管する
-            #コメントのデータが入っている？
-            #save_client_storageの時はwill_acceptを変換する前の状態にて保存すれば読み込み時に再度変換する必要なく楽かも
-            #setなのでストレージがなくてもエラーにならない
+
+            # 変更後のデータを保管する
+            # コメントのデータが入っている？
+            # save_client_storageの時はwill_acceptを変換する前の状態にて保存すれば読み込み時に再度変換する必要なく楽かも
+            # setなのでストレージがなくてもエラーにならない
             page.client_storage.set(
                 "timeline_data", json.dumps(save_data, ensure_ascii=False)
-                )
-                        
-            
+            )
 
-            #辞書データをdfに変換
-            df  = pd.DataFrame.from_dict(data_dict,orient='index')
-            #will_accept時のlocationデータはデフォルト入力データで入っているため、ラジオボタンでの選択内容に書き換える
+            # 辞書データをdfに変換
+            df = pd.DataFrame.from_dict(data_dict, orient="index")
+            # will_accept時のlocationデータはデフォルト入力データで入っているため、ラジオボタンでの選択内容に書き換える
             # df['task'] == "will_accept"の時、df['locate'] == "uncomplete"に変更する
-            df.loc[df['task'] == "will_accept", 'locate'] = "uncomplete"
+            df.loc[df["task"] == "will_accept", "locate"] = "uncomplete"
             # uncompleteは前のlocateにて補完する
-            df['locate'] = df["locate"].replace('uncomplete', method='ffill')
+            df["locate"] = df["locate"].replace("uncomplete", method="ffill")
             # will_acceptは前のタスクにて補完する
-            df['task'] = df['task'].replace('will_accept', method='ffill')
+            df["task"] = df["task"].replace("will_accept", method="ffill")
             # 選択したラジオボタンでのデータに書き込み直し
-            
+
             # csvファイルの書き込み
-            if select_directory.result and select_directory.result.path and phName.value and list_am_location_data and list_pm_location_data:
+            if (
+                select_directory.result
+                and select_directory.result.path
+                and phName.value
+                and list_am_location_data
+                and list_pm_location_data
+            ):
                 try:
-                    file_path = select_directory.result.path + f"/{date}" + f"{phName.value}" + ".csv"
+                    file_path = (
+                        select_directory.result.path
+                        + f"/{date}"
+                        + f"{phName.value}"
+                        + ".csv"
+                    )
                 except:
                     file_path = select_directory.result.path + f"/{date}.csv"
-                
+
                 # ファイル保存名に名前を使用しているので、名前が入力されていない場合にはエラーを表示する
                 # 病棟データが何も入力されていないときも処理を中断する
                 # 両者ともエラーメッセージをtrueに設定しなおす
@@ -1150,15 +1181,17 @@ class Handlers:
                 page.update()
                 # 時間経過後に消す 「csvファイルを保存しました」
                 HideMessageHandler.hide_message(save_message, page)
-                
-            elif not list_am_location_data or not list_pm_location_data : #薬剤師名がないとき、病棟データが入力されていないとき
-                #csvファイルは書き出さずにエラーメッセージのみ表示に再設定する
-                require_location.visible  = True
+
+            elif (
+                not list_am_location_data or not list_pm_location_data
+            ):  # 薬剤師名がないとき、病棟データが入力されていないとき
+                # csvファイルは書き出さずにエラーメッセージのみ表示に再設定する
+                require_location.visible = True
                 page.update()
-            else: #薬剤師名が入力されていない時
+            else:  # 薬剤師名が入力されていない時
                 require_name.visible = True
                 page.update()
-                
+
                 """
                 with open(file_path, "w", newline="") as f:
                     writer = csv.writer(f)
