@@ -1065,7 +1065,6 @@ class Handlers:
                     if data_dict[time]["locate"] == "AM":
                         if data_dict[time]["task"] != "":
                             data_dict[time]["locate"] = list_am_location_data
-                            print(data_dict[time])
                         else:
                             pass
                 else:
