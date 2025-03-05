@@ -15,7 +15,6 @@ from handlers.timeline.handdrag_will_accept import Add_will_accept
 from handlers.timeline.drag_leave import DragLeave
 from handlers.timeline.reload_data import ReloadDataHandler
 from handlers.handlersMain import Handlers_Main
-from handlers.pageScroll import Scroll
 from handlers.setting.task_set import Set_Default_task
 from models.models import DataModel
 # timelinepageのviewを定義

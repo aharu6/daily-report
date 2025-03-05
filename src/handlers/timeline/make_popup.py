@@ -29,22 +29,24 @@ class MakePopup:
     
     
     @staticmethod
-    def add_popup(time,update_location_data):
+    def add_popup(time, update_location_data, num, columns,page):
         
-        #午前と午後の判別
+        # 午前と午後の判別
         pop_up = ft.PopupMenuItem(
             content = ft.RadioGroup(
                 ft.Column(
                     controls=[]
                 ),
-                data = {"time":time},
-                on_change = lambda e:MakePopup.radio_click(e,time,update_location_data)
+                data={"time": time},
+                on_change=lambda e: MakePopup.radio_click(
+                    e=e, time=time, update_location_data=update_location_data, num=num, columns=columns,page=page
+                    )
                 
             )
         )
         
-        #何かは追加しておかないとreload機能が機能しない
-        #popupmenuitem のみ追加しておく
+        # 何かは追加しておかないとreload機能が機能しない
+        # popupmenuitem のみ追加しておく
         return pop_up
     
     #再描画用の読み込みハンドラ
@@ -91,9 +93,9 @@ class MakePopup:
         page.update()
             
     @staticmethod
-    def radio_click(e, time,update_location_data):
-        #クリックされた時は辞書データの更新を行う
-        #時間データの取得
+    def radio_click(e, time, update_location_data, num, columns,page):
+        # クリックされた時は辞書データの更新を行う
+        # 時間データの取得
         time = e.control.data["time"]
         #選択された病棟データの取得
         selected_location = e.control.value
@@ -102,5 +104,10 @@ class MakePopup:
         
         #時間データに紐付ける
         update_loc_data[time] = selected_location
-        print(update_loc_data)
-        #午前と午後でそれぞれ別のデータ入力
+        
+        #選択された病棟名の表示
+        #numにてカラム番号の取得
+        #accdptedでのcontrolの一番最後にft.Textを追加する
+        #変更したら更新。場所を決めておく ３番目
+        columns[num].content.content.controls[3].content = ft.Text(selected_location)
+        page.update()
