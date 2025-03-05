@@ -845,9 +845,9 @@ class Handlers:
                         MakePopup.add_popup(
                             time=e.control.data["time"],
                             update_location_data=update_location_data,
-                            num = e.control.data["num"],
+                            num=e.control.data["num"],
                             columns=columns,
-                            page = page,
+                            page=page,
                         ),
                     ],
                     tooltip="編集",
@@ -1060,12 +1060,12 @@ class Handlers:
                     )
                 else:
                     None
-
             for time in data_dict.keys():
                 if list_am_location_data is not None:
                     if data_dict[time]["locate"] == "AM":
                         if data_dict[time]["task"] != "":
                             data_dict[time]["locate"] = list_am_location_data
+                            print(data_dict[time])
                         else:
                             pass
                 else:
@@ -1092,11 +1092,13 @@ class Handlers:
                 else:
                     None
 
+                pass
+
             # ラジオボタンでの病棟選択データを反映,上書き
-            # 単選択と複数選択のデフォルト保存ではし集計時に影響があるかも
             # 単選択時もリスト形式に変換して保存する
-            update_loc_list = []
+            #選択した時のみ上書きするように
             for time in data_dict.keys():
+                update_loc_list = []
                 if time in update_location_data:
                     update_loc_list.append(update_location_data[time])
                     data_dict[time]["locate"] = update_loc_list
@@ -1105,11 +1107,12 @@ class Handlers:
 
             # phName データの書き込み
             for time in data_dict.keys():
-                try:
+                if phName.value is not None:
                     data_dict[time]["phName"] = phName.value
-                except:
+                else:
                     data_dict[time]["phName"] = ""
-
+                    
+                    
             # その他コメントの書き込み
             for time, comment_data in comment_dict.items():
                 if time in data_dict:

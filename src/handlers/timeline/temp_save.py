@@ -1,6 +1,8 @@
 #端末に保存するだけのボタンを作成する
 #保存したらメッセージを表示する
 import json
+from handlers.timeline.hide_message import HideMessageHandler
+
 class Temp_Save:
     @staticmethod
     def on_save(
@@ -136,7 +138,9 @@ class Temp_Save:
                 data_dict[time]["comment"] = comment_data["comment"]
         
         #保存できたら完了メッセージを表示
+        #メッセージは一定時間経過後に削除
         message.content.controls[0].visible = True
         message.content.controls[1].visible = True  
         page.update()
+        HideMessageHandler.hide_message(message,page)
         
