@@ -219,7 +219,10 @@ class ReloadDataHandler:
                             ),
                             ft.PopupMenuButton(
                                 items = [
-                                    MakePopup.add_popup(time = load_data[key]["time"],update_location_data=update_location_data), 
+                                    MakePopup.add_popup(
+                                        time = load_data[key]["time"],update_location_data=update_location_data,
+                                        num = i,columns = columns,page = page,
+                                        ), 
                                     ],
                                 icon = ft.icons.MORE_VERT,
                                 icon_size = 20,
@@ -298,10 +301,15 @@ class ReloadDataHandler:
         
         #病棟名の再表示
         #56のうち、columns[0] == am,columns[56] == pmのデータを取り出す
-        key_for_first = list(load_data.keys())[0]
-        key_for_last = list(load_data.keys())[-1]
-        am_data = load_data[key_for_first]["locate"]
-        pm_data = load_data[key_for_last]["locate"]
+        #全体選択の病棟データと単選択の病棟データがある
+        #別々で保存しておいて取り出す必要？
+        #業務内容が入っていないとlocateデータ入っていないので何も出てこない
+        #writeにてlocateデータば辞書データと別に保管しておく
+        
+        load_location_data = json.loads(page.client_storage.get("location_data"))
+        am_data = load_location_data[str(update_date)]["locate_AM"]
+        pm_data = load_location_data[str(update_date)]["locate_PM"]
+        
         for j in range(len(am_data)):            
             for i in range(len(custumDrawerAm.content.controls)):
                 if custumDrawerAm.content.controls[i].label == am_data[j]:
