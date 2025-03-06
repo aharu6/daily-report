@@ -225,12 +225,14 @@ class ReloadDataHandler:
                                         ), 
                                     ],
                                 icon = ft.icons.MORE_VERT,
+                                tooltip = "編集",
                                 icon_size = 20,
                                 on_open = lambda e:MakePopup.pop_up_reload(e=e,customDrawerAm=custumDrawerAm,customDrawerPm=custumDrawerPm,page=page),
                                 data = {
                                     "time": load_data[key]["time"]
                                 }
-                            )
+                            ),
+                            ft.Container(),
                         ],
                         height = 350,
                         spacing = 0,
