@@ -119,6 +119,8 @@ class AmDropDown:
                 ft.Checkbox(label="5B",col = {"sm": 6, "md": 4, "xl": 2},data = "5B",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
                 ft.Checkbox(label="5C",col = {"sm": 6, "md": 4, "xl": 2},data = "5C",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
                 ft.Checkbox(label="5D",col = {"sm": 6, "md": 4, "xl": 2},data = "5D",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
+                ft.Checkbox(label="5D",col = {"sm": 6, "md": 4, "xl": 2},data = "5D",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
+                ft.Checkbox(label="DI",col = {"sm": 6, "md": 4, "xl": 2},data = "5D",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
             ]
         )
 
@@ -140,6 +142,8 @@ class PmDropDown:
                 ft.Checkbox(label="5B",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
                 ft.Checkbox(label="5C",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
                 ft.Checkbox(label="5D",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
+                ft.Checkbox(label="5D",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
+                ft.Checkbox(label="DI",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
             ]
         )
 

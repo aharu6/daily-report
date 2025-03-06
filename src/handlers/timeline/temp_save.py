@@ -2,7 +2,7 @@
 #保存したらメッセージを表示する
 import json
 from handlers.timeline.hide_message import HideMessageHandler
-
+from datetime import datetime
 class Temp_Save:
     @staticmethod
     def on_save(
@@ -21,6 +21,9 @@ class Temp_Save:
         message,
         update_location_data,
     ):
+        if isinstance(select_day.data, str):
+            select_day.data = datetime.strptime(select_day.data, "%Y-%m-%d")
+            
         date = f"{select_day.data.year}-{select_day.data.month}-{select_day.data.day}"
         # 初期ベースの作成
             # 時間
@@ -131,6 +134,27 @@ class Temp_Save:
         page.client_storage.set(
             "timeline_data", json.dumps(save_data, ensure_ascii=False)
             )
+        
+        #locateデータ（全体選択）は別に保管しておく
+            #初期ベースの作成
+        dict_location_data = {
+            str(date): {
+                "locate_AM": [],
+                "locate_PM": [],
+            }
+        }
+        dict_location_data[str(date)]["locate_AM"] = [
+            control.label for control in custumDrawerAm.content.controls if control.value
+        ]
+        dict_location_data[str(date)]["locate_PM"] = [
+            control.label for control in custumDrawerPm.content.controls if control.value
+        ]
+        
+        page.client_storage.set(
+            "location_data",
+            json.dumps(dict_location_data, ensure_ascii=False)
+        )
+
                     
         # その他コメントの書き込み
         for time, comment_data in comment_dict.items():
