@@ -6,7 +6,7 @@ import pandas as pd
 from models.models import DataModel
 from handlers.timeline.handdrag_will_accept import Add_will_accept
 from handlers.timeline.make_popup import MakePopup
-
+from datetime import datetime
 
 class Handlers:
     @staticmethod
@@ -169,6 +169,27 @@ class Handlers:
                 return "#72BAA9"
             case "NST":
                 return "#507687"
+            case "問い合わせ応需":
+                return "#DDA853"
+            case "マスター作成・変更":
+                return "#DDA853"
+            case "薬剤情報評価":
+                return "#DDA853"
+            case "後発品選定":
+                return "#DDA853"
+            case "会議資料作成":
+                return "#DDA853"
+            case "配信資料作成":
+                return "#DDA853"
+            case "フォーミュラリー作成":
+                return "#DDA853"
+            case "外来処方箋修正":
+                return "#DDA853"
+            case "勉強会資料作成・開催":
+                return "#DDA853"
+            case "お役立ち情報作成":
+                return "#DDA853"
+            
 
     @staticmethod
     def change_choice_button(e, selectColumns, page):
@@ -209,6 +230,16 @@ class Handlers:
                 selectColumns[28].visible = False  # その他
                 selectColumns[29].visible = False  # 管理業務
                 selectColumns[30].visible = False  # NST
+                selectColumns[31].visible = False  # 問い合わせ応需
+                selectColumns[32].visible = False  # マスター作成・変更
+                selectColumns[33].visible = False  # 薬剤情報評価
+                selectColumns[34].visible = False  # 後発品選定
+                selectColumns[35].visible = False  # 会議資料作成
+                selectColumns[36].visible = False  # 配信資料作成                
+                selectColumns[37].visible = False  # フォーミュラリー作成
+                selectColumns[38].visible = False  # 外来処方箋修正
+                selectColumns[39].visible = False  # 勉強会資料作成・開催
+                selectColumns[40].visible = False  # お役立ち情報作成
 
                 page.update()
             case 1:  # 12階
@@ -246,6 +277,16 @@ class Handlers:
                 selectColumns[28].visible = False  # その他
                 selectColumns[29].visible = False  # 管理業務
                 selectColumns[30].visible = False  # NST
+                selectColumns[31].visible = False  # 問い合わせ応需
+                selectColumns[32].visible = False  # マスター作成・変更
+                selectColumns[33].visible = False  # 薬剤情報評価
+                selectColumns[34].visible = False  # 後発品選定
+                selectColumns[35].visible = False  # 会議資料作成
+                selectColumns[36].visible = False  # 配信資料作成                
+                selectColumns[37].visible = False  # フォーミュラリー作成
+                selectColumns[38].visible = False  # 外来処方箋修正
+                selectColumns[39].visible = False  # 勉強会資料作成・開催
+                selectColumns[40].visible = False  # お役立ち情報作成
 
                 page.update()
 
@@ -283,6 +324,16 @@ class Handlers:
                 selectColumns[28].visible = False  # その他
 
                 selectColumns[30].visible = False  # NST
+                selectColumns[31].visible = False  # 問い合わせ応需
+                selectColumns[32].visible = False  # マスター作成・変更
+                selectColumns[33].visible = False  # 薬剤情報評価
+                selectColumns[34].visible = False  # 後発品選定
+                selectColumns[35].visible = False  # 会議資料作成
+                selectColumns[36].visible = False  # 配信資料作成                
+                selectColumns[37].visible = False  # フォーミュラリー作成
+                selectColumns[38].visible = False  # 外来処方箋修正
+                selectColumns[39].visible = False  # 勉強会資料作成・開催
+                selectColumns[40].visible = False  # お役立ち情報作成
 
                 page.update()
 
@@ -324,6 +375,16 @@ class Handlers:
 
                 selectColumns[29].visible = False  # 管理業務
                 selectColumns[30].visible = False  # NST
+                selectColumns[31].visible = False  # 問い合わせ応需
+                selectColumns[32].visible = False  # マスター作成・変更
+                selectColumns[33].visible = False  # 薬剤情報評価
+                selectColumns[34].visible = False  # 後発品選定
+                selectColumns[35].visible = False  # 会議資料作成
+                selectColumns[36].visible = False  # 配信資料作成                
+                selectColumns[37].visible = False  # フォーミュラリー作成
+                selectColumns[38].visible = False  # 外来処方箋修正
+                selectColumns[39].visible = False  # 勉強会資料作成・開催
+                selectColumns[40].visible = False  # お役立ち情報作成
 
                 page.update()
             case 4:  # ICT/AST
@@ -361,6 +422,17 @@ class Handlers:
                 selectColumns[28].visible = False  # その他
                 selectColumns[29].visible = False  # 管理業務
                 selectColumns[30].visible = False  # NST
+                selectColumns[31].visible = False  # 問い合わせ応需
+                selectColumns[32].visible = False  # マスター作成・変更
+                selectColumns[33].visible = False  # 薬剤情報評価
+                selectColumns[34].visible = False  # 後発品選定
+                selectColumns[35].visible = False  # 会議資料作成
+                selectColumns[36].visible = False  # 配信資料作成                
+                selectColumns[37].visible = False  # フォーミュラリー作成
+                selectColumns[38].visible = False  # 外来処方箋修正
+                selectColumns[39].visible = False  # 勉強会資料作成・開催
+                selectColumns[40].visible = False  # お役立ち情報作成
+
                 page.update()
 
             case 5:  # NST
@@ -399,8 +471,69 @@ class Handlers:
                 selectColumns[27].visible = False  # 休憩
                 selectColumns[28].visible = False  # その他
                 selectColumns[29].visible = False  # 管理業務
+                selectColumns[31].visible = False  # 問い合わせ応需
+                selectColumns[32].visible = False  # マスター作成・変更
+                selectColumns[33].visible = False  # 薬剤情報評価
+                selectColumns[34].visible = False  # 後発品選定
+                selectColumns[35].visible = False  # 会議資料作成
+                selectColumns[36].visible = False  # 配信資料作成                
+                selectColumns[37].visible = False  # フォーミュラリー作成
+                selectColumns[38].visible = False  # 外来処方箋修正
+                selectColumns[39].visible = False  # 勉強会資料作成・開催
+                selectColumns[40].visible = False  # お役立ち情報作成
 
                 page.update()
+            
+            case 6:  # DI
+                #非表示
+                selectColumns[0].visible = False  # 情報収集　指導
+                selectColumns[1].visible = False  # 指導記録作成
+                selectColumns[2].visible = False  # 混注時間
+                selectColumns[3].visible = False  # 薬剤セット・確認
+                #表示
+                selectColumns[4].visible = True  # 持参薬を確認
+                #非表示
+                selectColumns[5].visible = False  # 薬剤服用歴等について保険k薬局へ照会
+                selectColumns[6].visible = False  # 処方代理修正
+                selectColumns[7].visible = False  # TDM実施
+                selectColumns[8].visible = False  # カンファレンス
+                selectColumns[9].visible = False  # 医師からの相談
+                selectColumns[10].visible = False  # 看護師からの相談
+                selectColumns[11].visible = False  # その他の職種からの相談
+                selectColumns[12].visible = False  # 委員会
+                selectColumns[13].visible = False  # 勉強会参加
+                selectColumns[14].visible = False  #　WG活動
+                selectColumns[15].visible = False # 1on1
+                selectColumns[16].visible = False # ICT/AST
+                selectColumns[17].visible = False # 褥瘡
+                selectColumns[18].visible = False # TPN評価
+                selectColumns[19].visible = False # TPN評価
+                selectColumns[20].visible = False # 手術使用薬剤確認
+                selectColumns[21].visible = False # 手術使用薬剤準備
+                selectColumns[22].visible = False # 周術期薬剤管理関連
+                selectColumns[23].visible = False # 手術使用麻薬確認・補充
+                selectColumns[24].visible = False # 術後疼痛管理チーム回診
+                selectColumns[25].visible = False # 脳卒中ホットライン対応
+                selectColumns[26].visible = False # 業務調整
+                selectColumns[27].visible = False # 休憩
+                selectColumns[28].visible = False # その他
+                selectColumns[29].visible = False # 管理業務
+                selectColumns[30].visible = False # NST
+                
+                #表示
+                selectColumns[31].visible = True # 問い合わせ応需
+                selectColumns[32].visible = True # マスター作成・変更
+                selectColumns[33].visible = True # 薬剤情報評価
+                selectColumns[34].visible = True # 後発品選定
+                selectColumns[35].visible = True # 会議資料作成
+                selectColumns[36].visible = True # 配信資料作成
+                selectColumns[37].visible = True # フォーミュラリー作成
+                selectColumns[38].visible = True # 外来処方箋修正
+                selectColumns[39].visible = True # 勉強会資料作成・開催
+                selectColumns[40].visible = True # お役立ち情報作成
+                
+                page.update()
+                
 
     @staticmethod
     def toggle_delete_button(e, page, columns):
@@ -980,7 +1113,6 @@ class Handlers:
         page.update()
 
     from handlers.timeline.hide_message import HideMessageHandler
-
     @staticmethod
     def write_csv_file(
         e,
@@ -1005,9 +1137,12 @@ class Handlers:
         save_message,
         update_location_data,
     ):
+        if isinstance(select_day.data, str):
+            select_day.data = datetime.strptime(select_day.data, "%Y-%m-%d")
+
         date = f"{select_day.data.year}-{select_day.data.month}-{select_day.data.day}"
         # 名前が入力されていない場合にはエラーを表示する
-        if phName.value == None:
+        if phName.value is None:
             save_error_message.content = ft.Text("名前を入力してください", color="red")
             page.update()
         else:

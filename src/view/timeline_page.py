@@ -306,6 +306,16 @@ class TimelinePage:
 
         self.selectColumns[29].visible = False  # 管理業務
         self.selectColumns[30].visible = False  # NST
+        self.selectColumns[31].visible = False  # 問い合わせ応需
+        self.selectColumns[32].visible = False  # マスター作成・変更
+        self.selectColumns[33].visible = False  # 薬剤情報評価
+        self.selectColumns[34].visible = False  # 後発品選定
+        self.selectColumns[35].visible = False  # 会議資料作成
+        self.selectColumns[36].visible = False  # 配信資料作成
+        self.selectColumns[37].visible = False  # フォーミュラリー作成  
+        self.selectColumns[38].visible = False  # 外来処方箋修正
+        self.selectColumns[39].visible = False  # 勉強会資料作成・開催
+        self.selectColumns[40].visible = False  #  お役立ち情報作成
 
         self.time_for_visual_label = []
 
@@ -585,6 +595,7 @@ class TimelinePage:
                     ft.Text("その他"),
                     ft.Text("ICT/AST"),
                     ft.Text("NST"),
+                    ft.Text("DI担当者"),
                 ],
             ),
             alignment = ft.alignment.center,
