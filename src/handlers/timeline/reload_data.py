@@ -280,7 +280,7 @@ class ReloadDataHandler:
                         #カウンターデータの再表示
                         #１以上の場合には表示する
                         if load_data[key]["count"] >0:
-                            columns[i].content.content.controls[2].controls[1].value = load_data[key]["count"]
+                            columns[i].content.content.controls[4].controls[1].value = load_data[key]["count"]
                 #コメント記載がある場合には内容更新もできる？
                 
             #辞書データの更新
