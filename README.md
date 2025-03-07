@@ -52,7 +52,6 @@ Python 3.11.11
 
 -   {時間 == time,業務種類 == task,件数 == count,病棟 == locate,薬剤師名 == PhName,その他コメント==comment}
 
-## 免責事項
 
 ## FAQ
 
