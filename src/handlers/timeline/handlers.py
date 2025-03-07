@@ -602,7 +602,7 @@ class Handlers:
             group="delete_toggle",
             content=ft.Container(
                 width=50,
-                height=350,
+                height=370,
                 bgcolor="#CBDCEB",
                 border_radius=5,
             ),
@@ -998,7 +998,7 @@ class Handlers:
                 ),
                 ft.Container(),
             ],
-            height=350,
+            height=370,
             spacing=0,
             data={
                 "time": e.control.data["time"],
