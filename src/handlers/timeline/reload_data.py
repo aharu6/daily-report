@@ -129,7 +129,7 @@ class ReloadDataHandler:
                     },
                 ),
             ],
-            height=350,
+            height=370,
             spacing=0,
             data={
                 "time": e.control.data["time"],
@@ -234,7 +234,7 @@ class ReloadDataHandler:
                             ),
                             ft.Container(),
                         ],
-                        height = 350,
+                        height = 370,
                         spacing = 0,
                         data = {
                             "time": load_data[key]["time"],
