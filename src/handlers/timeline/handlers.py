@@ -587,6 +587,8 @@ class Handlers:
         comment,
         draggable_data,
         update_location_data,
+        customDrawerAm,
+        customDrawerPm,
     ):
         from handlers.timeline.drag_leave import DragLeave
 
@@ -623,6 +625,8 @@ class Handlers:
                 comment_dict=comment_dict,
                 draggable_data=draggable_data,
                 update_location_data=update_location_data,
+                customDrawerAm=customDrawerAm,
+                customDrawerPm=customDrawerPm,
             ),
             on_leave=lambda e: DragLeave.drag_leave(e, page),
             data={"time": times[col_num], "num": col_num, "task": ""},
@@ -632,7 +636,7 @@ class Handlers:
         try:
             right_key = columns[right_col_num].content.data["task"]
         except:
-            pass
+            right_key = None
 
         page.add(columns[col_num].content.content)
 
@@ -645,7 +649,7 @@ class Handlers:
                 group="delete_toggle",
                 content=ft.Container(
                     width=50,
-                    height=300,
+                    height=370,
                     bgcolor="#CBDCEB",
                     border_radius=5,
                 ),
@@ -665,6 +669,8 @@ class Handlers:
                     comment_dict=comment_dict,
                     draggable_data=draggable_data,
                     update_location_data=update_location_data,
+                    customDrawerAm=customDrawerAm,
+                    customDrawerPm=customDrawerPm,
                 ),
                 on_leave=lambda e: DragLeave.drag_leave(e, page),
                 on_will_accept=lambda e: Add_will_accept.drag_will_accept(
@@ -951,6 +957,8 @@ class Handlers:
                         comment=comment,
                         draggable_data=draggable_data,
                         update_location_data=update_location_data,
+                        customDrawerAm=customDrawerAm,
+                        customDrawerPm=customDrawerPm,
                     ),
                     data={"num": e.control.data["num"]},
                 ),

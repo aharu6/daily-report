@@ -104,6 +104,10 @@ class ReloadDataHandler:
         require_location,
         update_location_data,
         ):
+        
+        #全てのカラムは一度クリアする
+        #業務調整デフォルト入力オンオフも反映する
+        
         #columns = self.columns
         #選択したkeyに該当するデータを取り出す
         selected_key = e.control.data
