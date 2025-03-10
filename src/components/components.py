@@ -3,6 +3,7 @@ import datetime
 from models.models import DataModel
 from handlers.timeline.handlers import Handlers
 
+
 class DateComponent:
     def __init__(self, page, today, handle_change):
         self.page = page
@@ -17,11 +18,8 @@ class DateComponent:
                     on_change=self.handle_change,
                 )
             ),
-            data = self.today,
+            data=self.today,
         )
-        
-
-        
 
     """
     ft.ElevatedButton(
@@ -53,6 +51,8 @@ class DateComponent:
         )
 
 """
+
+
 class NameDropdown:
     def __init__(self, page, phNameList, dropdown_changed):
         self.page = page
@@ -65,9 +65,9 @@ class NameDropdown:
             options=[],
             on_change=self.on_change,
             label="Name",
-            label_style = ft.TextStyle(color = "#2a4d7b"),
+            label_style=ft.TextStyle(color="#2a4d7b"),
             border_color=ft.colors.BLUE_GREY_100,
-            color = "#2a4d7b",
+            color="#2a4d7b",
         )
 
 
@@ -82,68 +82,279 @@ class EndDrawer:
         )
 
 
-        
 # データ読み出し用のドロワー
 class ReloadDrawer:
-    def __init__(self,page):
+    def __init__(self, page):
         self.page = page
-        
+
     def create(self):
         return ft.NavigationDrawer(
-            position = ft.NavigationDrawerPosition.END,
-            controls = [
-                    ft.Container(ft.ListTile(
-                        title = ft.Text("この端末に保管されているデータ")
-                    ))
-                    ],
+            position=ft.NavigationDrawerPosition.END,
+            controls=[
+                ft.Container(
+                    ft.ListTile(title=ft.Text("この端末に保管されているデータ"))
+                )
+            ],
         )
 
-#checkbox選択されたときに表示は削除する
-#選択が全て外されたときに再表示はどこでするか
+
+# checkbox選択されたときに表示は削除する
+# 選択が全て外されたときに再表示はどこでするか
 from handlers.timeline.require_location import RequireLocationMessage
+
+
 class AmDropDown:
-    def create(self,require_location,page):
+    def create(self, require_location, page):
         return ft.ResponsiveRow(
             [
-                ft.Checkbox(label="ICU",col = {"sm": 6, "md": 4, "xl": 2},data = "ICU",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="3A",col = {"sm": 6, "md": 4, "xl": 2},data = "3A",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="3B",col = {"sm": 6, "md": 4, "xl": 2},data = "3B",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="3C",col = {"sm": 6, "md": 4, "xl": 2},data = "3C",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="CCU",col = {"sm": 6, "md": 4, "xl": 2},data = "CCU",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="4A",col = {"sm": 6, "md": 4, "xl": 2},data = "4A",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="4B",col = {"sm": 6, "md": 4, "xl": 2},data = "4B",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="4C",col = {"sm": 6, "md": 4, "xl": 2},data  = "4C",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="4D",col = {"sm": 6, "md": 4, "xl": 2},data = "4D",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="HCU",col = {"sm": 6, "md": 4, "xl": 2},data = "HCU",on_change    = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="5A",col = {"sm": 6, "md": 4, "xl": 2},data = "5A",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="5B",col = {"sm": 6, "md": 4, "xl": 2},data = "5B",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="5C",col = {"sm": 6, "md": 4, "xl": 2},data = "5C",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="5D",col = {"sm": 6, "md": 4, "xl": 2},data = "5D",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="5D",col = {"sm": 6, "md": 4, "xl": 2},data = "5D",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="DI",col = {"sm": 6, "md": 4, "xl": 2},data = "5D",on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
+                ft.Checkbox(
+                    label="ICU",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="ICU",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="3A",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="3A",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="3B",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="3B",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="3C",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="3C",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="CCU",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="CCU",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="4A",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="4A",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="4B",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="4B",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="4C",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="4C",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="4D",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="4D",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="HCU",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="HCU",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="5A",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="5B",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="5B",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="5C",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="5C",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="5D",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="5D",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="5D",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="5D",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="DI",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="5D",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
             ]
         )
 
 
 class PmDropDown:
-    def create(self,require_location,page):
+    def create(self, require_location, page):
         return ft.ResponsiveRow(
             [
-                ft.Checkbox(label="ICU",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="3A",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="3B",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="3C",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="CCU",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="4A",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="4B",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="4C",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="HCU",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="5A",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="5B",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="5C",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="5D",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="5D",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
-                ft.Checkbox(label="DI",col = {"sm": 6, "md": 4, "xl": 2},on_change = lambda e: RequireLocationMessage.change_require_location(e = e,require_location = require_location,page = page)),
+                ft.Checkbox(
+                    label="ICU",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="3A",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="3B",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="3C",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="CCU",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="4A",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="4B",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="4C",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="4D",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="HCU",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="5A",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="5B",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="5C",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="5D",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="5D",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="DI",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
             ]
         )
 
@@ -161,7 +372,23 @@ class EditButton:
 
 
 class DeleteButtons:
-    def __init__(self, page, delete_content, phNameList, phName, drag_data, count_dict, comment_dict, columns, draggable_data_for_move, comments, times, comment, draggable, update_location_data):
+    def __init__(
+        self,
+        page,
+        delete_content,
+        phNameList,
+        phName,
+        drag_data,
+        count_dict,
+        comment_dict,
+        columns,
+        draggable_data_for_move,
+        comments,
+        times,
+        comment,
+        draggable,
+        update_location_data,
+    ):
         self.page = page
         self.delete_content = delete_content
         self.phNameList = phNameList
@@ -175,7 +402,7 @@ class DeleteButtons:
         self.times = times
         self.comment = comment
         self.draggable_data = draggable
-        self.update_location_data = update_location_data,
+        self.update_location_data = (update_location_data,)
 
     def create(self):
         return ft.IconButton(
@@ -198,7 +425,7 @@ class DeleteButtons:
                 self.comment,
                 self.draggable_data,
                 self.update_location_data,
-                ),
+            ),
         )
 
 
