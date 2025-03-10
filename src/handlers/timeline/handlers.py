@@ -851,11 +851,13 @@ class Handlers:
     @staticmethod
     def add_name(e, phNameList, name_field, page, phName, dialog):
         new_name = name_field.value.strip()
+        delspace1=new_name.replace("　","")
+        delspace2=delspace1.replace(" ","")
         phName_List = (
             json.loads(phNameList) if isinstance(phNameList, str) else phNameList
         )
-        if new_name:
-            phName_List.append({"name": new_name})
+        if delspace2:
+            phName_List.append({"name": delspace2})
             page.client_storage.set("phName", phName_List)
             name_field.value = ""
             Handlers.update_dropdown(phName, phName_List, page)
