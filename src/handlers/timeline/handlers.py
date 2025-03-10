@@ -1163,7 +1163,7 @@ class Handlers:
                     "time": time_for_label[i],
                     "task": "",
                     "count": 0,
-                    "locate": [],
+                    "locate": "AM" if time_for_label[i] in amTime else "PM",
                     "date": str(date),
                     "PhName": "",
                     "comment": "",
@@ -1201,7 +1201,7 @@ class Handlers:
                         if data_dict[time]["task"] != "":
                             data_dict[time]["locate"] = list_am_location_data
                         else:
-                            pass
+                            data_dict[time]["locate"] = []
                 else:
                     None
 
@@ -1222,7 +1222,7 @@ class Handlers:
                         if data_dict[time]["task"] != "":
                             data_dict[time]["locate"] = list_pm_location_data
                         else:
-                            pass
+                            data_dict[time]["locate"] = []
                 else:
                     None
 
