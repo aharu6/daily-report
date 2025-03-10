@@ -52,17 +52,20 @@ class Handlers_setting:
         page.update()
 
     @staticmethod
-    def add_name(e, phNameList, name_field, page, diaog, panel):
+    def add_name(e, phNameList, name_field, page, dialog, panel):
+        #半角と全角の空白は除去する
         new_name = name_field.value.strip()
-        phName_List = (
-            json.loads(phNameList) if isinstance(phNameList, str) else phNameList
-        )
-        if new_name:
-            phName_List.append({"name": new_name})
+        delspace1 = new_name.replace("　","")
+        delspace2 = delspace1.replace(" ","")
+        if delspace2:
+            phName_List = (
+                json.loads(phNameList) if isinstance(phNameList, str) else phNameList
+            )
+            phName_List.append({"name": delspace2})
             page.client_storage.set("phName", json.dumps(phName_List))
             name_field.value = ""
             Handlers_setting.update_ListTile(panel, phNameList=phName_List, page=page)
-            diaog.open = False
+            dialog.open = False
             page.update()
             
     @staticmethod
