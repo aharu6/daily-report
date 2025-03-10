@@ -8,6 +8,7 @@ from handlers.timeline.handdrag_will_accept import Add_will_accept
 from handlers.timeline.make_popup import MakePopup
 from datetime import datetime
 
+
 class Handlers:
     @staticmethod
     def handle_change(e, Date, page):
@@ -189,7 +190,6 @@ class Handlers:
                 return "#DDA853"
             case "お役立ち情報作成":
                 return "#DDA853"
-            
 
     @staticmethod
     def change_choice_button(e, selectColumns, page):
@@ -235,7 +235,7 @@ class Handlers:
                 selectColumns[33].visible = False  # 薬剤情報評価
                 selectColumns[34].visible = False  # 後発品選定
                 selectColumns[35].visible = False  # 会議資料作成
-                selectColumns[36].visible = False  # 配信資料作成                
+                selectColumns[36].visible = False  # 配信資料作成
                 selectColumns[37].visible = False  # フォーミュラリー作成
                 selectColumns[38].visible = False  # 外来処方箋修正
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
@@ -282,7 +282,7 @@ class Handlers:
                 selectColumns[33].visible = False  # 薬剤情報評価
                 selectColumns[34].visible = False  # 後発品選定
                 selectColumns[35].visible = False  # 会議資料作成
-                selectColumns[36].visible = False  # 配信資料作成                
+                selectColumns[36].visible = False  # 配信資料作成
                 selectColumns[37].visible = False  # フォーミュラリー作成
                 selectColumns[38].visible = False  # 外来処方箋修正
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
@@ -329,7 +329,7 @@ class Handlers:
                 selectColumns[33].visible = False  # 薬剤情報評価
                 selectColumns[34].visible = False  # 後発品選定
                 selectColumns[35].visible = False  # 会議資料作成
-                selectColumns[36].visible = False  # 配信資料作成                
+                selectColumns[36].visible = False  # 配信資料作成
                 selectColumns[37].visible = False  # フォーミュラリー作成
                 selectColumns[38].visible = False  # 外来処方箋修正
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
@@ -380,7 +380,7 @@ class Handlers:
                 selectColumns[33].visible = False  # 薬剤情報評価
                 selectColumns[34].visible = False  # 後発品選定
                 selectColumns[35].visible = False  # 会議資料作成
-                selectColumns[36].visible = False  # 配信資料作成                
+                selectColumns[36].visible = False  # 配信資料作成
                 selectColumns[37].visible = False  # フォーミュラリー作成
                 selectColumns[38].visible = False  # 外来処方箋修正
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
@@ -427,7 +427,7 @@ class Handlers:
                 selectColumns[33].visible = False  # 薬剤情報評価
                 selectColumns[34].visible = False  # 後発品選定
                 selectColumns[35].visible = False  # 会議資料作成
-                selectColumns[36].visible = False  # 配信資料作成                
+                selectColumns[36].visible = False  # 配信資料作成
                 selectColumns[37].visible = False  # フォーミュラリー作成
                 selectColumns[38].visible = False  # 外来処方箋修正
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
@@ -476,23 +476,23 @@ class Handlers:
                 selectColumns[33].visible = False  # 薬剤情報評価
                 selectColumns[34].visible = False  # 後発品選定
                 selectColumns[35].visible = False  # 会議資料作成
-                selectColumns[36].visible = False  # 配信資料作成                
+                selectColumns[36].visible = False  # 配信資料作成
                 selectColumns[37].visible = False  # フォーミュラリー作成
                 selectColumns[38].visible = False  # 外来処方箋修正
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
                 selectColumns[40].visible = False  # お役立ち情報作成
 
                 page.update()
-            
+
             case 6:  # DI
-                #非表示
+                # 非表示
                 selectColumns[0].visible = False  # 情報収集　指導
                 selectColumns[1].visible = False  # 指導記録作成
                 selectColumns[2].visible = False  # 混注時間
                 selectColumns[3].visible = False  # 薬剤セット・確認
-                #表示
+                # 表示
                 selectColumns[4].visible = True  # 持参薬を確認
-                #非表示
+                # 非表示
                 selectColumns[5].visible = False  # 薬剤服用歴等について保険k薬局へ照会
                 selectColumns[6].visible = False  # 処方代理修正
                 selectColumns[7].visible = False  # TDM実施
@@ -502,38 +502,37 @@ class Handlers:
                 selectColumns[11].visible = False  # その他の職種からの相談
                 selectColumns[12].visible = False  # 委員会
                 selectColumns[13].visible = False  # 勉強会参加
-                selectColumns[14].visible = False  #　WG活動
-                selectColumns[15].visible = False # 1on1
-                selectColumns[16].visible = False # ICT/AST
-                selectColumns[17].visible = False # 褥瘡
-                selectColumns[18].visible = False # TPN評価
-                selectColumns[19].visible = False # TPN評価
-                selectColumns[20].visible = False # 手術使用薬剤確認
-                selectColumns[21].visible = False # 手術使用薬剤準備
-                selectColumns[22].visible = False # 周術期薬剤管理関連
-                selectColumns[23].visible = False # 手術使用麻薬確認・補充
-                selectColumns[24].visible = False # 術後疼痛管理チーム回診
-                selectColumns[25].visible = False # 脳卒中ホットライン対応
-                selectColumns[26].visible = False # 業務調整
-                selectColumns[27].visible = False # 休憩
-                selectColumns[28].visible = False # その他
-                selectColumns[29].visible = False # 管理業務
-                selectColumns[30].visible = False # NST
-                
-                #表示
-                selectColumns[31].visible = True # 問い合わせ応需
-                selectColumns[32].visible = True # マスター作成・変更
-                selectColumns[33].visible = True # 薬剤情報評価
-                selectColumns[34].visible = True # 後発品選定
-                selectColumns[35].visible = True # 会議資料作成
-                selectColumns[36].visible = True # 配信資料作成
-                selectColumns[37].visible = True # フォーミュラリー作成
-                selectColumns[38].visible = True # 外来処方箋修正
-                selectColumns[39].visible = True # 勉強会資料作成・開催
-                selectColumns[40].visible = True # お役立ち情報作成
-                
+                selectColumns[14].visible = False  # 　WG活動
+                selectColumns[15].visible = False  # 1on1
+                selectColumns[16].visible = False  # ICT/AST
+                selectColumns[17].visible = False  # 褥瘡
+                selectColumns[18].visible = False  # TPN評価
+                selectColumns[19].visible = False  # TPN評価
+                selectColumns[20].visible = False  # 手術使用薬剤確認
+                selectColumns[21].visible = False  # 手術使用薬剤準備
+                selectColumns[22].visible = False  # 周術期薬剤管理関連
+                selectColumns[23].visible = False  # 手術使用麻薬確認・補充
+                selectColumns[24].visible = False  # 術後疼痛管理チーム回診
+                selectColumns[25].visible = False  # 脳卒中ホットライン対応
+                selectColumns[26].visible = False  # 業務調整
+                selectColumns[27].visible = False  # 休憩
+                selectColumns[28].visible = False  # その他
+                selectColumns[29].visible = False  # 管理業務
+                selectColumns[30].visible = False  # NST
+
+                # 表示
+                selectColumns[31].visible = True  # 問い合わせ応需
+                selectColumns[32].visible = True  # マスター作成・変更
+                selectColumns[33].visible = True  # 薬剤情報評価
+                selectColumns[34].visible = True  # 後発品選定
+                selectColumns[35].visible = True  # 会議資料作成
+                selectColumns[36].visible = True  # 配信資料作成
+                selectColumns[37].visible = True  # フォーミュラリー作成
+                selectColumns[38].visible = True  # 外来処方箋修正
+                selectColumns[39].visible = True  # 勉強会資料作成・開催
+                selectColumns[40].visible = True  # お役立ち情報作成
+
                 page.update()
-                
 
     @staticmethod
     def toggle_delete_button(e, page, columns):
@@ -1113,6 +1112,7 @@ class Handlers:
         page.update()
 
     from handlers.timeline.hide_message import HideMessageHandler
+
     @staticmethod
     def write_csv_file(
         e,
@@ -1163,7 +1163,7 @@ class Handlers:
                     "time": time_for_label[i],
                     "task": "",
                     "count": 0,
-                    "locate": "AM" if time_for_label[i] in amTime else "PM",
+                    "locate": [],
                     "date": str(date),
                     "PhName": "",
                     "comment": "",
@@ -1230,7 +1230,7 @@ class Handlers:
 
             # ラジオボタンでの病棟選択データを反映,上書き
             # 単選択時もリスト形式に変換して保存する
-            #選択した時のみ上書きするように
+            # 選択した時のみ上書きするように
             for time in data_dict.keys():
                 update_loc_list = []
                 if time in update_location_data:
@@ -1245,8 +1245,7 @@ class Handlers:
                     data_dict[time]["phName"] = phName.value
                 else:
                     data_dict[time]["phName"] = ""
-                    
-                    
+
             # その他コメントの書き込み
             for time, comment_data in comment_dict.items():
                 if time in data_dict:
@@ -1278,8 +1277,8 @@ class Handlers:
             page.client_storage.set(
                 "timeline_data", json.dumps(save_data, ensure_ascii=False)
             )
-            #locateデータ（全体選択）は別に保管しておく
-            #初期ベースの作成
+            # locateデータ（全体選択）は別に保管しておく
+            # 初期ベースの作成
             dict_location_data = {
                 str(date): {
                     "locate_AM": [],
@@ -1287,15 +1286,18 @@ class Handlers:
                 }
             }
             dict_location_data[str(date)]["locate_AM"] = [
-                control.label for control in custumDrawerAm.content.controls if control.value
+                control.label
+                for control in custumDrawerAm.content.controls
+                if control.value
             ]
             dict_location_data[str(date)]["locate_PM"] = [
-                control.label for control in custumDrawerPm.content.controls if control.value
+                control.label
+                for control in custumDrawerPm.content.controls
+                if control.value
             ]
-            
+
             page.client_storage.set(
-                "location_data",
-                json.dumps(dict_location_data, ensure_ascii=False)
+                "location_data", json.dumps(dict_location_data, ensure_ascii=False)
             )
 
             # 辞書データをdfに変換
