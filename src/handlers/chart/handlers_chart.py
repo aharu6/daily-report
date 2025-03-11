@@ -4,8 +4,9 @@ from flet import FilePicker, FilePickerResultEvent
 import ast
 import plotly
 import plotly.express as px
+import plotly.io as pio
 from flet.plotly_chart import PlotlyChart
-
+import chart_studio.plotly as py
 
 # Chartページ用のハンドラ
 class Handlers_Chart:
@@ -138,7 +139,7 @@ class Handlers_Chart:
         
         
         # その上にplotlyにて円グラフを作成する
-        fig_bar = px.bar(gorup_by_person,x = "counts",y = "phName",color = "task",barmode = "stack",orientation = "h")
+        fig_bar = pybar(gorup_by_person,x = "counts",y = "phName",color = "task",barmode = "stack",orientation = "h")
         # まずグラフを描画するcardを作成
         chart_field.append(ft.Card(content = 
             PlotlyChart(fig_bar,expand = True,original_size = False,isolated = True)
