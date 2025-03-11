@@ -36,7 +36,7 @@ import plotly.express as px
 import plotly
 
 
-fig = px.pie(group_df[group_df["locate"] == "4B"], values="counts", names="task")
+fig = py.pie(group_df[group_df["locate"] == "4B"], values="counts", names="task")
 fig.show()
 
 
