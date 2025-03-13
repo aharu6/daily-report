@@ -93,7 +93,8 @@ class ReloadDrawer:
             controls=[
                 ft.Container(
                     ft.ListTile(title=ft.Text("この端末に保管されているデータ"))
-                )
+                ),
+                ft.Card(content = ft.Column()),
             ],
         )
 
