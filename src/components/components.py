@@ -189,7 +189,7 @@ class AmDropDown:
                     ),
                 ),
                 ft.Checkbox(
-                    label="",
+                    label="5A",
                     col={"sm": 6, "md": 4, "xl": 2},
                     data="5A",
                     on_change=lambda e: RequireLocationMessage.change_require_location(
