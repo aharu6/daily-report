@@ -44,7 +44,8 @@ class ReloadDataHandler:
         #date_phName のデータを取り出す
         key = list(dat.keys())
         #keyに基づいてドロワーを作成 reloadDrawer   controls
-        drawer.controls.append(ft.Card(content = ft.Column()))
+        #drawer.controls.append(ft.Card(content = ft.Column()))
+        drawer.controls[1].content.controls = []
         for i in key:
             drawer.controls[1].content.controls.append(ft.ListTile(
                 title = ft.Text(i),
