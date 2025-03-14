@@ -21,9 +21,9 @@ class SettingPage:
             lambda e: Handlers_setting.open_dialog(e, self.dialog, page)
         )
 
-        self.name_filed = ft.TextField(label="新しく追加する名前を入力してください")
+        self.name_filed = ft.TextField(label="フルネームにてお願いします")
         self.dialog = ft.AlertDialog(
-            title=ft.Text("Add Name"),
+            title=ft.Text("新しく追加する名前を入力"),
             content=self.name_filed,
             actions=[
                 ft.TextButton(
