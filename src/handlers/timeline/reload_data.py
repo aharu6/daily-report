@@ -1,4 +1,3 @@
-import json
 import flet as ft
 from handlers.timeline.make_popup import MakePopup
 from flet import BoxShape
@@ -30,6 +29,7 @@ class ReloadDataHandler:
         require_location,
         update_location_data,
         ):
+        import json
         page.open(drawer)
         #保存しているデータを読み出す
         #write csv時の保存名：timeline_data
@@ -105,7 +105,6 @@ class ReloadDataHandler:
         update_location_data,
         ):
         
-        #全てのカラムは一度クリアする
         #業務調整デフォルト入力オンオフも反映する
         
         #columns = self.columns
@@ -152,24 +151,29 @@ class ReloadDataHandler:
         from handlers.timeline.handlers import Handlers
         from handlers.timeline.delete_content_reload import DeleteContentReloadHandler
         import re
+        import json
         for i in range(len_load_data):
             #taskがあれば基づいてcolumns内容を更新するが、will_acceptの場合には矢印ボタンだけを表示する
             key = list(load_data.keys())[i]
             if load_data[key]["task"] ==  "will_accept":
-                columns[i].content  = ft.Column(
-                    controls = [
-                        ft.Container(
-                            content = ft.Icon(ft.icons.DOUBLE_ARROW,color = "#2D6E7E"),
-                            width = 50,
-                            height = 50,
-                            border_radius = 50,
-                        ),
-                    ],
-                    data = {
-                        "time": load_data[key]["time"],
-                        "num": i,
-                        "task": load_data[key]["task"],
-                    }
+                columns[i].content  = ft.DragTarget(
+                    group ="timeline_accepted", 
+                    content=ft.Column(
+                        controls = [
+                            ft.Container(
+                                content = ft.Icon(ft.icons.DOUBLE_ARROW,color = "#2D6E7E"),
+                                width = 50,
+                                height = 50,
+                                border_radius = 50,
+                            ),
+                        ],
+                        
+                    ),
+                    data={
+                            "time": load_data[key]["time"],
+                            "num": i,
+                            "task": load_data[key]["task"],
+                        }
                 )
                 
             elif re.search(r'.+',load_data[key]["task"]):
@@ -198,6 +202,8 @@ class ReloadDataHandler:
                                     phName=phName,
                                     draggable_data_for_move=draggable_data_for_move,
                                     update_location_data=update_location_data,
+                                    customDrawerAm=custumDrawerAm,
+                                    customDrawerPm=custumDrawerPm,
                                 ),
                                 data = {
                                     "time": load_data[key]["time"],
@@ -252,7 +258,7 @@ class ReloadDataHandler:
                         "task":load_data[key]["task"],
                     }
                 )
-                
+            
                 #カウンターデータ0のときには何も表示されない
                 #一番左のカラムだけは0でもカウンターが必要になるから、1以上の指定ではなくて、 key の比較
                 # move関数とaccepted関数と同じように左のカラムkeyと比較して表示する　update前だからcolumnsに保管されているkeyは使えない
@@ -285,6 +291,47 @@ class ReloadDataHandler:
                         #１以上の場合には表示する
                         if load_data[key]["count"] >0:
                             columns[i].content.content.controls[4].controls[1].value = load_data[key]["count"]
+                #何も文字が入っていないカラムは初期状態へ
+            elif load_data[key]["task"] == "":
+                from handlers.timeline.handdrag_will_accept import Add_will_accept
+                from handlers.timeline.drag_leave import DragLeave
+                columns[i].content = ft.DragTarget(
+                    group="timeline",
+                    content=ft.Container(
+                        width=50,
+                        height=370,
+                        bgcolor="#CBDCEB",
+                        border_radius=5,
+                    ),
+                    on_accept=lambda e:Handlers.drag_accepted(
+                        e=e,
+                        page=page,
+                        draggable_data=draggable_data,
+                        columns=columns,
+                        comments=comments,
+                        times=model_times,
+                        drag_data=drag_data,
+                        comment=comment,
+                        count_dict=count_dict,
+                        phNameList=phNameList,
+                        phName=phName,
+                        comment_dict=comment_dict,
+                        draggable_data_for_move=draggable_data_for_move,
+                        customDrawerAm=custumDrawerAm,
+                        customDrawerPm=custumDrawerPm,
+                        update_location_data=update_location_data,
+
+                    ),
+                    on_will_accept=lambda e:Add_will_accept.drag_will_accept(
+                        e=e,
+                        page=page,
+                        columns=columns,
+                        drag_data=drag_data,
+                        
+                    ),
+                    on_leave=lambda e:DragLeave.drag_leave(e=e,page=page),
+                        data={"time":load_data[key]["time"],"num":i,"task":load_data[key]["task"]},
+                )
                 #コメント記載がある場合には内容更新もできる？
                 
             #辞書データの更新
