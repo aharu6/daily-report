@@ -16,3 +16,5 @@ src/dist/main.exe
 app/main.spec
 /src/dist
 src/.DS_Store
+.DS_Store
+

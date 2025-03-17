@@ -117,6 +117,21 @@ class AmDropDown:
                     ),
                 ),
                 ft.Checkbox(
+                    label="OR",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="OR",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),ft.Checkbox(
+                    label="HR",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="HR",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
                     label="3A",
                     col={"sm": 6, "md": 4, "xl": 2},
                     data="3A",
@@ -247,6 +262,21 @@ class PmDropDown:
                 ft.Checkbox(
                     label="ICU",
                     col={"sm": 6, "md": 4, "xl": 2},
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),
+                ft.Checkbox(
+                    label="OR",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="OR",
+                    on_change=lambda e: RequireLocationMessage.change_require_location(
+                        e=e, require_location=require_location, page=page
+                    ),
+                ),ft.Checkbox(
+                    label="HR",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="HR",
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),

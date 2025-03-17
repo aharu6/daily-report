@@ -543,6 +543,7 @@ class Handlers:
             # disabled効かない
             # 特定のグループ名にして、falseの中で分ける？
             # seeletcolumnの方ではなくて、columnsの方
+            print(i)
             if columns[i].content.group == "timeline":
                 columns[i].content.group = "delete_toggle"
             elif columns[i].content.group == "delete_toggle":
