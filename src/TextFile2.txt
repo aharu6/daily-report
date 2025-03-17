@@ -2,3 +2,5 @@ py
 
 macos でのbuild
 flet pack main.py -i /Users/aizawaharuka/Documents/GitHub/daily-report/src/appicon/macos/diary-left-svgrepo-com.ico -n 業務日誌
+
+flet pack main.py -i appicon\diary-left-svgrepo-com.ico -n 業務日誌
