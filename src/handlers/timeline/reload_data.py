@@ -1,6 +1,5 @@
 import json
 import flet as ft
-from models.models import DataModel
 from handlers.timeline.make_popup import MakePopup
 from flet import BoxShape
 #ドロワーを展開する

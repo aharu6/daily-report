@@ -512,6 +512,8 @@ class TimelinePage:
             comment=self.comment,
             draggable_data=self.model.draggable_data(),
             update_location_data=self.update_location_data,
+            customDrawerAm=self.custumDrawerAm,
+            customDrawerPm=self.custumDrawerPm,
             )
         
         Handlers.update_dropdown(
@@ -555,10 +557,10 @@ class TimelinePage:
                     )
                 )
         self.colampmSelect = ft.Column([self.iconforampmselect, self.ampmSelect])
-        self.name_field = ft.TextField(label="新しく追加する名前を入力してください")
+        self.name_field = ft.TextField(label="フルネームにてお願いします")
 
         self.dialog = ft.AlertDialog(
-            title=ft.Text("Add Name"),
+            title=ft.Text("新しく追加する名前を入力"),
             content=self.name_field,
             actions=[
                 ft.TextButton(

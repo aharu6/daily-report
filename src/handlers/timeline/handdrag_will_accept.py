@@ -1,5 +1,4 @@
 import flet as ft
-import re
 class Add_will_accept:
     @staticmethod
     def drag_will_accept(e,page,columns,drag_data):

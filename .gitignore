@@ -14,3 +14,5 @@ output_csv/
 src/dist/main.exe
 /app/build
 app/main.spec
+/src/dist
+src/.DS_Store

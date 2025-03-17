@@ -18,6 +18,8 @@ class Set_Default_task:
         comment,
         draggable_data,
         update_location_data,
+        customDrawerAm,
+        customDrawerPm,
         ):
         #settingpageでセットしたclient_storageの内容に従って、デフォルトでの追加タスクを設定する
         #0 on /1 off
@@ -58,6 +60,8 @@ class Set_Default_task:
                                         comment=comment,
                                         draggable_data=draggable_data,
                                         update_location_data=update_location_data,
+                                        customDrawerAm=customDrawerAm,
+                                        customDrawerPm=customDrawerPm,
                                     ),
                                     data = {"num":19}
                                 ),
