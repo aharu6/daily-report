@@ -1,9 +1,9 @@
-ƒZƒLƒ…ƒŠƒeƒBƒGƒ‰[‰ğÁ–@
+ï¿½Zï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½eï¿½Bï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½@
 
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 
-ƒRƒ}ƒ“ƒhƒvƒƒ“ƒvƒg
+ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½vï¿½ï¿½ï¿½ï¿½ï¿½vï¿½g
 .venv\Scripts\activate.bat
 
 powershell
@@ -11,6 +11,11 @@ powershell
 
 
 
-rich ‚Ì•¶šƒGƒ“ƒR[ƒfƒBƒ“ƒO‚ğ§Œä
-Python ‚Ì rich ƒ‰ƒCƒuƒ‰ƒŠ‚ÉƒfƒtƒHƒ‹ƒgƒGƒ“ƒR[ƒfƒBƒ“ƒO‚ğ•ÏX‚³‚¹‚é•û–@‚à‚ ‚è‚Ü‚·B
+rich ï¿½Ì•ï¿½ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½Rï¿½[ï¿½fï¿½Bï¿½ï¿½ï¿½Oï¿½ğ§Œï¿½
+Python ï¿½ï¿½ rich ï¿½ï¿½ï¿½Cï¿½uï¿½ï¿½ï¿½ï¿½ï¿½Éƒfï¿½tï¿½Hï¿½ï¿½ï¿½gï¿½Gï¿½ï¿½ï¿½Rï¿½[ï¿½fï¿½Bï¿½ï¿½ï¿½Oï¿½ï¿½ÏXï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 PYTHONUTF8=1 flet build windows
+
+
+installer --onefile --icon=appicon\diary-left-svgrepo-com.ico --hidden-import pandas --hidden-import numpy --hidden-import csv --hidden-import datetimeã€€--hidden-import plotlyã€€--collect-all plotly  "main.py"
+
+onefile ã¨nonconsoleã®ä½µç”¨ã¯ã‚¨ãƒ©ãƒ¼ãŒèµ·ãã‚„ã™ããªã‚‹ã‹ã‚‚

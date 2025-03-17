@@ -512,6 +512,8 @@ class TimelinePage:
             comment=self.comment,
             draggable_data=self.model.draggable_data(),
             update_location_data=self.update_location_data,
+            customDrawerAm=self.custumDrawerAm,
+            customDrawerPm=self.custumDrawerPm,
             )
         
         Handlers.update_dropdown(

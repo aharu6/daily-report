@@ -1,4 +1,4 @@
-pyinstaller --onefile --icon=appicon\diary-left-svgrepo-com.ico --hidden-import pandas --hidden-import numpy --hidden-import csv --hidden-import datetime　--hidden-import plotly　--collect-all plotly  "main.py"
+py
 
-onefile とnonconsoleの併用はエラーが起きやすくなるかも
-
+macos でのbuild
+flet pack main.py
