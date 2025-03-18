@@ -72,7 +72,10 @@ class Handlers_setting:
     def update_datatable(panel,page):
         cells = []
         load_data = page.client_storage.get("timeline_data")
-        dat = json.loads(load_data) 
+        try:
+            dat = json.loads(load_data) 
+        except:
+            dat = {}
         
         cells = [
             ft.DataRow(
