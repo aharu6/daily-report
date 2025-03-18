@@ -5,7 +5,6 @@ test_dict = {'8:30 8:45': {'time': '8:30 8:45', 'task': '', 'count': 0, 'locate'
 
 # Convert the dictionary to a DataFrame
 df = pd.DataFrame.from_dict(test_dict, orient='index')
-print(df.head())
 # will accept は前のタスクにて補完する
 df['task'] = df['task'].replace('will_accept',method='ffill')
 

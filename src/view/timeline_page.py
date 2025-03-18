@@ -47,33 +47,7 @@ class TimelinePage:
 
         # deletebutton
         # main.pyを参照にdeleteButtonを追加
-        """
-        self.delete_buttons = [
-            ft.IconButton(
-                icon=ft.icons.DELETE_OUTLINE,
-                visible=False,
-                icon_size=20,
-                icon_color="red",
-                on_click=lambda e: Handlers.delete_content(
-                    e,
-                    page,
-                    self.phNameList,
-                    self.phName,
-                    self.delete_buttons,
-                    self.drag_data,
-                    self.count_dict,
-                    self.comment_dict,
-                    self.columns,
-                    self.draggable_data_for_move,
-                    self.comments,
-                    self.model.times(),  # delete_contentでの引数ではtimes
-                    self.comment,
-                ),
-                data = {"num":i}
-            )
-            for i in range(len(self.model.times()))
-        ]
-        """
+        
         # editbutton
         # main.pyを参照にeditButtonを追加
         self.editButton = ft.IconButton(
@@ -108,6 +82,7 @@ class TimelinePage:
                 require_name=self.require_name,
                 require_location=self.require_location,
                 update_location_data=self.update_location_data,
+                radio_selected_data=self.radio_selected_data,
                 )
         )
 
@@ -121,7 +96,9 @@ class TimelinePage:
             .MainAxisAlignment.END,
             spacing = 10,
         )
-
+        #radiobutton_selected data
+        self.radio_selected_data = {}
+        #drag_data
         self.drag_data = {}
 
         self.comments = [
@@ -360,6 +337,7 @@ class TimelinePage:
                     customDrawerAm=self.custumDrawerAm,
                     customDrawerPm=self.custumDrawerPm,
                     update_location_data=self.update_location_data,
+                    radio_selected_data=self.radio_selected_data
                 ),
                 on_will_accept=lambda e: Add_will_accept.drag_will_accept(
                         e=e,
@@ -514,6 +492,7 @@ class TimelinePage:
             update_location_data=self.update_location_data,
             customDrawerAm=self.custumDrawerAm,
             customDrawerPm=self.custumDrawerPm,
+            radio_selected_data=self.radio_selected_data,
             )
         
         Handlers.update_dropdown(

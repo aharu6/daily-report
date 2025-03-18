@@ -265,6 +265,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="ICU",
                 ),
                 ft.Checkbox(
                     label="OR",
@@ -287,6 +288,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="3A",
                 ),
                 ft.Checkbox(
                     label="3B",
@@ -294,6 +296,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="3B",
                 ),
                 ft.Checkbox(
                     label="3C",
@@ -301,6 +304,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="3C",
                 ),
                 ft.Checkbox(
                     label="CCU",
@@ -308,6 +312,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="CCU",
                 ),
                 ft.Checkbox(
                     label="4A",
@@ -315,6 +320,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="4A",
                 ),
                 ft.Checkbox(
                     label="4B",
@@ -322,6 +328,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="4B",
                 ),
                 ft.Checkbox(
                     label="4C",
@@ -329,6 +336,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="4C",
                 ),
                 ft.Checkbox(
                     label="4D",
@@ -336,6 +344,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="4D",
                 ),
                 ft.Checkbox(
                     label="HCU",
@@ -343,6 +352,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="HCU",
                 ),
                 ft.Checkbox(
                     label="5A",
@@ -350,6 +360,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="5A",
                 ),
                 ft.Checkbox(
                     label="5B",
@@ -357,6 +368,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="5B",
                 ),
                 ft.Checkbox(
                     label="5C",
@@ -364,6 +376,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="5C",
                 ),
                 ft.Checkbox(
                     label="5D",
@@ -371,6 +384,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="5D",
                 ),
                 ft.Checkbox(
                     label="5D",
@@ -378,6 +392,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="5D",
                 ),
                 ft.Checkbox(
                     label="DI",
@@ -385,6 +400,7 @@ class PmDropDown:
                     on_change=lambda e: RequireLocationMessage.change_require_location(
                         e=e, require_location=require_location, page=page
                     ),
+                    data="DI",
                 ),
             ]
         )

@@ -29,7 +29,7 @@ class MakePopup:
     
     
     @staticmethod
-    def add_popup(time, update_location_data, num, columns,page):
+    def add_popup(time, update_location_data, num, columns,page,radio_selected_data):
         
         # 午前と午後の判別
         pop_up = ft.PopupMenuItem(
@@ -39,7 +39,8 @@ class MakePopup:
                 ),
                 data={"time": time},
                 on_change=lambda e: MakePopup.radio_click(
-                    e=e, time=time, update_location_data=update_location_data, num=num, columns=columns,page=page
+                    e=e, time=time, update_location_data=update_location_data, num=num, columns=columns,page=page,
+                    radio_selected_data=radio_selected_data,
                     )
                 
             )
@@ -93,7 +94,7 @@ class MakePopup:
         page.update()
             
     @staticmethod
-    def radio_click(e, time, update_location_data, num, columns,page):
+    def radio_click(e, time, update_location_data, num, columns,page,radio_selected_data):
         # クリックされた時は辞書データの更新を行う
         # 時間データの取得
         time = e.control.data["time"]
@@ -110,4 +111,6 @@ class MakePopup:
         #accdptedでのcontrolの一番最後にft.Textを追加する
         #変更したら更新。場所を決めておく ３番目
         columns[num].content.content.controls[3].content = ft.Text(selected_location)
+        e.control.data["radio_select"]=selected_location
+        radio_selected_data[time]["radio_select"] = selected_location
         page.update()
