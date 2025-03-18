@@ -33,8 +33,14 @@ class ReloadDataHandler:
         page.open(drawer)
         #保存しているデータを読み出す
         #write csv時の保存名：timeline_data
-        load_data = page.client_storage.get("timeline_data")
-        dat = json.loads(load_data)
+        try:
+            load_data = page.client_storage.get("timeline_data")
+        except:
+            load_data = {}
+        try:
+            dat = json.loads(load_data)
+        except:
+            dat = {}
         #save_data = {"date_phName":dict_data}
         #日付と名前それぞれのデータを取り出す
         #ドロワーには保管されている　key = date_phNameにて表示
