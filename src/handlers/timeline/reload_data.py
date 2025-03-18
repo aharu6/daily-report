@@ -1,5 +1,4 @@
 import flet as ft
-from handlers.timeline.make_popup import MakePopup
 from flet import BoxShape
 #ドロワーを展開する
 #保管しているデータを取得して表示する
@@ -28,6 +27,7 @@ class ReloadDataHandler:
         require_name,
         require_location,
         update_location_data,
+        radio_selected_data,
         ):
         import json
         page.open(drawer)
@@ -72,6 +72,7 @@ class ReloadDataHandler:
                         require_name=require_name,
                         require_location=require_location,
                         update_location_data=update_location_data,
+                        radio_selected_data=radio_selected_data,
                         ),
                     data = i
                     ),
@@ -103,6 +104,7 @@ class ReloadDataHandler:
         require_name,
         require_location,
         update_location_data,
+        radio_selected_data,
         ):
         
         #業務調整デフォルト入力オンオフも反映する
@@ -112,35 +114,7 @@ class ReloadDataHandler:
         selected_key = e.control.data
         load_data = dat[selected_key]
         #取り出したデータの長さに従ってcolumns[0] = data[0] の辞書データにてcontentsを更新していく
-        """
-        columns.contentのメモ
-        columns.content  = ft.Column(
-            controls=[
-                delete_buttons[e.control.data["num"]],
-                ft.Draggable(
-                    group="timeline",
-                    content=ft.Container(
-                        content=ft.Text(key, color="white"),
-                        width=50,
-                        height=140,
-                        bgcolor=Handlers.change_color(key),
-                    ),
-                    data={
-                        "time": e.control.data["time"],
-                        "num": e.control.data["num"],
-                        "task": key,
-                    },
-                ),
-            ],
-            height=370,
-            spacing=0,
-            data={
-                "time": e.control.data["time"],
-                "num": e.control.data["num"],
-                "task": key,
-            },
-        )
-        """
+        
         len_load_data = len(list(load_data.keys()) ) 
         
         #load dataを編集　最初のtask名は残して、2番目以降はwill_accept
@@ -152,6 +126,7 @@ class ReloadDataHandler:
         from handlers.timeline.delete_content_reload import DeleteContentReloadHandler
         import re
         import json
+        from handlers.timeline.make_popup import MakePopup
         for i in range(len_load_data):
             #taskがあれば基づいてcolumns内容を更新するが、will_acceptの場合には矢印ボタンだけを表示する
             key = list(load_data.keys())[i]
@@ -177,6 +152,7 @@ class ReloadDataHandler:
                 )
                 
             elif re.search(r'.+',load_data[key]["task"]):
+                
                 #DragTargetにて元のと揃えた方がいい
                 columns[i].content = ft.DragTarget(
                     group  = "timeline_accepted",
@@ -204,6 +180,7 @@ class ReloadDataHandler:
                                     update_location_data=update_location_data,
                                     customDrawerAm=custumDrawerAm,
                                     customDrawerPm=custumDrawerPm,
+                                    radio_selected_data=radio_selected_data,
                                 ),
                                 data = {
                                     "time": load_data[key]["time"],
@@ -232,6 +209,7 @@ class ReloadDataHandler:
                                     MakePopup.add_popup(
                                         time = load_data[key]["time"],update_location_data=update_location_data,
                                         num = i,columns = columns,page = page,
+                                        radio_selected_data=radio_selected_data,
                                         ), 
                                     ],
                                 icon = ft.icons.MORE_VERT,
@@ -291,6 +269,8 @@ class ReloadDataHandler:
                         #１以上の場合には表示する
                         if load_data[key]["count"] >0:
                             columns[i].content.content.controls[4].controls[1].value = load_data[key]["count"]
+                
+                #radiobuttonでの選択内容は別データにて保管し、ある場合には再表示
                 #何も文字が入っていないカラムは初期状態へ
             elif load_data[key]["task"] == "":
                 from handlers.timeline.handdrag_will_accept import Add_will_accept
@@ -320,7 +300,7 @@ class ReloadDataHandler:
                         customDrawerAm=custumDrawerAm,
                         customDrawerPm=custumDrawerPm,
                         update_location_data=update_location_data,
-
+                        radio_selected_data=radio_selected_data,
                     ),
                     on_will_accept=lambda e:Add_will_accept.drag_will_accept(
                         e=e,

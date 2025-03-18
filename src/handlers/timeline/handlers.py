@@ -543,7 +543,6 @@ class Handlers:
             # disabled効かない
             # 特定のグループ名にして、falseの中で分ける？
             # seeletcolumnの方ではなくて、columnsの方
-            print(i)
             if columns[i].content.group == "timeline":
                 columns[i].content.group = "delete_toggle"
             elif columns[i].content.group == "delete_toggle":
@@ -590,6 +589,7 @@ class Handlers:
         update_location_data,
         customDrawerAm,
         customDrawerPm,
+        radio_selected_data,
     ):
         from handlers.timeline.drag_leave import DragLeave
 
@@ -628,6 +628,7 @@ class Handlers:
                 update_location_data=update_location_data,
                 customDrawerAm=customDrawerAm,
                 customDrawerPm=customDrawerPm,
+                radio_selected_data=radio_selected_data,
             ),
             on_leave=lambda e: DragLeave.drag_leave(e, page),
             data={"time": times[col_num], "num": col_num, "task": ""},
@@ -672,6 +673,7 @@ class Handlers:
                     update_location_data=update_location_data,
                     customDrawerAm=customDrawerAm,
                     customDrawerPm=customDrawerPm,
+                    radio_selected_data=radio_selected_data,
                 ),
                 on_leave=lambda e: DragLeave.drag_leave(e, page),
                 on_will_accept=lambda e: Add_will_accept.drag_will_accept(
@@ -904,6 +906,7 @@ class Handlers:
         customDrawerAm,
         customDrawerPm,
         update_location_data,
+        radio_selected_data,
     ):
         model = DataModel()
 
@@ -962,6 +965,7 @@ class Handlers:
                         update_location_data=update_location_data,
                         customDrawerAm=customDrawerAm,
                         customDrawerPm=customDrawerPm,
+                        radio_selected_data=radio_selected_data,
                     ),
                     data={"num": e.control.data["num"]},
                 ),
@@ -991,6 +995,7 @@ class Handlers:
                             num=e.control.data["num"],
                             columns=columns,
                             page=page,
+                            radio_selected_data=radio_selected_data,
                         ),
                     ],
                     tooltip="編集",

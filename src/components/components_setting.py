@@ -28,7 +28,10 @@ class Panel:
             phNameList = json.loads(phNameList)
 
         load_data = page.client_storage.get("timeline_data")
-        key = list(json.loads(load_data).keys())
+        try:
+            key = list(json.loads(load_data).keys())
+        except:
+            key = []
         
         return ft.ExpansionPanelList(
             elevation=8,

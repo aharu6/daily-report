@@ -26,6 +26,7 @@ class DeleteContentReloadHandler:
         update_location_data,
         customDrawerAm,
         customDrawerPm,
+        radio_selected_data,
     ):
         model = DataModel()
 
@@ -55,6 +56,7 @@ class DeleteContentReloadHandler:
                 update_location_data=update_location_data,
                 customDrawerAm=customDrawerAm,
                 customDrawerPm=customDrawerPm,
+                radio_selected_data=radio_selected_data,
             ),
             on_will_accept=lambda e: Add_will_accept.drag_will_accept(
                 e, page, columns, drag_data

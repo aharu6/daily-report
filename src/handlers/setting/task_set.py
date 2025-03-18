@@ -20,6 +20,7 @@ class Set_Default_task:
         update_location_data,
         customDrawerAm,
         customDrawerPm,
+        radio_selected_data,
         ):
         #settingpageでセットしたclient_storageの内容に従って、デフォルトでの追加タスクを設定する
         #0 on /1 off
@@ -62,6 +63,7 @@ class Set_Default_task:
                                         update_location_data=update_location_data,
                                         customDrawerAm=customDrawerAm,
                                         customDrawerPm=customDrawerPm,
+                                        radio_selected_data=radio_selected_data,
                                     ),
                                     data = {"num":19}
                                 ),
