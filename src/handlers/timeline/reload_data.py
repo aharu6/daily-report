@@ -199,7 +199,7 @@ class ReloadDataHandler:
                                 content = ft.Container(
                                     content = ft.Text(load_data[key]["task"],color = "white"),
                                     width = 50,
-                                    height = 140,
+                                    height = 130,
                                     bgcolor = Handlers.change_color(load_data[key]["task"]),
                                     border_radius=ft.border_radius.only(top_left = 5,bottom_left=5),
                                     shape=BoxShape.RECTANGLE,

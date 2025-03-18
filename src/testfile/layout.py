@@ -124,7 +124,6 @@ def main(page:ft.Page):
     
     def view_pop(e):
         page.views.pop()
-        print("page_clear")
         
     def reset_page(e):
         view_pop(e)
