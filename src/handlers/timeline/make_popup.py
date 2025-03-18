@@ -112,5 +112,5 @@ class MakePopup:
         #変更したら更新。場所を決めておく ３番目
         columns[num].content.content.controls[3].content = ft.Text(selected_location)
         e.control.data["radio_select"]=selected_location
-        radio_selected_data[time]["radio_select"] = selected_location
+        radio_selected_data[time] = {"radio_select":selected_location}
         page.update()

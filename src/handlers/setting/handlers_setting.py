@@ -71,7 +71,10 @@ class Handlers_setting:
     @staticmethod
     def update_datatable(panel,page):
         cells = []
-        load_data = page.client_storage.get("timeline_data")
+        try:
+            load_data = page.client_storage.get("timeline_data")
+        except:
+            load_data={}
         try:
             dat = json.loads(load_data) 
         except:
@@ -95,8 +98,14 @@ class Handlers_setting:
     @staticmethod   
     def delete_data(e,page,panel):
         #client_storageから該当データを削除する
-        load_data = page.client_storage.get("timeline_data")
-        dat = json.loads(load_data)
+        try:
+            load_data = page.client_storage.get("timeline_data")
+        except:
+            load_data = {}
+        try:
+            dat = json.loads(load_data)
+        except:
+            dat = {}
         #該当のkey
         key = e.control.data
         del dat[key]

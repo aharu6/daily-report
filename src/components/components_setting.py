@@ -24,8 +24,10 @@ class Panel:
 
     def create(self, phNameList, page):
         # phNameLIst が文字列の場合、リストに変換
+        #phNameListがない時は名前が登録されていないパネルを返す
         if isinstance(phNameList, str):
-            phNameList = json.loads(phNameList)
+                phNameList = json.loads(phNameList)
+
 
         load_data = page.client_storage.get("timeline_data")
         try:

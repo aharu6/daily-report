@@ -33,8 +33,14 @@ class ReloadDataHandler:
         page.open(drawer)
         #保存しているデータを読み出す
         #write csv時の保存名：timeline_data
-        load_data = page.client_storage.get("timeline_data")
-        dat = json.loads(load_data)
+        try:
+            load_data = page.client_storage.get("timeline_data")
+        except:
+            load_data = {}
+        try:
+            dat = json.loads(load_data)
+        except:
+            dat = {}
         #save_data = {"date_phName":dict_data}
         #日付と名前それぞれのデータを取り出す
         #ドロワーには保管されている　key = date_phNameにて表示
@@ -193,7 +199,7 @@ class ReloadDataHandler:
                                 content = ft.Container(
                                     content = ft.Text(load_data[key]["task"],color = "white"),
                                     width = 50,
-                                    height = 140,
+                                    height = 130,
                                     bgcolor = Handlers.change_color(load_data[key]["task"]),
                                     border_radius=ft.border_radius.only(top_left = 5,bottom_left=5),
                                     shape=BoxShape.RECTANGLE,
