@@ -14,6 +14,7 @@ from handlers.timeline.temp_save import Temp_Save
 from handlers.timeline.handdrag_will_accept import Add_will_accept
 from handlers.timeline.drag_leave import DragLeave
 from handlers.timeline.reload_data import ReloadDataHandler
+from handlers.timeline.write_csv import WriteCSVHandler
 from handlers.handlersMain import Handlers_Main
 from handlers.setting.task_set import Set_Default_task
 from models.models import DataModel
@@ -83,6 +84,7 @@ class TimelinePage:
                 require_location=self.require_location,
                 update_location_data=self.update_location_data,
                 radio_selected_data=self.radio_selected_data,
+                date=self.Date,
                 )
         )
 
@@ -192,7 +194,7 @@ class TimelinePage:
         self.update_location_data = {}
         self.save_error_message = ft.Container()
         self.select_directory = ft.FilePicker(
-            on_result=lambda e: Handlers.write_csv_file(
+            on_result=lambda e: WriteCSVHandler.write_csv_file(
                 e=e,
                 times=self.model.times(),
                 amTime=self.model.amTime(),
@@ -200,8 +202,6 @@ class TimelinePage:
                 columns=self.columns,
                 drag_data=self.drag_data,
                 count_dict=self.count_dict,
-                amDropDown=self.amDropDown,
-                pmDropDown=self.pmDropDown,
                 custumDrawerAm= self.custumDrawerAm,
                 custumDrawerPm=self.custumDrawerPm,
                 phName=self.phName,
@@ -209,11 +209,11 @@ class TimelinePage:
                 comment_dict=self.comment_dict,
                 select_directory=self.select_directory,
                 save_error_message=self.save_error_message,
-                today=self.today,
                 require_location=self.require_location,
                 require_name=self.require_name,
                 save_message = self.save_message,
                 update_location_data=self.update_location_data,
+                radio_selected_data=self.radio_selected_data
             )
         )
         
@@ -337,7 +337,8 @@ class TimelinePage:
                     customDrawerAm=self.custumDrawerAm,
                     customDrawerPm=self.custumDrawerPm,
                     update_location_data=self.update_location_data,
-                    radio_selected_data=self.radio_selected_data
+                    radio_selected_data=self.radio_selected_data,
+                    date=self.date,
                 ),
                 on_will_accept=lambda e: Add_will_accept.drag_will_accept(
                         e=e,
@@ -493,6 +494,7 @@ class TimelinePage:
             customDrawerAm=self.custumDrawerAm,
             customDrawerPm=self.custumDrawerPm,
             radio_selected_data=self.radio_selected_data,
+            date=self.Date,
             )
         
         Handlers.update_dropdown(

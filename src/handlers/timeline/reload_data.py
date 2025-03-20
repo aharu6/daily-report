@@ -28,6 +28,7 @@ class ReloadDataHandler:
         require_location,
         update_location_data,
         radio_selected_data,
+        date,
         ):
         import json
         page.open(drawer)
@@ -79,6 +80,7 @@ class ReloadDataHandler:
                         require_location=require_location,
                         update_location_data=update_location_data,
                         radio_selected_data=radio_selected_data,
+                        date=date,
                         ),
                     data = i
                     ),
@@ -111,6 +113,7 @@ class ReloadDataHandler:
         require_location,
         update_location_data,
         radio_selected_data,
+        date,
         ):
         
         #業務調整デフォルト入力オンオフも反映する
@@ -186,7 +189,8 @@ class ReloadDataHandler:
                                     update_location_data=update_location_data,
                                     customDrawerAm=custumDrawerAm,
                                     customDrawerPm=custumDrawerPm,
-                                    radio_selected_data=radio_selected_data,
+                                    radio_selected_dataa=radio_selected_data,
+                                    date=date,
                                 ),
                                 data = {
                                     "time": load_data[key]["time"],
@@ -216,6 +220,7 @@ class ReloadDataHandler:
                                         time = load_data[key]["time"],update_location_data=update_location_data,
                                         num = i,columns = columns,page = page,
                                         radio_selected_data=radio_selected_data,
+                                        date=date
                                         ), 
                                     ],
                                 icon = ft.icons.MORE_VERT,
@@ -307,6 +312,7 @@ class ReloadDataHandler:
                         customDrawerPm=custumDrawerPm,
                         update_location_data=update_location_data,
                         radio_selected_data=radio_selected_data,
+                        date=date,
                     ),
                     on_will_accept=lambda e:Add_will_accept.drag_will_accept(
                         e=e,

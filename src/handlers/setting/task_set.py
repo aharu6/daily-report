@@ -21,6 +21,7 @@ class Set_Default_task:
         customDrawerAm,
         customDrawerPm,
         radio_selected_data,
+        date,
         ):
         #settingpageでセットしたclient_storageの内容に従って、デフォルトでの追加タスクを設定する
         #0 on /1 off
@@ -64,6 +65,7 @@ class Set_Default_task:
                                         customDrawerAm=customDrawerAm,
                                         customDrawerPm=customDrawerPm,
                                         radio_selected_data=radio_selected_data,
+                                        date=date,
                                     ),
                                     data = {"num":19}
                                 ),
