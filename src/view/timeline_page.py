@@ -174,6 +174,7 @@ class TimelinePage:
                 comment_dict = self.comment_dict,
                 message=self.temp_save_message,
                 update_location_data=self.update_location_data,
+                radio_selected_data=self.radio_selected_data,
             )
         )
         

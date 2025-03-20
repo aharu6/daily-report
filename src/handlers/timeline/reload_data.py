@@ -345,16 +345,19 @@ class ReloadDataHandler:
         phName.value = update_phName
         
         #病棟名の再表示
-        #56のうち、columns[0] == am,columns[56] == pmのデータを取り出す
-        #全体選択の病棟データと単選択の病棟データがある
-        #別々で保存しておいて取り出す必要？
-        #業務内容が入っていないとlocateデータ入っていないので何も出てこない
         #writeにてlocateデータば辞書データと別に保管しておく
         
         load_location_data = json.loads(page.client_storage.get("location_data"))
-        am_data = load_location_data[str(update_date)]["locate_AM"]
-        pm_data = load_location_data[str(update_date)]["locate_PM"]
-        
+        #name_dateにて紐づける中から取り出す
+        key=f"{update_date}_{update_phName}"
+        am_data = load_location_data[key]["locate_AM"]
+        pm_data = load_location_data[key]["locate_PM"]
+        #初期化
+        for i in range(len(custumDrawerAm.content.controls)):
+            custumDrawerAm.content.controls[i].value = False
+        for i in range(len(custumDrawerPm.content.controls)):
+            custumDrawerPm.content.controls[i].value = False
+        #再表示
         for j in range(len(am_data)):            
             for i in range(len(custumDrawerAm.content.controls)):
                 if custumDrawerAm.content.controls[i].label == am_data[j]:
