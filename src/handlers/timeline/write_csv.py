@@ -173,24 +173,24 @@ class WriteCSVHandler:
             try:
                 pre_old_location_data=page.client_storage.get("location_data")
                 old_location_data=json.loads(pre_old_location_data)
-                dict_location_data=old_location_data|{str(date):{
+                dict_location_data=old_location_data|{data_key:{
                     "locate_AM":[],
                     "locate_PM":[],
                 }}
             except:
                 dict_location_data = {
-                    str(date): {
+                    data_key: {
                         "locate_AM": [],
                         "locate_PM": [],
                     }
                 }
 
-            dict_location_data[str(date)]["locate_AM"] = [
+            dict_location_data[data_key]["locate_AM"] = [
                 control.label
                 for control in custumDrawerAm.content.controls
                 if control.value
             ]
-            dict_location_data[str(date)]["locate_PM"] = [
+            dict_location_data[data_key]["locate_PM"] = [
                 control.label
                 for control in custumDrawerPm.content.controls
                 if control.value
@@ -214,8 +214,8 @@ class WriteCSVHandler:
             except:
                 load_radio_data = {}
 
-            #radio_selected_dataのキーを日付に変更
-            radio_selected_data = {date:radio_selected_data}
+            #radio_selected_dataのキーをdate_nameのキーに変更（削除時の挙動と合わせるため）
+            radio_selected_data = {data_key:radio_selected_data}
             #新規データを結合
             marge_radio_dict=load_radio_data|radio_selected_data
             page.client_storage.set("radio_selected_data", json.dumps(marge_radio_dict, ensure_ascii=False))

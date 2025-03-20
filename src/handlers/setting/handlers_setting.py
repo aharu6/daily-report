@@ -106,14 +106,18 @@ class Handlers_setting:
             dat = json.loads(load_data)
         except:
             dat = {}
-        #該当のkey
+        #該当のkey:
         key = e.control.data
+        print(key)
         del dat[key]
         #削除した新しいデータをclient_storageに保存
         page.client_storage.set("timeline_data",json.dumps(dat))
         #Datatableから該当の行を削除する
         Handlers_setting.update_datatable(panel,page)
         
+        #病棟全体選択データの削除
+
+        #radiobuttonを用いた病棟単数選択データの削除
         page.update()
         
     
