@@ -137,19 +137,26 @@ class Temp_Save:
         
         #locateデータ（全体選択）は別に保管しておく
             #初期ベースの作成
-        dict_location_data = {
-            str(date): {
-                "locate_AM": [],
-                "locate_PM": [],
+        try:
+            pre_old_location_data = page.client_storage.get("location_data")
+            old_location_data = json.loads(pre_old_location_data)
+            dict_location_data=old_location_data|{str(date):{
+                "locate_AM":[],
+                "locate_PM":[],
+            }}
+        except:
+            dict_location_data = {
+                str(date): {
+                    "locate_AM": [],
+                    "locate_PM": [],
+                }
             }
-        }
         dict_location_data[str(date)]["locate_AM"] = [
             control.label for control in custumDrawerAm.content.controls if control.value
         ]
         dict_location_data[str(date)]["locate_PM"] = [
             control.label for control in custumDrawerPm.content.controls if control.value
         ]
-        
         page.client_storage.set(
             "location_data",
             json.dumps(dict_location_data, ensure_ascii=False)

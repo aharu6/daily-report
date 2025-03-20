@@ -170,12 +170,21 @@ class WriteCSVHandler:
             )
             # locateデータ（全体選択）は別に保管しておく
             # 初期ベースの作成
-            dict_location_data = {
-                str(date): {
-                    "locate_AM": [],
-                    "locate_PM": [],
+            try:
+                pre_old_location_data=page.client_storage.get("location_data")
+                old_location_data=json.loads(pre_old_location_data)
+                dict_location_data=old_location_data|{str(date):{
+                    "locate_AM":[],
+                    "locate_PM":[],
+                }}
+            except:
+                dict_location_data = {
+                    str(date): {
+                        "locate_AM": [],
+                        "locate_PM": [],
+                    }
                 }
-            }
+
             dict_location_data[str(date)]["locate_AM"] = [
                 control.label
                 for control in custumDrawerAm.content.controls
@@ -186,7 +195,6 @@ class WriteCSVHandler:
                 for control in custumDrawerPm.content.controls
                 if control.value
             ]
-
             page.client_storage.set(
                 "location_data", json.dumps(dict_location_data, ensure_ascii=False)
             )
@@ -201,14 +209,16 @@ class WriteCSVHandler:
             #元データを呼び出す　なければ初期データフレームを作成
             try:
                 preload=page.client_storage.get("radio_selected_data")
-                road_radio_data=json.loads(preload)
+                load_radio_data=json.loads(preload)
                 #新規データを追加していくと増えるだけだから、日付データにてフィルタして削除する
             except:
-                road_radio_data = {}
+                load_radio_data = {}
 
-            print(radio_selected_data)
+            #radio_selected_dataのキーを日付に変更
+            radio_selected_data = {date:radio_selected_data}
             #新規データを結合
-#            add_radio=road_radio_data
+            marge_radio_dict=load_radio_data|radio_selected_data
+            page.client_storage.set("radio_selected_data", json.dumps(marge_radio_dict, ensure_ascii=False))
 
 
             # 辞書データをdfに変換
