@@ -707,7 +707,6 @@ class Handlers:
             del comment_dict[model.times()[col_num]]
 
         # カラムのgroupを元に戻す
-
     # カウンターの関数
     @staticmethod
     def counterPlus(e, count_field, count_dict, time):

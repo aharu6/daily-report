@@ -137,30 +137,44 @@ class Temp_Save:
         
         #locateデータ（全体選択）は別に保管しておく
             #初期ベースの作成
+            #紐付けはdate_nameのdata_keyにて共通させる
         try:
             pre_old_location_data = page.client_storage.get("location_data")
             old_location_data = json.loads(pre_old_location_data)
-            dict_location_data=old_location_data|{str(date):{
+            dict_location_data=old_location_data|{data_key:{
                 "locate_AM":[],
                 "locate_PM":[],
             }}
         except:
             dict_location_data = {
-                str(date): {
+                data_key: {
                     "locate_AM": [],
                     "locate_PM": [],
                 }
             }
-        dict_location_data[str(date)]["locate_AM"] = [
+        dict_location_data[data_key]["locate_AM"] = [
             control.label for control in custumDrawerAm.content.controls if control.value
         ]
-        dict_location_data[str(date)]["locate_PM"] = [
+        dict_location_data[data_key]["locate_PM"] = [
             control.label for control in custumDrawerPm.content.controls if control.value
         ]
         page.client_storage.set(
             "location_data",
             json.dumps(dict_location_data, ensure_ascii=False)
         )
+        #radio_selected_dataの保存
+        try:
+                preload=page.client_storage.get("radio_selected_data")
+                load_radio_data=json.loads(preload)
+                #新規データを追加していくと増えるだけだから、日付データにてフィルタして削除する
+        except:
+            load_radio_data = {}
+
+        #radio_selected_dataのキーをdate_nameのキーに変更（削除時の挙動と合わせるため）
+        radio_selected_data = {data_key:radio_selected_data}
+        #新規データを結合
+        marge_radio_dict=load_radio_data|radio_selected_data
+        page.client_storage.set("radio_selected_data", json.dumps(marge_radio_dict, ensure_ascii=False))
 
                     
         # その他コメントの書き込み
