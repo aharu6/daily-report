@@ -20,6 +20,7 @@ class Temp_Save:
         comment_dict,
         message,
         update_location_data,
+        radio_selected_data,
     ):
         if isinstance(select_day.data, str):
             select_day.data = datetime.strptime(select_day.data, "%Y-%m-%d")
@@ -95,7 +96,7 @@ class Temp_Save:
             else:
                 None
                 
-        #ラジオボタンでの病棟選択セータを反映
+        #ラジオボタンでの病棟選択データを反映
         #単数選択時もリスト形式に変換して保存する
         update_loc_list = []
         for time in data_dict.keys():
@@ -164,16 +165,16 @@ class Temp_Save:
         )
         #radio_selected_dataの保存
         try:
-                preload=page.client_storage.get("radio_selected_data")
-                load_radio_data=json.loads(preload)
-                #新規データを追加していくと増えるだけだから、日付データにてフィルタして削除する
+            preload = page.client_storage.get("radio_selected_data")
+            load_radio_data = json.loads(preload)
+            # 新規データを追加していくと増えるだけだから、日付データにてフィルタして削除する
         except:
             load_radio_data = {}
 
         #radio_selected_dataのキーをdate_nameのキーに変更（削除時の挙動と合わせるため）
-        radio_selected_data = {data_key:radio_selected_data}
+        selected_data = {data_key:radio_selected_data}
         #新規データを結合
-        marge_radio_dict=load_radio_data|radio_selected_data
+        marge_radio_dict=load_radio_data|selected_data
         page.client_storage.set("radio_selected_data", json.dumps(marge_radio_dict, ensure_ascii=False))
 
                     
@@ -188,4 +189,4 @@ class Temp_Save:
         message.content.controls[1].visible = True  
         page.update()
         HideMessageHandler.hide_message(message,page)
-        
+
