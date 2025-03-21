@@ -2,9 +2,6 @@ import flet as ft
 from flet import Page, AppBar, View, Text
 
 from handlers.handlersMain import Handlers_Main
-from view.timeline_page import TimelinePage
-from view.setting_page import SettingPage
-from view.chart_page import ChartPage
 # main
 def main(page: ft.Page):
 
@@ -57,10 +54,13 @@ def main(page: ft.Page):
         # ページ生成処理
         page.views.clear()
         if page.route == "/":
+            from view.timeline_page import TimelinePage
             page.views.append(TimelinePage(page).create())
         elif page.route == "/chart":
+            from view.chart_page import ChartPage
             page.views.append(ChartPage(page).create())
         elif page.route == "/settings":
+            from view.setting_page import SettingPage
             page.views.append(SettingPage(page).create())
         page.update()
 
