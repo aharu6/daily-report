@@ -116,8 +116,28 @@ class Handlers_setting:
         Handlers_setting.update_datatable(panel,page)
         
         #病棟全体選択データの削除
-
+        try:
+            load_location_data=page.client_storage.get("location_data")
+        except:
+            load_location_data={}
+        try:
+            location_data = json.loads(load_location_data)
+        except:
+            location_data = {}
+        del location_data[key]
+        page.client_storage.set("location_data",json.dumps(location_data))        
+        
         #radiobuttonを用いた病棟単数選択データの削除
+        try:
+            load_radio_data=page.client_storage.get("radio_selected_data")
+        except:
+            load_radio_data={}
+        try:
+            radio_data=json.loads(load_radio_data)
+        except:
+            radio_data={}
+        del radio_data[key]
+        page.client_storage.set("radio_selected_data",json.dumps(radio_data))
         page.update()
         
     
