@@ -13,6 +13,29 @@ def main(page: ft.Page):
     page.window.height = 1000
     page.scroll = True
 
+    
+
+    def show_progress_bar():
+        page.views.clear()
+        page.views.append(
+            View(
+                "/loading",
+                controls=[
+                    ft.Column(
+                        [
+                            ft.Text("Loading..."),
+                            ft.ProgressBar(width=200, height=20),
+                        ],
+                        alignment="certer",
+                        horizontal_alignment="center",
+                    )
+                ],
+            )
+        )
+    # 初期ページを遅延生成
+    show_progress_bar()  # プログレスバーを表示
+    page.update()  # プログレスバーを即時反映
+
     page.theme = ft.Theme(
         scrollbar_theme=ft.ScrollbarTheme(
             track_color={
@@ -33,27 +56,8 @@ def main(page: ft.Page):
         )
     )
 
-    def show_progress_bar():
-        page.views.clear()
-        page.views.append(
-            View(
-                "/loading",
-                controls=[
-                    ft.Column(
-                        [
-                            ft.Text("Loading..."),
-                            ft.ProgressBar(width=200, height=20),
-                        ],
-                        alignment="certer",
-                        horizontal_alignment="center",
-                    )
-                ],
-            )
-        )
-    def route_change(e):
-        show_progress_bar()  # プログレスバーを表示
-        page.update()  # プログレスバーを即時反映
-        
+    
+    def route_change(e):        
         # ページ生成処理
         page.views.clear()
         if page.route == "/":
@@ -94,9 +98,7 @@ def main(page: ft.Page):
             ),
         ],
     )
-    # 初期ページを遅延生成
-    show_progress_bar()  # プログレスバーを表示
-    page.update()  # プログレスバーを即時反映
+    
     page.go("/")
 
 
