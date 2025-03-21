@@ -5,7 +5,6 @@ from handlers.handlersMain import Handlers_Main
 from view.timeline_page import TimelinePage
 from view.setting_page import SettingPage
 from view.chart_page import ChartPage
-
 # main
 def main(page: ft.Page):
 
@@ -52,17 +51,16 @@ def main(page: ft.Page):
             )
         )
     def route_change(e):
-        show_progress_bar()
+        show_progress_bar()  # プログレスバーを表示
+        page.update()  # プログレスバーを即時反映
         
+        # ページ生成処理
         page.views.clear()
         if page.route == "/":
-            # 遅延生成: 必要なときにのみページを生成
             page.views.append(TimelinePage(page).create())
         elif page.route == "/chart":
-            # 遅延生成: 必要なときにのみページを生成
             page.views.append(ChartPage(page).create())
         elif page.route == "/settings":
-            # 遅延生成: 必要なときにのみページを生成
             page.views.append(SettingPage(page).create())
         page.update()
 
@@ -97,6 +95,8 @@ def main(page: ft.Page):
         ],
     )
     # 初期ページを遅延生成
+    show_progress_bar()  # プログレスバーを表示
+    page.update()  # プログレスバーを即時反映
     page.go("/")
 
 
