@@ -65,14 +65,19 @@ class Handlers_Chart:
         group_bubble2 = group_bubble.groupby(["locate","task"]).sum(numeric_only=True).reset_index()
         #times*15 = かかった時間となるので計算しなおす
         group_bubble2["times"] = group_bubble2["times"]*15
+        bar_chart=px.bar(group_bubble2,x="task",y="times")
+        """
         fig_bubble = px.scatter(group_bubble2,x = "times",y = "count",color = "task",text = "task" ,
                         )
         fig_bubble.update_layout(yaxis =dict(title = "件数"),
                                 xaxis = dict(title = "かかった時間")
                                 )
         fig_bubble.update_traces(textposition='top center')
-        
-        chart_field.controls = [(ft.Card(content = PlotlyChart(fig_bubble,expand = True,original_size = False,isolated = True)))]
+        """
+        bar_chart.update_layout(yaxis =dict(title = "かかった時間"),
+                                xaxis = dict(title = "業務内容")
+                                )
+        chart_field.controls = [(ft.Card(content = PlotlyChart(bar_chart,expand = True,original_size = False,isolated = True)))]
         page.update()
         
 
