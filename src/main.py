@@ -29,15 +29,7 @@ def main(page: ft.Page):
         )
         page.update()
     
-    async def load_initial_page():
-        # 初期ページを遅延生成
-        show_progress_bar()  # プログレスバーを表示
-        from view.timeline_page import TimelinePage
-        page.views.clear()
-        page.views.append(TimelinePage(page).create())
-        page.update()
-
-    asyncio.run(load_initial_page())
+    show_progress_bar()  # プログレスバーを表示
     
     page.theme = ft.Theme(
         scrollbar_theme=ft.ScrollbarTheme(
