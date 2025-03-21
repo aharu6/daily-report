@@ -117,5 +117,5 @@ class MakePopup:
         if isinstance(date.data,str):
             date.data=datetime.strptime(date.data,"%Y-%m-%d")
         select_day=f"{date.data.year}-{date.data.month}-{date.data.day}"
-        radio_selected_data[time]= {"date":select_day,"time":time,"radio_select":selected_location}
+        radio_selected_data[time]= {"date":select_day,"time":time,"num":num,"radio_select":selected_location}
         page.update()

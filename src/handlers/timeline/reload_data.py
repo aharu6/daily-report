@@ -371,7 +371,15 @@ class ReloadDataHandler:
                     custumDrawerPm.content.controls[i].value = True
                 else:
                     pass
-                
+        
+        #病棟単数選択（radiobutton）での再表示
+        load_radio_data=json.loads(page.client_storage.get("radio_selected_data"))
+        #name_dataにて紐づける中から取り出す
+        radio_data=load_radio_data[key]
+        #numdataもほしいかも
+        for time_key,data in radio_data.items():
+            column_num=data["num"]
+            columns[column_num].content.content.controls[3].content=ft.Text(data["radio_select"])
         #名前を入力してくださいの表示は消す
         require_name.visible = False
         #病棟を選択してくださいの表示は消す
