@@ -1,17 +1,7 @@
 import flet as ft
-from flet import Page, AppBar, View, Text, ScrollMode
-import datetime
-from components.components import (
-    DateComponent,
-    NameDropdown,
-    EndDrawer,
-    AmDropDown,
-    PmDropDown,
-    EditButton,
-    DeleteButtons,
-)
+from flet import Page, AppBar, View, Text
+
 from handlers.handlersMain import Handlers_Main
-from models.models import DataModel
 from view.timeline_page import TimelinePage
 from view.setting_page import SettingPage
 from view.chart_page import ChartPage
@@ -47,6 +37,7 @@ def main(page: ft.Page):
     def route_change(e):
         page.views.clear()
         if page.route == "/":
+            # 遅延生成: 必要なときにのみページを生成
             page.views.append(TimelinePage(page).create())
         elif page.route == "/chart":
             # 遅延生成: 必要なときにのみページを生成
@@ -58,6 +49,7 @@ def main(page: ft.Page):
 
     def view_pop(e):
         page.views.pop()
+        # 不要なリソースを解放
         page.views.clear()
 
     page.on_route_change = route_change
@@ -85,7 +77,7 @@ def main(page: ft.Page):
             ),
         ],
     )
-    # 初期ページのみ生成
+    # 初期ページを遅延生成
     page.go("/")
 
 

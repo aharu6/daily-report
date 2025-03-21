@@ -465,7 +465,6 @@ class TimelinePage:
                 ],
             )
         
-        
         #スクロールボタンを実装してみる
         #コンテンツの左移動するボタン
         self.backscrollButton = ft.ElevatedButton(
@@ -488,13 +487,6 @@ class TimelinePage:
             ],
             ft.MainAxisAlignment.SPACE_BETWEEN,
         )
-        
-        #scrollmode的に難しい？
-        #オーバーレイ表示が聞けば上に載せられる？
-        #pageでなくて、Timeline上のオーバーレイとすれば効く？
-        #とりあえず下に配置してみて、オーバーレイ表示を実装する
-        #スクロールボタンはできたので一度コミット crossaxisalignment
-        #ボタンを並べた上でバラバラにalignmentを設定？
         
         self.TimeLine.theme = ft.Theme(
             scrollbar_theme=ft.ScrollbarTheme(
