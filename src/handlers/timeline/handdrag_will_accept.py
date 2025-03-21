@@ -10,10 +10,7 @@ class Add_will_accept:
         #data = winllacceptだけ渡してaccept関数にて更新
         #左にドラッグしないようにする
         left_key = columns[e.control.data["num"]-1].content.data["task"]
-        #ドラッグ前はtaskは空
-        
         if e.data == 'false':
-            #timelineの時は矢印表示
             #deleteiconがonになっているときは矢印も表示しない
             #編集できないようにする
             if e.control.group == "timeline":
@@ -21,7 +18,6 @@ class Add_will_accept:
                     case "":
                         pass
                     case _:
-                        
                         e.control.content = ft.Column(
                             controls=[
                                 ft.Draggable(
@@ -32,10 +28,7 @@ class Add_will_accept:
                                         height = 50,
                                         border_radius = 50,
                                         #colorもkeyによるのでacceptにて適用する
-                                        #丸とか別の形にする？
                                         #右にスライドしたら右矢印、左にドラッグしたら左矢印　コンテンツのみの更新
-                                        #データ保存時にどうにかする
-                                        #方向は固定できる？
                                         #コピーの方向は右移動だけに限定する？　データ編集が楽
                                         #右と左それぞれからドラッグされた時バッティングするため
                                         #表示矢印も右矢印だけですむ

@@ -137,7 +137,6 @@ class Handlers_Chart:
         # 個人ごとにデータをまとめ直す
         gorup_by_person = df.groupby(["phName","task"]).size().reset_index(name="counts")
         
-        
         # その上にplotlyにて円グラフを作成する
         fig_bar = px.bar(gorup_by_person, x="counts", y="phName", color="task", barmode="stack", orientation="h")
         # まずグラフを描画するcardを作成
