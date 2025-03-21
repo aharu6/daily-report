@@ -16,6 +16,6 @@ Python �� rich ���C�u�����Ƀf�t�H���g�G���
 PYTHONUTF8=1 flet build windows
 
 
-installer --onefile --icon=appicon\diary-left-svgrepo-com.ico --hidden-import pandas --hidden-import numpy --hidden-import csv --hidden-import datetime　--hidden-import plotly　--collect-all plotly  "main.py"
+pyinstaller --onefile --icon=appicon\diary-left-svgrepo-com.ico --hidden-import pandas --hidden-import numpy --hidden-import csv --hidden-import datetime　--hidden-import plotly　--collect-all plotly  "main.py"
 
 onefile とnonconsoleの併用はエラーが起きやすくなるかも
