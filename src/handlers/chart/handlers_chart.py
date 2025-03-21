@@ -33,9 +33,23 @@ class Handlers_Chart:
 
             except Exception as e:
                 pass
+    @staticmethod
+    def show_progress_bar(chart_field, page):
+        chart_field.controls=[
+            ft.Card(
+                content=ft.Column(
+                    [
+                        ft.Text("Loading..."),
+                        ft.ProgressBar(width=200, height=20),
+                    ],
+                ),
+            )
+        ]
+        page.update()
 
     @staticmethod
     def ComponentChart_for_standard(dataframe, chart_field, page):
+        Handlers_Chart.show_progress_bar(chart_field, page)
         new_rows = []
         for index, row in dataframe.iterrows():
             tarn_row = ast.literal_eval(row["locate"])
@@ -58,7 +72,7 @@ class Handlers_Chart:
                                 )
         fig_bubble.update_traces(textposition='top center')
         
-        chart_field.append(ft.Card(content = PlotlyChart(fig_bubble,expand = True,original_size = False,isolated = True)))
+        chart_field.controls = [(ft.Card(content = PlotlyChart(fig_bubble,expand = True,original_size = False,isolated = True)))]
         page.update()
         
 
@@ -72,6 +86,7 @@ class Handlers_Chart:
             chart_field (_type_): _description_
             page (_type_): _description_
         """
+        Handlers_Chart.show_progress_bar(chart_field, page)
         # データフレームを渡してグラフを生成する
         # まずグラフを描画するcardを病棟数分作成
         # 取得したデータフレームから病棟の数,名前を取得
@@ -98,7 +113,7 @@ class Handlers_Chart:
                 names="task",
                 title=locate,
             )
-            chart_field.append(
+            chart_field.controls = [
                 ft.Card(
                     content=ft.Column(
                         controls=[
@@ -112,7 +127,7 @@ class Handlers_Chart:
                     data=locate,
                     col={"sm": 10, "md": 6, "xl": 4},
                 )
-            )
+            ]
         page.update()
         # その上にplotlyにて円グラフを作成する
 
@@ -123,6 +138,7 @@ class Handlers_Chart:
         Args:
             dataframe (_type_): pick_file_resultで返されるデータフレーム
         """
+        Handlers_Chart.show_progress_bar(chart_field, page)
         #データフレームの作成
         new_rows = []
         for index, row in dataframe.iterrows():
@@ -140,7 +156,9 @@ class Handlers_Chart:
         # その上にplotlyにて円グラフを作成する
         fig_bar = px.bar(gorup_by_person, x="counts", y="phName", color="task", barmode="stack", orientation="h")
         # まずグラフを描画するcardを作成
-        chart_field.append(ft.Card(content = 
-            PlotlyChart(fig_bar,expand = True,original_size = False,isolated = True)
-        ))
+        chart_field.controls = [
+            ft.Card(content = 
+                PlotlyChart(fig_bar,expand = True,original_size = False,isolated = True)
+            )
+        ]
         page.update()
