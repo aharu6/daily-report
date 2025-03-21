@@ -339,7 +339,7 @@ class TimelinePage:
                     customDrawerPm=self.custumDrawerPm,
                     update_location_data=self.update_location_data,
                     radio_selected_data=self.radio_selected_data,
-                    date=self.date,
+                    date=self.Date,
                 ),
                 on_will_accept=lambda e: Add_will_accept.drag_will_accept(
                         e=e,
