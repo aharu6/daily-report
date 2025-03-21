@@ -34,7 +34,26 @@ def main(page: ft.Page):
         )
     )
 
+    def show_progress_bar():
+        page.views.clear()
+        page.views.append(
+            View(
+                "/loading",
+                controls=[
+                    ft.Column(
+                        [
+                            ft.Text("Loading..."),
+                            ft.ProgressBar(width=200, height=20),
+                        ],
+                        alignment="certer",
+                        horizontal_alignment="center",
+                    )
+                ],
+            )
+        )
     def route_change(e):
+        show_progress_bar()
+        
         page.views.clear()
         if page.route == "/":
             # 遅延生成: 必要なときにのみページを生成

@@ -23,6 +23,7 @@ from models.models import DataModel
 class TimelinePage:
     def __init__(self, page):
         self.page = page
+        self.progress_bar=None
         self.handle_change = Handlers.handle_change
         self.today = datetime.date.today()
 
@@ -68,7 +69,6 @@ class TimelinePage:
         self.choice_button = None
         self.contents_list = None
 
-        
     def initialize_components(self):
         if not self.date_component:
             self.date_component = DateComponent(

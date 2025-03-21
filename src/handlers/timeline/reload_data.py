@@ -132,7 +132,6 @@ class ReloadDataHandler:
         #前のコンテンツが残っていて、追加される形式となっているので全てクリアしてから追加する
         
         from handlers.timeline.handlers import Handlers
-        from handlers.timeline.delete_content_reload import DeleteContentReloadHandler
         import re
         import json
         from handlers.timeline.make_popup import MakePopup
@@ -161,10 +160,9 @@ class ReloadDataHandler:
                 )
                 
             elif re.search(r'.+',load_data[key]["task"]):
-                
                 #DragTargetにて元のと揃えた方がいい
                 columns[i].content = ft.DragTarget(
-                    group  = "timeline_accepted",
+                    group  = "timeline",
                     content=ft.Column(
                         controls = [
                             ft.IconButton(
@@ -189,7 +187,7 @@ class ReloadDataHandler:
                                     update_location_data=update_location_data,
                                     customDrawerAm=custumDrawerAm,
                                     customDrawerPm=custumDrawerPm,
-                                    radio_selected_dataa=radio_selected_data,
+                                    radio_selected_data=radio_selected_data,
                                     date=date,
                                 ),
                                 data = {
@@ -322,7 +320,7 @@ class ReloadDataHandler:
                         
                     ),
                     on_leave=lambda e:DragLeave.drag_leave(e=e,page=page),
-                        data={"time":load_data[key]["time"],"num":i,"task":load_data[key]["task"]},
+                    data={"time":load_data[key]["time"],"num":i,"task":load_data[key]["task"]},
                 )
                 #コメント記載がある場合には内容更新もできる？
                 
