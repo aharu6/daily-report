@@ -64,26 +64,27 @@ def main(page:ft.Page):
     #ページを更新する
     def route_change(e):
         page.views.clear()
-        page.views.append(
-            View(
-                "/",
-                [
-                    ft.Row(
-                        [   
-                            reset_button,
-                            rail,
-                            ft.VerticalDivider(),
-                            ft.Text("Home"),
-                            text_field,
-                            pop_up_button,
-                        ],
-                        height = 600
-                    )
-                ],
+        if page.route == "/":
+            page.views.append(
+                View(
+                    "/",
+                    [
+                        ft.Row(
+                            [
+                                reset_button,
+                                rail,
+                                ft.VerticalDivider(),
+                                ft.Text("Home"),
+                                text_field,
+                                pop_up_button,
+                            ],
+                            height=600,
+                        )
+                    ],
+                )
             )
-        )
-        if page.route == "/chart":
-            page.views.clear()
+        elif page.route == "/chart":
+            # 遅延生成: 必要なときにのみページを生成
             page.views.append(
                 View(
                     "/chart",
@@ -94,13 +95,13 @@ def main(page:ft.Page):
                                 ft.VerticalDivider(),
                                 ft.Text("Chart"),
                             ],
-                            height = 600
+                            height=600,
                         )
                     ],
                 )
             )
-        if page.route == "/settings":
-            page.views.clear()
+        elif page.route == "/settings":
+            # 遅延生成: 必要なときにのみページを生成
             page.views.append(
                 View(
                     "/settings",
@@ -111,7 +112,7 @@ def main(page:ft.Page):
                                 ft.VerticalDivider(),
                                 ft.Text("Settings"),
                             ],
-                            height = 600
+                            height=600,
                         )
                     ]
                 )
@@ -152,6 +153,7 @@ def main(page:ft.Page):
     page.on_route_change = route_change
     page.on_view_pop = view_pop
     
-    page.go(page.route)
+    # 初期ページのみ生成
+    page.go("/")
     
 ft.app(main)
