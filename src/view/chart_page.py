@@ -40,7 +40,7 @@ class ChartPage:
             content=ft.TextButton(
                 "グラフを生成",
                 on_click=lambda _: Handlers_Chart.ComponentChart_for_standard(
-                    self.dataframe, self.chart1_field.controls, page
+                    self.dataframe, self.chart1_field, page
                 ),
             )
         )
@@ -51,7 +51,7 @@ class ChartPage:
             content=ft.TextButton(
                 "グラフを生成",
                 on_click=lambda _: Handlers_Chart.ComponentChart_for_location(
-                    self.dataframe, self.chart2_field.controls, page
+                    self.dataframe, self.chart2_field, page
                 ),
             )
         )
@@ -63,7 +63,7 @@ class ChartPage:
             content=ft.TextButton(
                 "グラフを生成",
                 on_click=lambda _: Handlers_Chart.ComponentChart_for_self(
-                    self.dataframe, self.chart3_field.controls,page
+                    self.dataframe, self.chart3_field,page
                 ),
             )
         )
