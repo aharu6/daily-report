@@ -1,6 +1,6 @@
 import flet as ft
-from flet import Page, AppBar, View, Text
-
+from flet import View
+import asyncio
 from handlers.handlersMain import Handlers_Main
 # main
 def main(page: ft.Page):
@@ -9,8 +9,6 @@ def main(page: ft.Page):
     page.window.width = 1400
     page.window.height = 1000
     page.scroll = True
-
-    
 
     def show_progress_bar():
         page.views.clear()
@@ -29,10 +27,18 @@ def main(page: ft.Page):
                 ],
             )
         )
-    # 初期ページを遅延生成
-    show_progress_bar()  # プログレスバーを表示
-    page.update()  # プログレスバーを即時反映
+        page.update()
+    
+    async def load_initial_page():
+        # 初期ページを遅延生成
+        show_progress_bar()  # プログレスバーを表示
+        from view.timeline_page import TimelinePage
+        page.views.clear()
+        page.views.append(TimelinePage(page).create())
+        page.update()
 
+    asyncio.run(load_initial_page())
+    
     page.theme = ft.Theme(
         scrollbar_theme=ft.ScrollbarTheme(
             track_color={
