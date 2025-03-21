@@ -45,13 +45,14 @@ def main(page: ft.Page):
     )
 
     def route_change(e):
-        page.on_view_pop = view_pop
         page.views.clear()
         if page.route == "/":
             page.views.append(TimelinePage(page).create())
         elif page.route == "/chart":
+            # 遅延生成: 必要なときにのみページを生成
             page.views.append(ChartPage(page).create())
-        if page.route == "/settings":
+        elif page.route == "/settings":
+            # 遅延生成: 必要なときにのみページを生成
             page.views.append(SettingPage(page).create())
         page.update()
 
@@ -84,7 +85,8 @@ def main(page: ft.Page):
             ),
         ],
     )
-    page.go(page.route)
+    # 初期ページのみ生成
+    page.go("/")
 
 
 ft.app(main)
