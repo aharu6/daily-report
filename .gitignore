@@ -18,3 +18,4 @@ app/main.spec
 src/.DS_Store
 .DS_Store
 
+/src/testfile/dist
