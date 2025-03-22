@@ -3,7 +3,7 @@ from flet import View
 import datetime
 from handlers.handlersMain import Handlers_Main
 from handlers.chart.handlers_chart import Handlers_Chart
-from components.compoments_chart import FilePickCard
+from components.compoments_chart import FilePickCard,FileNameCard
 import asyncio as aio
 
 
@@ -14,11 +14,6 @@ class ChartPage:
         # データフレームを定義しておく
         # ファイルのアップロードにてデータフレームの作成まで
         self.dataframe = None
-        self.file_picker = ft.FilePicker(
-            on_result=lambda e: Handlers_Chart.pick_file_result(
-                e, self.selected_files, self
-            )
-        )
         self.file_picker_Button = ft.TextButton(
             "ファイルを選択",
             on_click=lambda _: self.file_picker.pick_files(allow_multiple=True),
@@ -26,11 +21,18 @@ class ChartPage:
         self.select = ft.Row(
             controls=[
                 FilePickCard(self.file_picker_Button).create(),
+                FileNameCard().create(),
             ],
             alignment=ft.MainAxisAlignment.END,
         )
-        self.selected_files = ft.Text()
 
+        self.file_picker = ft.FilePicker(
+            on_result=lambda e: Handlers_Chart.pick_file_result(
+                e, self.selected_files, self,
+                self.select.controls[1],
+            )
+        )
+        self.selected_files = ft.Text()
         self.page.overlay.append(self.file_picker)
         
         self.subtitle = ft.Text("集計", size = 20)
@@ -67,7 +69,7 @@ class ChartPage:
                 ),
             )
         )
-
+    
     def create(self):
         return View(
             "/chart",
