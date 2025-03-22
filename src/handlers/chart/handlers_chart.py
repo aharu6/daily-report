@@ -22,6 +22,8 @@ class Handlers_Chart:
         if e.files:
             selected_files.text = ",".join(map(lambda x: x.name, e.files))
             file_paths = [f.path for f in e.files]
+            #ファイル名の表示
+            #Handlers_Chart.pick_file_name(file_paths)
             try:
                 # ファイルの数だけ繰り返す
                 parent_instance.dataframe = pd.concat(
@@ -33,6 +35,10 @@ class Handlers_Chart:
 
             except Exception as e:
                 pass
+    @staticmethod
+    def pick_file_name(file_paths):
+        pass
+
     @staticmethod
     def show_progress_bar(chart_field, page):
         chart_field.controls=[
@@ -65,14 +71,19 @@ class Handlers_Chart:
         group_bubble2 = group_bubble.groupby(["locate","task"]).sum(numeric_only=True).reset_index()
         #times*15 = かかった時間となるので計算しなおす
         group_bubble2["times"] = group_bubble2["times"]*15
+        bar_chart=px.bar(group_bubble2,x="task",y="times")
+        """
         fig_bubble = px.scatter(group_bubble2,x = "times",y = "count",color = "task",text = "task" ,
                         )
         fig_bubble.update_layout(yaxis =dict(title = "件数"),
                                 xaxis = dict(title = "かかった時間")
                                 )
         fig_bubble.update_traces(textposition='top center')
-        
-        chart_field.controls = [(ft.Card(content = PlotlyChart(fig_bubble,expand = True,original_size = False,isolated = True)))]
+        """
+        bar_chart.update_layout(yaxis =dict(title = "かかった時間"),
+                                xaxis = dict(title = "業務内容")
+                                )
+        chart_field.controls = [(ft.Card(content = PlotlyChart(bar_chart,expand = True,original_size = False,isolated = True)))]
         page.update()
         
 
