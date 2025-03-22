@@ -31,3 +31,21 @@ class FilePickCard:
             ),
             width =500,
         )
+
+class FileNameCard:
+    def __init__(self):
+        pass
+    def create(self):
+        return ft.Card(
+            content=ft.Container(
+                content=ft.Column(
+                    controls=[
+                        ft.ListTile(
+                            leading=ft.Icon(ft.icons.DESCRIPTION),
+                            title=ft.Text("読み込んだファイル一覧"),
+                            title_alignment=ft.MainAxisAlignment.END,
+                        ),
+                    ]
+                )
+            )
+        )

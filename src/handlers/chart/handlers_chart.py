@@ -11,7 +11,7 @@ import chart_studio.plotly as py
 # Chartページ用のハンドラ
 class Handlers_Chart:
     @staticmethod
-    def pick_file_result(e: ft.FilePickerResultEvent, selected_files, parent_instance):
+    def pick_file_result(e: ft.FilePickerResultEvent, selected_files, parent_instance,card):
         """_summary_
 
         Args:
@@ -22,8 +22,9 @@ class Handlers_Chart:
         if e.files:
             selected_files.text = ",".join(map(lambda x: x.name, e.files))
             file_paths = [f.path for f in e.files]
+            file_name=[f.name for f in e.files]
             #ファイル名の表示
-            #Handlers_Chart.pick_file_name(file_paths)
+            Handlers_Chart.pick_file_name(file_name,card)
             try:
                 # ファイルの数だけ繰り返す
                 parent_instance.dataframe = pd.concat(
@@ -35,10 +36,20 @@ class Handlers_Chart:
 
             except Exception as e:
                 pass
-    @staticmethod
-    def pick_file_name(file_paths):
-        pass
 
+    @staticmethod
+    def pick_file_name(file_name,card):
+        card_list=[ft.ListTile(
+            title=ft.Text("読み込んだファイル一覧"),
+            leading=ft.Icon(ft.icons.LIST),
+            title_alignment=ft.MainAxisAlignment.END,
+            )]
+        for i in range(len(file_name)):
+            card_list.append(
+                ft.ListTile(title=ft.Text(file_name[i])),
+                )
+        card.content.content.controls=card_list
+        card.update()
     @staticmethod
     def show_progress_bar(chart_field, page):
         chart_field.controls=[
