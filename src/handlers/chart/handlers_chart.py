@@ -22,6 +22,8 @@ class Handlers_Chart:
         if e.files:
             selected_files.text = ",".join(map(lambda x: x.name, e.files))
             file_paths = [f.path for f in e.files]
+            #ファイル名の表示
+            #Handlers_Chart.pick_file_name(file_paths)
             try:
                 # ファイルの数だけ繰り返す
                 parent_instance.dataframe = pd.concat(
@@ -33,6 +35,10 @@ class Handlers_Chart:
 
             except Exception as e:
                 pass
+    @staticmethod
+    def pick_file_name(file_paths):
+        pass
+
     @staticmethod
     def show_progress_bar(chart_field, page):
         chart_field.controls=[
