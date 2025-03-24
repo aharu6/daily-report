@@ -381,7 +381,7 @@ class ReloadDataHandler:
         #名前を入力してくださいの表示は消す
         require_name.visible = False
         #病棟を選択してくださいの表示は消す
-        require_location.visible = False
+        require_location.content.controls[0].visible = False
                 
         page.update()
         
