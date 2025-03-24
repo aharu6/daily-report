@@ -495,9 +495,10 @@ class DeleteButtons:
 
 
 class CreateCounter:
-    def __init__(self, page, count_field):
+    def __init__(self, page, count_field,count_dict):
         self.page = page
         self.count_field = count_field
+        self.count_dict = count_dict
 
     def create(self, e):
         return ft.Column(
@@ -506,7 +507,7 @@ class CreateCounter:
                     icon=ft.icons.ARROW_DROP_UP_OUTLINED,
                     icon_size=25,
                     on_click=lambda _: self.counterPlus(
-                        e, self.count_field, count_dict
+                        e, self.count_field, self.count_dict
                     ),
                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
                 ),
@@ -515,7 +516,7 @@ class CreateCounter:
                     ft.icons.ARROW_DROP_DOWN_OUTLINED,
                     icon_size=25,
                     on_click=lambda _: self.counterMinus(
-                        e, self.count_field, cont_dict
+                        e, self.count_field, self.cont_dict
                     ),
                     style=ft.ButtonStyle(shape=ft.RoundedReactangleBorder(radius=5)),
                 ),

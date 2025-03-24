@@ -13,6 +13,8 @@ class CounterHandlers:
     def counterMinus(e, count_field, count_dict, time):
         old_Count = int(count_field.value)
         new_Count = old_Count - 1
+        if new_Count < 0:
+            new_Count = 0
         count_field.value = new_Count
         count_field.update()
         count_dict[time]["count"] = new_Count
