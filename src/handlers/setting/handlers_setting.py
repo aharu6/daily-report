@@ -97,6 +97,7 @@ class Handlers_setting:
 
     @staticmethod   
     def delete_data(e,page,panel):
+        import datetime
         #client_storageから該当データを削除する
         try:
             load_data = page.client_storage.get("timeline_data")
@@ -108,7 +109,17 @@ class Handlers_setting:
             dat = {}
         #該当のkey:
         key = e.control.data
-        print(key)
+        
+        try:
+            page.client_storage.get("delete_drag")
+            delete_drag_data = json.loads(page.client_storage.get("delete_drag"))
+        except:
+            delete_drag_data = {}
+        #削除時の日付データを加える
+        #デバック用に過去の日付を追加
+        dat[key]["delete"]=str(datetime.date.today())
+        delete_drag_data.update({key:dat[key]})
+        page.client_storage.set("delete_drag",json.dumps(delete_drag_data))
         del dat[key]
         #削除した新しいデータをclient_storageに保存
         page.client_storage.set("timeline_data",json.dumps(dat))

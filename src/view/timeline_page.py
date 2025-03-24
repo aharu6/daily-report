@@ -18,6 +18,7 @@ from handlers.timeline.write_csv import WriteCSVHandler
 from handlers.handlersMain import Handlers_Main
 from handlers.setting.task_set import Set_Default_task
 from models.models import DataModel
+from handlers.timeline.trash_handler import TrashDataHandler
 # timelinepageのviewを定義
 # main.pyの内容をこちらに移動する
 class TimelinePage:
@@ -55,8 +56,10 @@ class TimelinePage:
         self.ampmSelect = None
         self.custumDrawerAmTitle = None
         self.custumDrawerAm = None
+        self.am_total_num = None
         self.custumDrawerPmTitle = None
         self.custumDrawerPm = None
+        self.pm_total_num = None
         self.TimeLine = None
         self.scrollButton = None
         self.backscrollButton = None
@@ -70,6 +73,9 @@ class TimelinePage:
         self.contents_list = None
 
     def initialize_components(self):
+        #起動時に30日経過したゴミ箱データは削除する
+        TrashDataHandler.delete_trash_data(self.page,self.Date)
+        
         if not self.date_component:
             self.date_component = DateComponent(
                 self.page, self.today, lambda e: self.handle_change(e, self.Date,self.page)

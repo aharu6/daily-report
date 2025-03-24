@@ -4,7 +4,7 @@ from handlers.handlersMain import Handlers_Main
 from handlers.setting.handlers_setting import Handlers_setting
 from components.components_setting import Panel, Title
 from models.models import DataModel
-
+from handlers.setting.trash_handler import TrashDataHandler
 
 class SettingPage:
     def __init__(self, page):
@@ -15,6 +15,8 @@ class SettingPage:
         self.phNameList = self.model.load_data(page)
         self.panel = Panel(self).create(self.phNameList, page)
         
+        TrashDataHandler.delete_trash_data(page)
+
         # panelのcontrolsの最後のlistTileにon_click関数を追加する
         Handlers_setting.update_ListTile(self.panel, self.phNameList, page)
         self.panel.controls[0].content.controls[-1].on_click = (
