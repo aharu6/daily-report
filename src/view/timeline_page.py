@@ -229,7 +229,18 @@ class TimelinePage:
         
         
         self.require_name = ft.Container(ft.Text("名前を選択してください", color="red"))
-        self.require_location = ft.Container(ft.Text("病棟を選択してください",color = "red"))
+        self.require_location = ft.Container(ft.Column(
+            controls=[
+                ft.Text("病棟を選択してください",color = "red"),
+                ft.ListTile(
+                    title=ft.Text("AM",color="red"),
+                ),
+                ft.ListTile(
+                    title=ft.Text("PM",color="red"),
+                ),
+            ],
+            spacing=0,
+        ))
         self.save_message = ft.Container(ft.Row(
             controls=[
                 ft.Icon(ft.icons.CHECK,color  = "green",visible = False ),
@@ -439,7 +450,8 @@ class TimelinePage:
         
         self.custumDrawerAm = ft.Container()
         self.custumDrawerAm.visible = False
-        self.custumDrawerAm.content = AmDropDown().create(self.require_location,self.page)
+        self.am_total_num={"count":0}#AMの病棟選択数
+        self.custumDrawerAm.content = AmDropDown().create(self.require_location,self.page,self.am_total_num )
 
         self.custumDrawerPmTitle = ft.ResponsiveRow(
             controls = [
@@ -450,7 +462,8 @@ class TimelinePage:
         self.custumDrawerPmTitle.visible = False
         self.custumDrawerPm = ft.Container()
         self.custumDrawerPm.visible = False
-        self.custumDrawerPm.content = PmDropDown().create(self.require_location,self.page)
+        self.pm_total_num={"count":0}#PMの病棟選択数
+        self.custumDrawerPm.content = PmDropDown().create(self.require_location,self.page,self.pm_total_num)
 
         if not self.TimeLine:
             self.TimeLine = ft.Row(
