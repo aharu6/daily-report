@@ -71,9 +71,7 @@ class TimelinePage:
         self.choice_button = None
         self.contents_list = None
 
-    def initialize_components(self):
-        #起動時に30日経過したゴミ箱データは削除する
-        
+    def initialize_components(self):        
         if not self.date_component:
             self.date_component = DateComponent(
                 self.page, self.today, lambda e: self.handle_change(e, self.Date,self.page)
