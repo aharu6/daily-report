@@ -19,3 +19,4 @@ src/.DS_Store
 .DS_Store
 
 /src/testfile/dist
+src/testfile/date_col.py
