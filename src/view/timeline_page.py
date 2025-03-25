@@ -55,8 +55,10 @@ class TimelinePage:
         self.ampmSelect = None
         self.custumDrawerAmTitle = None
         self.custumDrawerAm = None
+        self.am_total_num = None
         self.custumDrawerPmTitle = None
         self.custumDrawerPm = None
+        self.pm_total_num = None
         self.TimeLine = None
         self.scrollButton = None
         self.backscrollButton = None
@@ -69,7 +71,7 @@ class TimelinePage:
         self.choice_button = None
         self.contents_list = None
 
-    def initialize_components(self):
+    def initialize_components(self):        
         if not self.date_component:
             self.date_component = DateComponent(
                 self.page, self.today, lambda e: self.handle_change(e, self.Date,self.page)
