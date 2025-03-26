@@ -5,7 +5,7 @@ from models.models import DataModel
 from handlers.setting.handlers_setting import Handlers_setting
 from flet import TextAlign
 from handlers.setting.reload_set_data import ReloadSetDataButton
-
+from handlers.setting.trash_exp import Trashdata_ExpantionPanel
 class Title:
     def __init__(self, page):
         self.page = page
@@ -64,7 +64,7 @@ class Panel:
                     bgcolor=None,
                     header=ft.ListTile(
                         leading=ft.Icon(ft.icons.STORAGE),
-                        title=ft.Text("保存データの削除"),
+                        title=ft.Text("この端末に保存されているデータ"),
                     ),
                     content = ft.DataTable(
                         width = 700,
@@ -81,6 +81,18 @@ class Panel:
                             for i in key
                         ],
                     ),
+                ),
+                ft.ExpansionPanel(
+                    bgcolor=None,
+                    header=ft.ListTile(
+                        leading=ft.Icon(ft.icons.DELETE),
+                        title=ft.Text("削除データ"),
+                        subtitle=ft.Text("ここに保管されているデータは30日後に自動削除されます")
+                        ),
+                        content=ft.Column(
+                            controls=Trashdata_ExpantionPanel.create_expantion_panel(page)
+                    
+                        )
                 ),
                 ft.ExpansionPanel(
                     bgcolor = None,
