@@ -10,8 +10,13 @@ class Trashdata_ExpantionPanel:
             load=json.loads(data)
         except:
             load={}
-
-        panel=[]
+        try:
+            location_data=json.loads(page.client_storage.get("delete_location"))
+            radio_data=json.loads(page.client_storage.get("delete_radio"))
+        except:
+            location_data={}
+            radio_data={}
+        panel=[]    
         try:
             for key in load.keys():
                 panel.append(
@@ -20,7 +25,12 @@ class Trashdata_ExpantionPanel:
                         subtitle=ft.Text(f"削除日: {load[key]['delete']}"),
                         trailing=ft.IconButton(
                             ft.icons.RESTORE,
-                            data={"key":key,"data":load[key]},
+                            data={
+                                "key":key,
+                                "data":load[key],
+                                "location_data":location_data[key],
+                                "radio_data":radio_data[key]
+                                },
                             tooltip="復元する",
                             on_click=lambda e: RestoreData.restore_data(e,page)
                         )
