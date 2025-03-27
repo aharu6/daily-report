@@ -107,7 +107,7 @@ class Handlers_setting:
             dat = json.loads(load_data)
         except:
             dat = {}
-        #該当のkey:
+        #該当のkey:date_name
         key = e.control.data
         
         try:
@@ -116,8 +116,8 @@ class Handlers_setting:
         except:
             delete_drag_data = {}
         #削除時の日付データを加える
-        #デバック用に過去の日付を追加
-        dat[key]["delete"]=str(datetime.date.today())
+        today = datetime.date.today()
+        dat[key]["delete"] = today.strftime("%Y-%m-%d")
         delete_drag_data.update({key:dat[key]})
         page.client_storage.set("delete_drag",json.dumps(delete_drag_data))
         del dat[key]
@@ -135,8 +135,12 @@ class Handlers_setting:
             location_data = json.loads(load_location_data)
         except:
             location_data = {}
-        del location_data[key]
-        page.client_storage.set("location_data",json.dumps(location_data))        
+            
+        try:
+            del location_data[key]
+            page.client_storage.set("location_data",json.dumps(location_data))        
+        except:
+            pass
         
         #radiobuttonを用いた病棟単数選択データの削除
         try:

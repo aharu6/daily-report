@@ -1,11 +1,8 @@
 import flet as ft
-import datetime
 import json
-from models.models import DataModel
-from handlers.setting.handlers_setting import Handlers_setting
-from flet import TextAlign
 from handlers.setting.reload_set_data import ReloadSetDataButton
 from handlers.setting.trash_exp import Trashdata_ExpantionPanel
+
 class Title:
     def __init__(self, page):
         self.page = page
