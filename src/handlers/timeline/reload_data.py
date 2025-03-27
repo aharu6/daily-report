@@ -29,6 +29,8 @@ class ReloadDataHandler:
         update_location_data,
         radio_selected_data,
         date,
+        total_num_am,
+        total_num_pm,
         ):
         import json
         page.open(drawer)
@@ -81,6 +83,8 @@ class ReloadDataHandler:
                         update_location_data=update_location_data,
                         radio_selected_data=radio_selected_data,
                         date=date,
+                        total_num_am=total_num_am,
+                        total_num_pm=total_num_pm,
                         ),
                     data = i
                     ),
@@ -114,6 +118,8 @@ class ReloadDataHandler:
         update_location_data,
         radio_selected_data,
         date,
+        total_num_am,
+        total_num_pm,
         ):
         
         #業務調整デフォルト入力オンオフも反映する
@@ -360,6 +366,7 @@ class ReloadDataHandler:
             for i in range(len(custumDrawerAm.content.controls)):
                 if custumDrawerAm.content.controls[i].label == am_data[j]:
                     custumDrawerAm.content.controls[i].value = True
+                    total_num_am["count"]+=1
                 else:
                     pass
         
@@ -367,6 +374,7 @@ class ReloadDataHandler:
             for i in range(len(custumDrawerPm.content.controls)):
                 if custumDrawerPm.content.controls[i].label == pm_data[j]:
                     custumDrawerPm.content.controls[i].value = True
+                    total_num_pm["count"]+=1
                 else:
                     pass
         
@@ -380,8 +388,35 @@ class ReloadDataHandler:
             columns[column_num].content.content.controls[3].content=ft.Text(data["radio_select"])
         #名前を入力してくださいの表示は消す
         require_name.visible = False
+
         #病棟を選択してくださいの表示は消す
-        require_location.content.controls[0].visible = False
+        if total_num_am["count"]>0:
+            require_location.content.controls[1].title.color="green"
+            require_location.content.controls[1].leading=ft.Icon(ft.icons.CHECK_CIRCLE_OUTLINE, color="green")
+            require_location.content.controls[1].data="true"
+        elif total_num_am["count"]==0:
+            require_location.content.controls[1].title.color="red"
+            require_location.content.controls[1].leading=ft.Icon(ft.icons.HIGHLIGHT_OFF, color="red")
+            require_location.content.controls[1].data="false"
+            require_location.content.controls[0].visible =True
+            require_location.content.controls[2].visible =True
+        
+        if total_num_am["count"]>0:
+            require_location.content.controls[2].title.color="green"
+            require_location.content.controls[2].leading=ft.Icon(ft.icons.CHECK_CIRCLE_OUTLINE, color="green")
+            require_location.content.controls[2].data="true"
+        elif total_num_am["count"]==0:
+            require_location.content.controls[2].title.color="red"
+            require_location.content.controls[2].leading=ft.Icon(ft.icons.HIGHLIGHT_OFF, color="red")
+            require_location.content.controls[2].data="false"
+            require_location.content.controls[0].visible =True
+            require_location.content.controls[1].visible =True
+
+        if require_location.content.controls[1].data=="true" and require_location.content.controls[2].data=="true":
+            require_location.content.controls[0].visible =False
+            require_location.content.controls[1].visible =False
+            require_location.content.controls[2].visible =False
+
                 
         page.update()
         

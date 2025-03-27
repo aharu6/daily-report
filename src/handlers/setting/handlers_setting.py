@@ -98,57 +98,75 @@ class Handlers_setting:
     @staticmethod   
     def delete_data(e,page,panel):
         import datetime
+        #該当のkey:date_name
+        key = e.control.data
+        #削除時の日付データを加える
+        today = datetime.date.today()
+
         #client_storageから該当データを削除する
         try:
-            load_data = page.client_storage.get("timeline_data")
-        except:
-            load_data = {}
-        try:
-            dat = json.loads(load_data)
+            dat = json.loads(page.client_storage.get("timeline_data"))
         except:
             dat = {}
-        #該当のkey:
-        key = e.control.data
         
         try:
-            page.client_storage.get("delete_drag")
             delete_drag_data = json.loads(page.client_storage.get("delete_drag"))
         except:
             delete_drag_data = {}
-        #削除時の日付データを加える
-        #デバック用に過去の日付を追加
-        dat[key]["delete"]=str(datetime.date.today())
+
+        dat[key]["delete"] = today.strftime("%Y-%m-%d")
         delete_drag_data.update({key:dat[key]})
         page.client_storage.set("delete_drag",json.dumps(delete_drag_data))
+        
         del dat[key]
         #削除した新しいデータをclient_storageに保存
         page.client_storage.set("timeline_data",json.dumps(dat))
         #Datatableから該当の行を削除する
         Handlers_setting.update_datatable(panel,page)
         
+        
         #病棟全体選択データの削除
         try:
-            load_location_data=page.client_storage.get("location_data")
+            load_location_data=json.loads(page.client_storage.get("location_data"))
         except:
             load_location_data={}
+
         try:
-            location_data = json.loads(load_location_data)
+            delete_location_data=json.loads(page.client_storage.get("delete_location"))
         except:
-            location_data = {}
-        del location_data[key]
-        page.client_storage.set("location_data",json.dumps(location_data))        
+            delete_location_data={}
+
+        load_location_data[key]["delete"]=today.strftime("%Y-%m-%d")
+        delete_location_data.update({key:load_location_data[key]})
+        page.client_storage.set("delete_location",json.dumps(delete_location_data))
+        #削除した新しいデータをclient_storageに保存
+        try:
+            del load_location_data[key]
+            page.client_storage.set("load_location_data",json.dumps(load_location_data))        
+        except:
+            pass
         
         #radiobuttonを用いた病棟単数選択データの削除
         try:
-            load_radio_data=page.client_storage.get("radio_selected_data")
+            load_radio_data=json.loads(page.client_storage.get("radio_selected_data"))
         except:
             load_radio_data={}
+        
         try:
-            radio_data=json.loads(load_radio_data)
+            delete_radio_data=json.loads(page.client_storage.get("delete_radio"))
         except:
-            radio_data={}
-        del radio_data[key]
-        page.client_storage.set("radio_selected_data",json.dumps(radio_data))
+            delete_radio_data={}
+        
+        load_radio_data[key]["delete"]=today.strftime("%Y-%m-%d")
+        delete_radio_data.update({key:load_radio_data[key]})
+        page.client_storage.set("delete_radio",json.dumps(delete_radio_data))
+        #削除した新しいデータをclient_storageに保存
+        try:        
+            del load_radio_data[key]
+            page.client_storage.set("radio_selected_data",json.dumps(load_radio_data))
+        except:
+            pass
+
         page.update()
         
     
