@@ -22,18 +22,18 @@ class Trashdata_ExpantionPanel:
                 panel.append(
                     ft.ListTile(
                         title=ft.Text(key),
-                        subtitle=ft.Text(f"削除日: {load[key]['delete']}"),
+                        subtitle=ft.Text(f"削除日: {load[key]['delete']}      戻したい場合はここをクリック"),
                         trailing=ft.IconButton(
                             ft.icons.RESTORE,
-                            data={
+                            tooltip="削除したデータを復元します",
+                        ),
+                        data={
                                 "key":key,
                                 "data":load[key],
                                 "location_data":location_data[key],
                                 "radio_data":radio_data[key]
                                 },
-                            tooltip="復元する",
-                            on_click=lambda e: RestoreData.restore_data(e,page)
-                        )
+                        on_click=lambda e: RestoreData.restore_data(e=e,page=page)
                     )
                 )
         except:

@@ -244,17 +244,9 @@ class AmDropDown:
                     ),
                 ),
                 ft.Checkbox(
-                    label="5D",
-                    col={"sm": 6, "md": 4, "xl": 2},
-                    data="5D",
-                    on_change=lambda e: RequireLocationMessage.am_change_require_location(
-                        e=e, require_location=require_location, page=page,total_num=am_total,
-                    ),
-                ),
-                ft.Checkbox(
                     label="DI",
                     col={"sm": 6, "md": 4, "xl": 2},
-                    data="5D",
+                    data="DI",
                     on_change=lambda e: RequireLocationMessage.am_change_require_location(
                         e=e, require_location=require_location, page=page,total_num=am_total
                     ),
@@ -394,14 +386,6 @@ class PmDropDown:
                 e=e, require_location=require_location, page=page, total_num=pm_total_num,
                 ),
                 data="5C",
-            ),
-            ft.Checkbox(
-                label="5D",
-                col={"sm": 6, "md": 4, "xl": 2},
-                on_change=lambda e: RequireLocationMessage.pm_change_require_location(
-                e=e, require_location=require_location, page=page, total_num=pm_total_num,
-                ),
-                data="5D",
             ),
             ft.Checkbox(
                 label="5D",
