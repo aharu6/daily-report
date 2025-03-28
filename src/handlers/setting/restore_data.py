@@ -1,3 +1,4 @@
+import flet as ft
 import json
 class RestoreData:
     @staticmethod
@@ -15,7 +16,12 @@ class RestoreData:
             #date_nameのキーを加えて元の形に戻しつつ、データを追加
             load[e.control.data["key"]]=restore_data
             page.client_storage.set("timeline_data",json.dumps(load))
-            
+
+            #元に戻したらListTileはオフモードの表示にする
+            e.control.subtitle=ft.Text("このデータはゴミ箱から復元されました",color="gray")
+            e.control.title.color="gray"
+            e.control.disabled=True
+            e.control.update()
         except:
             pass
         #↑をdelete_dragから削除
@@ -35,6 +41,8 @@ class RestoreData:
             del restore_location_data['delete']
             location_data[e.control.data["key"]]=restore_location_data
             page.client_storage.set("location_data",json.dumps(location_data))
+
+            
         except:
             pass
         #↑をdelete_locationから削除
@@ -63,7 +71,5 @@ class RestoreData:
             page.client_storage.set("delete_radio",json.dumps(delete_radio_data))
         except:
             pass
-    
-    #元に戻したデータ項目はlistTileから削除
-
-
+        
+        
