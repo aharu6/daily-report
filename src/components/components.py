@@ -246,7 +246,7 @@ class AmDropDown:
                 ft.Checkbox(
                     label="DI",
                     col={"sm": 6, "md": 4, "xl": 2},
-                    data="5D",
+                    data="DI",
                     on_change=lambda e: RequireLocationMessage.am_change_require_location(
                         e=e, require_location=require_location, page=page,total_num=am_total
                     ),
