@@ -346,7 +346,8 @@ class Handlers_Chart:
                 )
             chart_field.controls=locate_chart_list
             page.update()
-        except:
+        except Exception as e:
+            print(f"An error occurred: {e}")
             new_rows = []
             for index, row in dataframe.iterrows():
                 tarn_row = ast.literal_eval(row["locate"])
@@ -456,9 +457,9 @@ class Handlers_Chart:
             df["date"]=pd.to_datetime(df["date"],format="%Y-%m-%d")
             #日付のフィルタリング start_dateからend_dateまでのデータを抽出
             df=df[df["date"].between(start_date,end_date)]
-            # 個人ごとにデータをまとめ直す
+            group_by_person = df.groupby(["phName","task"]).size().reset_index(name="counts")
             gorup_by_person = df.groupby(["phName","task"]).size().reset_index(name="counts")
-            # その上にplotlyにて円グラフを作成する
+            fig_bar = px.bar(group_by_person, x="counts", y="phName", color="task", barmode="stack", orientation="h")
             fig_bar = px.bar(gorup_by_person, x="counts", y="phName", color="task", barmode="stack", orientation="h")
             # まずグラフを描画するcardを作成
             chart_field.controls = [
