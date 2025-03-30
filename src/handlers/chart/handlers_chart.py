@@ -8,6 +8,8 @@ import plotly.io as pio
 from flet.plotly_chart import PlotlyChart
 import chart_studio.plotly as py
 from handlers.chart.download_handler import Chart_Download_Handler
+from handlers.chart.period_handler import PeriodHandler
+import datetime
 # Chartページ用のハンドラ
 class Handlers_Chart:
     @staticmethod
@@ -66,44 +68,179 @@ class Handlers_Chart:
 
     @staticmethod
     def ComponentChart_for_standard(dataframe, chart_field, page):
-        Handlers_Chart.show_progress_bar(chart_field, page)
-        new_rows = []
-        for index, row in dataframe.iterrows():
-            tarn_row = ast.literal_eval(row["locate"])
-            for loc in range(len(tarn_row)):
-                new_row = row.copy()
-                new_row["locate"] = tarn_row[loc]
-                new_rows.append(new_row)
-        df = pd.DataFrame(new_rows) 
-        
-        # bar_plot
-        group_bubble = df.groupby(["locate","task","count"]).size().reset_index(name="times")
-        #Countsが0の場合とそれ以外に分かれるので、それぞれを合計する
-        group_bubble2 = group_bubble.groupby(["locate","task"]).sum(numeric_only=True).reset_index()
-        #times*15 = かかった時間となるので計算しなおす
-        group_bubble2["times"] = group_bubble2["times"]*15
-        bar_chart=px.bar(group_bubble2,x="task",y="times")
-        """
-        fig_bubble = px.scatter(group_bubble2,x = "times",y = "count",color = "task",text = "task" ,
-                        )
-        fig_bubble.update_layout(yaxis =dict(title = "件数"),
-                                xaxis = dict(title = "かかった時間")
-                                )
-        fig_bubble.update_traces(textposition='top center')
-        """
-        bar_chart.update_layout(yaxis =dict(title = "かかった時間"),
-                                xaxis = dict(title = "業務内容")
-                                )
-        
-        chart_field.controls = [
-            (ft.Card(content = PlotlyChart(bar_chart,expand = True,original_size = False,isolated = True))),
-            ft.ElevatedButton(
-                "グラフをダウンロード",
-                icon=ft.icons.DOWNLOAD,
-                on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart,chart_name="barchart"),
-                )
-            ]
-        page.update()
+        #表示期間の選択があれば、そこから日付を抽出して選択された期間にてdatagrameをフィルタリングする   
+        try:
+            start_date=datetime.datetime.strptime(chart_field.controls[1].controls[0].data,"%Y-%m-%dT%H:%M:%S.%f")
+            end_date=datetime.datetime.strptime(chart_field.controls[1].controls[2].data,"%Y-%m-%dT%H:%M:%S.%f")
+            chart_field.controls[1].controls[0].text=start_date.strftime("%Y-%m-%d")
+            chart_field.controls[1].controls[2].text=end_date.strftime("%Y-%m-%d")
+            Handlers_Chart.show_progress_bar(chart_field, page)
+            new_rows = []
+            for index, row in dataframe.iterrows():
+                tarn_row = ast.literal_eval(row["locate"])
+                for loc in range(len(tarn_row)):
+                    new_row = row.copy()
+                    new_row["locate"] = tarn_row[loc]
+                    new_rows.append(new_row)
+            df = pd.DataFrame(new_rows)  
+            df["date"]=pd.to_datetime(df["date"],format="%Y-%m-%d")
+            
+            #日付のフィルタリング start_dateからend_dateまでのデータを抽出
+            df=df[df["date"].between(start_date,end_date)]
+            # bar_plot
+            group_bubble = df.groupby(["locate","task","count"]).size().reset_index(name="times")
+            #Countsが0の場合とそれ以外に分かれるので、それぞれを合計する
+            group_bubble2 = group_bubble.groupby(["locate","task"]).sum(numeric_only=True).reset_index()
+            #times*15 = かかった時間となるので計算しなおす
+            group_bubble2["times"] = group_bubble2["times"]*15
+            bar_chart=px.bar(group_bubble2,x="task",y="times")
+            """
+            fig_bubble = px.scatter(group_bubble2,x = "times",y = "count",color = "task",text = "task" ,
+                            )
+            fig_bubble.update_layout(yaxis =dict(title = "件数"),
+                                    xaxis = dict(title = "かかった時間")
+                                    )
+            fig_bubble.update_traces(textposition='top center')
+            """
+            bar_chart.update_layout(yaxis =dict(title = "かかった時間"),
+                                    xaxis = dict(title = "業務内容")
+                                    )
+            
+            chart_field.controls = [
+                #表示期間
+                ft.ListTile(
+                    title=ft.Text("表示期間"),
+                    leading=ft.Icon(ft.icons.DATE_RANGE),
+                    subtitle=ft.Text("選択後は、再度生成ボタンを押してください"),
+                    ),
+                ft.Row(
+                        controls=[
+                            ft.FilledButton(
+                                text=start_date.strftime("%Y-%m-%d"),
+                                on_click=lambda e:page.open(
+                                    ft.DatePicker(
+                                        on_change=lambda dp_event:PeriodHandler.select_period(e,dp_event,),
+                                    )
+                                ),
+                                style=ft.ButtonStyle(
+                                    bgcolor=ft.colors.TRANSPARENT,
+                                    color=ft.colors.BLUE_900,
+                                ),
+                                data={}
+                            ),
+                            ft.Text("~",size=20),
+                            ft.FilledButton(
+                                text=end_date.strftime("%Y-%m-%d"),
+                                on_click=lambda e:page.open(
+                                    ft.DatePicker(
+                                        on_change=lambda dp_event:PeriodHandler.select_period(e,dp_event,),
+                                    )
+                                ),
+                                style=ft.ButtonStyle(
+                                    bgcolor=ft.colors.TRANSPARENT,
+                                    color=ft.colors.BLUE_900,
+                                ),  
+                                data={}
+                            )
+
+                        ],
+                        spacing=0,
+                    ),
+                #グラフ
+                (ft.Card(content = PlotlyChart(bar_chart,expand = True,original_size = False,isolated = True))),
+                #ダウンロード
+                ft.ElevatedButton(
+                    "グラフをダウンロード",
+                    icon=ft.icons.DOWNLOAD,
+                    on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart,chart_name="barchart"),
+                    )
+                ]
+            page.update()
+
+
+        except Exception as e:
+            print(e)
+            Handlers_Chart.show_progress_bar(chart_field, page)
+            new_rows = []
+            for index, row in dataframe.iterrows():
+                tarn_row = ast.literal_eval(row["locate"])
+                for loc in range(len(tarn_row)):
+                    new_row = row.copy()
+                    new_row["locate"] = tarn_row[loc]
+                    new_rows.append(new_row)
+            df = pd.DataFrame(new_rows)    
+            
+            # bar_plot
+            group_bubble = df.groupby(["locate","task","count"]).size().reset_index(name="times")
+            #Countsが0の場合とそれ以外に分かれるので、それぞれを合計する
+            group_bubble2 = group_bubble.groupby(["locate","task"]).sum(numeric_only=True).reset_index()
+            #times*15 = かかった時間となるので計算しなおす
+            group_bubble2["times"] = group_bubble2["times"]*15
+            bar_chart=px.bar(group_bubble2,x="task",y="times")
+            """
+            fig_bubble = px.scatter(group_bubble2,x = "times",y = "count",color = "task",text = "task" ,
+                            )
+            fig_bubble.update_layout(yaxis =dict(title = "件数"),
+                                    xaxis = dict(title = "かかった時間")
+                                    )
+            fig_bubble.update_traces(textposition='top center')
+            """
+            bar_chart.update_layout(yaxis =dict(title = "かかった時間"),
+                                    xaxis = dict(title = "業務内容")
+                                    )
+            
+            chart_field.controls = [
+                #表示期間
+                ft.ListTile(
+                    title=ft.Text("表示期間"),
+                    leading=ft.Icon(ft.icons.DATE_RANGE),
+                    subtitle=ft.Text("選択後は、再度生成ボタンを押してください"),
+                    ),
+                ft.Row(
+                        controls=[
+                            ft.FilledButton(
+                                text="開始日",
+                                on_click=lambda e:page.open(
+                                    ft.DatePicker(
+                                        on_change=lambda dp_event:PeriodHandler.select_period(e,dp_event),
+                                    )
+                                ),
+                                style=ft.ButtonStyle(
+                                    bgcolor=ft.colors.TRANSPARENT,
+                                    color=ft.colors.BLUE_900,
+                                ),
+                                data={}
+                            ),
+                            ft.Text("~",size=20),
+                            ft.FilledButton(
+                                text="終了日",
+                                on_click=lambda e:page.open(
+                                    ft.DatePicker(
+                                        on_change=lambda dp_event:PeriodHandler.select_period(e,dp_event),
+                                    )
+                                ),
+                                style=ft.ButtonStyle(
+                                    bgcolor=ft.colors.TRANSPARENT,
+                                    color=ft.colors.BLUE_900,
+                                ),  
+                                data={}
+                            )
+
+                        ],
+                        spacing=0,
+                    ),
+                    #表示期間の表示
+                ft.ListTile(),
+                #グラフ
+                (ft.Card(content = PlotlyChart(bar_chart,expand = True,original_size = False,isolated = True))),
+                #ダウンロード
+                ft.ElevatedButton(
+                    "グラフをダウンロード",
+                    icon=ft.icons.DOWNLOAD,
+                    on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart,chart_name="barchart"),
+                    )
+                ]
+            page.update()
         
 
         
