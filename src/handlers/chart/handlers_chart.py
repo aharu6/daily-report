@@ -409,9 +409,8 @@ class Handlers_Chart:
                     names="task",
                     title=locate,
                 )
-
-                locate_chart_list.extend(
-                    [ft.Card(
+                locate_chart_list.append(
+                    ft.Card(
                         content=ft.Column(
                             controls=[
                                 PlotlyChart(
@@ -421,9 +420,9 @@ class Handlers_Chart:
                                 ft.ElevatedButton(
                                 "グラフをダウンロード",
                                 icon=ft.icons.DOWNLOAD,
-                                on_click=lambda _: Chart_Download_Handler.open_directory(
-                                    page=page, barchart=fig,
-                                    chart_name="piechart"
+                                on_click=lambda _,chart=fig,locateName=locate: Chart_Download_Handler.open_directory(
+                                    page=page, barchart=chart,
+                                    chart_name="piechart"+locateName
                                     ),
                                 )
                             ],
@@ -431,8 +430,7 @@ class Handlers_Chart:
                         ),
                         data=locate,
                         col={"sm": 10, "md": 6, "xl": 4},
-                    ),
-                    ]
+                    )
                 )
             chart_field.controls=locate_chart_list
             page.update()   
