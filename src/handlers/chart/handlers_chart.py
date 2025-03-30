@@ -194,6 +194,10 @@ class Handlers_Chart:
             ft.Card(content = 
                 PlotlyChart(fig_bar,expand = True,original_size = False,isolated = True)
             ),
-            ft.ElevatedButton("グラフをダウンロード",icon=ft.icons.DOWNLOAD,)
+            ft.ElevatedButton(
+                "グラフをダウンロード",
+                icon=ft.icons.DOWNLOAD,
+                on_click=lambda _: Chart_Download_Handler.open_directory(page=page, barchart=fig_bar),
+            )
         ]
         page.update()

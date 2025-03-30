@@ -6,7 +6,7 @@ class Chart_Download_Handler:
         #保存先を指定
         #フォルダを開く 
         select_directory1=ft.FilePicker(
-            on_result=lambda e:Chart_Download_Handler.dowonload_chart(
+            on_result=lambda e:Chart_Download_Handler.download_chart(
                 e=e,
                 selectdirectory=select_directory1,
                 barchart=barchart,
@@ -18,7 +18,7 @@ class Chart_Download_Handler:
     
     
     @staticmethod
-    def dowonload_chart(e,barchart,selectdirectory):
+    def download_chart(e,barchart,selectdirectory):
         today = datetime.date.today()
         if selectdirectory.result:
             try:
