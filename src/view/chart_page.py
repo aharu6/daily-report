@@ -36,8 +36,6 @@ class ChartPage:
         self.horizon_subtitle = ft.Divider()
         self.chart1_field = ft.ResponsiveRow()
 
-        
-
         self.chart1card = ft.Card(
             content=ft.TextButton(
                 text="グラフを生成",
@@ -48,12 +46,14 @@ class ChartPage:
         )
 
         self.subtitle2 = ft.Text("病棟ごとの集計",size = 20)
+        self.chart2_field_info= ft.ResponsiveRow()
         self.chart2_field = ft.ResponsiveRow(controls=[])
         self.chart2card = ft.Card(
             content=ft.TextButton(
                 "グラフを生成",
                 on_click=lambda _: Handlers_Chart.ComponentChart_for_location(
-                    self.dataframe, self.chart2_field, page
+                    dataframe=self.dataframe, chart_field=self.chart2_field, page=page,
+                    chart2_info=self.chart2_field_info,
                 ),
             )
         )
@@ -65,7 +65,7 @@ class ChartPage:
             content=ft.TextButton(
                 "グラフを生成",
                 on_click=lambda _: Handlers_Chart.ComponentChart_for_self(
-                    self.dataframe, self.chart3_field,page
+                    dataframe=self.dataframe, chart_field=self.chart3_field,page=page
                 ),
             )
         )
@@ -83,6 +83,7 @@ class ChartPage:
                 self.subtitle2,
                 self.horizon_subtitle,
                 self.chart2card,
+                self.chart2_field_info,
                 self.chart2_field,
                 self.subtitle3,
                 self.horizon_subtitle,
