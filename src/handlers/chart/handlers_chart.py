@@ -159,7 +159,7 @@ class Handlers_Chart:
 
 
         except Exception as e:
-            print({e})
+            print(e)
             Handlers_Chart.show_progress_bar(chart_field, page)
             new_rows = []
             for index, row in dataframe.iterrows():
