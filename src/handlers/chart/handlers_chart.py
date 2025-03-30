@@ -100,7 +100,7 @@ class Handlers_Chart:
             ft.ElevatedButton(
                 "グラフをダウンロード",
                 icon=ft.icons.DOWNLOAD,
-                on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart),
+                on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart,chart_name="barchart"),
                 )
             ]
         page.update()
@@ -160,6 +160,10 @@ class Handlers_Chart:
                 ft.ElevatedButton(
                     "グラフをダウンロード",
                     icon=ft.icons.DOWNLOAD,
+                    on_click=lambda _: Chart_Download_Handler.open_directory(
+                        page=page, barchart=fig,
+                        chart_name="piechart"
+                        ),
                     )
             ]
         page.update()
@@ -197,7 +201,7 @@ class Handlers_Chart:
             ft.ElevatedButton(
                 "グラフをダウンロード",
                 icon=ft.icons.DOWNLOAD,
-                on_click=lambda _: Chart_Download_Handler.open_directory(page=page, barchart=fig_bar),
+                on_click=lambda _: Chart_Download_Handler.open_directory(page=page, barchart=fig_bar,chart_name="selfchart"),
             )
         ]
         page.update()
