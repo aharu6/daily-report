@@ -1,11 +1,8 @@
 import flet as ft
 from flet import View
-import datetime
 from handlers.handlersMain import Handlers_Main
 from handlers.chart.handlers_chart import Handlers_Chart
 from components.compoments_chart import FilePickCard,FileNameCard
-import asyncio as aio
-from handlers.chart.download_handler import Chart_Download_Handler
 
 class ChartPage:
     def __init__(self, page):
@@ -39,15 +36,16 @@ class ChartPage:
         self.horizon_subtitle = ft.Divider()
         self.chart1_field = ft.ResponsiveRow()
 
+        
+
         self.chart1card = ft.Card(
             content=ft.TextButton(
-                "グラフを生成",
+                text="グラフを生成",
                 on_click=lambda _: Handlers_Chart.ComponentChart_for_standard(
                     dataframe=self.dataframe,chart_field= self.chart1_field,page= page,
                 ),
             )
         )
-        
 
         self.subtitle2 = ft.Text("病棟ごとの集計",size = 20)
         self.chart2_field = ft.ResponsiveRow(controls=[])
