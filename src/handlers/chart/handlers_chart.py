@@ -420,9 +420,9 @@ class Handlers_Chart:
                                 ft.ElevatedButton(
                                 "グラフをダウンロード",
                                 icon=ft.icons.DOWNLOAD,
-                                on_click=lambda _,chart=fig,locateName=locate: Chart_Download_Handler.open_directory(
+                                on_click=lambda _, chart=fig, locate_name=locate: Chart_Download_Handler.open_directory(
                                     page=page, barchart=chart,
-                                    chart_name="piechart"+locateName
+                                    chart_name=f"piechart_{locate_name}"
                                     ),
                                 )
                             ],
