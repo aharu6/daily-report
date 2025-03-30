@@ -36,8 +36,6 @@ class ChartPage:
         self.horizon_subtitle = ft.Divider()
         self.chart1_field = ft.ResponsiveRow()
 
-        
-
         self.chart1card = ft.Card(
             content=ft.TextButton(
                 text="グラフを生成",

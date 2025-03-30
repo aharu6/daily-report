@@ -438,38 +438,143 @@ class Handlers_Chart:
         # その上にplotlyにて円グラフを作成する
 
     @staticmethod
-    def ComponentChart_for_self(dataframe,chart_field,page):
-        """_summary_
+    def ComponentChart_for_self(dataframe,chart_field,page):        
+        try:
+            start_date=datetime.datetime.strptime(chart_field.controls[1].controls[0].data,"%Y-%m-%dT%H:%M:%S.%f")
+            end_date=datetime.datetime.strptime(chart_field.controls[1].controls[2].data,"%Y-%m-%dT%H:%M:%S.%f")
+            chart_field.controls[1].controls[0].text=start_date.strftime("%Y-%m-%d")
+            chart_field.controls[1].controls[2].text=end_date.strftime("%Y-%m-%d")
+            Handlers_Chart.show_progress_bar(chart_field, page)
+            new_rows = []
+            for index, row in dataframe.iterrows():
+                tarn_row = ast.literal_eval(row["locate"])
+                for loc in range(len(tarn_row)):
+                    new_row = row.copy()
+                    new_row["locate"] = tarn_row[loc]
+                    new_rows.append(new_row)
+            df = pd.DataFrame(new_rows)
+            df["date"]=pd.to_datetime(df["date"],format="%Y-%m-%d")
+            #日付のフィルタリング start_dateからend_dateまでのデータを抽出
+            df=df[df["date"].between(start_date,end_date)]
+            # 個人ごとにデータをまとめ直す
+            gorup_by_person = df.groupby(["phName","task"]).size().reset_index(name="counts")
+            # その上にplotlyにて円グラフを作成する
+            fig_bar = px.bar(gorup_by_person, x="counts", y="phName", color="task", barmode="stack", orientation="h")
+            # まずグラフを描画するcardを作成
+            chart_field.controls = [
+                ft.ListTile(
+                    title=ft.Text("表示期間"),
+                    leading=ft.Icon(ft.icons.DATE_RANGE),
+                    subtitle=ft.Text("選択後は、再度生成ボタンを押してください"),
+                    ),
+                ft.Row(
+                    controls=[
+                        ft.FilledButton(
+                            text=start_date.strftime("%Y-%m-%d"),
+                            on_click=lambda e:page.open(
+                                ft.DatePicker(
+                                    on_change=lambda dp_event:PeriodHandler.select_period(e,dp_event),
+                                )
+                            ),
+                            style=ft.ButtonStyle(
+                                bgcolor=ft.colors.TRANSPARENT,
+                                color=ft.colors.BLUE_900,
+                            ),
+                            data={}
+                        ),
+                        ft.Text("~",size=20),
+                        ft.FilledButton(
+                            text=end_date.strftime("%Y-%m-%d"),
+                            on_click=lambda e:page.open(
+                                ft.DatePicker(
+                                    on_change=lambda dp_event:PeriodHandler.select_period(e,dp_event),
+                                )
+                            ),
+                            style=ft.ButtonStyle(
+                                bgcolor=ft.colors.TRANSPARENT,
+                                color=ft.colors.BLUE_900,
+                            ),  
+                            data={}
+                        )
+                    ]
+                ),
+                #グラフ
+                (ft.Card(content = PlotlyChart(fig_bar,expand = True,original_size = False,isolated = True))),
+                #ダウンロード
+                ft.ElevatedButton(
+                    "グラフをダウンロード",
+                    icon=ft.icons.DOWNLOAD,
+                    on_click=lambda _: Chart_Download_Handler.open_directory(page=page,barchart=fig_bar,chart_name="selfchart"),
+                )
+            ]
+            page.update()   
 
-        Args:
-            dataframe (_type_): pick_file_resultで返されるデータフレーム
-        """
-        Handlers_Chart.show_progress_bar(chart_field, page)
-        #データフレームの作成
-        new_rows = []
-        for index, row in dataframe.iterrows():
-            tarn_row = ast.literal_eval(row["locate"])
-            for loc in range(len(tarn_row)):
-                new_row = row.copy()
-                new_row["locate"] = tarn_row[loc]
-                new_rows.append(new_row)
+        except Exception as e:
+            print(e)
+            Handlers_Chart.show_progress_bar(chart_field, page)
+            #データフレームの作成
+            new_rows = []
+            for index, row in dataframe.iterrows():
+                tarn_row = ast.literal_eval(row["locate"])
+                for loc in range(len(tarn_row)):
+                    new_row = row.copy()
+                    new_row["locate"] = tarn_row[loc]
+                    new_rows.append(new_row)
 
-        df = pd.DataFrame(new_rows)
-        
-        # 個人ごとにデータをまとめ直す
-        gorup_by_person = df.groupby(["phName","task"]).size().reset_index(name="counts")
-        
-        # その上にplotlyにて円グラフを作成する
-        fig_bar = px.bar(gorup_by_person, x="counts", y="phName", color="task", barmode="stack", orientation="h")
-        # まずグラフを描画するcardを作成
-        chart_field.controls = [
-            ft.Card(content = 
-                PlotlyChart(fig_bar,expand = True,original_size = False,isolated = True)
-            ),
-            ft.ElevatedButton(
-                "グラフをダウンロード",
-                icon=ft.icons.DOWNLOAD,
-                on_click=lambda _: Chart_Download_Handler.open_directory(page=page, barchart=fig_bar,chart_name="selfchart"),
-            )
-        ]
-        page.update()
+            df = pd.DataFrame(new_rows)
+            
+            # 個人ごとにデータをまとめ直す
+            gorup_by_person = df.groupby(["phName","task"]).size().reset_index(name="counts")
+            
+            # その上にplotlyにて円グラフを作成する
+            fig_bar = px.bar(gorup_by_person, x="counts", y="phName", color="task", barmode="stack", orientation="h")
+            # まずグラフを描画するcardを作成
+            chart_field.controls = [
+                ft.ListTile(
+                    title=ft.Text("表示期間"),
+                    leading=ft.Icon(ft.icons.DATE_RANGE),
+                    subtitle=ft.Text("選択後は、再度生成ボタンを押してください"),
+                    ),
+                ft.Row(
+                    controls=[
+                        ft.FilledButton(
+                            text="開始日",
+                            on_click=lambda e:page.open(
+                                ft.DatePicker(
+                                    on_change=lambda dp_event:PeriodHandler.select_period(e,dp_event),
+                                )
+                            ),
+                            style=ft.ButtonStyle(
+                                bgcolor=ft.colors.TRANSPARENT,
+                                color=ft.colors.BLUE_900,
+                            ),
+                            data={}
+                        ),
+                        ft.Text("~",size=20),
+                        ft.FilledButton(
+                            text="終了日",
+                            on_click=lambda e:page.open(
+                                ft.DatePicker(
+                                    on_change=lambda dp_event:PeriodHandler.select_period(e,dp_event),
+                                )
+                            ),
+                            style=ft.ButtonStyle(
+                                bgcolor=ft.colors.TRANSPARENT,
+                                color=ft.colors.BLUE_900,
+                            ),  
+                            data={}
+                        )
+                    ]
+                ),
+                #グラフ
+                ft.Card(content = 
+                    PlotlyChart(fig_bar,expand = True,original_size = False,isolated = True)
+                ),
+                #ダウンロード
+                ft.ElevatedButton(
+                    "グラフをダウンロード",
+                    icon=ft.icons.DOWNLOAD,
+                    on_click=lambda _: Chart_Download_Handler.open_directory(page=page, barchart=fig_bar,chart_name="selfchart"),
+                )
+            ]
+            page.update()
