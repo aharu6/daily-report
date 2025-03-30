@@ -7,7 +7,7 @@ import plotly.express as px
 import plotly.io as pio
 from flet.plotly_chart import PlotlyChart
 import chart_studio.plotly as py
-
+from handlers.chart.download_handler import Chart_Download_Handler
 # Chartページ用のハンドラ
 class Handlers_Chart:
     @staticmethod
@@ -76,7 +76,7 @@ class Handlers_Chart:
                 new_rows.append(new_row)
         df = pd.DataFrame(new_rows) 
         
-        # bubble chart
+        # bar_plot
         group_bubble = df.groupby(["locate","task","count"]).size().reset_index(name="times")
         #Countsが0の場合とそれ以外に分かれるので、それぞれを合計する
         group_bubble2 = group_bubble.groupby(["locate","task"]).sum(numeric_only=True).reset_index()
@@ -94,7 +94,15 @@ class Handlers_Chart:
         bar_chart.update_layout(yaxis =dict(title = "かかった時間"),
                                 xaxis = dict(title = "業務内容")
                                 )
-        chart_field.controls = [(ft.Card(content = PlotlyChart(bar_chart,expand = True,original_size = False,isolated = True)))]
+        
+        chart_field.controls = [
+            (ft.Card(content = PlotlyChart(bar_chart,expand = True,original_size = False,isolated = True))),
+            ft.ElevatedButton(
+                "グラフをダウンロード",
+                icon=ft.icons.DOWNLOAD,
+                on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart),
+                )
+            ]
         page.update()
         
 
@@ -148,7 +156,11 @@ class Handlers_Chart:
                     ),
                     data=locate,
                     col={"sm": 10, "md": 6, "xl": 4},
-                )
+                ),
+                ft.ElevatedButton(
+                    "グラフをダウンロード",
+                    icon=ft.icons.DOWNLOAD,
+                    )
             ]
         page.update()
         # その上にplotlyにて円グラフを作成する
@@ -181,6 +193,11 @@ class Handlers_Chart:
         chart_field.controls = [
             ft.Card(content = 
                 PlotlyChart(fig_bar,expand = True,original_size = False,isolated = True)
+            ),
+            ft.ElevatedButton(
+                "グラフをダウンロード",
+                icon=ft.icons.DOWNLOAD,
+                on_click=lambda _: Chart_Download_Handler.open_directory(page=page, barchart=fig_bar),
             )
         ]
         page.update()
