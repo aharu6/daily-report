@@ -273,6 +273,8 @@ class Handlers_Chart:
         group_df_locate = (
             df.groupby(["locate", "task"]).size().reset_index(name="counts")
         )
+        print(group_df_locate)
+        locate_chart_list=[]
         for locate in group_df_locate["locate"].unique():
             fig = px.pie(
                 group_df_locate[group_df_locate["locate"] == locate],
@@ -280,29 +282,32 @@ class Handlers_Chart:
                 names="task",
                 title=locate,
             )
-            chart_field.controls = [
-                ft.Card(
+
+            locate_chart_list.extend(
+                [ft.Card(
                     content=ft.Column(
                         controls=[
                             PlotlyChart(
                                 fig, expand=True, original_size=False, isolated=True
                             ),
                             ft.Text(locate),
+                            ft.ElevatedButton(
+                            "グラフをダウンロード",
+                            icon=ft.icons.DOWNLOAD,
+                            on_click=lambda _: Chart_Download_Handler.open_directory(
+                                page=page, barchart=fig,
+                                chart_name="piechart"
+                                ),
+                            )
                         ],
                         width="30%",
                     ),
                     data=locate,
                     col={"sm": 10, "md": 6, "xl": 4},
                 ),
-                ft.ElevatedButton(
-                    "グラフをダウンロード",
-                    icon=ft.icons.DOWNLOAD,
-                    on_click=lambda _: Chart_Download_Handler.open_directory(
-                        page=page, barchart=fig,
-                        chart_name="piechart"
-                        ),
-                    )
-            ]
+                ]
+            )
+        chart_field.controls=locate_chart_list
         page.update()
         # その上にplotlyにて円グラフを作成する
 
