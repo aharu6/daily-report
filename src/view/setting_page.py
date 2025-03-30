@@ -5,7 +5,7 @@ from handlers.setting.handlers_setting import Handlers_setting
 from components.components_setting import Panel, Title
 from models.models import DataModel
 from handlers.setting.trash_handler import TrashDataHandler
-
+from handlers.chart.download_handler import Chart_Download_Handler
 class SettingPage:
     def __init__(self, page):
         self.page = page
@@ -40,9 +40,9 @@ class SettingPage:
                 ),
             ],
         )
-        
+        #30日以降経過したデータの削除ハンドラ
         Handlers_setting.update_datatable(self.panel, page)
-
+        
     def create(self):
         # ナビゲーションバーの設定
         navigation_bar = ft.CupertinoNavigationBar(
