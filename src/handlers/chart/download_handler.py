@@ -23,12 +23,10 @@ class Chart_Download_Handler:
         today = datetime.date.today()
         if selectdirectory.result:
             try:
-                file_path=(
-                    selectdirectory.result.path
-                    +"/"
-                    +today.strftime("%Y%m%d")
-                    +chart_name
-                    +".jpg"
+                import os
+                file_path = os.path.join(
+                    selectdirectory.result.path,
+                    f'{today.strftime("%Y%m%d")}_{chart_name}.jpg'
                     )
                 # 画像の形式を指定
                 barchart.write_image(file_path)
