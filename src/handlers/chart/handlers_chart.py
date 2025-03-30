@@ -84,12 +84,9 @@ class Handlers_Chart:
                     new_rows.append(new_row)
             df = pd.DataFrame(new_rows)  
             df["date"]=pd.to_datetime(df["date"],format="%Y-%m-%d")
-            print(df.info())
             
             #日付のフィルタリング start_dateからend_dateまでのデータを抽出
             df=df[df["date"].between(start_date,end_date)]
-            print("re:",df)
-
             # bar_plot
             group_bubble = df.groupby(["locate","task","count"]).size().reset_index(name="times")
             #Countsが0の場合とそれ以外に分かれるので、それぞれを合計する
@@ -119,7 +116,7 @@ class Handlers_Chart:
                 ft.Row(
                         controls=[
                             ft.FilledButton(
-                                text=start_date.strptime("%Y-%m-%d").split("T")[0],
+                                text=start_date.strftime("%Y-%m-%d"),
                                 on_click=lambda e:page.open(
                                     ft.DatePicker(
                                         on_change=lambda dp_event:PeriodHandler.select_period(e,dp_event,),
@@ -133,7 +130,7 @@ class Handlers_Chart:
                             ),
                             ft.Text("~",size=20),
                             ft.FilledButton(
-                                text=end_date.strptime("%Y-%m-%d").split("T")[0],
+                                text=end_date.strftime("%Y-%m-%d"),
                                 on_click=lambda e:page.open(
                                     ft.DatePicker(
                                         on_change=lambda dp_event:PeriodHandler.select_period(e,dp_event,),
