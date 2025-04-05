@@ -3,7 +3,7 @@ from flet import View
 from handlers.handlersMain import Handlers_Main
 from handlers.chart.handlers_chart import Handlers_Chart
 from components.compoments_chart import FilePickCard,FileNameCard
-
+from handlers.chart.analyze_handler import Handlers_analyze
 class ChartPage:
     def __init__(self, page):
         self.page = page
@@ -32,7 +32,7 @@ class ChartPage:
         self.selected_files = ft.Text()
         self.page.overlay.append(self.file_picker)
         
-        self.subtitle = ft.Text("集計", size = 20)
+        self.subtitle = ft.Text("時間の集計", size = 20)
         self.horizon_subtitle = ft.Divider()
         self.chart1_field = ft.ResponsiveRow()
 
@@ -69,6 +69,53 @@ class ChartPage:
                 ),
             )
         )
+
+        #業務内容ごとの時間
+        self.subtitle4=ft.Text("件数あたりの時間",size=20)
+        self.chart4_field=ft.ResponsiveRow()
+        self.chart4card=ft.Card(
+            content=ft.TextButton(
+                "集計",
+                on_click=lambda _:Handlers_analyze.count_par_time(
+                    dataframe=self.dataframe, result_field=self.chart4_field, page=self.page
+                )
+            )
+        )
+
+        #業務内容ごとの件数
+        self.subtitle5=ft.Text("業務内容ごとの件数",size=20)
+        self.chart5_field=ft.ResponsiveRow()
+        self.chart5card=ft.Card(
+            content=ft.TextButton(
+                "集計",
+                on_click=lambda _:Handlers_analyze.task_par_count(
+                    dataframe=self.dataframe, result_field=self.chart5_field, page=self.page
+                )
+            )
+        )
+
+        #時間帯ごとのタスク分析
+        self.subtitle6=ft.Text("時間帯ごとの業務分析",size=20)
+        self.chart6_field=ft.ResponsiveRow()
+        self.chart6card=ft.Card(
+            content=ft.TextButton(
+                "集計",
+                on_click=lambda _:Handlers_analyze.time_task_analysis(
+                    dataframe=self.dataframe, result_field=self.chart6_field, page=self.page
+                )
+            )
+        )
+
+        #各業務のcountの合計値や平均値を計算
+
+
+        #各タスクがどの時間帯に集中しているか
+
+        #その他コメントの内容、要した時間の表示
+
+        #
+    
+        
     
     def create(self):
         return View(
@@ -89,6 +136,16 @@ class ChartPage:
                 self.horizon_subtitle,
                 self.chart3card,
                 self.chart3_field,
+                self.subtitle4,
+                self.horizon_subtitle,
+                self.chart4card,
+                self.chart4_field,
+                self.subtitle5,
+                self.horizon_subtitle,
+                self.chart5card,
+                self.chart5_field,
+                self.subtitle6,
+                self.horizon_subtitle,
                 # chartPage,
                 ft.CupertinoNavigationBar(
                     selected_index=1,

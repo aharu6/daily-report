@@ -75,14 +75,7 @@ class Handlers_Chart:
             chart_field.controls[1].controls[0].text=start_date.strftime("%Y-%m-%d")
             chart_field.controls[1].controls[2].text=end_date.strftime("%Y-%m-%d")
             Handlers_Chart.show_progress_bar(chart_field, page)
-            new_rows = []
-            for index, row in dataframe.iterrows():
-                tarn_row = ast.literal_eval(row["locate"])
-                for loc in range(len(tarn_row)):
-                    new_row = row.copy()
-                    new_row["locate"] = tarn_row[loc]
-                    new_rows.append(new_row)
-            df = pd.DataFrame(new_rows)  
+            df =Handlers_Chart.create_dataframe(dataframe)
             df["date"]=pd.to_datetime(df["date"],format="%Y-%m-%d")
             
             #日付のフィルタリング start_dateからend_dateまでのデータを抽出
@@ -161,14 +154,7 @@ class Handlers_Chart:
         except Exception as e:
             print(e)
             Handlers_Chart.show_progress_bar(chart_field, page)
-            new_rows = []
-            for index, row in dataframe.iterrows():
-                tarn_row = ast.literal_eval(row["locate"])
-                for loc in range(len(tarn_row)):
-                    new_row = row.copy()
-                    new_row["locate"] = tarn_row[loc]
-                    new_rows.append(new_row)
-            df = pd.DataFrame(new_rows)    
+            df =Handlers_Chart.create_dataframe(dataframe)
             
             # bar_plot
             group_bubble = df.groupby(["locate","task","count"]).size().reset_index(name="times")
@@ -257,14 +243,7 @@ class Handlers_Chart:
             end_date=datetime.datetime.strptime(chart2_info.controls[1].controls[2].data,"%Y-%m-%dT%H:%M:%S.%f")
             chart2_info.controls[1].controls[0].text=start_date.strftime("%Y-%m-%d")
             chart2_info.controls[1].controls[2].text=end_date.strftime("%Y-%m-%d")
-            new_rows = []
-            for index, row in dataframe.iterrows():
-                tarn_row = ast.literal_eval(row["locate"])
-                for loc in range(len(tarn_row)):
-                    new_row = row.copy()
-                    new_row["locate"] = tarn_row[loc]
-                    new_rows.append(new_row)
-            df = pd.DataFrame(new_rows)
+            df =Handlers_Chart.create_dataframe(dataframe)
             df["date"]=pd.to_datetime(df["date"],format="%Y-%m-%d")
             #日付のフィルタリング start_dateからend_dateまでのデータを抽出
             df=df[df["date"].between(start_date,end_date)]
@@ -348,15 +327,8 @@ class Handlers_Chart:
             page.update()
         except Exception as e:
             print(f"An error occurred: {e}")
-            new_rows = []
-            for index, row in dataframe.iterrows():
-                tarn_row = ast.literal_eval(row["locate"])
-                for loc in range(len(tarn_row)):
-                    new_row = row.copy()
-                    new_row["locate"] = tarn_row[loc]
-                    new_rows.append(new_row)
 
-            df = pd.DataFrame(new_rows)
+            df =Handlers_Chart.create_dataframe(dataframe)
 
             # 算出したデータフレームから病棟数を算出し、病棟数分のcardを作成する
             # data =病棟名　でもつけて紐づけるできるように？
@@ -444,14 +416,8 @@ class Handlers_Chart:
             chart_field.controls[1].controls[0].text=start_date.strftime("%Y-%m-%d")
             chart_field.controls[1].controls[2].text=end_date.strftime("%Y-%m-%d")
             Handlers_Chart.show_progress_bar(chart_field, page)
-            new_rows = []
-            for index, row in dataframe.iterrows():
-                tarn_row = ast.literal_eval(row["locate"])
-                for loc in range(len(tarn_row)):
-                    new_row = row.copy()
-                    new_row["locate"] = tarn_row[loc]
-                    new_rows.append(new_row)
-            df = pd.DataFrame(new_rows)
+            df = Handlers_Chart.create_dataframe(dataframe)
+
             df["date"]=pd.to_datetime(df["date"],format="%Y-%m-%d")
             #日付のフィルタリング start_dateからend_dateまでのデータを抽出
             df=df[df["date"].between(start_date,end_date)]
@@ -512,15 +478,7 @@ class Handlers_Chart:
             print(e)
             Handlers_Chart.show_progress_bar(chart_field, page)
             #データフレームの作成
-            new_rows = []
-            for index, row in dataframe.iterrows():
-                tarn_row = ast.literal_eval(row["locate"])
-                for loc in range(len(tarn_row)):
-                    new_row = row.copy()
-                    new_row["locate"] = tarn_row[loc]
-                    new_rows.append(new_row)
-
-            df = pd.DataFrame(new_rows)
+            df = Handlers_Chart.create_dataframe(dataframe)
             
             # 個人ごとにデータをまとめ直す
             gorup_by_person = df.groupby(["phName","task"]).size().reset_index(name="counts")
@@ -577,3 +535,14 @@ class Handlers_Chart:
                 )
             ]
             page.update()
+    
+    @staticmethod
+    def create_dataframe(dataframe):
+        new_rows = []
+        for index, row in dataframe.iterrows():
+            tarn_row = ast.literal_eval(row["locate"])
+            for loc in range(len(tarn_row)):
+                new_row = row.copy()
+                new_row["locate"] = tarn_row[loc]
+                new_rows.append(new_row)
+        return pd.DataFrame(new_rows)
