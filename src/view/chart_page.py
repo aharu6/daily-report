@@ -25,13 +25,14 @@ class ChartPage:
 
         self.file_picker = ft.FilePicker(
             on_result=lambda e: Handlers_Chart.pick_file_result(
-                e, self.selected_files, self,
-                self.select.controls[1],
+                e=e, selected_files=self.selected_files,parent_instance= self,
+                card=self.select.controls[1], # FileNameCardのListViewを指定
             )
         )
         self.selected_files = ft.Text()
         self.page.overlay.append(self.file_picker)
         
+        #各タスク（task列）の合計時間を計算。
         self.subtitle = ft.Text("時間の集計", size = 20)
         self.horizon_subtitle = ft.Divider()
         self.chart1_field = ft.ResponsiveRow()
@@ -94,26 +95,45 @@ class ChartPage:
             )
         )
 
-        #時間帯ごとのタスク分析
-        self.subtitle6=ft.Text("時間帯ごとの業務分析",size=20)
+        #各タスクがどの場所（locate列）で行われたかを集計。
+        self.subtitle6=ft.Text("業務内容ごとの場所",size=20)
         self.chart6_field=ft.ResponsiveRow()
         self.chart6card=ft.Card(
             content=ft.TextButton(
                 "集計",
-                on_click=lambda _:Handlers_analyze.time_task_analysis(
+                on_click=lambda _:Handlers_analyze.task_par_location(
                     dataframe=self.dataframe, result_field=self.chart6_field, page=self.page
                 )
             )
         )
 
-        #各業務のcountの合計値や平均値を計算
+        #各タスクがどの時間帯に集中しているかを分析。　ヒートマップ
+        self.subtitle7=ft.Text("時間帯ごとの業務分析",size=20)
+        self.chart7_field=ft.ResponsiveRow()
+        self.chart7card=ft.Card(
+            content=ft.TextButton(
+                "集計",
+                on_click=lambda _:Handlers_analyze.time_task_analysis(
+                    dataframe=self.dataframe, result_field=self.chart7_field, page=self.page
+                )
+            )
+        )
+        #date列を基に、日付ごとのタスクの分布を分析
+        self.subtitle8=ft.Text("日付ごとの業務分析",size=20)
+        self.chart8_field=ft.ResponsiveRow()
+        self.chart8card=ft.Card(
+            content=ft.TextButton(
+                "集計",
+                on_click=lambda _:Handlers_analyze.date_task_analysis(
+                    dataframe=self.dataframe, result_field=self.chart8_field, page=self.page
+                )
+            )
+        )
+
+        #comment列が記載されている行と空白の行を比較
 
 
-        #各タスクがどの時間帯に集中しているか
-
-        #その他コメントの内容、要した時間の表示
-
-        #
+        #特定のタスクに絞って、時間帯やcountの分布を分析。
     
         
     
@@ -146,6 +166,16 @@ class ChartPage:
                 self.chart5_field,
                 self.subtitle6,
                 self.horizon_subtitle,
+                self.chart6card,
+                self.chart6_field,
+                self.subtitle7,
+                self.horizon_subtitle,
+                self.chart7card,
+                self.chart7_field,
+                self.subtitle8,
+                self.horizon_subtitle,
+                self.chart8card,
+                self.chart8_field,
                 # chartPage,
                 ft.CupertinoNavigationBar(
                     selected_index=1,

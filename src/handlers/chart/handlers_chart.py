@@ -41,17 +41,20 @@ class Handlers_Chart:
 
     @staticmethod
     def pick_file_name(file_name,card):
-        card_list=[ft.ListTile(
-            title=ft.Text("読み込んだファイル一覧"),
-            leading=ft.Icon(ft.icons.LIST),
-            title_alignment=ft.MainAxisAlignment.END,
-            )]
+        card_list=[
+            ft.ListTile(
+                title=ft.Text("読み込んだファイル一覧"),
+                leading=ft.Icon(ft.icons.LIST),
+                title_alignment=ft.MainAxisAlignment.END,
+                )
+                ]
         for i in range(len(file_name)):
             card_list.append(
                 ft.ListTile(title=ft.Text(file_name[i])),
                 )
         card.content.content.controls=card_list
         card.update()
+        
     @staticmethod
     def show_progress_bar(chart_field, page):
         chart_field.controls=[
