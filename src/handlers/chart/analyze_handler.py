@@ -123,12 +123,11 @@ class Handlers_analyze:
             x="locate",
             y="counts",
             color="task",
-            title="Task Distribution by Location",
+            title="場所ごとに記録された業務内容と記録回数",
             labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
             barmode="stack",
         )
         result_field.controls=[
-            ft.Text("場所ごとに記録された業務内容と記録回数を表示",size=20),
             PlotlyChart(fig),#
         ]
         result_field.update()
@@ -149,12 +148,11 @@ class Handlers_analyze:
             x="date",
             y="counts",
             color="task",
-            title="Task Distribution by Date",
+            title="日付ごとに記録された業務内容と記録回数",
             labels={"date": "Date", "counts": "Task Count", "task": "Task"},
             barmode="stack",
         )
         result_field.controls=[
-            ft.Text("日付ごとに記録された業務内容と記録回数を表示",size=20),
             PlotlyChart(fig),#
         ]
         result_field.update()

@@ -134,7 +134,7 @@ class ChartPage:
 
 
         #特定のタスクに絞って、時間帯やcountの分布を分析。
-    
+        
         
     
     def create(self):
