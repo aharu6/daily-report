@@ -71,7 +71,7 @@ class ChartPage:
             )
         )
 
-        #業務内容ごとの時間
+        #けんすあたりの時間　件数あたりに要した時間の算出
         self.subtitle4=ft.Text("件数あたりの時間",size=20)
         self.chart4_field=ft.ResponsiveRow()
         self.chart4card=ft.Card(

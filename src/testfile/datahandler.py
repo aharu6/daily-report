@@ -85,7 +85,7 @@ for task in task_per_time["task"].unique():
         title=f"Task Distribution for {task}",
         labels={"time": "Time", "counts": "Task Count"},
     )
- #   fig.show()
+#   fig.show()
 # グラフを表示
 
 

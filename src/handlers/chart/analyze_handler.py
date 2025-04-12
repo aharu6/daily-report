@@ -1,17 +1,72 @@
 import flet as ft
 from handlers.chart.handlers_chart import Handlers_Chart
+import plotly.express as px
+from flet.plotly_chart import PlotlyChart
 class Handlers_analyze:
-    #時間帯ごとのタスク分析
+    #各タスクがどの時間帯に集中しているかを分析。　ヒートマップ
     @staticmethod
     def time_task_analysis(dataframe, result_field, page):  
-        
-        pass
+        Handlers_Chart.show_progress_bar(result_field, page)
+        df=Handlers_Chart.create_dataframe(dataframe)
+        task_per_time_heatmap=df.groupby(["task","time"]).size().reset_index(name="counts")
+        fig=px.density_heatmap(
+            task_per_time_heatmap,
+            x="time",
+            y="task",
+            z="counts",
+            title="Task Distribution by Time (Heatmap)",
+            labels={"time": "Time", "task": "Task", "counts": "Task Count"},
+        )
+        result_field.controls=[
+            PlotlyChart(fig),#グラフ
+            #データフレーム
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("業務内容")),
+                    ft.DataColumn(ft.Text("時間")),
+                    ft.DataColumn(ft.Text("時間に記録された回数")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(row.task)),
+                            ft.DataCell(ft.Text(row.time)),
+                            ft.DataCell(ft.Text(str(row.counts)))
+                        ]
+                    )
+                    for row in task_per_time_heatmap.itertuples(index=False, name="Row")
+                ]
+            )
+        ]
+        result_field.update()
+
+
     #業務内容ごとの件数
     @staticmethod
     def task_par_count(dataframe, result_field, page):
-        pass
+        Handlers_Chart.show_progress_bar(result_field, page)
+        df=Handlers_Chart.create_dataframe(dataframe)
+        task_per_count=df.groupby(["task"])["count"].sum().reset_index(name="counts")
+        result_field.controls=[
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("業務内容")),
+                    ft.DataColumn(ft.Text("件数")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(row.task)),
+                            ft.DataCell(ft.Text(str(row.counts)))
+                        ]
+                    )
+                    for row in task_per_count.itertuples(index=False, name="Row")
+                ]
+            )
+        ]
+        result_field.update()
 
-    #件数あたりの時間
+    #件数あたりの時間 件数あたりに要した時間の算出
     @staticmethod
     def count_par_time(dataframe, result_field, page):
         """_summary_
