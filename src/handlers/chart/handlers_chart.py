@@ -146,9 +146,10 @@ class Handlers_Chart:
                 (ft.Card(content = PlotlyChart(bar_chart,expand = True,original_size = False,isolated = True))),
                 #ダウンロード
                 ft.ElevatedButton(
-                    "グラフをダウンロード",
+                    "保存",
                     icon=ft.icons.DOWNLOAD,
                     on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart,chart_name="barchart"),
+                    tooltip=ft.Tooltip("グラフを保存")
                     )
                 ]
             page.update()
@@ -224,9 +225,10 @@ class Handlers_Chart:
                 (ft.Card(content = PlotlyChart(bar_chart,expand = True,original_size = False,isolated = True))),
                 #ダウンロード
                 ft.ElevatedButton(
-                    "グラフをダウンロード",
+                    "保存",
                     icon=ft.icons.DOWNLOAD,
                     on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart,chart_name="barchart"),
+                    tooltip=ft.Tooltip("グラフを保存")
                     )
                 ]
             page.update()
@@ -311,12 +313,13 @@ class Handlers_Chart:
                                 ),
                                 ft.Text(locate),
                                 ft.ElevatedButton(
-                                "グラフをダウンロード",
+                                "保存",
                                 icon=ft.icons.DOWNLOAD,
+                                tooltip=ft.Tooltip("グラフを保存"),
                                 on_click=lambda _: Chart_Download_Handler.open_directory(
                                     page=page, barchart=fig,
                                     chart_name="piechart"
-                                    ),
+                                    )
                                 )
                             ],
                             width="30%",
@@ -393,8 +396,9 @@ class Handlers_Chart:
                                 ),
                                 ft.Text(locate),
                                 ft.ElevatedButton(
-                                "グラフをダウンロード",
+                                "保存",
                                 icon=ft.icons.DOWNLOAD,
+                                tooltip=ft.Tooltip("グラフを保存"),
                                 on_click=lambda _, chart=fig, locate_name=locate: Chart_Download_Handler.open_directory(
                                     page=page, barchart=chart,
                                     chart_name=f"piechart_{locate_name}"
@@ -470,8 +474,9 @@ class Handlers_Chart:
                 (ft.Card(content = PlotlyChart(fig_bar,expand = True,original_size = False,isolated = True))),
                 #ダウンロード
                 ft.ElevatedButton(
-                    "グラフをダウンロード",
+                    "保存",
                     icon=ft.icons.DOWNLOAD,
+                    tooltip=ft.Tooltip("グラフを保存"),
                     on_click=lambda _: Chart_Download_Handler.open_directory(page=page,barchart=fig_bar,chart_name="selfchart"),
                 )
             ]
@@ -532,8 +537,9 @@ class Handlers_Chart:
                 ),
                 #ダウンロード
                 ft.ElevatedButton(
-                    "グラフをダウンロード",
+                    "保存",
                     icon=ft.icons.DOWNLOAD,
+                    tooltip=ft.Tooltip("グラフを保存"),
                     on_click=lambda _: Chart_Download_Handler.open_directory(page=page, barchart=fig_bar,chart_name="selfchart"),
                 )
             ]

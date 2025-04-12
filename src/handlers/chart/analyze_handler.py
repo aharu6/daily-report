@@ -3,6 +3,7 @@ from handlers.chart.handlers_chart import Handlers_Chart
 import plotly.express as px
 from flet.plotly_chart import PlotlyChart
 import pandas as pd
+from handlers.chart.download_handler import Chart_Download_Handler
 class Handlers_analyze:
     #各タスクがどの時間帯に集中しているかを分析。　ヒートマップ
     @staticmethod
@@ -15,11 +16,18 @@ class Handlers_analyze:
             x="time",
             y="task",
             z="counts",
-            title="Task Distribution by Time (Heatmap)",
+            title="どの時間帯に業務が集中しているか",
             labels={"time": "Time", "task": "Task", "counts": "Task Count"},
         )
         result_field.controls=[
             PlotlyChart(fig),#グラフ
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="グラフを保存",
+                on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="heatmap"),
+
+            ),
             #データフレーム
             ft.DataTable(
                 columns=[
@@ -128,7 +136,13 @@ class Handlers_analyze:
             barmode="stack",
         )
         result_field.controls=[
-            PlotlyChart(fig),#
+            PlotlyChart(fig),#グラフ
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="グラフを保存",
+                on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_location"),
+            )
         ]
         result_field.update()
 
@@ -153,6 +167,30 @@ class Handlers_analyze:
             barmode="stack",
         )
         result_field.controls=[
-            PlotlyChart(fig),#
+            PlotlyChart(fig),#グラフ
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="グラフを保存",
+                on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_date"),
+            ),
+            #データフレーム
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("日付")),
+                    ft.DataColumn(ft.Text("業務内容")),
+                    ft.DataColumn(ft.Text("記録回数")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(row.date.strftime("%Y-%m-%d"))),
+                            ft.DataCell(ft.Text(row.task)),
+                            ft.DataCell(ft.Text(str(row.counts)))
+                        ]
+                    )
+                    for row in date_group_df.itertuples(index=False, name="Row")
+                ]
+            )
         ]
         result_field.update()
