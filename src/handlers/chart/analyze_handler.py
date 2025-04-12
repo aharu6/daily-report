@@ -90,6 +90,7 @@ class Handlers_analyze:
         
         # データフレームとして表示する
         result_field.controls = [
+            ft.Text("1件あたりに要した時間の算出", size=20),
             ft.DataTable(
                 columns=[
                     ft.DataColumn(ft.Text("業務内容")),
@@ -109,3 +110,27 @@ class Handlers_analyze:
             )
         ]
         page.update()
+
+    #各タスクがどの場所（locate列）で行われたかを集計。
+    @staticmethod
+    def task_par_location(dataframe, result_field, page):
+        Handlers_Chart.show_progress_bar(result_field, page)
+        df=Handlers_Chart.create_dataframe(dataframe)
+        locate_df=df.groupby(["locate","task"]).size().reset_index(name="counts")
+        fig=px.bar(
+            locate_df,
+            x="locate",
+            y="counts",
+            color="task",
+            title="Task Distribution by Location",
+            labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
+            barmode="stack",
+        )
+        result_field.controls=[
+            ft.Text("場所ごとに記録された業務内容と記録回数を表示",size=20),
+            PlotlyChart(fig),#
+        ]
+        result_field.update()
+        pass
+
+    
