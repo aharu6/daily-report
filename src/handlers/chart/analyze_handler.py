@@ -2,6 +2,7 @@ import flet as ft
 from handlers.chart.handlers_chart import Handlers_Chart
 import plotly.express as px
 from flet.plotly_chart import PlotlyChart
+import pandas as pd
 class Handlers_analyze:
     #各タスクがどの時間帯に集中しているかを分析。　ヒートマップ
     @staticmethod
@@ -131,6 +132,29 @@ class Handlers_analyze:
             PlotlyChart(fig),#
         ]
         result_field.update()
-        pass
 
-    
+    #date列を基に、日付ごとのタスクの分布を分析
+    @staticmethod
+    def date_task_analysis(dataframe,result_field,page):
+        Handlers_Chart.show_progress_bar(result_field, page)
+        df=Handlers_Chart.create_dataframe(dataframe)
+        #date列をdatetime型に変換
+        df["date"]=pd.to_datetime(df["date"])
+        #date列を基に、日付ごとのタスクの分布を分析
+        date_group_df=df.groupby(["date","task"]).size().reset_index(name="counts")
+        #counts は時間になる*15をすると作業時間となる
+        #dateごとのタスクを積み上げ棒グラフで可視化
+        fig=px.bar(
+            date_group_df,
+            x="date",
+            y="counts",
+            color="task",
+            title="Task Distribution by Date",
+            labels={"date": "Date", "counts": "Task Count", "task": "Task"},
+            barmode="stack",
+        )
+        result_field.controls=[
+            ft.Text("日付ごとに記録された業務内容と記録回数を表示",size=20),
+            PlotlyChart(fig),#
+        ]
+        result_field.update()
