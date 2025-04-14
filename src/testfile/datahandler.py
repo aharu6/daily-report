@@ -9,7 +9,7 @@ pd.set_option('display.max_rows', None)  # 行を省略せずに表示
 pd.set_option('display.max_columns', None)  # 列を省略せずに表示
 pd.set_option('display.expand_frame_repr', False)  # データフレームを横にスクロールせずに表示
 pd.set_option('display.max_colwidth', None)  # 列の幅を省略せずに表示
-
+pd.options.mode.use_inf_as_na=True
 folder_path = "/Users/aizawaharuka/Documents/output_csv/"
 #folder_path内のcsvファイルを取得
 import os
@@ -170,6 +170,31 @@ time_per_task=pd.merge(
 )
 #新しいtime/taskにて１件あたりに要した時間を計算
 time_per_task["time_per_task"]=time_per_task["times"]/time_per_task["counts"]
+#負の欠損ちinfはNanとして欠損値として扱う
+#データフレームの列名をlocateに変更 横長に変換 (1件あたりに要した時間を計算)
+time_per_task_pi_time_per_task=time_per_task.pivot_table(
+        values=["time_per_task"],
+        index=["task"],
+        columns=["locate"],
+        fill_value=0,
+        )
+
+#同様に件数の合計フレームを作成
+time_per_task_pi_count=time_per_task.pivot_table(
+        values=["counts"],
+        index=["task"], 
+        columns=["locate"],
+        fill_value=0,
+)
+
+#同様に時間の合計フレームを作成
+time_per_task_pi_time=time_per_task.pivot_table(
+        values=["times"],
+        index=["task"], 
+        columns=["locate"],
+        fill_value=0,
+)
+
 #fletアプリ上にてデータフレームを表示
 #time_per_taskをcsvファイルとして保存
 time_per_task.to_csv("time_per_task.csv", index=False)
