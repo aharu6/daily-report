@@ -1,7 +1,14 @@
+
+
 import pandas as pd
 import ast
 import plotly.express as px
 
+# 全ての行と列を表示する設定
+pd.set_option('display.max_rows', None)  # 行を省略せずに表示
+pd.set_option('display.max_columns', None)  # 列を省略せずに表示
+pd.set_option('display.expand_frame_repr', False)  # データフレームを横にスクロールせずに表示
+pd.set_option('display.max_colwidth', None)  # 列の幅を省略せずに表示
 
 folder_path = "/Users/aizawaharuka/Documents/output_csv/"
 #folder_path内のcsvファイルを取得
@@ -12,7 +19,25 @@ file_list=glob.glob(os.path.join(folder_path, "*.csv"))
 dataframes=pd.concat([
     pd.read_csv(file) for file in file_list
 ])
+#病棟名のリストはバラす
+loc_dataframes=[]
+for index,row in dataframes.iterrows():
+    try:
 
+        if isinstance(row["locate"], str):
+
+            tarn_row=ast.literal_eval(row["locate"])
+            for loc in range(len(tarn_row)):
+                new_row=row.copy()
+                new_row["locate"]=tarn_row[loc]
+                loc_dataframes.append(new_row)
+        else:
+            continue
+
+    except (ValueError, SyntaxError):
+        # locate列がリスト形式でない場合はスキップ
+        continue    
+loc_dataframes=pd.DataFrame(loc_dataframes)
 #####時間帯（time列）ごとにどのタスクが多いかを分析。
 #時間帯ごとにその種類のtaskが行われた回数（件数とは別       ）
 #時間帯ごとにgroupbyして集計する
@@ -85,7 +110,7 @@ for task in task_per_time["task"].unique():
         title=f"Task Distribution for {task}",
         labels={"time": "Time", "counts": "Task Count"},
     )
-#   fig.show()
+#   fig.show  
 # グラフを表示
 
 
@@ -111,14 +136,40 @@ fig = px.bar(
 #fig.show()
 
 
-#件数あたりに要した時間の算出
+##件数あたりに要した時間の算出
 #件数列を合計しておく
-time_per_task=dataframes.groupby(["task"]).size().reset_index(name="times")
 count_per_task=dataframes.groupby(["task"])["count"].sum().reset_index(name="counts")
-time_per_task["counts"]=count_per_task["counts"]
+count_per_task["locate"]="all"
+#病棟ごとに件数の合計を算出
+count_per_task_locate=loc_dataframes.groupby(["locate","task"])["count"].sum().reset_index(name="counts")
+#count_per_task_locateとcount_per_taskを結合
+sum_task_counts=pd.merge(
+    count_per_task_locate,
+    count_per_task,
+    on=["locate", "task","counts"],
+    how="outer",
+)#病棟全ての合計と病棟ごとの合計
+
+#時間の算出
+time_per_task_all=dataframes.groupby(["task"]).size().reset_index(name="times")
+time_per_task_all["counts"]=count_per_task["counts"]
 #times列に*15することで、時間に変換
-time_per_task["times"]=time_per_task["times"]*15
+time_per_task_all["times"]=time_per_task_all["times"]*15
+time_per_task_all["locate"]="all"   
+#病棟ごとに同様に算出
+time_per_task_locate=loc_dataframes.groupby(["locate","task"]).size().reset_index(name="times")
+time_per_task_locate["counts"]=count_per_task_locate["counts"]
+#times列に*15することで、時間に変換
+time_per_task_locate["times"]=time_per_task_locate["times"]*15
+#time_per_task_allとtime_per_task_locateを結合
+time_per_task=pd.merge(
+    time_per_task_locate,
+    time_per_task_all,
+    on=["locate", "task","times","counts"],
+    how="outer",
+)
 #新しいtime/taskにて１件あたりに要した時間を計算
 time_per_task["time_per_task"]=time_per_task["times"]/time_per_task["counts"]
-print(time_per_task)
 #fletアプリ上にてデータフレームを表示
+#time_per_taskをcsvファイルとして保存
+time_per_task.to_csv("time_per_task.csv", index=False)

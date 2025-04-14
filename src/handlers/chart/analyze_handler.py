@@ -55,7 +55,9 @@ class Handlers_analyze:
     def task_par_count(dataframe, result_field, page):
         Handlers_Chart.show_progress_bar(result_field, page)
         df=Handlers_Chart.create_dataframe(dataframe)
-        task_per_count=df.groupby(["task"])["count"].sum().reset_index(name="counts")
+        #業務内容と場所ごとに集計する
+        task_per_count=df.groupby(["task","locate"])["count"].sum().reset_index(name="counts")
+        #病棟ごとの合計値も算出
         result_field.controls=[
             ft.DataTable(
                 columns=[
