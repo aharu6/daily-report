@@ -118,8 +118,6 @@ for task in task_per_time["task"].unique():
 #date列をdatetime型に変換
 date_par_task=dataframes
 date_par_task["date"]=pd.to_datetime(date_par_task["date"])
-#date列を基に、日付ごとのタスクの分布を分析
-#date列を基に、日付ごとのタスクの分布を分析
 date_group_df=date_par_task.groupby(["date","task"]).size().reset_index(name="counts")
 #counts は時間になる*15をすると作業時間となる
 #dateごとのタスクを積み上げ棒グラフで可視化
@@ -149,6 +147,25 @@ sum_task_counts=pd.merge(
     on=["locate", "task","counts"],
     how="outer",
 )#病棟全ての合計と病棟ごとの合計
+sum_task_counts_pi=sum_task_counts.pivot_table(
+    values=["counts"],
+    index=["task"],
+    columns=["locate"],
+    fill_value=0,
+)
+#件数集計していない業務は削除する
+#件数入力しない（混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンス）
+#上記業務内容を入力していない場合はdropでエラーになるから、止まらないようにする
+try:
+    sum_task_counts_pi.drop(index=["混注時間"],inplace=True)
+    sum_task_counts_pi.drop(index=["休憩"],inplace=True)
+    sum_task_counts_pi.drop(index=["委員会"],inplace=True)
+    sum_task_counts_pi.drop(index=["WG活動"],inplace=True)
+    sum_task_counts_pi.drop(index=["勉強会参加"],inplace=True)
+    sum_task_counts_pi.drop(index=["1on1"],inplace=True)
+    sum_task_counts_pi.drop(index=["カンファレンス"],inplace=True)
+except KeyError:
+    pass
 
 #時間の算出
 time_per_task_all=dataframes.groupby(["task"]).size().reset_index(name="times")
@@ -172,6 +189,9 @@ time_per_task=pd.merge(
 time_per_task["time_per_task"]=time_per_task["times"]/time_per_task["counts"]
 #負の欠損ちinfはNanとして欠損値として扱う
 #データフレームの列名をlocateに変更 横長に変換 (1件あたりに要した時間を計算)
+#件数を入力しない業務はcountが0になるのでtime_per_taskはNaNになる
+#NaNになると横長に直したとき自動的に削除される
+#他のフレーム件数を入力しないものは除外するか
 time_per_task_pi_time_per_task=time_per_task.pivot_table(
         values=["time_per_task"],
         index=["task"],
@@ -186,6 +206,17 @@ time_per_task_pi_count=time_per_task.pivot_table(
         columns=["locate"],
         fill_value=0,
 )
+#件数入力しない業務は削除する
+try:
+    time_per_task_pi_count.drop(index=["混注時間"],inplace=True)
+    time_per_task_pi_count.drop(index=["休憩"],inplace=True)
+    time_per_task_pi_count.drop(index=["委員会"],inplace=True)
+    time_per_task_pi_count.drop(index=["WG活動"],inplace=True)
+    time_per_task_pi_count.drop(index=["勉強会参加"],inplace=True)
+    time_per_task_pi_count.drop(index=["1on1"],inplace=True)
+    time_per_task_pi_count.drop(index=["カンファレンス"],inplace=True)  
+except KeyError:
+    pass
 
 #同様に時間の合計フレームを作成
 time_per_task_pi_time=time_per_task.pivot_table(
@@ -194,7 +225,6 @@ time_per_task_pi_time=time_per_task.pivot_table(
         columns=["locate"],
         fill_value=0,
 )
-
 #fletアプリ上にてデータフレームを表示
 #time_per_taskをcsvファイルとして保存
 time_per_task.to_csv("time_per_task.csv", index=False)
