@@ -9,7 +9,7 @@ class Handlers_analyze:
     @staticmethod
     def time_task_analysis(dataframe, result_field, page):  
         Handlers_Chart.show_progress_bar(result_field, page)
-        df=Handlers_Chart.create_dataframe(dataframe)
+        df=dataframe
         task_per_time_heatmap=df.groupby(["task","time"]).size().reset_index(name="counts")
         fig=px.density_heatmap(
             task_per_time_heatmap,
@@ -54,7 +54,7 @@ class Handlers_analyze:
     @staticmethod
     def task_par_count(dataframe, result_field, page):
         Handlers_Chart.show_progress_bar(result_field, page)
-        df=Handlers_Chart.create_dataframe(dataframe)
+        df=dataframe
         #業務内容と場所ごとに集計する
         task_per_count=df.groupby(["task","locate"])["count"].sum().reset_index(name="counts")
         #病棟ごとの合計値も算出
@@ -88,7 +88,7 @@ class Handlers_analyze:
             page (_type_): _description_
         """
         Handlers_Chart.show_progress_bar(result_field, page)
-        df=Handlers_Chart.create_dataframe(dataframe)
+        df=dataframe
         time_per_task=df.groupby(["task"]).size().reset_index(name="times")
         #times列に*15することで、実際の時間に変換（１入力あたり１５分のため）
         time_per_task["times"]=time_per_task["times"]*15
@@ -126,7 +126,7 @@ class Handlers_analyze:
     @staticmethod
     def task_par_location(dataframe, result_field, page):
         Handlers_Chart.show_progress_bar(result_field, page)
-        df=Handlers_Chart.create_dataframe(dataframe)
+        df=dataframe
         locate_df=df.groupby(["locate","task"]).size().reset_index(name="counts")
         fig=px.bar(
             locate_df,
@@ -152,7 +152,7 @@ class Handlers_analyze:
     @staticmethod
     def date_task_analysis(dataframe,result_field,page):
         Handlers_Chart.show_progress_bar(result_field, page)
-        df=Handlers_Chart.create_dataframe(dataframe)
+        df=dataframe
         #date列をdatetime型に変換
         df["date"]=pd.to_datetime(df["date"])
         #date列を基に、日付ごとのタスクの分布を分析
