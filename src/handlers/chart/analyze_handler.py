@@ -103,7 +103,7 @@ class Handlers_analyze:
                     ft.DataRow(
                         cells=[
                             ft.DataCell(ft.Text(str(row[j]))) if j < len(row) else ft.DataCell(ft.Text(""))
-                            for j in range(7)
+                            for j in range(len(row))
                         ]
                     )
                     for row in sum_task_counts_pi.itertuples(name="Row")
