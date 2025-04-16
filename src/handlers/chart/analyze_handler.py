@@ -4,6 +4,7 @@ import plotly.express as px
 from flet.plotly_chart import PlotlyChart
 import pandas as pd
 from handlers.chart.download_handler import Chart_Download_Handler
+
 class Handlers_analyze:
     #各タスクがどの時間帯に集中しているかを分析。　ヒートマップ
     @staticmethod
@@ -56,26 +57,68 @@ class Handlers_analyze:
         Handlers_Chart.show_progress_bar(result_field, page)
         df=dataframe
         #業務内容と場所ごとに集計する
-        task_per_count=df.groupby(["task","locate"])["count"].sum().reset_index(name="counts")
-        #病棟ごとの合計値も算出
+        #全体件数の算出
+        count_per_task_all=dataframe.groupby(["task"])["count"].sum().reset_index(name="counts")
+        count_per_task_all["locate"]="all"
+        #病棟ごとの件数を算出
+        count_per_task_locate=df.groupby(["task","locate"])["count"].sum().reset_index(name="counts")
+        #allとlocateを結合する
+        count_per_task=pd.merge(
+            count_per_task_locate,
+            count_per_task_all,
+            on=["locate","task","counts"],
+            how="outer",
+        )
+        #保存用の横長データフレーム
+        #病棟全ての合計と病棟ごとの合計
+        sum_task_counts_pi=count_per_task.pivot_table(
+            values=["counts"],
+            index=["task"],
+            columns=["locate"],
+            fill_value=0,
+        )
+
+        #件数集計していない業務は削除する
+        #件数入力しない（混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンス）
+        #上記業務内容を入力していない場合はdropでエラーになるから、止まらないようにする
+        try:
+            sum_task_counts_pi.drop(index=["混注時間"],inplace=True)
+            sum_task_counts_pi.drop(index=["休憩"],inplace=True)
+            sum_task_counts_pi.drop(index=["委員会"],inplace=True)
+            sum_task_counts_pi.drop(index=["WG活動"],inplace=True)
+            sum_task_counts_pi.drop(index=["勉強会参加"],inplace=True)
+            sum_task_counts_pi.drop(index=["1on1"],inplace=True)
+            sum_task_counts_pi.drop(index=["カンファレンス"],inplace=True)
+        except KeyError:
+            pass
+        sum_task_counts_pi.columns=sum_task_counts_pi.columns.droplevel(0)        
+
         result_field.controls=[
             ft.DataTable(
-                columns=[
-                    ft.DataColumn(ft.Text("業務内容")),
-                    ft.DataColumn(ft.Text("件数")),
+                columns=[ft.DataColumn(ft.Text("業務内容"))]+[
+                    ft.DataColumn(ft.Text(sum_task_counts_pi.columns[i]))
+                    for i in range(len(sum_task_counts_pi.columns))
                 ],
                 rows=[
                     ft.DataRow(
                         cells=[
-                            ft.DataCell(ft.Text(row.task)),
-                            ft.DataCell(ft.Text(str(row.counts)))
+                            ft.DataCell(ft.Text(str(row[j]))) if j < len(row) else ft.DataCell(ft.Text(""))
+                            for j in range(7)
                         ]
                     )
-                    for row in task_per_count.itertuples(index=False, name="Row")
+                    for row in sum_task_counts_pi.itertuples(name="Row")
                 ]
             )
         ]
+        """for i in range(len(sum_task_counts_pi.columns)):    
+            result_field.controls[0].columns.append(
+                ft.DataColumn(ft.Text(sum_task_counts_pi.columns[i]))
+            )
+        """
+        
         result_field.update()
+
+        
 
     #件数あたりの時間 件数あたりに要した時間の算出
     @staticmethod

@@ -1,5 +1,3 @@
-
-
 import pandas as pd
 import ast
 import plotly.express as px
@@ -147,6 +145,18 @@ sum_task_counts=pd.merge(
     on=["locate", "task","counts"],
     how="outer",
 )#病棟全ての合計と病棟ごとの合計
+#件数入力しない（混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンス）
+task_counts_fil=sum_task_counts.query("task != '混注時間'")
+task_counts_fil=task_counts_fil.query("task != '休憩'")
+task_counts_fil=task_counts_fil.query("task != '委員会'")
+task_counts_fil=task_counts_fil.query("task != 'WG活動'")
+task_counts_fil=task_counts_fil.query("task != '勉強会参加'")
+task_counts_fil=task_counts_fil.query("task != '1on1'")
+task_counts_fil=task_counts_fil.query("task != 'カンファレンス'")
+
+#
+#task_counts_fil2=sum_task_counts[sum_task_counts["task"]!="混時"]
+
 sum_task_counts_pi=sum_task_counts.pivot_table(
     values=["counts"],
     index=["task"],
@@ -167,6 +177,16 @@ try:
 except KeyError:
     pass
 
+#sum_task_counts_piの列名をcountsからlocateに変更
+#最上位ラベルのcountsを削除
+print(sum_task_counts_pi)
+sum_task_counts_pi.columns=sum_task_counts_pi.columns.droplevel(0)
+for i in range(len(sum_task_counts_pi.columns)):
+    print(sum_task_counts_pi.columns[i])
+#fletアプリ上にてデータフレームを表示
+for row in sum_task_counts_pi.itertuples( name="Row"):
+    for j in range(len(sum_task_counts_pi.columns)):
+        print(row[j])
 #時間の算出
 time_per_task_all=dataframes.groupby(["task"]).size().reset_index(name="times")
 time_per_task_all["counts"]=count_per_task["counts"]
@@ -227,4 +247,6 @@ time_per_task_pi_time=time_per_task.pivot_table(
 )
 #fletアプリ上にてデータフレームを表示
 #time_per_taskをcsvファイルとして保存
+
+#病棟ごとの件数あたりの時間算出も必要か
 time_per_task.to_csv("time_per_task.csv", index=False)

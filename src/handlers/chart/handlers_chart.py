@@ -40,8 +40,8 @@ class Handlers_Chart:
                         new_row["locate"] = tarn_row[loc]
                         new_rows.append(new_row)
                 parent_instance.dataframe=pd.DataFrame(new_rows)
-
             except Exception as e:
+                print(f"An error occurred: {e}")    
                 pass
 
     @staticmethod
