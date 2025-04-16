@@ -15,7 +15,7 @@ class Handlers_setting:
         controls = []
         if isinstance(phNameList, str):
             phNameList = json.loads(phNameList)
-
+        
         try:
             controls = [
                 ft.ListTile(

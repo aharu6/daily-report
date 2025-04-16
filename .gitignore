@@ -21,3 +21,4 @@ src/.DS_Store
 /src/testfile/dist
 src/testfile/date_col.py
 src/testfile/fig_bar.jpg
+time_per_task.csv

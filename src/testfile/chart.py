@@ -33,7 +33,7 @@ group_df_locate = df.groupby(["locate"]).size().reset_index(name="counts")
 
 # 病棟分円グラフを作成する
 import plotly.express as px
-import plotly
+import plotly as py
 
 
 fig = py.pie(group_df[group_df["locate"] == "4B"], values="counts", names="task")

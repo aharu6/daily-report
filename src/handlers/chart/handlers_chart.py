@@ -29,29 +29,37 @@ class Handlers_Chart:
             Handlers_Chart.pick_file_name(file_name,card)
             try:
                 # ファイルの数だけ繰り返す
-                parent_instance.dataframe = pd.concat(
+                dat = pd.concat(
                     [pd.read_csv(file_path) for file_path in file_paths]
                 )
-                # Task ごとにまとめる
-                # parent_instance.dataframe = df.groupby("Task").size().reset_index(name="Count")
-                # 病棟ごとのデータに変換するならここからまとめ直す
-
+                new_rows = []
+                for index, row in dat.iterrows():
+                    tarn_row = ast.literal_eval(row["locate"])
+                    for loc in range(len(tarn_row)):
+                        new_row = row.copy()
+                        new_row["locate"] = tarn_row[loc]
+                        new_rows.append(new_row)
+                parent_instance.dataframe=pd.DataFrame(new_rows)
             except Exception as e:
+                print(f"An error occurred: {e}")    
                 pass
 
     @staticmethod
     def pick_file_name(file_name,card):
-        card_list=[ft.ListTile(
-            title=ft.Text("読み込んだファイル一覧"),
-            leading=ft.Icon(ft.icons.LIST),
-            title_alignment=ft.MainAxisAlignment.END,
-            )]
+        card_list=[
+            ft.ListTile(
+                title=ft.Text("読み込んだファイル一覧"),
+                leading=ft.Icon(ft.icons.LIST),
+                title_alignment=ft.MainAxisAlignment.END,
+                )
+                ]
         for i in range(len(file_name)):
             card_list.append(
                 ft.ListTile(title=ft.Text(file_name[i])),
                 )
         card.content.content.controls=card_list
         card.update()
+        
     @staticmethod
     def show_progress_bar(chart_field, page):
         chart_field.controls=[
@@ -75,14 +83,7 @@ class Handlers_Chart:
             chart_field.controls[1].controls[0].text=start_date.strftime("%Y-%m-%d")
             chart_field.controls[1].controls[2].text=end_date.strftime("%Y-%m-%d")
             Handlers_Chart.show_progress_bar(chart_field, page)
-            new_rows = []
-            for index, row in dataframe.iterrows():
-                tarn_row = ast.literal_eval(row["locate"])
-                for loc in range(len(tarn_row)):
-                    new_row = row.copy()
-                    new_row["locate"] = tarn_row[loc]
-                    new_rows.append(new_row)
-            df = pd.DataFrame(new_rows)  
+            df =dataframe
             df["date"]=pd.to_datetime(df["date"],format="%Y-%m-%d")
             
             #日付のフィルタリング start_dateからend_dateまでのデータを抽出
@@ -150,9 +151,10 @@ class Handlers_Chart:
                 (ft.Card(content = PlotlyChart(bar_chart,expand = True,original_size = False,isolated = True))),
                 #ダウンロード
                 ft.ElevatedButton(
-                    "グラフをダウンロード",
+                    "保存",
                     icon=ft.icons.DOWNLOAD,
                     on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart,chart_name="barchart"),
+                    tooltip=ft.Tooltip("グラフを保存")
                     )
                 ]
             page.update()
@@ -161,14 +163,7 @@ class Handlers_Chart:
         except Exception as e:
             print(e)
             Handlers_Chart.show_progress_bar(chart_field, page)
-            new_rows = []
-            for index, row in dataframe.iterrows():
-                tarn_row = ast.literal_eval(row["locate"])
-                for loc in range(len(tarn_row)):
-                    new_row = row.copy()
-                    new_row["locate"] = tarn_row[loc]
-                    new_rows.append(new_row)
-            df = pd.DataFrame(new_rows)    
+            df =dataframe
             
             # bar_plot
             group_bubble = df.groupby(["locate","task","count"]).size().reset_index(name="times")
@@ -235,9 +230,10 @@ class Handlers_Chart:
                 (ft.Card(content = PlotlyChart(bar_chart,expand = True,original_size = False,isolated = True))),
                 #ダウンロード
                 ft.ElevatedButton(
-                    "グラフをダウンロード",
+                    "保存",
                     icon=ft.icons.DOWNLOAD,
                     on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart,chart_name="barchart"),
+                    tooltip=ft.Tooltip("グラフを保存")
                     )
                 ]
             page.update()
@@ -257,14 +253,7 @@ class Handlers_Chart:
             end_date=datetime.datetime.strptime(chart2_info.controls[1].controls[2].data,"%Y-%m-%dT%H:%M:%S.%f")
             chart2_info.controls[1].controls[0].text=start_date.strftime("%Y-%m-%d")
             chart2_info.controls[1].controls[2].text=end_date.strftime("%Y-%m-%d")
-            new_rows = []
-            for index, row in dataframe.iterrows():
-                tarn_row = ast.literal_eval(row["locate"])
-                for loc in range(len(tarn_row)):
-                    new_row = row.copy()
-                    new_row["locate"] = tarn_row[loc]
-                    new_rows.append(new_row)
-            df = pd.DataFrame(new_rows)
+            df =dataframe
             df["date"]=pd.to_datetime(df["date"],format="%Y-%m-%d")
             #日付のフィルタリング start_dateからend_dateまでのデータを抽出
             df=df[df["date"].between(start_date,end_date)]
@@ -329,12 +318,13 @@ class Handlers_Chart:
                                 ),
                                 ft.Text(locate),
                                 ft.ElevatedButton(
-                                "グラフをダウンロード",
+                                "保存",
                                 icon=ft.icons.DOWNLOAD,
+                                tooltip=ft.Tooltip("グラフを保存"),
                                 on_click=lambda _: Chart_Download_Handler.open_directory(
                                     page=page, barchart=fig,
                                     chart_name="piechart"
-                                    ),
+                                    )
                                 )
                             ],
                             width="30%",
@@ -348,15 +338,8 @@ class Handlers_Chart:
             page.update()
         except Exception as e:
             print(f"An error occurred: {e}")
-            new_rows = []
-            for index, row in dataframe.iterrows():
-                tarn_row = ast.literal_eval(row["locate"])
-                for loc in range(len(tarn_row)):
-                    new_row = row.copy()
-                    new_row["locate"] = tarn_row[loc]
-                    new_rows.append(new_row)
 
-            df = pd.DataFrame(new_rows)
+            df =dataframe
 
             # 算出したデータフレームから病棟数を算出し、病棟数分のcardを作成する
             # data =病棟名　でもつけて紐づけるできるように？
@@ -418,8 +401,9 @@ class Handlers_Chart:
                                 ),
                                 ft.Text(locate),
                                 ft.ElevatedButton(
-                                "グラフをダウンロード",
+                                "保存",
                                 icon=ft.icons.DOWNLOAD,
+                                tooltip=ft.Tooltip("グラフを保存"),
                                 on_click=lambda _, chart=fig, locate_name=locate: Chart_Download_Handler.open_directory(
                                     page=page, barchart=chart,
                                     chart_name=f"piechart_{locate_name}"
@@ -444,14 +428,8 @@ class Handlers_Chart:
             chart_field.controls[1].controls[0].text=start_date.strftime("%Y-%m-%d")
             chart_field.controls[1].controls[2].text=end_date.strftime("%Y-%m-%d")
             Handlers_Chart.show_progress_bar(chart_field, page)
-            new_rows = []
-            for index, row in dataframe.iterrows():
-                tarn_row = ast.literal_eval(row["locate"])
-                for loc in range(len(tarn_row)):
-                    new_row = row.copy()
-                    new_row["locate"] = tarn_row[loc]
-                    new_rows.append(new_row)
-            df = pd.DataFrame(new_rows)
+            df =dataframe
+
             df["date"]=pd.to_datetime(df["date"],format="%Y-%m-%d")
             #日付のフィルタリング start_dateからend_dateまでのデータを抽出
             df=df[df["date"].between(start_date,end_date)]
@@ -501,8 +479,9 @@ class Handlers_Chart:
                 (ft.Card(content = PlotlyChart(fig_bar,expand = True,original_size = False,isolated = True))),
                 #ダウンロード
                 ft.ElevatedButton(
-                    "グラフをダウンロード",
+                    "保存",
                     icon=ft.icons.DOWNLOAD,
+                    tooltip=ft.Tooltip("グラフを保存"),
                     on_click=lambda _: Chart_Download_Handler.open_directory(page=page,barchart=fig_bar,chart_name="selfchart"),
                 )
             ]
@@ -512,15 +491,7 @@ class Handlers_Chart:
             print(e)
             Handlers_Chart.show_progress_bar(chart_field, page)
             #データフレームの作成
-            new_rows = []
-            for index, row in dataframe.iterrows():
-                tarn_row = ast.literal_eval(row["locate"])
-                for loc in range(len(tarn_row)):
-                    new_row = row.copy()
-                    new_row["locate"] = tarn_row[loc]
-                    new_rows.append(new_row)
-
-            df = pd.DataFrame(new_rows)
+            df = dataframe
             
             # 個人ごとにデータをまとめ直す
             gorup_by_person = df.groupby(["phName","task"]).size().reset_index(name="counts")
@@ -571,9 +542,21 @@ class Handlers_Chart:
                 ),
                 #ダウンロード
                 ft.ElevatedButton(
-                    "グラフをダウンロード",
+                    "保存",
                     icon=ft.icons.DOWNLOAD,
+                    tooltip=ft.Tooltip("グラフを保存"),
                     on_click=lambda _: Chart_Download_Handler.open_directory(page=page, barchart=fig_bar,chart_name="selfchart"),
                 )
             ]
             page.update()
+    """
+    @staticmethod
+    def create_dataframe(dataframe):
+        new_rows = []
+        for index, row in dataframe.iterrows():
+            tarn_row = ast.literal_eval(row["locate"])
+            for loc in range(len(tarn_row)):
+                new_row = row.copy()
+                new_row["locate"] = tarn_row[loc]
+                new_rows.append(new_row)
+        return pd.DataFrame(new_rows)"""

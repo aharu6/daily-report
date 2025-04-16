@@ -38,14 +38,18 @@ class FileNameCard:
     def create(self):
         return ft.Card(
             content=ft.Container(
-                content=ft.Column(
+                content=ft.ListView(
                     controls=[
                         ft.ListTile(
                             leading=ft.Icon(ft.icons.DESCRIPTION),
                             title=ft.Text("読み込んだファイル一覧"),
                             title_alignment=ft.MainAxisAlignment.END,
                         ),
-                    ]
+                    ],
+                    expand=10,  # 修正: 高さを固定するために expand を False に設定
+                    spacing=10,
+                    auto_scroll=True,
+                    padding=10,
                 )
             )
         )
