@@ -47,17 +47,27 @@ class Handlers_Chart:
     @staticmethod
     def pick_file_name(file_name,card):
         card_list=[
-            ft.ListTile(
-                title=ft.Text("読み込んだファイル一覧"),
-                leading=ft.Icon(ft.icons.LIST),
-                title_alignment=ft.MainAxisAlignment.END,
-                )
+            ft.ExpansionPanelList(
+                controls=[
+                    ft.ExpansionPanel(
+                        bgcolor=None,
+                        header=ft.ListTile(
+                            leading=ft.Icon(ft.icons.LIST),
+                            title=ft.Text("読み込んだファイル一覧"),
+                        ),
+                        content=ft.Column(
+                            controls=[
+                                ft.ListTile(
+                                    title=ft.Text(file_name[i])
+                                )
+                                for i in range(len(file_name))
+                            ]
+                        )
+                    )
                 ]
-        for i in range(len(file_name)):
-            card_list.append(
-                ft.ListTile(title=ft.Text(file_name[i])),
-                )
-        card.content.content.controls=card_list
+            ),
+            ]
+        card.controls=card_list
         card.update()
         
     @staticmethod
