@@ -179,15 +179,14 @@ except KeyError:
 
 #sum_task_counts_piの列名をcountsからlocateに変更
 #最上位ラベルのcountsを削除
-print(sum_task_counts_pi)
 sum_task_counts_pi.columns=sum_task_counts_pi.columns.droplevel(0)
-for i in range(len(sum_task_counts_pi.columns)):
+"""for i in range(len(sum_task_counts_pi.columns)):
     print(sum_task_counts_pi.columns[i])
 #fletアプリ上にてデータフレームを表示
 for row in sum_task_counts_pi.itertuples( name="Row"):
     for j in range(len(sum_task_counts_pi.columns)):
         print(row[j])
-#時間の算出
+"""#時間の算出
 time_per_task_all=dataframes.groupby(["task"]).size().reset_index(name="times")
 time_per_task_all["counts"]=count_per_task["counts"]
 #times列に*15することで、時間に変換
@@ -249,4 +248,4 @@ time_per_task_pi_time=time_per_task.pivot_table(
 #time_per_taskをcsvファイルとして保存
 
 #病棟ごとの件数あたりの時間算出も必要か
-time_per_task.to_csv("time_per_task.csv", index=False)
+
