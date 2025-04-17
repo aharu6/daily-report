@@ -260,8 +260,7 @@ class Handlers_analyze:
 
     @staticmethod
     def comment_analysis(dataframe,result_field,page):
-        df=dataframe
-        comment_df=df[df["comment"].notna()]
+        comment_df=dataframe[dataframe["comment"].notna()]
         comment_df=comment_df[["time","locate","date","phName","comment"]]
         comment_df=comment_df.reset_index(drop=True)
         result_field.controls=[
