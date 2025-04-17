@@ -19,7 +19,6 @@ class ChartPage:
             controls=[
                 FilePickCard(self.file_picker_Button).create(),
             ],
-            alignment=ft.MainAxisAlignment.END,
         )
         self.selected_file_name=ft.Column()
 
