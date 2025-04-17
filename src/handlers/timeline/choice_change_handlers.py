@@ -48,6 +48,7 @@ class ChoiceChangeHandlers:
                 selectColumns[38].visible = False  # 外来処方箋修正
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
                 selectColumns[40].visible = False  # お役立ち情報作成
+                selectColumns[41].visible = False  # 薬剤使用期限確認
 
                 page.update()
             case 1:  # 12階
@@ -59,6 +60,7 @@ class ChoiceChangeHandlers:
                 selectColumns[23].visible = True  # 手術使用麻薬確認・補充
                 selectColumns[24].visible = True  # 術後疼痛管理チーム回診
                 selectColumns[25].visible = True  # 脳卒中ホットライン対応
+                selectColumns[41].visible = True  # 薬剤使用期限確認
                 # 非表示
                 selectColumns[0].visible = False  # 情報収集　指導
                 selectColumns[1].visible = False  # 指導記録作成
@@ -142,6 +144,7 @@ class ChoiceChangeHandlers:
                 selectColumns[38].visible = False  # 外来処方箋修正
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
                 selectColumns[40].visible = False  # お役立ち情報作成
+                selectColumns[41].visible = False  # 薬剤使用期限確認
 
                 page.update()
 
@@ -193,6 +196,7 @@ class ChoiceChangeHandlers:
                 selectColumns[38].visible = False  # 外来処方箋修正
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
                 selectColumns[40].visible = False  # お役立ち情報作成
+                selectColumns[41].visible = False  # 薬剤使用期限確認
 
                 page.update()
             case 4:  # ICT/AST
@@ -240,6 +244,7 @@ class ChoiceChangeHandlers:
                 selectColumns[38].visible = False  # 外来処方箋修正
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
                 selectColumns[40].visible = False  # お役立ち情報作成
+                selectColumns[41].visible = False  # 薬剤使用期限確認
 
                 page.update()
 
@@ -289,6 +294,7 @@ class ChoiceChangeHandlers:
                 selectColumns[38].visible = False  # 外来処方箋修正
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
                 selectColumns[40].visible = False  # お役立ち情報作成
+                selectColumns[41].visible = False  # 薬剤使用期限確認
 
                 page.update()
 
@@ -327,6 +333,7 @@ class ChoiceChangeHandlers:
                 selectColumns[28].visible = False  # その他
                 selectColumns[29].visible = False  # 管理業務
                 selectColumns[30].visible = False  # NST
+                selectColumns[41].visible = False  # 薬剤使用期限確認
 
                 # 表示
                 selectColumns[31].visible = True  # 問い合わせ応需

@@ -2,7 +2,7 @@ import flet as ft
 from flet import View
 from handlers.handlersMain import Handlers_Main
 from handlers.chart.handlers_chart import Handlers_Chart
-from components.compoments_chart import FilePickCard,FileNameCard
+from components.compoments_chart import FilePickCard
 from handlers.chart.analyze_handler import Handlers_analyze
 class ChartPage:
     def __init__(self, page):
@@ -18,15 +18,14 @@ class ChartPage:
         self.select = ft.Row(
             controls=[
                 FilePickCard(self.file_picker_Button).create(),
-                FileNameCard().create(),
             ],
-            alignment=ft.MainAxisAlignment.END,
         )
+        self.selected_file_name=ft.Column()
 
         self.file_picker = ft.FilePicker(
             on_result=lambda e: Handlers_Chart.pick_file_result(
                 e=e, selected_files=self.selected_files,parent_instance= self,
-                card=self.select.controls[1], # FileNameCardのListViewを指定
+                card=self.selected_file_name, # FileNameCardのListViewを指定
             )
         )
         self.selected_files = ft.Text()
@@ -108,7 +107,7 @@ class ChartPage:
         )
 
         #各タスクがどの時間帯に集中しているかを分析。　ヒートマップ
-        self.subtitle7=ft.Text("時間帯ごとの業務分析",size=20)
+        self.subtitle7=ft.Text("時間帯ごとに業務が記録された回数",size=20)
         self.chart7_field=ft.ResponsiveRow()
         self.chart7card=ft.Card(
             content=ft.TextButton(
@@ -142,6 +141,7 @@ class ChartPage:
             "/chart",
             [
                 self.select,
+                self.selected_file_name,
                 self.selected_files,
                 self.subtitle,
                 self.horizon_subtitle,

@@ -84,3 +84,5 @@ class ColorHandlers:
                 return "#DDA853"
             case "お役立ち情報作成":
                 return "#DDA853"
+            case "薬剤使用期限確認":
+                return "#508D4E"

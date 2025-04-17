@@ -4,7 +4,7 @@ import plotly.express as px
 from flet.plotly_chart import PlotlyChart
 import pandas as pd
 from handlers.chart.download_handler import Chart_Download_Handler
-
+from handlers.chart.download_dataframe import DataframeDownloadHandler
 class Handlers_analyze:
     #各タスクがどの時間帯に集中しているかを分析。　ヒートマップ
     @staticmethod
@@ -17,7 +17,7 @@ class Handlers_analyze:
             x="time",
             y="task",
             z="counts",
-            title="どの時間帯に業務が集中しているか",
+            title="時間ごとに業務が記録された回数",
             labels={"time": "Time", "task": "Task", "counts": "Task Count"},
         )
         result_field.controls=[
@@ -108,6 +108,12 @@ class Handlers_analyze:
                     )
                     for row in sum_task_counts_pi.itertuples(name="Row")
                 ]
+            ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=sum_task_counts_pi,name="counts_per_task"),
             )
         ]
         """for i in range(len(sum_task_counts_pi.columns)):    
@@ -161,6 +167,12 @@ class Handlers_analyze:
                     ])
                     for row in time_per_task.itertuples(index=False, name="Row")
                 ]
+            ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=time_per_task,name="time_per_task"),
             )
         ]
         page.update()
@@ -236,6 +248,12 @@ class Handlers_analyze:
                     )
                     for row in date_group_df.itertuples(index=False, name="Row")
                 ]
+            ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=date_group_df,name="task_date"),
             )
         ]
         result_field.update()
