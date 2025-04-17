@@ -257,3 +257,40 @@ class Handlers_analyze:
             )
         ]
         result_field.update()
+
+    @staticmethod
+    def comment_analysis(dataframe,result_field,page):
+        comment_df=dataframe[dataframe["comment"].notna()]
+        comment_df=comment_df[["time","locate","date","phName","comment"]]
+        comment_df=comment_df.reset_index(drop=True)
+        result_field.controls=[
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("日付")),
+                    ft.DataColumn(ft.Text("時間")),
+                    ft.DataColumn(ft.Text("場所")),
+                    ft.DataColumn(ft.Text("記録者")),
+                    ft.DataColumn(ft.Text("コメント")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(row.date)),
+                            ft.DataCell(ft.Text(row.time)),
+                            ft.DataCell(ft.Text(row.locate)),
+                            ft.DataCell(ft.Text(row.phName)),
+                            ft.DataCell(ft.Text(row.comment))
+                        ]
+                    )
+                    for row in comment_df.itertuples(index=False, name="Row")
+                ]
+            ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=comment_df,name="comment"),
+            )
+        ]
+        result_field.update()
+

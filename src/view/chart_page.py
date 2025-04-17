@@ -117,14 +117,25 @@ class ChartPage:
                 )
             )
         )
-        #date列を基に、日付ごとのタスクの分布を分析
-        self.subtitle8=ft.Text("日付ごとの業務分析",size=20)
+        #その他コメントの表示
+        self.subtitle8=ft.Text("その他コメント",size=20)
         self.chart8_field=ft.ResponsiveRow()
         self.chart8card=ft.Card(
             content=ft.TextButton(
                 "集計",
-                on_click=lambda _:Handlers_analyze.date_task_analysis(
+                on_click=lambda _:Handlers_analyze.comment_analysis(
                     dataframe=self.dataframe, result_field=self.chart8_field, page=self.page
+                )
+            )
+        )
+        #date列を基に、日付ごとのタスクの分布を分析
+        self.subtitle9=ft.Text("日付ごとの業務分析",size=20)
+        self.chart9_field=ft.ResponsiveRow()
+        self.chart9card=ft.Card(
+            content=ft.TextButton(
+                "集計",
+                on_click=lambda _:Handlers_analyze.date_task_analysis(
+                    dataframe=self.dataframe, result_field=self.chart9_field, page=self.page
                 )
             )
         )
@@ -176,6 +187,10 @@ class ChartPage:
                 self.horizon_subtitle,
                 self.chart8card,
                 self.chart8_field,
+                self.subtitle9,
+                self.horizon_subtitle,
+                self.chart9card,
+                self.chart9_field,
                 # chartPage,
                 ft.CupertinoNavigationBar(
                     selected_index=1,
