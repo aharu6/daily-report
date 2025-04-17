@@ -359,6 +359,7 @@ class TimelinePage:
             self.selectColumns[38].visible = False  # 外来処方箋修正
             self.selectColumns[39].visible = False  # 勉強会資料作成・開催
             self.selectColumns[40].visible = False  #  お役立ち情報作成
+            self.selectColumns[41].visible = False  #  薬剤使用期限
 
         self.time_for_visual_label = []
 
