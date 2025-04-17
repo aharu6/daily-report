@@ -2,7 +2,7 @@ import flet as ft
 import datetime
 class DataframeDownloadHandler:
     def __init__(self):
-        self
+        pass
 
     @staticmethod
     def open_directory_for_dataframe(page,dataframe,name):
