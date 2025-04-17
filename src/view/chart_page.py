@@ -108,7 +108,7 @@ class ChartPage:
         )
 
         #各タスクがどの時間帯に集中しているかを分析。　ヒートマップ
-        self.subtitle7=ft.Text("時間帯ごとの業務分析",size=20)
+        self.subtitle7=ft.Text("時間帯ごとに業務が記録された回数",size=20)
         self.chart7_field=ft.ResponsiveRow()
         self.chart7card=ft.Card(
             content=ft.TextButton(

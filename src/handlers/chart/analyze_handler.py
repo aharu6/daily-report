@@ -17,7 +17,7 @@ class Handlers_analyze:
             x="time",
             y="task",
             z="counts",
-            title="どの時間帯に業務が集中しているか",
+            title="時間ごとに業務が記録された回数",
             labels={"time": "Time", "task": "Task", "counts": "Task Count"},
         )
         result_field.controls=[
@@ -167,6 +167,12 @@ class Handlers_analyze:
                     ])
                     for row in time_per_task.itertuples(index=False, name="Row")
                 ]
+            ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=time_per_task,name="time_per_task"),
             )
         ]
         page.update()
@@ -242,6 +248,12 @@ class Handlers_analyze:
                     )
                     for row in date_group_df.itertuples(index=False, name="Row")
                 ]
+            ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=date_group_df,name="task_date"),
             )
         ]
         result_field.update()
