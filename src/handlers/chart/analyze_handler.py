@@ -57,24 +57,13 @@ class Handlers_analyze:
         Handlers_Chart.show_progress_bar(result_field, page)
         df=dataframe
         #業務内容と場所ごとに集計する
-        #全体件数の算出
-        count_per_task_all=dataframe.groupby(["task"])["count"].sum().reset_index(name="counts")
-        count_per_task_all["locate"]="all"
-        #病棟ごとの件数を算出
-        count_per_task_locate=df.groupby(["task","locate"])["count"].sum().reset_index(name="counts")
-        #allとlocateを結合する
-        count_per_task=pd.merge(
-            count_per_task_locate,
-            count_per_task_all,
-            on=["locate","task","counts"],
-            how="outer",
-        )
+        count_per_task_locate=df.groupby(["locate","task"])["count"].sum().reset_index(name="counts")
         #保存用の横長データフレーム
         #病棟全ての合計と病棟ごとの合計
-        sum_task_counts_pi=count_per_task.pivot_table(
-            values=["counts"],
-            index=["task"],
-            columns=["locate"],
+        sum_task_counts_pi=count_per_task_locate.pivot_table(
+            values="counts",
+            index="task",
+            columns="locate",
             fill_value=0,
         )
 
@@ -82,17 +71,19 @@ class Handlers_analyze:
         #件数入力しない（混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンス）
         #上記業務内容を入力していない場合はdropでエラーになるから、止まらないようにする
         try:
-            sum_task_counts_pi.drop(index=["混注時間"],inplace=True)
-            sum_task_counts_pi.drop(index=["休憩"],inplace=True)
-            sum_task_counts_pi.drop(index=["委員会"],inplace=True)
-            sum_task_counts_pi.drop(index=["WG活動"],inplace=True)
-            sum_task_counts_pi.drop(index=["勉強会参加"],inplace=True)
-            sum_task_counts_pi.drop(index=["1on1"],inplace=True)
-            sum_task_counts_pi.drop(index=["カンファレンス"],inplace=True)
+            sum_task_counts_pi.drop(index="混注時間",inplace=True)
+            sum_task_counts_pi.drop(index="休憩",inplace=True)
+            sum_task_counts_pi.drop(index="委員会",inplace=True)
+            sum_task_counts_pi.drop(index="WG活動",inplace=True)
+            sum_task_counts_pi.drop(index="勉強会参加",inplace=True)
+            sum_task_counts_pi.drop(index="1on1",inplace=True)
+            sum_task_counts_pi.drop(index="カンファレンス",inplace=True)
         except KeyError:
             pass
-        sum_task_counts_pi.columns=sum_task_counts_pi.columns.droplevel(0)        
 
+        #合計値列と平均値列を追加する
+        sum_task_counts_pi["sum"]=sum_task_counts_pi.sum(axis=1)
+        sum_task_counts_pi["mean"]=sum_task_counts_pi.iloc[:,:-1].mean(axis=1)
         result_field.controls=[
             ft.DataTable(
                 columns=[ft.DataColumn(ft.Text("業務内容"))]+[
@@ -145,9 +136,14 @@ class Handlers_analyze:
         count_per_task=df.groupby(["task"])["count"].sum().reset_index(name="counts")
         time_per_task["counts"]=count_per_task["counts"]
 
+        #平均値列を追加
+        avg_row = time_per_task.mean(numeric_only=True)
+        avg_row["task"] = "平均"
+        time_per_task = pd.concat([time_per_task, pd.DataFrame([avg_row])], ignore_index=True)
+
         # 新しいtime/taskにて1件あたりに要した時間を計算
         time_per_task["time_per_task"] = time_per_task["times"] / time_per_task["counts"]
-        
+    
         # データフレームとして表示する
         result_field.controls = [
             ft.Text("1件あたりに要した時間の算出", size=20),
@@ -293,4 +289,3 @@ class Handlers_analyze:
             )
         ]
         result_field.update()
-
