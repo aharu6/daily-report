@@ -61,18 +61,36 @@ count_per_task_locate["times"]=count_per_task_locate["times"]*15
 sum_task_times=count_per_task_locate.pivot_table(
     index="task",values="times",columns="locate",fill_value=0
     )# 病棟ごとの合計時間
-print(sum_task_times)
 
 #病棟ごとの　1件あたりどれくらい時間がかかっているのか
 time_locate_df=loc_dataframes.groupby(["locate"])["count"].sum().reset_index(name="count")
 time_locate_times=loc_dataframes.groupby(["locate"]).size().reset_index(name="times")
 #*15にすることで実際の時間に変換　(1入力15ふん）
 time_locate_times["times"]=time_locate_times["times"]*15
+
 time_for_locate_df=pd.merge(
     time_locate_df,
     time_locate_times,
     on="locate",
     how="left"
-)
-
+)#病棟ごとの件数と時間の合計
+#１件あたりの列を追加
+time_for_locate_df["time_per_task"]=time_for_locate_df["times"]/time_for_locate_df["count"]
 print(time_for_locate_df)
+
+#薬剤師ごとの件数と時間の合計
+time_for_locate_phName_times=loc_dataframes.groupby(["phName","task"]).size().reset_index(name="times")
+#*15にすることで実際の時間に変換　(1入力15ふん）
+time_for_locate_phName_times["times"]=time_for_locate_phName_times["times"]*15
+#薬剤師ごとの件数を算出
+time_for_locate_phName_df=loc_dataframes.groupby(["phName","task"])["count"].sum().reset_index(name="count")
+#薬剤師ごとの件数と時間の合計
+time_for_locate_phName_df=pd.merge(
+    time_for_locate_phName_df,
+    time_for_locate_phName_times,
+    on=["phName","task"],
+    how="left"
+)
+#１件あたりの平均値を算出
+time_for_locate_phName_df["time_per_task"]=time_for_locate_phName_df["times"]/time_for_locate_phName_df["count"]
+print(time_for_locate_phName_df)

@@ -71,7 +71,7 @@ class ChartPage:
         )
 
         #件数あたりの時間　件数あたりに要した時間の算出
-        self.subtitle4=ft.Text("件数あたりの時間",size=20)
+        self.subtitle4=ft.Text("件数あたりの時間",size=15)
         self.chart4_field=ft.ResponsiveRow()
         self.chart4card=ft.Card(
             content=ft.TextButton(
@@ -83,7 +83,7 @@ class ChartPage:
         )
 
         #業務内容ごとの件数
-        self.subtitle5=ft.Text("業務内容ごとの件数",size=20)
+        self.subtitle5=ft.Text("業務内容ごとの件数",size=15)
         self.chart5_field=ft.ResponsiveRow()
         self.chart5card=ft.Card(
             content=ft.TextButton(
@@ -95,7 +95,7 @@ class ChartPage:
         )
 
         #各タスクがどの場所（locate列）で行われたかを集計。
-        self.subtitle6=ft.Text("業務内容ごとの場所",size=20)
+        self.subtitle6=ft.Text("業務内容ごとの場所",size=15)
         self.chart6_field=ft.ResponsiveRow()
         self.chart6card=ft.Card(
             content=ft.TextButton(
@@ -107,7 +107,7 @@ class ChartPage:
         )
 
         #各タスクがどの時間帯に集中しているかを分析。　ヒートマップ
-        self.subtitle7=ft.Text("時間帯ごとに業務が記録された回数",size=20)
+        self.subtitle7=ft.Text("時間帯ごとに業務が記録された回数",size=15)
         self.chart7_field=ft.ResponsiveRow()
         self.chart7card=ft.Card(
             content=ft.TextButton(
@@ -118,7 +118,7 @@ class ChartPage:
             )
         )
         #その他コメントの表示
-        self.subtitle8=ft.Text("その他コメント",size=20)
+        self.subtitle8=ft.Text("その他コメント",size=15)
         self.chart8_field=ft.ResponsiveRow()
         self.chart8card=ft.Card(
             content=ft.TextButton(
@@ -129,7 +129,7 @@ class ChartPage:
             )
         )
         #date列を基に、日付ごとのタスクの分布を分析
-        self.subtitle9=ft.Text("日付ごとの業務分析",size=20)
+        self.subtitle9=ft.Text("日付ごとの業務分析",size=15)
         self.chart9_field=ft.ResponsiveRow()
         self.chart9card=ft.Card(
             content=ft.TextButton(
@@ -140,6 +140,18 @@ class ChartPage:
             )
         )
 
+        #個人ごと
+        #個人ごとに業務にかかった総時間数と１件あたりどれくらい時間がかかっているのか
+        self.subtitle10=ft.Text("個人ごとの総時間数・件数・１件あたりの時間",size=15)
+        self.chart10_field=ft.ResponsiveRow()
+        self.chart10card=ft.Card(
+            content=ft.TextButton(
+                "集計",
+                on_click=lambda _:Handlers_analyze.self_analysis(
+                    dataframe=self.dataframe, result_field=self.chart10_field, page=self.page
+                )
+            )
+        )
         #comment列が記載されている行と空白の行を比較
 
 
@@ -158,6 +170,25 @@ class ChartPage:
                 self.horizon_subtitle,
                 self.chart1card,
                 self.chart1_field,
+                
+                self.subtitle4,
+                self.chart4card,
+                self.chart4_field,
+                self.subtitle5,
+                self.chart5card,
+                self.chart5_field,
+                self.subtitle6,
+                self.chart6card,
+                self.chart6_field,
+                self.subtitle7,
+                self.chart7card,
+                self.chart7_field,
+                self.subtitle8,
+                self.chart8card,
+                self.chart8_field,
+                self.subtitle9,
+                self.chart9card,
+                self.chart9_field,
                 self.subtitle2,
                 self.horizon_subtitle,
                 self.chart2card,
@@ -165,32 +196,11 @@ class ChartPage:
                 self.chart2_field,
                 self.subtitle3,
                 self.horizon_subtitle,
-                self.chart3card,
+                self.chart3card,# 個人ごと
                 self.chart3_field,
-                self.subtitle4,
-                self.horizon_subtitle,
-                self.chart4card,
-                self.chart4_field,
-                self.subtitle5,
-                self.horizon_subtitle,
-                self.chart5card,
-                self.chart5_field,
-                self.subtitle6,
-                self.horizon_subtitle,
-                self.chart6card,
-                self.chart6_field,
-                self.subtitle7,
-                self.horizon_subtitle,
-                self.chart7card,
-                self.chart7_field,
-                self.subtitle8,
-                self.horizon_subtitle,
-                self.chart8card,
-                self.chart8_field,
-                self.subtitle9,
-                self.horizon_subtitle,
-                self.chart9card,
-                self.chart9_field,
+                self.subtitle10,
+                self.chart10card,
+                self.chart10_field,
                 # chartPage,
                 ft.CupertinoNavigationBar(
                     selected_index=1,
