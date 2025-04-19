@@ -31,6 +31,8 @@ class ReloadDataHandler:
         date,
         total_num_am,
         total_num_pm,
+        comment_field,
+        dlg,
         ):
         import json
         page.open(drawer)
@@ -85,6 +87,8 @@ class ReloadDataHandler:
                         date=date,
                         total_num_am=total_num_am,
                         total_num_pm=total_num_pm,
+                        comment_filed=comment_field,
+                        dlg=dlg,
                         ),
                     data = i
                     ),
@@ -120,6 +124,8 @@ class ReloadDataHandler:
         date,
         total_num_am,
         total_num_pm,
+        comment_filed,
+        dlg,
         ):
         
         #業務調整デフォルト入力オンオフも反映する
@@ -265,6 +271,7 @@ class ReloadDataHandler:
                     case "その他":
                         #columns
                         columns[i].content.content.controls.append(comments[i])
+                        
                     # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
                     case (
                         "混注時間",
@@ -284,6 +291,7 @@ class ReloadDataHandler:
                         #１以上の場合には表示する
                         if load_data[key]["count"] >0:
                             columns[i].content.content.controls[4].controls[1].value = load_data[key]["count"]
+                            print("counterreload")
                 
                 #radiobuttonでの選択内容は別データにて保管し、ある場合には再表示
                 #何も文字が入っていないカラムは初期状態へ
@@ -335,7 +343,8 @@ class ReloadDataHandler:
             #使用辞書：drag_data,comment_dict,count_dict
             drag_data[load_data[key]["time"]] = {"task":load_data[key]["task"]}
             if load_data[key]["comment"]!= "":
-                comment_dict[load_data[key]["time"]] = {"comment":comment}
+                comment_dict[load_data[key]["time"]] = {"comment":load_data[key]["comment"]}
+                print(comment_dict)
 
         #カレンダーの更新
         #適応に最初のkey
@@ -418,6 +427,7 @@ class ReloadDataHandler:
             require_location.content.controls[2].visible =False
 
                 
+
         page.update()
         
         #カラムのgroupを受け取り後の状態に

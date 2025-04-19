@@ -137,6 +137,8 @@ class TimelinePage:
                 date=self.Date,
                 total_num_am=self.am_total_num,
                 total_num_pm=self.pm_total_num,
+                comment_field=self.comment_field,
+                dlg=self.dlg,
                 )
         )
 
@@ -172,11 +174,6 @@ class TimelinePage:
                 for i in range(len(self.model.times()))
             ]
 
-        self.comment = ft.IconButton(
-            icon=ft.icons.COMMENT,
-            on_click=lambda e: Handlers.dlg_open(e=e),
-        )
-
         self.comment_field = ft.TextField(label="その他")
 
         self.dlg = ft.AlertDialog(
@@ -198,10 +195,20 @@ class TimelinePage:
                     on_click=lambda e: Handlers.dlg_close(
                         e=e, 
                         dlg=self.dlg,
-                        page=self.page),
+                        page=self.page,
+                        ),
                 ),
             ],
         )
+
+        self.comment = ft.IconButton(
+            icon=ft.icons.COMMENT,
+            on_click=lambda e: Handlers.dlg_open(
+                e=e,comment_dict=self.comment_dict,dlg=self.dlg,
+                comment_field=self.comment_field,page=self.page
+                ),
+        )
+
         self.temp_save_message = ft.Container(
             ft.Row(
                 controls = [
