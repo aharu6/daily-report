@@ -14,19 +14,18 @@ import datetime
 class Handlers_Chart:
     @staticmethod
     def pick_file_result(e: ft.FilePickerResultEvent, selected_files, parent_instance,card):
-        """_summary_
-
+        """_summary
         Args:
             e (ft.FilePickerResultEvent): _description_
             selected_files (_type_): _description_
             parent_instance (_type_): _description_
         """
+        Handlers_Chart.show_progress_bar(card, parent_instance.page)
         if e.files:
             selected_files.text = ",".join(map(lambda x: x.name, e.files))
             file_paths = [f.path for f in e.files]
             file_name=[f.name for f in e.files]
-            #ファイル名の表示
-            Handlers_Chart.pick_file_name(file_name,card)
+            
             try:
                 # ファイルの数だけ繰り返す
                 dat = pd.concat(
@@ -43,6 +42,9 @@ class Handlers_Chart:
             except Exception as e:
                 print(f"An error occurred: {e}")    
                 pass
+
+            #ファイル名の表示
+            Handlers_Chart.pick_file_name(file_name,card)
 
     @staticmethod
     def pick_file_name(file_name,card):
