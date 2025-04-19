@@ -117,12 +117,6 @@ class Handlers_Chart:
                                     xaxis = dict(title = "業務内容")
                                     )
             
-            #合計時間を算出したデータフレームを作成
-            sum_task_times=df.groupby(["task"]).size().reset_index(name="times") 
-            #１件あたり15分
-            sum_task_times["times"]=sum_task_times["times"]*15
-            
-            
             chart_field.controls = [
                 #表示期間
                 ft.ListTile(
@@ -172,14 +166,9 @@ class Handlers_Chart:
                     on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart,chart_name="barchart"),
                     tooltip=ft.Tooltip("グラフを保存")
                     ),
-                #合計時間のデータフレームを表示
-                ft.DataTable(
-                    columns=[
-                        
-                    ]
-                )
+                
                 ]
-            page.update()
+            chart_field.update()
 
 
         except Exception as e:
@@ -455,10 +444,11 @@ class Handlers_Chart:
             df["date"]=pd.to_datetime(df["date"],format="%Y-%m-%d")
             #日付のフィルタリング start_dateからend_dateまでのデータを抽出
             df=df[df["date"].between(start_date,end_date)]
-            group_by_person = df.groupby(["phName","task"]).size().reset_index(name="counts")
-            gorup_by_person = df.groupby(["phName","task"]).size().reset_index(name="counts")
-            fig_bar = px.bar(group_by_person, x="counts", y="phName", color="task", barmode="stack", orientation="h")
-            fig_bar = px.bar(gorup_by_person, x="counts", y="phName", color="task", barmode="stack", orientation="h")
+            group_by_person = df.groupby(["phName","task"]).size().reset_index(name="time")
+            #time列の長さは合計で１００%になるように100分率に修正する
+            sum_time = group_by_person["time"].sum()
+            group_by_person["time"]=group_by_person["time"].transform(lambda x: (x/sum_time)*100)
+            fig_bar = px.bar(group_by_person, x="time", y="phName", color="task", barmode="stack", orientation="h")
             # まずグラフを描画するcardを作成
             chart_field.controls = [
                 ft.ListTile(
@@ -498,7 +488,7 @@ class Handlers_Chart:
                     ]
                 ),
                 #グラフ
-                (ft.Card(content = PlotlyChart(fig_bar,expand = True,original_size = False,isolated = True))),
+                ft.Card(content = PlotlyChart(fig_bar,expand = True,original_size = False,isolated = True)),
                 #ダウンロード
                 ft.ElevatedButton(
                     "保存",
@@ -516,10 +506,13 @@ class Handlers_Chart:
             df = dataframe
             
             # 個人ごとにデータをまとめ直す
-            gorup_by_person = df.groupby(["phName","task"]).size().reset_index(name="counts")
-            
-            # その上にplotlyにて円グラフを作成する
-            fig_bar = px.bar(gorup_by_person, x="counts", y="phName", color="task", barmode="stack", orientation="h")
+            group_by_person = df.groupby(["phName","task"]).size().reset_index(name="time")
+            #合計値
+            sum_time = group_by_person["time"].sum()
+            #time列の長さは合計で１００%になるように100分率に修正する
+            group_by_person["time"]=group_by_person["time"].transform(lambda x: (x/sum_time)*100)
+            # その上にplotlyにて棒グラフを作成する
+            fig_bar = px.bar(group_by_person, x="time", y="phName", color="task", barmode="stack", orientation="h")
             # まずグラフを描画するcardを作成
             chart_field.controls = [
                 ft.ListTile(

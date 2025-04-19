@@ -13,7 +13,7 @@ def main(page:ft.Page):
     reset_button = ft.ElevatedButton(
         text = "Reset",
     )  
-    text_field = ft.TextField()
+    text_field = ft.TextField(value="Hello World", )
     rail = ft.NavigationRail(
         selected_index = 0,
         label_type = ft.NavigationRailLabelType.ALL,

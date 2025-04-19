@@ -129,6 +129,11 @@ class Temp_Save:
             save_data = {}  
             save_data[data_key] = data_dict
             
+        # その他コメントの書き込み
+        for time, comment_data in comment_dict.items():
+            if time in data_dict:
+                data_dict[time]["comment"] = comment_data["comment"]
+        
         #変更後のデータを保管する
         #コメントのデータが入っている？
         #save_client_storageの時はwill_acceptを変換する前の状態にて保存すれば読み込み時に再度変換する必要なく楽かも
@@ -178,10 +183,6 @@ class Temp_Save:
         page.client_storage.set("radio_selected_data", json.dumps(marge_radio_dict, ensure_ascii=False))
 
                     
-        # その他コメントの書き込み
-        for time, comment_data in comment_dict.items():
-            if time in data_dict:
-                data_dict[time]["comment"] = comment_data["comment"]
         
         #保存できたら完了メッセージを表示
         #メッセージは一定時間経過後に削除
