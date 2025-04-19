@@ -336,6 +336,10 @@ class Handlers_analyze:
         #1件あたりの時間列を追加
         total_df["time_per_count"]=total_df["total_times"]/total_df["count_total"]
 
+        #一番下に平均値を追加
+        avg_row=total_df.mean(numeric_only=True)
+        avg_row["phName"]="平均"
+        total_df=pd.concat([total_df,pd.DataFrame([avg_row])],ignore_index=True)
 
         result_field.controls=[
             ft.DataTable(
@@ -368,4 +372,76 @@ class Handlers_analyze:
                 on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=time_for_phname_total,name="self_analysis_total_time"),
             )
         ]
+        result_field.update()
+
+    #病棟ごとの時間数・件数・１件あたりの時間・平均値
+    @staticmethod
+    def locate_analysis(dataframe,result_field,page):
+        timedf=dataframe.groupby(["locate","task"]).size().reset_index(name="times")
+        #*15にすることで実際の時間に変換　(1入力15ふん）
+        timedf["times"]=timedf["times"]*15
+        #業務数列
+        taskdf=dataframe.groupby(["locate","task"]).size().reset_index(name="task_count")
+        #カウント数列を算出
+        countdf=dataframe.groupby(["locate","task"])["count"].sum().reset_index(name="count_total")
+        loc_df=pd.merge(
+            timedf,
+            taskdf,
+            on=["locate","task"],
+            how="left"
+        )
+        loc_df=pd.merge(
+            loc_df,
+            countdf,
+            on=["locate","task"],
+            how="left"
+        )
+        #集計
+        total_df=loc_df.groupby("locate")["times"].sum().reset_index(name="total_times")
+        #locateごとの総業務数
+        total_df["task_count"]=loc_df.groupby("locate")["task_count"].transform("sum")
+        #locateごとの総件数
+        total_df["count_total"]=loc_df.groupby("locate")["count_total"].transform("sum")
+        #１業務あたりの時間列を追加
+        total_df["time_per_task"]=total_df["total_times"]/total_df["task_count"]
+        #1件あたりの時間列を追加
+        total_df["time_per_count"]=total_df["total_times"]/total_df["count_total"]
+        #一番下に平均値を追加
+        avg_row=total_df.mean(numeric_only=True)
+        avg_row["locate"]="平均"
+        total_df=pd.concat([total_df,pd.DataFrame([avg_row])],ignore_index=True)    
+
+        result_field.controls=[
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("病棟名")),
+                    ft.DataColumn(ft.Text("総時間")),
+                    ft.DataColumn(ft.Text("業務数")),
+                    ft.DataColumn(ft.Text("件数")),
+                    ft.DataColumn(ft.Text("1業務あたりの時間")),
+                    ft.DataColumn(ft.Text("1件あたりの時間")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(row.locate)),
+                            ft.DataCell(ft.Text(str(row.total_times))),
+                            ft.DataCell(ft.Text(str(row.task_count))),
+                            ft.DataCell(ft.Text(str(row.count_total))),
+                            ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
+                            ft.DataCell(ft.Text(f"{row.time_per_count:.2f}")),
+                        ]
+                    )
+                    for row in total_df.itertuples(index=False, name="Row")
+                
+                        ]
+                    ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=total_df,name="locate_analysis")
+                                                                                        
+            )
+                ]
         result_field.update()

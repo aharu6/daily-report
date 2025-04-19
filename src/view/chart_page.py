@@ -153,7 +153,7 @@ class ChartPage:
             )
         )
         #個人ごとに業務にかかった総時間数と１件あたりどれくらい時間がかかっているのか
-        self.subtitle10=ft.Text("個人ごとの時間数・件数・１件あたりの時間",size=15)
+        self.subtitle10=ft.Text("個人ごとの時間数・件数・１件あたりの時間・平均値",size=15)
         self.chart10_field=ft.ResponsiveRow()
         self.chart10card=ft.Card(
             content=ft.TextButton(
@@ -165,8 +165,17 @@ class ChartPage:
         )
 
         ##病棟ごと
-        #locateごとの件数と平均値の算出
-
+        #locateごとの総時間数、記録回数、件数、平均値の算出
+        self.subtitle11=ft.Text("病棟ごとの時間数・件数・１件あたりの時間・平均値",size=15)
+        self.chart11_field=ft.ResponsiveRow()
+        self.chart11card=ft.Card(
+            content=ft.TextButton(
+                "集計",
+                on_click=lambda _:Handlers_analyze.locate_analysis(
+                    dataframe=self.dataframe, result_field=self.chart11_field, page=self.page
+                )
+            )
+        )
         #comment列が記載されている行と空白の行を比較
 
 
@@ -206,9 +215,13 @@ class ChartPage:
                 self.chart9_field,
                 self.subtitle2,
                 self.horizon_subtitle,
-                self.chart2card,
+                self.chart2card,#病棟ごと
                 self.chart2_field_info,
                 self.chart2_field,
+                self.subtitle11,
+                self.chart11card,
+                self.chart11_field,
+
                 self.subtitle3,
                 self.horizon_subtitle,
                 self.chart3card,# 個人ごと
