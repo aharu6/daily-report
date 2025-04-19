@@ -117,12 +117,6 @@ class Handlers_Chart:
                                     xaxis = dict(title = "業務内容")
                                     )
             
-            #合計時間を算出したデータフレームを作成
-            sum_task_times=df.groupby(["task"]).size().reset_index(name="times") 
-            #１件あたり15分
-            sum_task_times["times"]=sum_task_times["times"]*15
-            
-            
             chart_field.controls = [
                 #表示期間
                 ft.ListTile(
@@ -172,14 +166,9 @@ class Handlers_Chart:
                     on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart,chart_name="barchart"),
                     tooltip=ft.Tooltip("グラフを保存")
                     ),
-                #合計時間のデータフレームを表示
-                ft.DataTable(
-                    columns=[
-                        
-                    ]
-                )
+                
                 ]
-            page.update()
+            chart_field.update()
 
 
         except Exception as e:

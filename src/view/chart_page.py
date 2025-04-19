@@ -32,7 +32,7 @@ class ChartPage:
         self.page.overlay.append(self.file_picker)
         
         #各タスク（task列）の合計時間を計算。
-        self.subtitle = ft.Text("時間の集計", size = 20)
+        self.subtitle = ft.Text("全体", size = 20)
         self.horizon_subtitle = ft.Divider()
         self.chart1_field = ft.ResponsiveRow()
 
