@@ -448,7 +448,6 @@ class Handlers_Chart:
             #time列の長さは合計で１００%になるように100分率に修正する
             sum_time = group_by_person["time"].sum()
             group_by_person["time"]=group_by_person["time"].transform(lambda x: (x/sum_time)*100)
-            print(group_by_person)
             fig_bar = px.bar(group_by_person, x="time", y="phName", color="task", barmode="stack", orientation="h")
             # まずグラフを描画するcardを作成
             chart_field.controls = [
@@ -508,12 +507,10 @@ class Handlers_Chart:
             
             # 個人ごとにデータをまとめ直す
             group_by_person = df.groupby(["phName","task"]).size().reset_index(name="time")
-            print(group_by_person)
             #合計値
             sum_time = group_by_person["time"].sum()
             #time列の長さは合計で１００%になるように100分率に修正する
             group_by_person["time"]=group_by_person["time"].transform(lambda x: (x/sum_time)*100)
-            print(group_by_person)
             # その上にplotlyにて棒グラフを作成する
             fig_bar = px.bar(group_by_person, x="time", y="phName", color="task", barmode="stack", orientation="h")
             # まずグラフを描画するcardを作成

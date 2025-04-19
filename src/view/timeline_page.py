@@ -137,8 +137,6 @@ class TimelinePage:
                 date=self.Date,
                 total_num_am=self.am_total_num,
                 total_num_pm=self.pm_total_num,
-                comment_field=self.comment_field,
-                dlg=self.dlg,
                 )
         )
 

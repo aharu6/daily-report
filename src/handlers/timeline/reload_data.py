@@ -31,8 +31,6 @@ class ReloadDataHandler:
         date,
         total_num_am,
         total_num_pm,
-        comment_field,
-        dlg,
         ):
         import json
         page.open(drawer)
@@ -87,8 +85,6 @@ class ReloadDataHandler:
                         date=date,
                         total_num_am=total_num_am,
                         total_num_pm=total_num_pm,
-                        comment_filed=comment_field,
-                        dlg=dlg,
                         ),
                     data = i
                     ),
@@ -124,8 +120,6 @@ class ReloadDataHandler:
         date,
         total_num_am,
         total_num_pm,
-        comment_filed,
-        dlg,
         ):
         
         #業務調整デフォルト入力オンオフも反映する
