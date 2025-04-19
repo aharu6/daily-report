@@ -34,7 +34,9 @@ class Handlers_Chart:
                 )
                 new_rows = []
                 for index, row in dat.iterrows():
+                    print(row["locate"])
                     tarn_row = ast.literal_eval(row["locate"])
+                    print(tarn_row)
                     for loc in range(len(tarn_row)):
                         new_row = row.copy()
                         new_row["locate"] = tarn_row[loc]
