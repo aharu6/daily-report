@@ -55,73 +55,30 @@ class Handlers_analyze:
     @staticmethod
     def task_par_count(dataframe, result_field, page):
         Handlers_Chart.show_progress_bar(result_field, page)
-        df=dataframe
-        #業務内容と場所ごとに集計する
-        #全体件数の算出
-        count_per_task_all=dataframe.groupby(["task"])["count"].sum().reset_index(name="counts")
-        count_per_task_all["locate"]="all"
-        #病棟ごとの件数を算出
-        count_per_task_locate=df.groupby(["task","locate"])["count"].sum().reset_index(name="counts")
-        #allとlocateを結合する
-        count_per_task=pd.merge(
-            count_per_task_locate,
-            count_per_task_all,
-            on=["locate","task","counts"],
-            how="outer",
-        )
-        #保存用の横長データフレーム
-        #病棟全ての合計と病棟ごとの合計
-        sum_task_counts_pi=count_per_task.pivot_table(
-            values=["counts"],
-            index=["task"],
-            columns=["locate"],
-            fill_value=0,
-        )
-
-        #件数集計していない業務は削除する
-        #件数入力しない（混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンス）
-        #上記業務内容を入力していない場合はdropでエラーになるから、止まらないようにする
-        try:
-            sum_task_counts_pi.drop(index=["混注時間"],inplace=True)
-            sum_task_counts_pi.drop(index=["休憩"],inplace=True)
-            sum_task_counts_pi.drop(index=["委員会"],inplace=True)
-            sum_task_counts_pi.drop(index=["WG活動"],inplace=True)
-            sum_task_counts_pi.drop(index=["勉強会参加"],inplace=True)
-            sum_task_counts_pi.drop(index=["1on1"],inplace=True)
-            sum_task_counts_pi.drop(index=["カンファレンス"],inplace=True)
-        except KeyError:
-            pass
-        sum_task_counts_pi.columns=sum_task_counts_pi.columns.droplevel(0)        
-
+        task_count=dataframe.groupby(["task"])["count"].sum().reset_index(name="counts")
         result_field.controls=[
             ft.DataTable(
-                columns=[ft.DataColumn(ft.Text("業務内容"))]+[
-                    ft.DataColumn(ft.Text(sum_task_counts_pi.columns[i]))
-                    for i in range(len(sum_task_counts_pi.columns))
+                columns=[
+                    ft.DataColumn(ft.Text("業務内容")),
+                    ft.DataColumn(ft.Text("件数")),
                 ],
                 rows=[
                     ft.DataRow(
                         cells=[
-                            ft.DataCell(ft.Text(str(row[j]))) if j < len(row) else ft.DataCell(ft.Text(""))
-                            for j in range(len(row))
+                            ft.DataCell(ft.Text(row.task)),
+                            ft.DataCell(ft.Text(str(row.counts))),
                         ]
                     )
-                    for row in sum_task_counts_pi.itertuples(name="Row")
+                    for row in task_count.itertuples(index=False, name="Row")
                 ]
             ),
             ft.ElevatedButton(
                 "保存",
                 icon=ft.icons.DOWNLOAD,
                 tooltip="データフレームを保存",
-                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=sum_task_counts_pi,name="counts_per_task"),
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=task_count,name="task_count"),
             )
         ]
-        """for i in range(len(sum_task_counts_pi.columns)):    
-            result_field.controls[0].columns.append(
-                ft.DataColumn(ft.Text(sum_task_counts_pi.columns[i]))
-            )
-        """
-        
         result_field.update()
 
         
@@ -145,9 +102,14 @@ class Handlers_analyze:
         count_per_task=df.groupby(["task"])["count"].sum().reset_index(name="counts")
         time_per_task["counts"]=count_per_task["counts"]
 
+        #平均値列を追加
+        avg_row = time_per_task.mean(numeric_only=True)
+        avg_row["task"] = "平均"
+        time_per_task = pd.concat([time_per_task, pd.DataFrame([avg_row])], ignore_index=True)
+
         # 新しいtime/taskにて1件あたりに要した時間を計算
         time_per_task["time_per_task"] = time_per_task["times"] / time_per_task["counts"]
-        
+
         # データフレームとして表示する
         result_field.controls = [
             ft.Text("1件あたりに要した時間の算出", size=20),
@@ -155,7 +117,7 @@ class Handlers_analyze:
                 columns=[
                     ft.DataColumn(ft.Text("業務内容")),
                     ft.DataColumn(ft.Text("件数")),
-                    ft.DataColumn(ft.Text("時間")),
+                    ft.DataColumn(ft.Text("総時間")),
                     ft.DataColumn(ft.Text("件数あたりの時間")),
                 ],
                 rows=[
@@ -294,3 +256,192 @@ class Handlers_analyze:
         ]
         result_field.update()
 
+    @staticmethod
+    def self_analysis(dataframe,result_field,page):
+        time_for_phName_times=dataframe.groupby(["phName","task"]).size().reset_index(name="times")
+        #*15にすることで実際の時間に変換　(1入力15ふん）
+        time_for_phName_times["times"]=time_for_phName_times["times"]*15
+        #薬剤師ごとの件数を算出
+        count_phName=dataframe.groupby(["phName","task"])["count"].sum().reset_index(name="counts")
+        #薬剤師ごとの件数と時間の合計
+        per_phName_df=pd.merge(
+            count_phName,
+            time_for_phName_times,
+            on=["phName","task"],
+            how="left"
+        )
+        #１件あたりの平均値を算出
+        per_phName_df["time_per_task"]=per_phName_df["times"]/per_phName_df["counts"]
+        result_field.controls=[
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("薬剤師名")),
+                    ft.DataColumn(ft.Text("業務内容")),
+                    ft.DataColumn(ft.Text("件数")),
+                    ft.DataColumn(ft.Text("時間")),
+                    ft.DataColumn(ft.Text("件数あたりの時間")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(row.phName)),
+                            ft.DataCell(ft.Text(row.task)),
+                            ft.DataCell(ft.Text(str(row.counts))),
+                            ft.DataCell(ft.Text(str(row.times))),
+                            ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
+                        ]
+                    )
+                    for row in per_phName_df.itertuples(index=False, name="Row")
+                ]
+            ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=per_phName_df,name="self_analysis"),
+            )
+        ]
+        result_field.update()
+
+    @staticmethod
+    def self_analysis_total_time(dataframe,result_field,page):
+        time_for_phname_total=dataframe.groupby(["phName","task"]).size().reset_index(name="times")
+        #*15にすることで実際の時間に変換　(1入力15ふん）
+        time_for_phname_total["times"]=time_for_phname_total["times"]*15
+        #業務数列
+        taskdf=dataframe.groupby(["phName","task"]).size().reset_index(name="task_count")
+        #カウント列の合計を算出
+        countdf=dataframe.groupby(["phName","task"])["count"].sum().reset_index(name="count_total")
+        time_for_phname_total=pd.merge(
+            time_for_phname_total,
+            taskdf,
+            on=["phName","task"],
+            how="left"
+        )
+        time_for_phname_total=pd.merge(
+            time_for_phname_total,
+            countdf,
+            on=["phName","task"],
+            how="left"
+        )
+        #集計
+        total_df=time_for_phname_total.groupby(["phName"])["times"].sum().reset_index(name="total_times")
+        #phNameごとの総業務数
+        total_df["task_count"]=time_for_phname_total.groupby("phName")["task_count"].transform("sum")
+        #phNameごとの総件数
+        total_df["count_total"]=time_for_phname_total.groupby("phName")["count_total"].transform("sum")
+
+        #１業務あたりの時間列を追加
+        total_df["time_per_task"]=total_df["total_times"]/total_df["task_count"]
+        #1件あたりの時間列を追加
+        total_df["time_per_count"]=total_df["total_times"]/total_df["count_total"]
+
+        #一番下に平均値を追加
+        avg_row=total_df.mean(numeric_only=True)
+        avg_row["phName"]="平均"
+        total_df=pd.concat([total_df,pd.DataFrame([avg_row])],ignore_index=True)
+
+        result_field.controls=[
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("薬剤師名")),
+                    ft.DataColumn(ft.Text("総時間")),
+                    ft.DataColumn(ft.Text("業務数")),
+                    ft.DataColumn(ft.Text("件数")),
+                    ft.DataColumn(ft.Text("1業務あたりの時間")),
+                    ft.DataColumn(ft.Text("1件あたりの時間")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(row.phName)),
+                            ft.DataCell(ft.Text(str(row.total_times))),
+                            ft.DataCell(ft.Text(str(row.task_count))),
+                            ft.DataCell(ft.Text(str(row.count_total))),
+                            ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
+                            ft.DataCell(ft.Text(f"{row.time_per_count:.2f}")),
+                        ]
+                    )
+                    for row in total_df.itertuples(index=False, name="Row")
+                ]
+            ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=time_for_phname_total,name="self_analysis_total_time"),
+            )
+        ]
+        result_field.update()
+
+    #病棟ごとの時間数・件数・１件あたりの時間・平均値
+    @staticmethod
+    def locate_analysis(dataframe,result_field,page):
+        timedf=dataframe.groupby(["locate","task"]).size().reset_index(name="times")
+        #*15にすることで実際の時間に変換　(1入力15ふん）
+        timedf["times"]=timedf["times"]*15
+        #業務数列
+        taskdf=dataframe.groupby(["locate","task"]).size().reset_index(name="task_count")
+        #カウント数列を算出
+        countdf=dataframe.groupby(["locate","task"])["count"].sum().reset_index(name="count_total")
+        loc_df=pd.merge(
+            timedf,
+            taskdf,
+            on=["locate","task"],
+            how="left"
+        )
+        loc_df=pd.merge(
+            loc_df,
+            countdf,
+            on=["locate","task"],
+            how="left"
+        )
+        #集計
+        total_df=loc_df.groupby("locate")["times"].sum().reset_index(name="total_times")
+        #locateごとの総業務数
+        total_df["task_count"]=loc_df.groupby("locate")["task_count"].transform("sum")
+        #locateごとの総件数
+        total_df["count_total"]=loc_df.groupby("locate")["count_total"].transform("sum")
+        #１業務あたりの時間列を追加
+        total_df["time_per_task"]=total_df["total_times"]/total_df["task_count"]
+        #1件あたりの時間列を追加
+        total_df["time_per_count"]=total_df["total_times"]/total_df["count_total"]
+        #一番下に平均値を追加
+        avg_row=total_df.mean(numeric_only=True)
+        avg_row["locate"]="平均"
+        total_df=pd.concat([total_df,pd.DataFrame([avg_row])],ignore_index=True)    
+
+        result_field.controls=[
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("病棟名")),
+                    ft.DataColumn(ft.Text("総時間")),
+                    ft.DataColumn(ft.Text("業務数")),
+                    ft.DataColumn(ft.Text("件数")),
+                    ft.DataColumn(ft.Text("1業務あたりの時間")),
+                    ft.DataColumn(ft.Text("1件あたりの時間")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(row.locate)),
+                            ft.DataCell(ft.Text(str(row.total_times))),
+                            ft.DataCell(ft.Text(str(row.task_count))),
+                            ft.DataCell(ft.Text(str(row.count_total))),
+                            ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
+                            ft.DataCell(ft.Text(f"{row.time_per_count:.2f}")),
+                        ]
+                    )
+                    for row in total_df.itertuples(index=False, name="Row")
+                
+                        ]
+                    ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=total_df,name="locate_analysis")
+                                                                                        
+            )
+                ]
+        result_field.update()

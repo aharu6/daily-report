@@ -133,15 +133,19 @@ fig = px.bar(
 
 
 ##件数あたりに要した時間の算出
-#件数列を合計しておく
+####件数の合計の算出
 count_per_task=dataframes.groupby(["task"])["count"].sum().reset_index(name="counts")
 count_per_task["locate"]="all"
 #病棟ごとに件数の合計を算出
 count_per_task_locate=loc_dataframes.groupby(["locate","task"])["count"].sum().reset_index(name="counts")
+#平均値
+count_per_task_locate_mean=loc_dataframes.groupby(["locate","task"])["count"].mean().reset_index(name="counts")
+count_per_task_locate_mean["locate"]="mean"  
 #count_per_task_locateとcount_per_taskを結合
 sum_task_counts=pd.merge(
-    count_per_task_locate,
+    [count_per_task_locate,
     count_per_task,
+    count_per_task_locate_mean],
     on=["locate", "task","counts"],
     how="outer",
 )#病棟全ての合計と病棟ごとの合計
