@@ -55,64 +55,30 @@ class Handlers_analyze:
     @staticmethod
     def task_par_count(dataframe, result_field, page):
         Handlers_Chart.show_progress_bar(result_field, page)
-        df=dataframe
-        #業務内容と場所ごとに集計する
-        count_per_task_locate=df.groupby(["locate","task"])["count"].sum().reset_index(name="counts")
-        #保存用の横長データフレーム
-        #病棟全ての合計と病棟ごとの合計
-        sum_task_counts_pi=count_per_task_locate.pivot_table(
-            values="counts",
-            index="task",
-            columns="locate",
-            fill_value=0,
-        )
-
-        #件数集計していない業務は削除する
-        #件数入力しない（混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンス）
-        #上記業務内容を入力していない場合はdropでエラーになるから、止まらないようにする
-        try:
-            sum_task_counts_pi.drop(index="混注時間",inplace=True)
-            sum_task_counts_pi.drop(index="休憩",inplace=True)
-            sum_task_counts_pi.drop(index="委員会",inplace=True)
-            sum_task_counts_pi.drop(index="WG活動",inplace=True)
-            sum_task_counts_pi.drop(index="勉強会参加",inplace=True)
-            sum_task_counts_pi.drop(index="1on1",inplace=True)
-            sum_task_counts_pi.drop(index="カンファレンス",inplace=True)
-        except KeyError:
-            pass
-
-        #合計値列と平均値列を追加する
-        sum_task_counts_pi["sum"]=sum_task_counts_pi.sum(axis=1)
-        sum_task_counts_pi["mean"]=sum_task_counts_pi.iloc[:,:-1].mean(axis=1)
+        task_count=dataframe.groupby(["task"])["count"].sum().reset_index(name="counts")
         result_field.controls=[
             ft.DataTable(
-                columns=[ft.DataColumn(ft.Text("業務内容"))]+[
-                    ft.DataColumn(ft.Text(sum_task_counts_pi.columns[i]))
-                    for i in range(len(sum_task_counts_pi.columns))
+                columns=[
+                    ft.DataColumn(ft.Text("業務内容")),
+                    ft.DataColumn(ft.Text("件数")),
                 ],
                 rows=[
                     ft.DataRow(
                         cells=[
-                            ft.DataCell(ft.Text(str(row[j]))) if j < len(row) else ft.DataCell(ft.Text(""))
-                            for j in range(len(row))
+                            ft.DataCell(ft.Text(row.task)),
+                            ft.DataCell(ft.Text(str(row.counts))),
                         ]
                     )
-                    for row in sum_task_counts_pi.itertuples(name="Row")
+                    for row in task_count.itertuples(index=False, name="Row")
                 ]
             ),
             ft.ElevatedButton(
                 "保存",
                 icon=ft.icons.DOWNLOAD,
                 tooltip="データフレームを保存",
-                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=sum_task_counts_pi,name="counts_per_task"),
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=task_count,name="task_count"),
             )
         ]
-        """for i in range(len(sum_task_counts_pi.columns)):    
-            result_field.controls[0].columns.append(
-                ft.DataColumn(ft.Text(sum_task_counts_pi.columns[i]))
-            )
-        """
-        
         result_field.update()
 
         
@@ -151,7 +117,7 @@ class Handlers_analyze:
                 columns=[
                     ft.DataColumn(ft.Text("業務内容")),
                     ft.DataColumn(ft.Text("件数")),
-                    ft.DataColumn(ft.Text("時間")),
+                    ft.DataColumn(ft.Text("総時間")),
                     ft.DataColumn(ft.Text("件数あたりの時間")),
                 ],
                 rows=[
@@ -333,6 +299,73 @@ class Handlers_analyze:
                 icon=ft.icons.DOWNLOAD,
                 tooltip="データフレームを保存",
                 on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=per_phName_df,name="self_analysis"),
+            )
+        ]
+        result_field.update()
+
+    @staticmethod
+    def self_analysis_total_time(dataframe,result_field,page):
+        time_for_phname_total=dataframe.groupby(["phName","task"]).size().reset_index(name="times")
+        #*15にすることで実際の時間に変換　(1入力15ふん）
+        time_for_phname_total["times"]=time_for_phname_total["times"]*15
+        #業務数列
+        taskdf=dataframe.groupby(["phName","task"]).size().reset_index(name="task_count")
+        #カウント列の合計を算出
+        countdf=dataframe.groupby(["phName","task"])["count"].sum().reset_index(name="count_total")
+        time_for_phname_total=pd.merge(
+            time_for_phname_total,
+            taskdf,
+            on=["phName","task"],
+            how="left"
+        )
+        time_for_phname_total=pd.merge(
+            time_for_phname_total,
+            countdf,
+            on=["phName","task"],
+            how="left"
+        )
+        #集計
+        total_df=time_for_phname_total.groupby(["phName"])["times"].sum().reset_index(name="total_times")
+        #phNameごとの総業務数
+        total_df["task_count"]=time_for_phname_total.groupby("phName")["task_count"].transform("sum")
+        #phNameごとの総件数
+        total_df["count_total"]=time_for_phname_total.groupby("phName")["count_total"].transform("sum")
+
+        #１業務あたりの時間列を追加
+        total_df["time_per_task"]=total_df["total_times"]/total_df["task_count"]
+        #1件あたりの時間列を追加
+        total_df["time_per_count"]=total_df["total_times"]/total_df["count_total"]
+
+
+        result_field.controls=[
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("薬剤師名")),
+                    ft.DataColumn(ft.Text("総時間")),
+                    ft.DataColumn(ft.Text("業務数")),
+                    ft.DataColumn(ft.Text("件数")),
+                    ft.DataColumn(ft.Text("1業務あたりの時間")),
+                    ft.DataColumn(ft.Text("1件あたりの時間")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(row.phName)),
+                            ft.DataCell(ft.Text(str(row.total_times))),
+                            ft.DataCell(ft.Text(str(row.task_count))),
+                            ft.DataCell(ft.Text(str(row.count_total))),
+                            ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
+                            ft.DataCell(ft.Text(f"{row.time_per_count:.2f}")),
+                        ]
+                    )
+                    for row in total_df.itertuples(index=False, name="Row")
+                ]
+            ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=time_for_phname_total,name="self_analysis_total_time"),
             )
         ]
         result_field.update()
