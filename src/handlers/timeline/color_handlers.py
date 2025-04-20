@@ -8,6 +8,8 @@ class ColorHandlers:
                 return "#384B70"
             case "混注時間":
                 return "#384B70"
+            case "無菌調整関連業務":
+                return "#384B70"
             case "薬剤セット・確認":
                 return "#384B70"
             case "持参薬を確認":

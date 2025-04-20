@@ -171,7 +171,8 @@ sum_task_counts_pi=sum_task_counts.pivot_table(
 #件数入力しない（混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンス）
 #上記業務内容を入力していない場合はdropでエラーになるから、止まらないようにする
 try:
-    sum_task_counts_pi.drop(index=["混注時間"],inplace=True)
+    sum_task_counts_pi.drop(index=["無菌調整関連業務"],inplace=True)
+    sum_task_counts_pi.drop(index=["混注時間"],inplace=True)#混注時間→無菌調整関連業務
     sum_task_counts_pi.drop(index=["休憩"],inplace=True)
     sum_task_counts_pi.drop(index=["委員会"],inplace=True)
     sum_task_counts_pi.drop(index=["WG活動"],inplace=True)
@@ -231,6 +232,7 @@ time_per_task_pi_count=time_per_task.pivot_table(
 )
 #件数入力しない業務は削除する
 try:
+    time_per_task_pi_count.drop(index=["無菌調整関連業務"],inplace=True)#混注時間→無菌調整関連業務
     time_per_task_pi_count.drop(index=["混注時間"],inplace=True)
     time_per_task_pi_count.drop(index=["休憩"],inplace=True)
     time_per_task_pi_count.drop(index=["委員会"],inplace=True)
