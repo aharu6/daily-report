@@ -10,8 +10,15 @@ import chart_studio.plotly as py
 from handlers.chart.download_handler import Chart_Download_Handler
 from handlers.chart.period_handler import PeriodHandler
 import datetime
+import chardet
 # Chartページ用のハンドラ
 class Handlers_Chart:
+    @staticmethod
+    def detect_encoding(file_path):
+        with open(file_path,'rb') as f:
+            result=chardet.detect(f.read())
+
+        return result['encoding']
     @staticmethod
     def pick_file_result(e: ft.FilePickerResultEvent, selected_files, parent_instance,card):
         """_summary
@@ -29,8 +36,10 @@ class Handlers_Chart:
             try:
                 # ファイルの数だけ繰り返す
                 dat = pd.concat(
-                    [pd.read_csv(file_path) for file_path in file_paths]
+                    [pd.read_csv(file_path,encoding=Handlers_Chart.detect_encoding(file_path=file_path)) 
+                    for file_path in file_paths]
                 )
+            
                 new_rows = []
                 for index, row in dat.iterrows():
                     tarn_row = ast.literal_eval(row["locate"])
@@ -41,7 +50,34 @@ class Handlers_Chart:
                 parent_instance.dataframe=pd.DataFrame(new_rows)
             except Exception as e:
                 print(f"An error occurred: {e}")    
-                pass
+                # 例外処理を追加
+                dat= pd.concat(
+                    [pd.read_csv(file_path,encoding=Handlers_Chart.detect_encoding(file_path=file_path)) 
+                    for file_path in file_paths]
+                )
+                new_rows = []
+                for index,row in dat.iterrows():
+                    if isinstance(row["locate"],str):
+                        try:
+                            tarn_row =row["locate"]
+                            new_row=row.copy()
+                            new_row["locate"]=tarn_row
+                            new_rows.append(new_row)
+                        except Exception as e:
+                            print(f"An error occurred: {e}")
+                            continue
+                    else:
+                        try:
+                            tarn_row = ast.literal_eval(row["locate"])
+                            for loc in range(len(tarn_row)):
+                                new_row=row.copy()
+                                new_row["locate"]=tarn_row[loc]
+                                new_rows.append(new_row)
+                        except Exception as e:
+                            print(f"An error occurred: {e}")
+                            continue
+                parent_instance.dataframe=pd.DataFrame(new_rows)
+
 
             #ファイル名の表示
             Handlers_Chart.pick_file_name(file_name,card)
