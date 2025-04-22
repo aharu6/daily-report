@@ -1,17 +1,50 @@
 import pandas as pd
 import ast
 
-read_csv = pd.read_csv(
-    "/Users/aizawaharuka/Documents/output_csv/2025-3-8name name1.csv"
-)
+
+# 全ての行と列を表示する設定
+pd.set_option('display.max_rows', None)  # 行を省略せずに表示
+pd.set_option('display.max_columns', None)  # 列を省略せずに表示
+pd.set_option('display.expand_frame_repr', False)  # データフレームを横にスクロールせずに表示
+pd.set_option('display.max_colwidth', None)  # 列の幅を省略せずに表示
+pd.options.mode.use_inf_as_na=True
+folder_path = "/Users/aizawaharuka/Documents/output_csv/"
+#folder_path内のcsvファイルを取得
+import os
+import glob
+file_list=glob.glob(os.path.join(folder_path, "*.csv"))
+#csvファイルを読み込む
+dataframes=pd.concat([
+    pd.read_csv(file) for file in file_list
+])
+#病棟名のリストはバラす
+loc_dataframes=[]
+for index,row in dataframes.iterrows():
+    try:
+
+        if isinstance(row["locate"], str):
+
+            tarn_row=ast.literal_eval(row["locate"])
+            for loc in range(len(tarn_row)):
+                new_row=row.copy()
+                new_row["locate"]=tarn_row[loc]
+                loc_dataframes.append(new_row)
+        else:
+            continue
+
+    except (ValueError, SyntaxError):
+        # locate列がリスト形式でない場合はスキップ
+        continue    
+df=pd.DataFrame(loc_dataframes)
+
 
 # テスト
-df1 = read_csv["locate"].apply(ast.literal_eval)
+#df1 = read_csv["locate"].apply(ast.literal_eval)
 # locateはリスト形式になっているからバラす必要がある
 # AMを除くもしくはリストでないものをスキップする
 
 # からのデータフレームを作成
-
+"""
 new_rows = []
 
 for index, row in read_csv.iterrows():
@@ -22,7 +55,7 @@ for index, row in read_csv.iterrows():
         new_rows.append(new_row)
 
 df = pd.DataFrame(new_rows)
-
+"""
 # データをまとめる
 # 病棟ごとに業務でかかった時間の割合を示す円グラフにしたい
 # 病棟かつ業務内容ごとにgroupbyして集計する
@@ -36,8 +69,8 @@ import plotly.express as px
 import plotly as py
 
 
-fig = py.pie(group_df[group_df["locate"] == "4B"], values="counts", names="task")
-fig.show()
+fig = px.pie(group_df[group_df["locate"] == "4B"], values="counts", names="task")
+#fig.show()
 
 
 # 個人グラフの作成
@@ -45,7 +78,7 @@ fig.show()
 fig_bar_test = px.bar(
     group_df, x="counts", y="locate", color="task", barmode="stack", orientation="h"
 )
-fig_bar_test.show()
+#fig_bar_test.show()
 
 # 　個人ごとにデータをまとめ直す
 # csvファイルは個人ごとに保存する必要があるから、あとでcsvファイル保存名を変更する
@@ -58,6 +91,8 @@ fig_bar = px.bar(
     barmode="stack",
     orientation="h",
 )
+pri=df.groupby("task").size().reset_index(name="counts")
+print(pri)
 fig_bar.show()
 
 # bubble chart
@@ -77,4 +112,4 @@ fig_bubble = px.scatter(
 )
 fig_bubble.update_layout(yaxis=dict(title="件数"), xaxis=dict(title="かかった時間"))
 fig_bubble.update_traces(textposition="top center")
-fig_bubble.show()
+#fig_bubble.show()
