@@ -156,7 +156,6 @@ class Handlers_analyze:
                 task_count.drop(index=["カンファレンス"],inplace=True)
             except KeyError:
                 pass
-            print(task_count)
             result_field.controls=[
                 ft.DataTable(
                     columns=[

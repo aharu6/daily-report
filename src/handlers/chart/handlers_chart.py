@@ -493,7 +493,7 @@ class Handlers_Chart:
 
             group_by_person = df.groupby(["phName","task"]).size().reset_index(name="time")
             #phNamaeごとの合計値を計算
-            group_by_person["total_time"]=group_by_person.groupby("phName")["time"].tranform("sum")
+            group_by_person["total_time"]=group_by_person.groupby("phName")["time"].transform("sum")
             group_by_person["percentage"]=(group_by_person["time"]/group_by_person["total_time"])*100
             fig_bar = px.bar(group_by_person, x="percentage", y="phName", color="task", barmode="stack", orientation="h")
             # まずグラフを描画するcardを作成
