@@ -96,7 +96,7 @@ class Handlers_Chart:
                         content=ft.Column(
                             controls=[
                                 ft.ListTile(
-                                    title=ft.Text(file_name[i])
+                                    title=ft.Text(file_name[i]) if i < len(file_name) else ft.Text("Unknown")
                                 )
                                 for i in range(len(file_name))
                             ]
@@ -123,7 +123,7 @@ class Handlers_Chart:
         page.update()
 
     @staticmethod
-    def ComponentChart_for_standard(dataframe, chart_field, page):
+    def ComponentChart_for_standard(dataframe, chart_field, page,parent_instance_standard):
         #表示期間の選択があれば、そこから日付を抽出して選択された期間にてdatagrameをフィルタリングする   
         try:
             start_date=datetime.datetime.strptime(chart_field.controls[1].controls[0].data,"%Y-%m-%dT%H:%M:%S.%f")
@@ -136,6 +136,9 @@ class Handlers_Chart:
             
             #日付のフィルタリング start_dateからend_dateまでのデータを抽出
             df=df[df["date"].between(start_date,end_date)]
+            #日付でフィルタリングしたデータを返す
+            parent_instance_standard.all_df=df
+            
             # bar_plot
             group_bubble = df.groupby(["locate","task","count"]).size().reset_index(name="times")
             #Countsが0の場合とそれ以外に分かれるので、それぞれを合計する
@@ -290,7 +293,7 @@ class Handlers_Chart:
 
         
     @staticmethod
-    def ComponentChart_for_location(dataframe, chart_field, page,chart2_info):
+    def ComponentChart_for_location(dataframe, chart_field, page,chart2_info,parent_instance_locate):
         
         Handlers_Chart.show_progress_bar(chart_field, page)
         # データフレームを渡してグラフを生成する
@@ -303,6 +306,9 @@ class Handlers_Chart:
             chart2_info.controls[1].controls[0].text=start_date.strftime("%Y-%m-%d")
             chart2_info.controls[1].controls[2].text=end_date.strftime("%Y-%m-%d")
             df =dataframe
+            #日付のフィルタリングしたデータを返す
+            parent_instance_locate.locate_df=df
+
             df["date"]=pd.to_datetime(df["date"],format="%Y-%m-%d")
             #日付のフィルタリング start_dateからend_dateまでのデータを抽出
             df=df[df["date"].between(start_date,end_date)]
@@ -470,7 +476,7 @@ class Handlers_Chart:
         # その上にplotlyにて円グラフを作成する
 
     @staticmethod
-    def ComponentChart_for_self(dataframe,chart_field,page):        
+    def ComponentChart_for_self(dataframe,chart_field,page,parent_instance_self_df):        
         try:
             start_date=datetime.datetime.strptime(chart_field.controls[1].controls[0].data,"%Y-%m-%dT%H:%M:%S.%f")
             end_date=datetime.datetime.strptime(chart_field.controls[1].controls[2].data,"%Y-%m-%dT%H:%M:%S.%f")
@@ -482,11 +488,14 @@ class Handlers_Chart:
             df["date"]=pd.to_datetime(df["date"],format="%Y-%m-%d")
             #日付のフィルタリング start_dateからend_dateまでのデータを抽出
             df=df[df["date"].between(start_date,end_date)]
+            #日付でフィルタリングしたデータを返す
+            parent_instance_self_df.self_df=df
+
             group_by_person = df.groupby(["phName","task"]).size().reset_index(name="time")
-            #time列の長さは合計で１００%になるように100分率に修正する
-            sum_time = group_by_person["time"].sum()
-            group_by_person["time"]=group_by_person["time"].transform(lambda x: (x/sum_time)*100)
-            fig_bar = px.bar(group_by_person, x="time", y="phName", color="task", barmode="stack", orientation="h")
+            #phNamaeごとの合計値を計算
+            group_by_person["total_time"]=group_by_person.groupby("phName")["time"].transform("sum")
+            group_by_person["percentage"]=(group_by_person["time"]/group_by_person["total_time"])*100
+            fig_bar = px.bar(group_by_person, x="percentage", y="phName", color="task", barmode="stack", orientation="h")
             # まずグラフを描画するcardを作成
             chart_field.controls = [
                 ft.ListTile(
@@ -537,7 +546,7 @@ class Handlers_Chart:
             ]
             page.update()   
 
-        except Exception as e:
+        except IndexError as e:
             print(e)
             Handlers_Chart.show_progress_bar(chart_field, page)
             #データフレームの作成
@@ -545,12 +554,20 @@ class Handlers_Chart:
             
             # 個人ごとにデータをまとめ直す
             group_by_person = df.groupby(["phName","task"]).size().reset_index(name="time")
-            #合計値
-            sum_time = group_by_person["time"].sum()
-            #time列の長さは合計で１００%になるように100分率に修正する
-            group_by_person["time"]=group_by_person["time"].transform(lambda x: (x/sum_time)*100)
+            #phNamaeごとの合計値を計算
+            group_by_person["total_time"]=group_by_person.groupby("phName")["time"].transform("sum")
+
+            #各taskの割割合を計算
+            group_by_person["percentage"]=(group_by_person["time"]/group_by_person["total_time"])*100
             # その上にplotlyにて棒グラフを作成する
-            fig_bar = px.bar(group_by_person, x="time", y="phName", color="task", barmode="stack", orientation="h")
+            fig_bar = px.bar(group_by_person, x="percentage", y="phName", color="task", barmode="stack", orientation="h")
+            fig_bar.update_layout(
+                xaxis=dict(title="業務"),
+                yaxis=dict(title="薬剤師名"),
+                legend=dict(
+                    font=dict(size=10),
+                )
+            )
             # まずグラフを描画するcardを作成
             chart_field.controls = [
                 ft.ListTile(

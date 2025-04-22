@@ -11,6 +11,9 @@ class ChartPage:
         # データフレームを定義しておく
         # ファイルのアップロードにてデータフレームの作成まで
         self.dataframe = None
+        self.all_df=None
+        self.locate_df=None
+        self.self_df=None
         self.file_picker_Button = ft.TextButton(
             "ファイルを選択",
             on_click=lambda _: self.file_picker.pick_files(allow_multiple=True),
@@ -41,6 +44,7 @@ class ChartPage:
                 text="グラフを生成",
                 on_click=lambda _: Handlers_Chart.ComponentChart_for_standard(
                     dataframe=self.dataframe,chart_field= self.chart1_field,page= page,
+                    parent_instance_standard=self,
                 ),
             )
         )
@@ -54,6 +58,7 @@ class ChartPage:
                 on_click=lambda _: Handlers_Chart.ComponentChart_for_location(
                     dataframe=self.dataframe, chart_field=self.chart2_field, page=page,
                     chart2_info=self.chart2_field_info,
+                    parent_instance_locate=self,
                 ),
             )
         )
@@ -65,7 +70,8 @@ class ChartPage:
             content=ft.TextButton(
                 "グラフを生成",
                 on_click=lambda _: Handlers_Chart.ComponentChart_for_self(
-                    dataframe=self.dataframe, chart_field=self.chart3_field,page=page
+                    dataframe=self.dataframe, chart_field=self.chart3_field,page=page,
+                    parent_instance_self_df=self,
                 ),
             )
         )
@@ -77,7 +83,8 @@ class ChartPage:
             content=ft.TextButton(
                 "集計",
                 on_click=lambda _:Handlers_analyze.count_par_time(
-                    dataframe=self.dataframe, result_field=self.chart4_field, page=self.page
+                    dataframe=self.dataframe, result_field=self.chart4_field, page=self.page,
+                    all_df=self.all_df
                 )
             )
         )
@@ -89,7 +96,8 @@ class ChartPage:
             content=ft.TextButton(
                 "集計",
                 on_click=lambda _:Handlers_analyze.task_par_count(
-                    dataframe=self.dataframe, result_field=self.chart5_field, page=self.page
+                    dataframe=self.dataframe, result_field=self.chart5_field, page=self.page,
+                    all_df=self.all_df
                 )
             )
         )
@@ -101,7 +109,8 @@ class ChartPage:
             content=ft.TextButton(
                 "集計",
                 on_click=lambda _:Handlers_analyze.task_par_location(
-                    dataframe=self.dataframe, result_field=self.chart6_field, page=self.page
+                    dataframe=self.dataframe, result_field=self.chart6_field, page=self.page,
+                    all_df=self.all_df,
                 )
             )
         )
@@ -113,7 +122,8 @@ class ChartPage:
             content=ft.TextButton(
                 "集計",
                 on_click=lambda _:Handlers_analyze.time_task_analysis(
-                    dataframe=self.dataframe, result_field=self.chart7_field, page=self.page
+                    dataframe=self.dataframe, result_field=self.chart7_field, page=self.page,
+                    all_df=self.all_df,
                 )
             )
         )
@@ -124,7 +134,8 @@ class ChartPage:
             content=ft.TextButton(
                 "集計",
                 on_click=lambda _:Handlers_analyze.comment_analysis(
-                    dataframe=self.dataframe, result_field=self.chart8_field, page=self.page
+                    dataframe=self.dataframe, result_field=self.chart8_field, page=self.page,
+                    all_df=self.all_df,
                 )
             )
         )
@@ -135,7 +146,8 @@ class ChartPage:
             content=ft.TextButton(
                 "集計",
                 on_click=lambda _:Handlers_analyze.date_task_analysis(
-                    dataframe=self.dataframe, result_field=self.chart9_field, page=self.page
+                    dataframe=self.dataframe, result_field=self.chart9_field, page=self.page,
+                    all_df=self.all_df,
                 )
             )
         )
@@ -148,7 +160,7 @@ class ChartPage:
             content=ft.TextButton(
                 "集計",
                 on_click=lambda _:Handlers_analyze.self_analysis_total_time(
-                    dataframe=self.dataframe, result_field=self.chart10_0_field, page=self.page
+                    dataframe=self.dataframe, result_field=self.chart10_0_field, page=self.page,self_df=self.self_df
                 )
             )
         )
@@ -159,7 +171,8 @@ class ChartPage:
             content=ft.TextButton(
                 "集計",
                 on_click=lambda _:Handlers_analyze.self_analysis(
-                    dataframe=self.dataframe, result_field=self.chart10_field, page=self.page
+                    dataframe=self.dataframe, result_field=self.chart10_field, page=self.page,
+                    self_df=self.self_df,
                 )
             )
         )
@@ -172,7 +185,8 @@ class ChartPage:
             content=ft.TextButton(
                 "集計",
                 on_click=lambda _:Handlers_analyze.locate_analysis(
-                    dataframe=self.dataframe, result_field=self.chart11_field, page=self.page
+                    dataframe=self.dataframe, result_field=self.chart11_field, page=self.page,
+                    locate_df=self.locate_df,
                 )
             )
         )
@@ -192,7 +206,7 @@ class ChartPage:
                 self.selected_files,
                 self.subtitle,
                 self.horizon_subtitle,
-                self.chart1card,
+                self.chart1card,#全体
                 self.chart1_field,
                 
                 self.subtitle4,
