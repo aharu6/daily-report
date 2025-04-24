@@ -117,7 +117,7 @@ class DragMoveHandler:
                 e.control.content.controls.append(comments[e.control.data["num"]])
             # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
             case (
-                "無菌調整関連業務"
+                "無菌調製関連業務"
                 | "混注時間"
                 | "休憩"
                 | "委員会"
