@@ -108,7 +108,7 @@ class Handlers_analyze:
             task_count=df.groupby(["task"])["count"].sum().reset_index(name="counts")
             #件数を集計していない項目はデータフレームより除外する
             try:
-                task_count.drop(index=["無菌調整関連業務"],inplace=True)
+                task_count.drop(index=["無菌調製関連業務"],inplace=True)
                 task_count.drop(index=["混注時間"],inplace=True)
                 task_count.drop(index=["休憩"],inplace=True)
                 task_count.drop(index=["委員会"],inplace=True)
@@ -146,7 +146,7 @@ class Handlers_analyze:
             task_count=dataframe.groupby(["task"])["count"].sum().reset_index(name="counts")
             #件数を集計していない項目はデータフレームより除外する
             try:
-                task_count.drop(index=["無菌調整関連業務"],inplace=True)
+                task_count.drop(index=["無菌調製関連業務"],inplace=True)
                 task_count.drop(index=["混注時間"],inplace=True)
                 task_count.drop(index=["休憩"],inplace=True)
                 task_count.drop(index=["委員会"],inplace=True)

@@ -152,7 +152,7 @@ class DragHandlers:
             case "その他":
                 e.control.content.controls.append(comments[e.control.data["num"]])
             case (
-                "無菌調整関連業務"
+                "無菌調製関連業務"
                 | "混注時間"
                 | "休憩"
                 | "委員会"
