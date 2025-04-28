@@ -21,6 +21,11 @@ class Handlers_analyze:
                 title="時間ごとに業務が記録された回数",
                 labels={"time": "Time", "task": "Task", "counts": "Task Count"},
             )
+            fig.update_layout(
+                xaxis=dict(title="時間"),
+                yaxis=dict(title="業務内容"),
+                zaxis=dict(title="入力回数")
+            )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
                 ft.ElevatedButton(
@@ -61,6 +66,11 @@ class Handlers_analyze:
                 z="counts",
                 title="時間ごとに業務が記録された回数",
                 labels={"time": "Time", "task": "Task", "counts": "Task Count"},
+            )
+            fig.update_layout(
+                xaxis=dict(title="時間"),
+                yaxis=dict(title="業務内容"),
+                zaxis=dict(title="入力回数")
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
@@ -301,6 +311,10 @@ class Handlers_analyze:
                 labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
                 barmode="stack",
             )
+            fig.update_layout(
+                xasix=dict(title="病棟"),
+                yaxis=dict(title="記録回数")
+            )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
                 ft.ElevatedButton(
@@ -322,6 +336,10 @@ class Handlers_analyze:
                 title="場所ごとに記録された業務内容と記録回数",
                 labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
                 barmode="stack",
+            )
+            fig.update_layout(
+                xaxis=dict(title="病棟"),
+                yaxis=dict(title="記録回数")
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
@@ -354,6 +372,10 @@ class Handlers_analyze:
                 title="日付ごとに記録された業務内容と記録回数",
                 labels={"date": "Date", "counts": "Task Count", "task": "Task"},
                 barmode="stack",
+            )
+            fig.update_layout(
+                xaxis=dict(title="日付"),
+                yaxis=dict(title="記録回数")
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
@@ -405,6 +427,10 @@ class Handlers_analyze:
                 title="日付ごとに記録された業務内容と記録回数",
                 labels={"date": "Date", "counts": "Task Count", "task": "Task"},
                 barmode="stack",
+            )
+            fig.update_layout(
+                xaxis=dict(title="日付"),
+                yaxis=dict(title="記録回数")
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
