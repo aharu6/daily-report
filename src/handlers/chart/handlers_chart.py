@@ -145,6 +145,7 @@ class Handlers_Chart:
             group_bubble2 = group_bubble.groupby(["locate","task"]).sum(numeric_only=True).reset_index()
             #times*15 = かかった時間となるので計算しなおす
             group_bubble2["times"] = group_bubble2["times"]*15
+            chart_width=int(len(group_bubble2["task"].unique()))*33
             bar_chart=px.bar(group_bubble2,x="task",y="times")
             """
             fig_bubble = px.scatter(group_bubble2,x = "times",y = "count",color = "task",text = "task" ,
@@ -223,7 +224,8 @@ class Handlers_Chart:
             group_bubble2 = group_bubble.groupby(["locate","task"]).sum(numeric_only=True).reset_index()
             #times*15 = かかった時間となるので計算しなおす
             group_bubble2["times"] = group_bubble2["times"]*15
-            bar_chart=px.bar(group_bubble2,x="task",y="times")
+            chart_width=int(len(group_bubble2["task"].unique()))*33
+            bar_chart=px.bar(group_bubble2,x="task",y="times",width=chart_width)
             """
             fig_bubble = px.scatter(group_bubble2,x = "times",y = "count",color = "task",text = "task" ,
                             )
@@ -233,7 +235,7 @@ class Handlers_Chart:
             fig_bubble.update_traces(textposition='top center')
             """
             bar_chart.update_layout(yaxis =dict(title = "かかった時間"),
-                                    xaxis = dict(title = "業務内容")
+                                    xaxis = dict(title = "業務内容"),
                                     )
             
             chart_field.controls = [
@@ -495,7 +497,8 @@ class Handlers_Chart:
             #phNamaeごとの合計値を計算
             group_by_person["total_time"]=group_by_person.groupby("phName")["time"].transform("sum")
             group_by_person["percentage"]=(group_by_person["time"]/group_by_person["total_time"])*100
-            fig_bar = px.bar(group_by_person, x="percentage", y="phName", color="task", barmode="stack", orientation="h")
+            graph_height=int(len(group_by_person["phName"].unique()))*33
+            fig_bar = px.bar(group_by_person, height=graph_height,x="percentage", y="phName", color="task", barmode="stack", orientation="h")
             # まずグラフを描画するcardを作成
             chart_field.controls = [
                 ft.ListTile(
@@ -556,12 +559,13 @@ class Handlers_Chart:
             group_by_person = df.groupby(["phName","task"]).size().reset_index(name="time")
             #phNamaeごとの合計値を計算
             group_by_person["total_time"]=group_by_person.groupby("phName")["time"].transform("sum")
-
+            graph_height=int(len(group_by_person["phName"].unique()))*33
             #各taskの割割合を計算
             group_by_person["percentage"]=(group_by_person["time"]/group_by_person["total_time"])*100
             # その上にplotlyにて棒グラフを作成する
             fig_bar = px.bar(group_by_person, x="percentage", y="phName", color="task", barmode="stack", orientation="h")
             fig_bar.update_layout(
+                height=graph_height,
                 xaxis=dict(title="業務"),
                 yaxis=dict(title="薬剤師名"),
                 legend=dict(

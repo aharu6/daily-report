@@ -92,7 +92,7 @@ fig_bar = px.bar(
     orientation="h",
 )
 pri=df.groupby("task").size().reset_index(name="counts")
-print(pri)
+print(gorup_by_person["phName"].unique())
 fig_bar.show()
 
 # bubble chart
