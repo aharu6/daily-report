@@ -24,7 +24,6 @@ class Handlers_analyze:
             fig.update_layout(
                 xaxis=dict(title="時間"),
                 yaxis=dict(title="業務内容"),
-                zaxis=dict(title="入力回数")
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
@@ -70,7 +69,6 @@ class Handlers_analyze:
             fig.update_layout(
                 xaxis=dict(title="時間"),
                 yaxis=dict(title="業務内容"),
-                zaxis=dict(title="入力回数")
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
