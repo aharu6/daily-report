@@ -88,3 +88,5 @@ class ColorHandlers:
                 return "#DDA853"
             case "薬剤使用期限確認":
                 return "#508D4E"
+            case "抗菌薬相談対応":
+                return "#507687"
