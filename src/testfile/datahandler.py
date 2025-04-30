@@ -58,6 +58,13 @@ fig = px.bar(
 #業務内容ー時間帯
 task_per_time_heatmap=dataframes.groupby(["task","time"]).size().reset_index(name="counts")
 #時間帯ごとのタスクをヒートマップで可視化
+# x軸の時間を並び順に修正するため、time列をカテゴリ型に変換して並び順を指定
+task_per_time_heatmap["sort_time"] = task_per_time_heatmap["time"].astype(str).fillna("")
+task_per_time_heatmap["sort_time"]=task_per_time_heatmap["sort_time"].str.strip().str.split(" ").str[0]
+#sort_time列のデータ型をdatetimeに変換
+task_per_time_heatmap["sort_time"] = pd.to_datetime(task_per_time_heatmap["sort_time"], format="%H:%M", errors="coerce")
+#sprt_time列を元に時間順にソート
+task_per_time_heatmap.sort_values("sort_time", inplace=True)
 fig = px.density_heatmap(
     task_per_time_heatmap,
     x="time",
@@ -66,6 +73,7 @@ fig = px.density_heatmap(
     title="Task Distribution by Time (Heatmap)",
     labels={"time": "Time", "task": "Task", "counts": "Task Count"},
 )
+fig.show()
 # グラフを表示
 #fig.show()
 
