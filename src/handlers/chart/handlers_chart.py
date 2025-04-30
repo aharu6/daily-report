@@ -497,11 +497,12 @@ class Handlers_Chart:
             #日付でフィルタリングしたデータを返す
             parent_instance_self_df.self_df=df
 
-            group_by_person = df.groupby(["phName","task"]).size().reset_index(name="time")
-            #phNamaeごとの合計値を計算
+            group_by_person = df.groupby(["phName","task"]).size().reset_index(name="time")            #phNamaeごとの合計値を計算
             group_by_person["total_time"]=group_by_person.groupby("phName")["time"].transform("sum")
             group_by_person["percentage"]=(group_by_person["time"]/group_by_person["total_time"])*100
             graph_height=int(len(group_by_person["phName"].unique()))*33
+            if graph_height<1000:
+                graph_height=1000
             fig_bar = px.bar(group_by_person, height=graph_height,x="percentage", y="phName", color="task", barmode="stack", orientation="h")
             # まずグラフを描画するcardを作成
             chart_field.controls = [
@@ -564,6 +565,8 @@ class Handlers_Chart:
             #phNamaeごとの合計値を計算
             group_by_person["total_time"]=group_by_person.groupby("phName")["time"].transform("sum")
             graph_height=int(len(group_by_person["phName"].unique()))*33
+            if graph_height<1000:
+                graph_height=1000
             #各taskの割割合を計算
             group_by_person["percentage"]=(group_by_person["time"]/group_by_person["total_time"])*100
             # その上にplotlyにて棒グラフを作成する
