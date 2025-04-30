@@ -13,6 +13,18 @@ class Handlers_analyze:
         if all_df is not None:
             df=all_df
             task_per_time_heatmap=df.groupby(["task","time"]).size().reset_index(name="counts")
+            heat_height=int(len(task_per_time_heatmap["task"].unique()))*33
+            heat_width=int(len(task_per_time_heatmap["time"].unique()))*33
+            if heat_width<1000:
+                heat_width=1000
+            #時間順にデータを並び替える
+            task_per_time_heatmap["sort_time"]=task_per_time_heatmap["time"].astype(str).fillna("")
+            task_per_time_heatmap["sort_time"]=task_per_time_heatmap["sort_time"].str.strip().str.split(" ").str[0]
+            #sort_time列のデータ型をdatetimeに変換
+            task_per_time_heatmap["sort_time"]=pd.to_datetime(task_per_time_heatmap["sort_time"],format="%H:%M",errors="coerce")
+            #sort_time列を元に時間順にソート    
+            task_per_time_heatmap.sort_values("sort_time",inplace=True)
+            
             fig=px.density_heatmap(
                 task_per_time_heatmap,
                 x="time",
@@ -20,6 +32,8 @@ class Handlers_analyze:
                 z="counts",
                 title="時間ごとに業務が記録された回数",
                 labels={"time": "Time", "task": "Task", "counts": "Task Count"},
+                height=heat_height,
+                width=heat_width,
             )
             fig.update_layout(
                 xaxis=dict(title="時間"),
@@ -58,6 +72,19 @@ class Handlers_analyze:
 
             df=dataframe
             task_per_time_heatmap=df.groupby(["task","time"]).size().reset_index(name="counts")
+            
+            heat_height=int(len(task_per_time_heatmap["task"].unique()))*33
+            heat_width=int(len(task_per_time_heatmap["time"].unique()))*33
+            if heat_width<1000:
+                heat_width=1000
+            #時間順にデータを並び替える
+            task_per_time_heatmap["sort_time"]=task_per_time_heatmap["time"].astype(str).fillna("")
+            task_per_time_heatmap["sort_time"]=task_per_time_heatmap["sort_time"].str.strip().str.split(" ").str[0]
+            #sort_time列のデータ型をdatetimeに変換
+            task_per_time_heatmap["sort_time"]=pd.to_datetime(task_per_time_heatmap["sort_time"],format="%H:%M",errors="coerce")
+            #sort_time列を元に時間順にソート    
+            task_per_time_heatmap.sort_values("sort_time",inplace=True)
+            
             fig=px.density_heatmap(
                 task_per_time_heatmap,
                 x="time",
@@ -65,6 +92,8 @@ class Handlers_analyze:
                 z="counts",
                 title="時間ごとに業務が記録された回数",
                 labels={"time": "Time", "task": "Task", "counts": "Task Count"},
+                height=heat_height,
+                width=heat_width,
             )
             fig.update_layout(
                 xaxis=dict(title="時間"),
@@ -300,6 +329,9 @@ class Handlers_analyze:
         if all_df is not None:
             df=all_df
             locate_df=df.groupby(["locate","task"]).size().reset_index(name="counts")
+            graph_width=int(len(locate_df["locate"].unique()))*77
+            if graph_width<1000:
+                graph_width=1000
             fig=px.bar(
                 locate_df,
                 x="locate",
@@ -308,6 +340,7 @@ class Handlers_analyze:
                 title="場所ごとに記録された業務内容と記録回数",
                 labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
                 barmode="stack",
+                width=graph_width,
             )
             fig.update_layout(
                 xasix=dict(title="病棟"),
@@ -326,6 +359,9 @@ class Handlers_analyze:
         else:
             df=dataframe
             locate_df=df.groupby(["locate","task"]).size().reset_index(name="counts")
+            graph_width=int(len(locate_df["locate"].unique()))*77
+            if graph_width<1000:
+                graph_width=1000
             fig=px.bar(
                 locate_df,
                 x="locate",
@@ -334,6 +370,7 @@ class Handlers_analyze:
                 title="場所ごとに記録された業務内容と記録回数",
                 labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
                 barmode="stack",
+                width=graph_width,
             )
             fig.update_layout(
                 xaxis=dict(title="病棟"),
@@ -362,6 +399,9 @@ class Handlers_analyze:
             date_group_df=df.groupby(["date","task"]).size().reset_index(name="counts")
             #counts は時間になる*15をすると作業時間となる
             #dateごとのタスクを積み上げ棒グラフで可視化
+            graph_width=int(len(date_group_df["date"].unique()))*33
+            if graph_width<1000:
+                graph_width=1000
             fig=px.bar(
                 date_group_df,
                 x="date",
@@ -370,6 +410,7 @@ class Handlers_analyze:
                 title="日付ごとに記録された業務内容と記録回数",
                 labels={"date": "Date", "counts": "Task Count", "task": "Task"},
                 barmode="stack",
+                width=graph_width,
             )
             fig.update_layout(
                 xaxis=dict(title="日付"),
@@ -417,6 +458,9 @@ class Handlers_analyze:
             date_group_df=df.groupby(["date","task"]).size().reset_index(name="counts")
             #counts は時間になる*15をすると作業時間となる
             #dateごとのタスクを積み上げ棒グラフで可視化
+            graph_width=int(len(date_group_df["date"].unique()))*33
+            if graph_width<1000:
+                graph_width=1000
             fig=px.bar(
                 date_group_df,
                 x="date",
@@ -425,6 +469,7 @@ class Handlers_analyze:
                 title="日付ごとに記録された業務内容と記録回数",
                 labels={"date": "Date", "counts": "Task Count", "task": "Task"},
                 barmode="stack",
+                width=graph_width,
             )
             fig.update_layout(
                 xaxis=dict(title="日付"),

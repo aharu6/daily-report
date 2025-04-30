@@ -146,7 +146,9 @@ class Handlers_Chart:
             #times*15 = かかった時間となるので計算しなおす
             group_bubble2["times"] = group_bubble2["times"]*15
             chart_width=int(len(group_bubble2["task"].unique()))*33
-            bar_chart=px.bar(group_bubble2,x="task",y="times")
+            if chart_width<1000:
+                chart_width=1000
+            bar_chart=px.bar(group_bubble2,x="task",y="times",width=chart_width)
             """
             fig_bubble = px.scatter(group_bubble2,x = "times",y = "count",color = "task",text = "task" ,
                             )
@@ -225,6 +227,8 @@ class Handlers_Chart:
             #times*15 = かかった時間となるので計算しなおす
             group_bubble2["times"] = group_bubble2["times"]*15
             chart_width=int(len(group_bubble2["task"].unique()))*33
+            if chart_width<1000:
+                chart_width=1000
             bar_chart=px.bar(group_bubble2,x="task",y="times",width=chart_width)
             """
             fig_bubble = px.scatter(group_bubble2,x = "times",y = "count",color = "task",text = "task" ,
