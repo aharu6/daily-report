@@ -49,6 +49,7 @@ class ChoiceChangeHandlers:
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
                 selectColumns[40].visible = False  # お役立ち情報作成
                 selectColumns[41].visible = False  # 薬剤使用期限確認
+                selectColumns[42].visible = False  # 抗菌薬相談対応
 
                 page.update()
             case 1:  # 12階
@@ -98,6 +99,8 @@ class ChoiceChangeHandlers:
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
                 selectColumns[40].visible = False  # お役立ち情報作成
 
+                selectColumns[42].visible = False  # 抗菌薬相談対応
+
                 page.update()
 
             case 2:  # 役職者
@@ -145,6 +148,7 @@ class ChoiceChangeHandlers:
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
                 selectColumns[40].visible = False  # お役立ち情報作成
                 selectColumns[41].visible = False  # 薬剤使用期限確認
+                selectColumns[42].visible = False  # 抗菌薬相談対応
 
                 page.update()
 
@@ -197,11 +201,14 @@ class ChoiceChangeHandlers:
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
                 selectColumns[40].visible = False  # お役立ち情報作成
                 selectColumns[41].visible = False  # 薬剤使用期限確認
+                selectColumns[42].visible = False  # 抗菌薬相談対応
 
                 page.update()
             case 4:  # ICT/AST
                 # 表示
                 selectColumns[16].visible = True  # ICT/AST
+                selectColumns[42].visible = True  # 抗菌薬相談対応
+
                 # 非表示
                 selectColumns[0].visible = False  # 情報収集　指導
                 selectColumns[1].visible = False  # 指導記録作成
@@ -295,6 +302,7 @@ class ChoiceChangeHandlers:
                 selectColumns[39].visible = False  # 勉強会資料作成・開催
                 selectColumns[40].visible = False  # お役立ち情報作成
                 selectColumns[41].visible = False  # 薬剤使用期限確認
+                selectColumns[42].visible = False  # 抗菌薬相談対応
 
                 page.update()
 
@@ -334,6 +342,7 @@ class ChoiceChangeHandlers:
                 selectColumns[29].visible = False  # 管理業務
                 selectColumns[30].visible = False  # NST
                 selectColumns[41].visible = False  # 薬剤使用期限確認
+                selectColumns[42].visible = False  # 抗菌薬相談対応
 
                 # 表示
                 selectColumns[31].visible = True  # 問い合わせ応需

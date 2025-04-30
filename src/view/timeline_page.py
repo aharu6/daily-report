@@ -288,7 +288,7 @@ class TimelinePage:
         )
         
         self.page.overlay.append(self.select_directory)
-
+        
         if not self.selectColumns:
             self.selectColumns = []
             from flet import TextAlign
@@ -317,6 +317,7 @@ class TimelinePage:
                         data={"task": kind},
                     )
                 )
+                
             # 初期状態は 3を選択した状態 offの状態
             # 表示
             self.selectColumns[12].visible = True  # 委員会
@@ -365,6 +366,7 @@ class TimelinePage:
             self.selectColumns[39].visible = False  # 勉強会資料作成・開催
             self.selectColumns[40].visible = False  #  お役立ち情報作成
             self.selectColumns[41].visible = False  #  薬剤使用期限
+            self.selectColumns[42].visible = False  #  抗菌薬相談対応
 
         self.time_for_visual_label = []
 
