@@ -11,6 +11,8 @@ from handlers.chart.download_handler import Chart_Download_Handler
 from handlers.chart.period_handler import PeriodHandler
 import datetime
 import chardet
+pd.set_option('display.max_columns', None) 
+pd.set_option('display.max_rows', None)
 # Chartページ用のハンドラ
 class Handlers_Chart:
     @staticmethod
@@ -39,7 +41,13 @@ class Handlers_Chart:
                     [pd.read_csv(file_path,encoding=Handlers_Chart.detect_encoding(file_path=file_path)) 
                     for file_path in file_paths]
                 )
-            
+                #病棟関係ない項目は複数locationデータを削除 selfなどの名前にしておく
+                for index,row in dat.iterrows():
+                    if row["task"]in["委員会","勉強会参加","WG活動","1on1","業務調整","休憩","その他"]:
+                        dat.loc[index,"locate"]="['self']"
+                    else:
+                        pass
+                print(dat)
                 new_rows = []
                 for index, row in dat.iterrows():
                     tarn_row = ast.literal_eval(row["locate"])
@@ -47,6 +55,7 @@ class Handlers_Chart:
                         new_row = row.copy()
                         new_row["locate"] = tarn_row[loc]
                         new_rows.append(new_row)
+                print(pd.DataFrame(new_rows))
                 parent_instance.dataframe=pd.DataFrame(new_rows)
             except Exception as e:
                 print(f"An error occurred: {e}")    
