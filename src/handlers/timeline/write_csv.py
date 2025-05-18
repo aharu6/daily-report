@@ -56,7 +56,7 @@ class WriteCSVHandler:
                     "count": 0,
                     "locate": "AM" if time_for_label[i] in amTime else "PM",
                     "date": str(date),
-                    "PhName": "",
+                    "phName": "",
                     "comment": "",
                 }
                 for i in range(len(columns))
@@ -234,7 +234,12 @@ class WriteCSVHandler:
             # 選択したラジオボタンでのデータに書き込み直し
 
             # csvファイルの書き込み
-            if (
+            #phaName.value==Addのときはエラーを返す
+            if phName.value=="Add":
+                # csvファイルは書き出さずにエラーメッセージのみ表示に再設定する
+                require_name.visible = True
+                page.update()
+            elif (
                 select_directory.result
                 and select_directory.result.path
                 and phName.value
