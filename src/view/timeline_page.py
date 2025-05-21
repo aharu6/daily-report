@@ -293,17 +293,24 @@ class TimelinePage:
             self.selectColumns = []
             from flet import TextAlign
             for kind in self.model.draggable_data().values():
+                print(kind)
                 self.selectColumns.append(
                     ft.Column(
                         [
                             ft.Draggable(
                                 group="timeline",
                                 content=ft.Container(
-                                    ft.Text(
-                                        kind["task"],
-                                        color="white",
-                                        text_align = TextAlign.CENTER,
-                                        ),
+                                    content=ft.Column(
+                                        controls=[
+                                            ft.Text(
+                                                    kind["task"],
+                                                    color="white",
+                                                    text_align = TextAlign.CENTER,
+                                                    ),
+                                            ft.Icon(name=ft.icons.INFO_OUTLINE,
+                                                    tooltip=kind["info"]),
+                                        ]
+                                    ),
                                     width=100,
                                     height=70,
                                     bgcolor=Handlers.change_color(kind["task"]),
