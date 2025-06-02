@@ -293,7 +293,6 @@ class TimelinePage:
             self.selectColumns = []
             from flet import TextAlign
             for kind in self.model.draggable_data().values():
-                print(kind)
                 self.selectColumns.append(
                     ft.Column(
                         [
