@@ -11,6 +11,8 @@ from handlers.chart.download_handler import Chart_Download_Handler
 from handlers.chart.period_handler import PeriodHandler
 import datetime
 import chardet
+from handlers.chart.preview_chart import PreviewChartHandler
+
 pd.set_option('display.max_columns', None) 
 pd.set_option('display.max_rows', None)
 # Chartページ用のハンドラ
@@ -574,6 +576,11 @@ class Handlers_Chart:
                                     page=page, barchart=chart,
                                     chart_name=f"piechart_{locate_name}"
                                     ),
+                                ),
+                                ft.IconButton(
+                                    icon=ft.icons.PAGEVIEW,
+                                    tooltip= "拡大表示",
+                                    on_click=lambda e:PreviewChartHandler.preview_chart(fig)
                                 )
                             ],
                             width="30%",
