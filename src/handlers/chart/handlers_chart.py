@@ -447,6 +447,11 @@ class Handlers_Chart:
                                     page=page, barchart=fig,
                                     chart_name="piechart"
                                     )
+                                ),
+                                ft.IconButton(
+                                    icon=ft.icons.PAGEVIEW,
+                                    tooltip= "拡大表示",
+                                    on_click=lambda e:PreviewChartHandler.preview_chart(fig)
                                 )
                             ],
                             width="30%",
