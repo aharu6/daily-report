@@ -12,6 +12,7 @@ from handlers.chart.period_handler import PeriodHandler
 import datetime
 import chardet
 from handlers.chart.preview_chart import PreviewChartHandler
+import os
 
 pd.set_option('display.max_columns', None) 
 pd.set_option('display.max_rows', None)
@@ -23,6 +24,9 @@ class Handlers_Chart:
             result=chardet.detect(f.read())
 
         return result['encoding']
+    
+
+    #ファイル選択した結果
     @staticmethod
     def pick_file_result(e: ft.FilePickerResultEvent, selected_files, parent_instance,card):
         """_summary
@@ -99,6 +103,7 @@ class Handlers_Chart:
 
     @staticmethod
     def pick_file_name(file_name,card):
+        print(file_name)
         card_list=[
             ft.ExpansionPanelList(
                 controls=[
@@ -136,6 +141,7 @@ class Handlers_Chart:
             )
         ]
         page.update()
+        print("Loading...")
 
     @staticmethod
     def ComponentChart_for_standard(dataframe, chart_field, page,parent_instance_standard):
