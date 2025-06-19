@@ -130,6 +130,12 @@ class SelectDirectoryHandler:
                 if startDay and endDay:
                     if startDay <= file_date <= endDay:
                         result_files.append(file)
+                elif startDay and not endDay:
+                    if startDay <= file_date:
+                        result_files.append(file)
+                elif not startDay and endDay:
+                    if file_date <= endDay:
+                        result_files.append(file)
                 else:
                     pass
         print(f"Filtered files: {result_files}")
