@@ -66,8 +66,9 @@ class SelectDirectoryHandler:
         #選択したファイルで結合dfを形成
         #dfを返す
         try:
-            file_filer_content.tabs.clear()
-            file_filer_content.tabs=[    
+
+            file_filer_content.height=600
+            file_filer_content.tabs=[
                 ft.Tab(
                     text="絞り込みなし",
                     content=ft.Column()
@@ -77,17 +78,18 @@ class SelectDirectoryHandler:
                     content=ft.Column()
                 )
             ]
-            file_filer_content.height=600
+
+            df_ready_message = ft.Text("選択したファイルを集計する準備ができました。集計を開始することができます。", color=ft.colors.GREEN,visible = False)
             file_filer_content.tabs[0].content.controls = [
-                ft.ElevatedButton(
-                    "集計準備開始",
-                    on_click=lambda e:SelectDirectoryHandler.concat_files(
-                        file_names=csv_files,
-                        select_directory=select_directory_path,
-                        parent_instance=parent_instance
-                    )
-                )
+                ft.ElevatedButton("集計準備開始"),
+                df_ready_message,
             ]
+            file_filer_content.tabs[0].content.controls[0].on_click=lambda e:SelectDirectoryHandler.concat_files_standard(
+                csv_files=csv_files,
+                select_directory_path=select_directory_path,
+                parent_instance=parent_instance,
+                df_ready_message=df_ready_message
+            )
             file_filer_content.tabs[1].content.controls = [
                 ft.Text("ファイル絞り込み", size=20),
                 ft.Text("絞り込みたい項目を入力してください"),
@@ -223,3 +225,17 @@ class SelectDirectoryHandler:
                 new_rows.append(new_row)
         parent_instance.dataframe= pd.DataFrame(new_rows)
         print(f"Concatenated DataFrame:\n{parent_instance.dataframe.head()}")
+
+    @staticmethod
+    def concat_files_standard(csv_files, select_directory_path, parent_instance,df_ready_message):
+        SelectDirectoryHandler.concat_files(
+                        file_names=csv_files,
+                        select_directory=select_directory_path,
+                        parent_instance=parent_instance
+                    )
+        df_ready_message.visible= True
+        df_ready_message.update()
+        threading.Timer(
+            10,
+            lambda:SelectDirectoryHandler._hide(df_ready_message)
+        ).start()
