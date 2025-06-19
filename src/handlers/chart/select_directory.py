@@ -3,9 +3,14 @@ from handlers.chart.handlers_chart import Handlers_Chart
 import os
 import re
 import pandas as pd
+import threading
 #select directory
 #フォルダ選択した結果
 class SelectDirectoryHandler:
+    @staticmethod
+    def _hide(message):
+        message.visible = False
+        message.update()
     @staticmethod
     def get_directory_result(e:ft.FilePickerResultEvent,page,card,parent_instance,selected_files,file_filer_content):
         Handlers_Chart.show_progress_bar(card,parent_instance.page)
@@ -51,6 +56,8 @@ class SelectDirectoryHandler:
             label="名前",
             hint_text="絞り込み対象名を入力。複数入力する場合はカンマ区切りで入力,例えば: 名前1, 名前2,名字のみ可能",
         )
+
+        filtering_message = ft.Text("絞り込みが完了しました。", color=ft.colors.GREEN,visible=False)
         #pick_file_nameに該当ファイル名を渡す
         #選択したファイルで結合dfを形成
         #dfを返す
@@ -69,14 +76,23 @@ class SelectDirectoryHandler:
                 #名前
                 filtering_Name,#カンマ区切りで入力してもらって、名前をリストに分解する
                 #絞り込むのsubmitボタン
-                ft.ElevatedButton("絞り込み",on_click=lambda e:SelectDirectoryHandler.filter_files(startDay=start_day_field,endDay=end_day_field,filteringName=filtering_Name,fileList=csv_files))
+                ft.ElevatedButton(
+                    "絞り込み",
+                    on_click=lambda e:SelectDirectoryHandler.filter_files(
+                        startDay=start_day_field,
+                        endDay=end_day_field,
+                        filteringName=filtering_Name,
+                        fileList=csv_files,
+                        filtering_message=filtering_message,
+                        )),
+                filtering_message,
             ]
             file_filer_content.update()
         except Exception as e:
             print(f"Error in get_directory_result: {e}")
         
     @staticmethod
-    def filter_files(startDay,endDay,filteringName,fileList):
+    def filter_files(startDay,endDay,filteringName,fileList,filtering_message):
         #ここで絞り込み処理を行う
         #選択したファイル名を取得して、絞り込み処理を行う
         #絞り込んだファイル名を返す
@@ -117,4 +133,9 @@ class SelectDirectoryHandler:
                 else:
                     pass
         print(f"Filtered files: {result_files}")
-                
+        filtering_message.visible = True
+        filtering_message.update()
+        threading.Timer(
+            10,
+            lambda: SelectDirectoryHandler._hide(filtering_message)
+        ).start()
