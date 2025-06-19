@@ -27,7 +27,11 @@ class ChartPage:
         #選択したファイル名の表示
         self.selected_file_name=ft.Column()
         #ファイル絞り込み用のハンドラ
-        self.file_filer = ft.Column()
+        self.file_filer = ft.Tabs(
+            selected_index=0,
+            animation_duration=500,
+            tabs=[],
+        )
 
         self.file_picker = ft.FilePicker(
             on_result=lambda e: SelectDirectoryHandler.get_directory_result(

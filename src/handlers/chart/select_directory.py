@@ -61,13 +61,34 @@ class SelectDirectoryHandler:
             hint_text="絞り込み対象名を入力。複数入力する場合はカンマ区切りで入力,例えば: 名前1, 名前2,名字のみ可能",
         )
 
-        filtering_message = ft.Text("絞り込みが完了しました。", color=ft.colors.GREEN,visible=False)
+        filtering_message = ft.Text("絞り込みが完了しました。集計を開始することができます。", color=ft.colors.GREEN,visible=False)
         #pick_file_nameに該当ファイル名を渡す
         #選択したファイルで結合dfを形成
         #dfを返す
         try:
-            file_filer_content.controls.clear()
-            file_filer_content.controls = [
+            file_filer_content.tabs.clear()
+            file_filer_content.tabs=[    
+                ft.Tab(
+                    text="絞り込みなし",
+                    content=ft.Column()
+                ),
+                ft.Tab(
+                    text="絞り込みあり",
+                    content=ft.Column()
+                )
+            ]
+            file_filer_content.height=600
+            file_filer_content.tabs[0].content.controls = [
+                ft.ElevatedButton(
+                    "集計準備開始",
+                    on_click=lambda e:SelectDirectoryHandler.concat_files(
+                        file_names=csv_files,
+                        select_directory=select_directory_path,
+                        parent_instance=parent_instance
+                    )
+                )
+            ]
+            file_filer_content.tabs[1].content.controls = [
                 ft.Text("ファイル絞り込み", size=20),
                 ft.Text("絞り込みたい項目を入力してください"),
                 #日付

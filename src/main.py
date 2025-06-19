@@ -5,7 +5,7 @@ from handlers.handlersMain import Handlers_Main
 # main
 def main(page: ft.Page):
 
-    page.title = "業務日誌"
+    page.title = "業務見える化日誌"
     page.window.width = 1400
     page.window.height = 1000
     page.scroll = True
