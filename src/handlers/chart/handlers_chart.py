@@ -25,16 +25,9 @@ class Handlers_Chart:
 
         return result['encoding']
     
-
     #ファイル選択した結果
     @staticmethod
     def pick_file_result(e: ft.FilePickerResultEvent, selected_files, parent_instance,card):
-        """_summary
-        Args:
-            e (ft.FilePickerResultEvent): _description_
-            selected_files (_type_): _description_
-            parent_instance (_type_): _description_
-        """
         Handlers_Chart.show_progress_bar(card, parent_instance.page)
         if e.files:
             selected_files.text = ",".join(map(lambda x: x.name, e.files))
