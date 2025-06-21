@@ -62,6 +62,7 @@ class SelectDirectoryHandler:
         )
 
         filtering_message = ft.Text("絞り込みが完了しました。集計を開始することができます。", color=ft.colors.GREEN,visible=False)
+        filtering_loading=ft.Container()
         #pick_file_nameに該当ファイル名を渡す
         #選択したファイルで結合dfを形成
         #dfを返す
@@ -102,7 +103,8 @@ class SelectDirectoryHandler:
                 ft.Text("名前で絞り込み"),
                 #名前
                 filtering_Name,#カンマ区切りで入力してもらって、名前をリストに分解する
-                #絞り込むのsubmitボタン
+                #絞り込むのsubmitボタン,
+                filtering_loading,
                 ft.ElevatedButton(
                     "絞り込み",
                     on_click=lambda e:SelectDirectoryHandler.filter_files(
@@ -113,7 +115,8 @@ class SelectDirectoryHandler:
                         filtering_message=filtering_message,
                         card=card,
                         select_directory=select_directory_path,
-                        parent_instance=parent_instance
+                        parent_instance=parent_instance,
+                        filtering_loading=filtering_loading
                     )),
                 filtering_message,
             ]
@@ -122,7 +125,14 @@ class SelectDirectoryHandler:
             print(f"Error in get_directory_result: {e}")
         
     @staticmethod
-    def filter_files(startDay,endDay,filteringName,fileList,filtering_message,card,select_directory,parent_instance):
+    def filter_files(startDay,endDay,filteringName,fileList,filtering_message,card,select_directory,parent_instance,filtering_loading):
+        filtering_loading.content = ft.Column(
+            controls=[
+                ft.Text("絞り込み処理を行っています。しばらくお待ちください。"),
+                ft.ProgressBar(width=200, height=20),
+            ]
+        )
+        filtering_loading.update()
         #ここで絞り込み処理を行う
         #選択したファイル名を取得して、絞り込み処理を行う
         #絞り込んだファイル名を返す
@@ -193,6 +203,9 @@ class SelectDirectoryHandler:
         #絞り込んだデータで結合dfを作成する
         SelectDirectoryHandler.concat_files(file_names=result_files, select_directory=select_directory,parent_instance=parent_instance)
         #絞り込みが完了したことを通知するメッセージを表示する
+        #locadingを非表示にする
+        filtering_loading.content=None
+        filtering_loading.update()
         filtering_message.visible = True
         filtering_message.update()
         threading.Timer(

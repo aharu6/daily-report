@@ -32,7 +32,7 @@ class ChartPage:
             animation_duration=500,
             tabs=[],
         )
-
+        
         self.file_picker = ft.FilePicker(
             on_result=lambda e: SelectDirectoryHandler.get_directory_result(
                 e=e,
