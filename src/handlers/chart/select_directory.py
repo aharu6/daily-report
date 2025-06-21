@@ -5,6 +5,7 @@ import re
 import pandas as pd
 import threading
 import ast
+from models.models import DataModel
 #select directory
 #フォルダ選択した結果
 class SelectDirectoryHandler:
@@ -68,7 +69,7 @@ class SelectDirectoryHandler:
         #dfを返す
         try:
 
-            file_filer_content.height=600
+            file_filer_content.height=700
             file_filer_content.tabs=[
                 ft.Tab(
                     text="絞り込みなし",
@@ -96,6 +97,7 @@ class SelectDirectoryHandler:
                 ft.Text("絞り込みたい項目を入力してください"),
                 #日付
                 #開始日#終了日
+                ft.Text("日付での絞り込み"),
                 start_day_field,
                 start_day,
                 end_day_field,
@@ -103,6 +105,16 @@ class SelectDirectoryHandler:
                 ft.Text("名前で絞り込み"),
                 #名前
                 filtering_Name,#カンマ区切りで入力してもらって、名前をリストに分解する
+                ft.Text("病棟名での絞り込み"),
+                ft.ResponsiveRow(
+                    controls=[
+                        ft.Checkbox(
+                            label=i,
+                            col={"sm": 6, "md": 4, "xl": 2},
+                            data = i) 
+                            for i in DataModel.locations()
+                    ],
+                    ),
                 #絞り込むのsubmitボタン,
                 filtering_loading,
                 ft.ElevatedButton(

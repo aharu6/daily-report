@@ -249,8 +249,29 @@ class DataModel:
             "_567": {"task": "薬剤使用期限確認","info":""},  # 41
             "_571": {"task": "抗菌薬相談対応","info":""},  # 42
         }
-
-    
-
     def count_dict(self):
         return {}
+    
+    def locations():
+        return{
+            "IC": "ICU",
+            "OR":"OR",
+            "HR":"HR",
+            "1E":"1E",
+            "3A":"3A",
+            "3B":"3B",
+            "3C":"3C",
+            "CCU":"CCU",
+            "4A":"4A",
+            "4B":"4B",
+            "4C":"4C",
+            "4D":"4D",
+            "HCU":"HCU",
+            "5A":"5A",
+            "5B":"5B",
+            "5C":"5C",
+            "5D":"5D",
+            "DI":"DI",
+
+
+        }
