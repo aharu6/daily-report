@@ -59,7 +59,7 @@ class SelectDirectoryHandler:
         
         filtering_Name = ft.TextField(
             label="名前",
-            hint_text="絞り込み対象名を入力。複数入力する場合はカンマ区切りで入力,例えば: 名前1, 名前2,名字のみ可能",
+            hint_text="絞り込み対象名を入力。複数入力する場合はカンマ区切りで入力,例えば: 名前1, 名前2, 名前3",
         )
 
         filtering_message = ft.Text("絞り込みが完了しました。集計を開始することができます。", color=ft.colors.GREEN,visible=False)
@@ -69,7 +69,7 @@ class SelectDirectoryHandler:
         #dfを返す
         try:
 
-            file_filer_content.height=700
+            file_filer_content.height=1000
             file_filer_content.tabs=[
                 ft.Tab(
                     text="絞り込みなし",
@@ -86,12 +86,32 @@ class SelectDirectoryHandler:
                 ft.ElevatedButton("集計準備開始"),
                 df_ready_message,
             ]
+            am_locations=ft.ResponsiveRow(
+                    controls=[
+                        ft.Checkbox(
+                            label=i,
+                            col={"sm": 6, "md": 4, "xl": 2},
+                            data = {"location":i,"time":"AM"}) 
+                            for i in DataModel.locations()
+                    ],
+                    )
+            pm_locations=ft.ResponsiveRow(
+                    controls=[
+                        ft.Checkbox(
+                            label=i,
+                            col={"sm": 6, "md": 4, "xl": 2},
+                            data =  {"location":i,"time":"PM"})
+                            for i in DataModel.locations()
+                    ],
+                )
+            #絞り込みなしのタブ
             file_filer_content.tabs[0].content.controls[0].on_click=lambda e:SelectDirectoryHandler.concat_files_standard(
                 csv_files=csv_files,
                 select_directory_path=select_directory_path,
                 parent_instance=parent_instance,
                 df_ready_message=df_ready_message
             )
+            #絞り込みありのタブ
             file_filer_content.tabs[1].content.controls = [
                 ft.Text("ファイル絞り込み", size=20),
                 ft.Text("絞り込みたい項目を入力してください"),
@@ -106,15 +126,10 @@ class SelectDirectoryHandler:
                 #名前
                 filtering_Name,#カンマ区切りで入力してもらって、名前をリストに分解する
                 ft.Text("病棟名での絞り込み"),
-                ft.ResponsiveRow(
-                    controls=[
-                        ft.Checkbox(
-                            label=i,
-                            col={"sm": 6, "md": 4, "xl": 2},
-                            data = i) 
-                            for i in DataModel.locations()
-                    ],
-                    ),
+                ft.Text("AM"),
+                am_locations,
+                ft.Text("PM"),
+                pm_locations,
                 #絞り込むのsubmitボタン,
                 filtering_loading,
                 ft.ElevatedButton(
@@ -128,7 +143,9 @@ class SelectDirectoryHandler:
                         card=card,
                         select_directory=select_directory_path,
                         parent_instance=parent_instance,
-                        filtering_loading=filtering_loading
+                        filtering_loading=filtering_loading,
+                        am_locations=am_locations,
+                        pm_locations=pm_locations
                     )),
                 filtering_message,
             ]
@@ -137,7 +154,9 @@ class SelectDirectoryHandler:
             print(f"Error in get_directory_result: {e}")
         
     @staticmethod
-    def filter_files(startDay,endDay,filteringName,fileList,filtering_message,card,select_directory,parent_instance,filtering_loading):
+    def filter_files(
+        startDay,endDay,filteringName,fileList,filtering_message,card,select_directory,parent_instance,
+        filtering_loading,am_locations,pm_locations):
         filtering_loading.content = ft.Column(
             controls=[
                 ft.Text("絞り込み処理を行っています。しばらくお待ちください。"),
@@ -186,7 +205,6 @@ class SelectDirectoryHandler:
                     pass
         #名前で絞り込み
         result_name_files=[]
-        print(filteringNameList)
         if filteringNameList:
             for file in fileList:
                 for name in filteringNameList:
@@ -194,21 +212,62 @@ class SelectDirectoryHandler:
                         result_name_files.append(file)
         else:
             pass
-        print(f"Filtered files: {result_day_files}")
-        print(f"Filtered files: {result_name_files}")
-        #日付と名前の両方で絞り込みがあれば両方に共通するファイルを抽出、
+
+        #病棟名での絞り込み
+        #各ファイルをそれぞれ開いて、AM:一行目、PM:18もしくは19行目
+        #checkboxで取得したデータと照合
+        #午前の病棟データ
+        AM_location= [loc.data["location"] for loc in am_locations.controls if loc.value]
+        PM_location= [loc.data["location"] for loc in pm_locations.controls if loc.value]
+        result_location_files_am=[]
+        result_location_files_pm=[]
+        for file in fileList:
+            if os.path.isfile(os.path.join(select_directory, file)):
+                df = pd.read_csv(os.path.join(select_directory, file), encoding=Handlers_Chart.detect_encoding(file_path=os.path.join(select_directory, file)))
+                #AMの病棟名で絞り込み
+                if AM_location:
+                    #df['locate]は文字列のリスト形式
+                    #午前が含まれるのは0行目から15行目まで
+                    #ユニークな文字列を取得する
+                    am_locate=df["locate"].head(16).unique()
+                    print(f"午前の病棟名: {am_locate}filename: {file}")
+                    result_am=any(loc in l for l in am_locate for loc in AM_location)
+                    if result_am== True:
+                        result_location_files_am.append(file)
+                #PMの病棟名で絞り込み
+                if PM_location:
+                    #df['locate]は文字列のリスト形式
+                    #午後が含まれるのは16行目から55行目まで
+                    pm_locate=df["locate"].tail(40).unique()
+                    print(f"午後の病棟名: {pm_locate}filename: {file}")
+                    result_pm=any(loc in l for l in pm_locate for loc in PM_location)
+                    if result_pm== True:
+                        result_location_files_pm.append(file)
+                
+    
+        #日付、名前、午前病棟、午後病棟全て入力あれば合致したファイルのみを返す
         #日付だけなら、日付で絞り込んだファイルを返す
         #名前だけなら、名前で絞り込んだファイルを返す
-        result_files = []
-        if result_day_files and result_name_files:
-            #両方で絞り込んだファイルを抽出
-            result_files = list(set(result_day_files) & set(result_name_files))
-        elif result_day_files:
-            #日付だけで絞り込んだファイルを返す
-            result_files = result_day_files
-        elif result_name_files:
-            #名前だけで絞り込んだファイルを返す
-            result_files = result_name_files
+        #午前病棟だけなら、午前病棟で絞り込んだファイルを返す
+        #午後病棟だけなら、午後病棟で絞り込んだファイルを返す
+        #リストが空の場合には全てのファイル名を入れておく
+        #最後に&条件で全てに合致するファイルだけを返す
+        if not result_day_files:
+            result_day_files = [l for l in fileList]
+        print(f"日付で絞り込んだファイル: {result_day_files}")
+        if not result_name_files:
+            result_name_files = [l for l in fileList]
+        print(f"名前で絞り込んだファイル: {result_name_files}")
+        if not result_location_files_am:
+            result_location_files_am=[l for l in fileList]
+        print(f"午前病棟で絞り込んだファイル: {result_location_files_am}")
+
+        if not result_location_files_pm:
+            result_location_files_pm=[l for l in fileList]
+
+        print(f"午後病棟で絞り込んだファイル: {result_location_files_pm}")
+        #全ての条件で絞り込んだファイルを取得する
+        result_files = list(set(result_day_files) & set(result_name_files) & set(result_location_files_am) & set(result_location_files_pm))
 
         #絞り込んだファイルにて 「読み込んだファイル一覧」を更新する
         Handlers_Chart.pick_file_name(file_name=result_files, card=card)

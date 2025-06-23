@@ -202,7 +202,7 @@ class DataModel:
 
     def draggable_data(self):
         return {
-            "_402": {"task": "薬剤使用状況の把握等（情報収集）","info":"台車鑑査含む"},  # 0
+            "_402": {"task": "薬剤使用状況の把握等（情報収集）","info":"台車監査含む"},  # 0
             "_406": {"task": "服薬指導＋指導記録作成","info":"記録を作成したものは全てカウントする"},  # 1
             "_410": {"task": "無菌調製関連業務","info":""},  # 2
             "_414": {"task": "薬剤セット・確認","info":""},  # 3
@@ -254,7 +254,7 @@ class DataModel:
     
     def locations():
         return{
-            "IC": "ICU",
+            "ICU": "ICU",
             "OR":"OR",
             "HR":"HR",
             "1E":"1E",
