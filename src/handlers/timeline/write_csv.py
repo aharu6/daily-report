@@ -56,7 +56,7 @@ class WriteCSVHandler:
                     "count": 0,
                     "locate": "AM" if time_for_label[i] in amTime else "PM",
                     "date": str(date),
-                    "PhName": "",
+                    "phName": "",
                     "comment": "",
                 }
                 for i in range(len(columns))
@@ -234,7 +234,12 @@ class WriteCSVHandler:
             # 選択したラジオボタンでのデータに書き込み直し
 
             # csvファイルの書き込み
-            if (
+            #phaName.value==Addのときはエラーを返す
+            if phName.value=="Add":
+                # csvファイルは書き出さずにエラーメッセージのみ表示に再設定する
+                require_name.visible = True
+                page.update()
+            elif (
                 select_directory.result
                 and select_directory.result.path
                 and phName.value
@@ -248,19 +253,29 @@ class WriteCSVHandler:
                         + f"{phName.value}"
                         + ".csv"
                     )
+                    # ファイル保存名に名前を使用しているので、名前が入力されていない場合にはエラーを表示する
+                    # 病棟データが何も入力されていないときも処理を中断する
+                    # 両者ともエラーメッセージをtrueに設定しなおす
+                    df.to_csv(file_path, index=False)
+                    # 保存できたら完了メッセージを表示
+                    save_message.content.controls[0].visible = True
+                    save_message.content.controls[1].visible = True
+                    page.update()
+                    # 時間経過後に消す 「csvファイルを保存しました」
+                    HideMessageHandler.hide_message(save_message, page)
                 except:
                     file_path = select_directory.result.path + f"/{date}.csv"
+                    # ファイル保存名に名前を使用しているので、名前が入力されていない場合にはエラーを表示する
+                    # 病棟データが何も入力されていないときも処理を中断する
+                    # 両者ともエラーメッセージをtrueに設定しなおす
+                    df.to_csv(file_path, index=False)
+                    # 保存できたら完了メッセージを表示
+                    save_message.content.controls[0].visible = True
+                    save_message.content.controls[1].visible = True
+                    page.update()
+                    # 時間経過後に消す 「csvファイルを保存しました」
+                    HideMessageHandler.hide_message(save_message, page)
 
-                # ファイル保存名に名前を使用しているので、名前が入力されていない場合にはエラーを表示する
-                # 病棟データが何も入力されていないときも処理を中断する
-                # 両者ともエラーメッセージをtrueに設定しなおす
-                df.to_csv(file_path, index=False)
-                # 保存できたら完了メッセージを表示
-                save_message.content.controls[0].visible = True
-                save_message.content.controls[1].visible = True
-                page.update()
-                # 時間経過後に消す 「csvファイルを保存しました」
-                HideMessageHandler.hide_message(save_message, page)
 
             elif (
                 not list_am_location_data or not list_pm_location_data

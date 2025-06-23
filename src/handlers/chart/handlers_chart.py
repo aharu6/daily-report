@@ -11,6 +11,11 @@ from handlers.chart.download_handler import Chart_Download_Handler
 from handlers.chart.period_handler import PeriodHandler
 import datetime
 import chardet
+from handlers.chart.preview_chart import PreviewChartHandler
+import os
+
+pd.set_option('display.max_columns', None) 
+pd.set_option('display.max_rows', None)
 # Chartページ用のハンドラ
 class Handlers_Chart:
     @staticmethod
@@ -19,14 +24,10 @@ class Handlers_Chart:
             result=chardet.detect(f.read())
 
         return result['encoding']
+    
+    #ファイル選択した結果
     @staticmethod
     def pick_file_result(e: ft.FilePickerResultEvent, selected_files, parent_instance,card):
-        """_summary
-        Args:
-            e (ft.FilePickerResultEvent): _description_
-            selected_files (_type_): _description_
-            parent_instance (_type_): _description_
-        """
         Handlers_Chart.show_progress_bar(card, parent_instance.page)
         if e.files:
             selected_files.text = ",".join(map(lambda x: x.name, e.files))
@@ -39,7 +40,12 @@ class Handlers_Chart:
                     [pd.read_csv(file_path,encoding=Handlers_Chart.detect_encoding(file_path=file_path)) 
                     for file_path in file_paths]
                 )
-            
+                #病棟関係ない項目は複数locationデータを削除 selfなどの名前にしておく
+                for index,row in dat.iterrows():
+                    if row["task"]in["委員会","勉強会参加","WG活動","1on1","業務調整","休憩","その他"]:
+                        dat.loc[index,"locate"]="['self']"
+                    else:
+                        pass
                 new_rows = []
                 for index, row in dat.iterrows():
                     tarn_row = ast.literal_eval(row["locate"])
@@ -55,6 +61,12 @@ class Handlers_Chart:
                     [pd.read_csv(file_path,encoding=Handlers_Chart.detect_encoding(file_path=file_path)) 
                     for file_path in file_paths]
                 )
+                #病棟関係ない項目は複数locationデータを削除 selfなどの名前にしておく
+                for index,row in dat.iterrows():
+                    if row["task"]in["委員会","勉強会参加","WG活動","1on1","業務調整","休憩","その他"]:
+                        dat.loc[index,"locate"]="['self']"
+                    else:
+                        pass    
                 new_rows = []
                 for index,row in dat.iterrows():
                     if isinstance(row["locate"],str):
@@ -84,6 +96,7 @@ class Handlers_Chart:
 
     @staticmethod
     def pick_file_name(file_name,card):
+        print(file_name)
         card_list=[
             ft.ExpansionPanelList(
                 controls=[
@@ -121,6 +134,7 @@ class Handlers_Chart:
             )
         ]
         page.update()
+        print("Loading...")
 
     @staticmethod
     def ComponentChart_for_standard(dataframe, chart_field, page,parent_instance_standard):
@@ -368,6 +382,52 @@ class Handlers_Chart:
                     values="counts",
                     names="task",
                     title=locate,
+                    color="task",
+                    color_discrete_map={
+                        '薬剤使用状況の把握等（情報収集）':'#239DDA',#青
+                        '服薬指導+記録作成':'#2980AF',
+                        '無菌調整関連業務':'#1D50A2',
+                        '薬剤セット・確認':'#007D8E',
+                        '持参薬を確認':'#0068B7',
+                        '薬剤服用歴等について保険薬局へ紹介':'#008DB7',
+                        '処方代理修正':'#00A0E9',
+                        'TDM実施':'#3A8DAA',
+                        'カンファレンス':'#26499D',
+                        '医師からの相談':'#BCE2E8',#水色
+                        '看護師からの相談':'#A0D8EF',
+                        'その他の職種からの相談':'#007C45',#緑
+                        '委員会':'#4F8A5D',
+                        '勉強会参加':'#005842',
+                        'WG活動':'#67BE8D',
+                        '1on1':'#009854',
+                        'ICT/AST':'#A2D7DD',#水色
+                        '褥瘡':'#89C3EB',
+                        'TPN評価':'#64BCC7',
+                        '手術後使用薬剤確認':'#C8D921',#黄緑
+                        '手術使用薬剤準備':'#C4C46A',
+                        '周術期薬剤管理関連':'#AFD147',
+                        '麻酔科周術期外来':'#D7CF3A',
+                        '手術使用麻薬確認・補充':'#9D973B',
+                        '術後疼痛管理チーム回診':'#C5DE93',
+                        '脳卒中ホットライン対応':'#9DC04C',
+                        '業務調整':'#68B7A1',#青緑
+                        '休憩': '#7EBEAB',
+                        'その他':'#005243',
+                        '管理業務':'#7FABA9',
+                        'NST':'#259F94',
+                        '問い合わせ応需':'#FFD900',#黄色
+                        'マスター作成・変更':'#FCC800',
+                        '薬剤情報評価':'#F5E56B',
+                        '後発品選定':'#D2B74E',
+                        '会議資料作成':'#F8B500',
+                        '配信資料作成':'#FFF33F',
+                        'フォーミュラリー作成':'#FFF2B8',
+                        '外来処方箋修正':'#FFDC00',
+                        '勉強会資料作成・開催':'#FFF262',
+                        'お役立ち情報作成':'#BF7834',#茶色
+                        '薬剤使用期限確認':'#814336',
+                        '抗菌薬相談対応':'#762E05',
+                    }
                 )
 
                 locate_chart_list.extend(
@@ -386,6 +446,11 @@ class Handlers_Chart:
                                     page=page, barchart=fig,
                                     chart_name="piechart"
                                     )
+                                ),
+                                ft.IconButton(
+                                    icon=ft.icons.PAGEVIEW,
+                                    tooltip= "拡大表示",
+                                    on_click=lambda e:PreviewChartHandler.preview_chart(fig)
                                 )
                             ],
                             width="30%",
@@ -452,6 +517,52 @@ class Handlers_Chart:
                     values="counts",
                     names="task",
                     title=locate,
+                    color="task",
+                    color_discrete_map={
+                        '薬剤使用状況の把握等（情報収集）':'#239DDA',#青
+                        '服薬指導+記録作成':'#2980AF',
+                        '無菌調整関連業務':'#1D50A2',
+                        '薬剤セット・確認':'#007D8E',
+                        '持参薬を確認':'#0068B7',
+                        '薬剤服用歴等について保険薬局へ紹介':'#008DB7',
+                        '処方代理修正':'#00A0E9',
+                        'TDM実施':'#3A8DAA',
+                        'カンファレンス':'#26499D',
+                        '医師からの相談':'#BCE2E8',#水色
+                        '看護師からの相談':'#A0D8EF',
+                        'その他の職種からの相談':'#007C45',#緑
+                        '委員会':'#4F8A5D',
+                        '勉強会参加':'#005842',
+                        'WG活動':'#67BE8D',
+                        '1on1':'#009854',
+                        'ICT/AST':'#A2D7DD',#水色
+                        '褥瘡':'#89C3EB',
+                        'TPN評価':'#64BCC7',
+                        '手術後使用薬剤確認':'#C8D921',#黄緑
+                        '手術使用薬剤準備':'#C4C46A',
+                        '周術期薬剤管理関連':'#AFD147',
+                        '麻酔科周術期外来':'#D7CF3A',
+                        '手術使用麻薬確認・補充':'#9D973B',
+                        '術後疼痛管理チーム回診':'#C5DE93',
+                        '脳卒中ホットライン対応':'#9DC04C',
+                        '業務調整':'#68B7A1',#青緑
+                        '休憩': '#7EBEAB',
+                        'その他':'#005243',
+                        '管理業務':'#7FABA9',
+                        'NST':'#259F94',
+                        '問い合わせ応需':'#FFD900',#黄色
+                        'マスター作成・変更':'#FCC800',
+                        '薬剤情報評価':'#F5E56B',
+                        '後発品選定':'#D2B74E',
+                        '会議資料作成':'#F8B500',
+                        '配信資料作成':'#FFF33F',
+                        'フォーミュラリー作成':'#FFF2B8',
+                        '外来処方箋修正':'#FFDC00',
+                        '勉強会資料作成・開催':'#FFF262',
+                        'お役立ち情報作成':'#BF7834',#茶色
+                        '薬剤使用期限確認':'#814336',
+                        '抗菌薬相談対応':'#762E05',
+                    }
                 )
                 locate_chart_list.append(
                     ft.Card(
@@ -469,6 +580,11 @@ class Handlers_Chart:
                                     page=page, barchart=chart,
                                     chart_name=f"piechart_{locate_name}"
                                     ),
+                                ),
+                                ft.IconButton(
+                                    icon=ft.icons.PAGEVIEW,
+                                    tooltip= "拡大表示",
+                                    on_click=lambda e:PreviewChartHandler.preview_chart(fig)
                                 )
                             ],
                             width="30%",

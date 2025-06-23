@@ -4,6 +4,7 @@ from handlers.handlersMain import Handlers_Main
 from handlers.chart.handlers_chart import Handlers_Chart
 from components.compoments_chart import FilePickCard
 from handlers.chart.analyze_handler import Handlers_analyze
+from handlers.chart.select_directory import SelectDirectoryHandler
 class ChartPage:
     def __init__(self, page):
         self.page = page
@@ -15,21 +16,32 @@ class ChartPage:
         self.locate_df=None
         self.self_df=None
         self.file_picker_Button = ft.TextButton(
-            "ファイルを選択",
-            on_click=lambda _: self.file_picker.pick_files(allow_multiple=True),
+            "フォルダを選択",
+            on_click=lambda _: self.file_picker.get_directory_path()
         )
         self.select = ft.Row(
             controls=[
                 FilePickCard(self.file_picker_Button).create(),
             ],
         )
+        #選択したファイル名の表示
         self.selected_file_name=ft.Column()
-
+        #ファイル絞り込み用のハンドラ
+        self.file_filer = ft.Tabs(
+            selected_index=0,
+            animation_duration=500,
+            tabs=[],
+        )
+        
         self.file_picker = ft.FilePicker(
-            on_result=lambda e: Handlers_Chart.pick_file_result(
-                e=e, selected_files=self.selected_files,parent_instance= self,
-                card=self.selected_file_name, # FileNameCardのListViewを指定
-            )
+            on_result=lambda e: SelectDirectoryHandler.get_directory_result(
+                e=e,
+                page=self.page,
+                card=self.selected_file_name, 
+                parent_instance=self,
+                selected_files = self.selected_files,
+                file_filer_content=self.file_filer,
+                ),
         )
         self.selected_files = ft.Text()
         self.page.overlay.append(self.file_picker)
@@ -204,6 +216,7 @@ class ChartPage:
                 self.select,
                 self.selected_file_name,
                 self.selected_files,
+                self.file_filer,
                 self.subtitle,
                 self.horizon_subtitle,
                 self.chart1card,#全体
