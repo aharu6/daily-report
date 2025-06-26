@@ -1,26 +1,10 @@
 import flet as ft
-from flet import View
 import datetime
 import math
-
-def main(page: ft.Page):
-    page.title = "calendar"
-    page.window.width = 1400
-    page.window.height = 1000
-    page.scroll = True
-    back_month_button=ft.IconButton(
-        icon=ft.icons.ARROW_BACK,
-        icon_size=30,
-        on_click=lambda e: page.add(ft.Text("前の月を表示する処理をここに追加")),
-        tooltip="前の月",
-    )
-    next_month_button=ft.IconButton(
-        icon=ft.icons.ARROW_FORWARD,
-        icon_size=30,
-        on_click=lambda e: page.add(ft.Text("次の月を表示する処理をここに追加")),
-        tooltip="次の月",
-    )   
     # 月カレンダーのようなUIを自作して表示する
+
+class CreateCalendar:
+    @staticmethod
     def create_calendar(year, month):
         # 曜日ヘッダー（日曜始まり）
         weekdays = ["S", "M", "T", "W", "T", "F", "S"]
@@ -79,21 +63,3 @@ def main(page: ft.Page):
             calendar_cells.append(ft.Row(week_cells, alignment=ft.MainAxisAlignment.CENTER))
         return ft.Column(calendar_cells, alignment=ft.MainAxisAlignment.CENTER)
 
-    # 現在の日付を取得
-    today = datetime.date.today()
-    # 現在の年と月を取得
-    current_year = today.year
-    current_month = today.month
-
-    # カレンダーを作成
-    calendar = create_calendar(current_year, current_month)
-    # ページにカレンダーを追加
-    page.add(ft.Text(f"calender", size=30, weight=ft.FontWeight.BOLD))
-    arrow=ft.Row([
-        back_month_button,
-        ft.Text(f"{current_year}年{current_month}月", size=30, weight=ft.FontWeight.BOLD),
-        next_month_button
-    ])
-    page.add(arrow, calendar)
-
-ft.app(main)
