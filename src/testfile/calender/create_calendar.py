@@ -62,16 +62,18 @@ class CreateCalendar:
                         bgcolor=ft.colors.WHITE,
                     ))
             calendar_cells.append(ft.Row(week_cells, alignment=ft.MainAxisAlignment.CENTER))
-        return ft.Column(calendar_cells, alignment=ft.MainAxisAlignment.CENTER,
-                        data={"year":year,"month":month}
-                        )
+        calendar = ft.Column(calendar_cells, alignment=ft.MainAxisAlignment.CENTER)
+        # カスタム属性として年月を保存
+        calendar.year = year
+        calendar.month = month
+        return calendar
     
     @staticmethod
     def forward_month(e,page, calendar):
         print("forward_month called")
         #表示中のカレンダー年月を取得
-        current_set_year=calendar.data["year"]
-        current_set_month=calendar.data["month"]
+        current_set_year=calendar.year
+        current_set_month=calendar.month
         #次の月を計算
         if current_set_month == 12:
             next_year = current_set_year + 1
@@ -86,9 +88,9 @@ class CreateCalendar:
         #ページのカレンダーを更新
         calendar.controls.clear()        
         calendar.controls.extend(next_calendar.controls)
-        #カレンダーのデータを更新
-        calendar.data["year"] = next_year
-        calendar.data["month"] = next_month
+        #カレンダーの年月を更新
+        calendar.year = next_year
+        calendar.month = next_month
         #ページを再描画
         calendar.update()
         print("update calendar completed")
@@ -98,8 +100,8 @@ class CreateCalendar:
     def back_month(e,page, calendar):
         print("back_month called")
         #表示中のカレンダー年月を取得
-        current_set_year=calendar.data["year"]
-        current_set_month=calendar.data["month"]
+        current_set_year=calendar.year
+        current_set_month=calendar.month
         #前の月を計算
         if current_set_month == 1:
             prev_year = current_set_year - 1
@@ -114,9 +116,9 @@ class CreateCalendar:
         #ページのカレンダーを更新
         calendar.controls.clear()
         calendar.controls.extend(prev_calendar.controls)
-        #カレンダーのデータを更新
-        calendar.data["year"] = prev_year
-        calendar.data["month"] = prev_month
+        #カレンダーの年月を更新
+        calendar.year = prev_year
+        calendar.month = prev_month
         #ページを再描画
         calendar.update()
         print("update calendar completed")

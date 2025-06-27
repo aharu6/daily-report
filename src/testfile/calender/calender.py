@@ -4,7 +4,7 @@ import datetime
 import math
 from create_calendar import CreateCalendar
 from read_folder import ReadFolder  
-
+from update_card import UpdateCard
 def main(page: ft.Page):
     page.title = "calendar"
     page.window.width = 1400
@@ -48,16 +48,27 @@ def main(page: ft.Page):
         # 年月表示用のテキスト
         date_text = ft.Text(f"{current_year}年{current_month}月", size=30, weight=ft.FontWeight.BOLD)
         
-        # カレンダー更新時に年月表示も更新する関数
+        # カレンダー更新時に年月表示,カードも更新する関数
         def update_calendar_and_text(e, is_forward=True):
             if is_forward:
                 CreateCalendar.forward_month(e, page, tab_calendar)
             else:
                 CreateCalendar.back_month(e, page, tab_calendar)
             # 年月表示を更新
-            date_text.value = f"{tab_calendar.data['year']}年{tab_calendar.data['month']}月"
+            date_text.value = f"{tab_calendar.year}年{tab_calendar.month}月"
             date_text.update()
-        
+
+            #カードの更新
+            #既存のカードを削除
+            calendar_controls_content=len([control for control in tab_calendar.controls if not isinstance(control,ft.Card)])
+            while len(tab_calendar.controls) > calendar_controls_content:
+                tab_calendar.controls.pop()
+            
+            new_cards = UpdateCard.create_card_for_month(tab_calendar.year, tab_calendar.month)
+            tab_calendar.controls.extend(new_cards)
+            tab_calendar.update()
+
+
         # 各タブ用のボタンを作成
         back_button = ft.IconButton(
             icon=ft.icons.ARROW_BACK,
@@ -79,6 +90,28 @@ def main(page: ft.Page):
             next_button
         ], alignment=ft.MainAxisAlignment.CENTER)
         
+        # 日付ごとのカードの作成
+        days_in_month= (datetime.date(current_year, current_month + 1, 1) - datetime.date(current_year, current_month, 1)).days
+        for j in range(1, days_in_month + 1):
+            tab_calendar.controls.append(
+                ft.Card(
+                    content=ft.Column(
+                        controls=[
+                            ft.Text(f"{current_month}月{j}日"),
+                            ft.DataTable(
+                                columns=[
+                                    ft.DataColumn(label=ft.Text("担当者名"), numeric=True),
+                                    ft.DataColumn(label=ft.Text("病棟名"), numeric=True),
+                                ],
+                                rows=[
+                                    # 担当者の名前が入る
+                                    ft.DataRow(cells=[ft.DataCell(ft.Text("担当者1")), ft.DataCell(ft.Text(label))])
+                                ]
+                            )
+                        ]
+                    ),
+                )
+            )
         # タブのコンテンツを作成
         tab_content = ft.Column(controls=[arrow, tab_calendar])
         
@@ -95,26 +128,8 @@ def main(page: ft.Page):
         indicator_color=ft.colors.BLUE,
     )
     # タブごとにカードを作成する
-    days_in_month=(datetime.date(current_year, current_month + 1, 1) - datetime.date(current_year, current_month, 1)).days
-    for i, label in enumerate(locate_labels):
-        for j in range(1, days_in_month + 1):
-            tabs.tabs[i].content.controls.append(
-                ft.Card(
-                    content=ft.Column(
-                        controls=[
-                            ft.Text(f"{current_month}月{j}日"),
-                            ft.DataTable(
-                                columns=[
-                                    ft.DataColumn(label=ft.Text(""), numeric=True),
-                                    ft.DataColumn(label=ft.Text(""), numeric=True),
-                                ],
-                                rows=[
-                                ]#担当者の名前が入る
-                            )
-                        ]
-                    ),
-                )
-            )
+    # 月切り替えに応じてカードの日付を更新する
+    
     #clientstorageから保存データを呼び出し、取得
     #ファイルを読み込んで日付、名前、病棟名を抽出、datatableに追加する
     #保存データはclientstorageに保存
