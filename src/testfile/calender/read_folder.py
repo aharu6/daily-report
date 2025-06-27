@@ -41,5 +41,6 @@ class ReadFolder:
             pm_data=NormaliseLocate.normalise_locate(pm_data,"pm")  
             data.extend(pm_data)
         print(data)
+
         #読み込んだら読み込み完了のメッセージを表示する
         #データフレーム更新は更新ボタンを押してもらうようにするか
