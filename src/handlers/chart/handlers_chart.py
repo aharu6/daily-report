@@ -24,75 +24,6 @@ class Handlers_Chart:
             result=chardet.detect(f.read())
 
         return result['encoding']
-    
-    #ファイル選択した結果
-    @staticmethod
-    def pick_file_result(e: ft.FilePickerResultEvent, selected_files, parent_instance,card):
-        Handlers_Chart.show_progress_bar(card, parent_instance.page)
-        if e.files:
-            selected_files.text = ",".join(map(lambda x: x.name, e.files))
-            file_paths = [f.path for f in e.files]
-            file_name=[f.name for f in e.files]
-            
-            try:
-                # ファイルの数だけ繰り返す
-                dat = pd.concat(
-                    [pd.read_csv(file_path,encoding=Handlers_Chart.detect_encoding(file_path=file_path)) 
-                    for file_path in file_paths]
-                )
-                #病棟関係ない項目は複数locationデータを削除 selfなどの名前にしておく
-                for index,row in dat.iterrows():
-                    if row["task"]in["委員会","勉強会参加","WG活動","1on1","業務調整","休憩","その他"]:
-                        dat.loc[index,"locate"]="['self']"
-                    else:
-                        pass
-                new_rows = []
-                for index, row in dat.iterrows():
-                    tarn_row = ast.literal_eval(row["locate"])
-                    for loc in range(len(tarn_row)):
-                        new_row = row.copy()
-                        new_row["locate"] = tarn_row[loc]
-                        new_rows.append(new_row)
-                parent_instance.dataframe=pd.DataFrame(new_rows)
-            except Exception as e:
-                print(f"An error occurred: {e}")    
-                # 例外処理を追加
-                dat= pd.concat(
-                    [pd.read_csv(file_path,encoding=Handlers_Chart.detect_encoding(file_path=file_path)) 
-                    for file_path in file_paths]
-                )
-                #病棟関係ない項目は複数locationデータを削除 selfなどの名前にしておく
-                for index,row in dat.iterrows():
-                    if row["task"]in["委員会","勉強会参加","WG活動","1on1","業務調整","休憩","その他"]:
-                        dat.loc[index,"locate"]="['self']"
-                    else:
-                        pass    
-                new_rows = []
-                for index,row in dat.iterrows():
-                    if isinstance(row["locate"],str):
-                        try:
-                            tarn_row =row["locate"]
-                            new_row=row.copy()
-                            new_row["locate"]=tarn_row
-                            new_rows.append(new_row)
-                        except Exception as e:
-                            print(f"An error occurred: {e}")
-                            continue
-                    else:
-                        try:
-                            tarn_row = ast.literal_eval(row["locate"])
-                            for loc in range(len(tarn_row)):
-                                new_row=row.copy()
-                                new_row["locate"]=tarn_row[loc]
-                                new_rows.append(new_row)
-                        except Exception as e:
-                            print(f"An error occurred: {e}")
-                            continue
-                parent_instance.dataframe=pd.DataFrame(new_rows)
-
-
-            #ファイル名の表示
-            Handlers_Chart.pick_file_name(file_name,card)
 
     @staticmethod
     def pick_file_name(file_name,card):
@@ -746,14 +677,3 @@ class Handlers_Chart:
                 )
             ]
             page.update()
-    """
-    @staticmethod
-    def create_dataframe(dataframe):
-        new_rows = []
-        for index, row in dataframe.iterrows():
-            tarn_row = ast.literal_eval(row["locate"])
-            for loc in range(len(tarn_row)):
-                new_row = row.copy()
-                new_row["locate"] = tarn_row[loc]
-                new_rows.append(new_row)
-        return pd.DataFrame(new_rows)"""
