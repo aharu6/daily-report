@@ -1,23 +1,175 @@
 import pandas as pd
 import flet as ft
-from flet import FilePicker, FilePickerResultEvent
-import ast
-import plotly
 import plotly.express as px
-import plotly.io as pio
 from flet.plotly_chart import PlotlyChart
-import chart_studio.plotly as py
 from handlers.chart.download_handler import Chart_Download_Handler
 from handlers.chart.period_handler import PeriodHandler
 import datetime
 import chardet
 from handlers.chart.preview_chart import PreviewChartHandler
-import os
 
 pd.set_option('display.max_columns', None) 
 pd.set_option('display.max_rows', None)
+
+# 定数定義
+MINUTES_PER_RECORD = 15  # 1レコードあたりの分数
+CHART_WIDTH_MULTIPLIER = 33  # グラフ幅の計算係数
+CHART_HEIGHT_MULTIPLIER = 33  # グラフ高さの計算係数
+MIN_CHART_SIZE = 1000  # 最小チャートサイズ
+
+# 色マッピング定義
+TASK_COLOR_MAP = {
+    '薬剤使用状況の把握等（情報収集）':'#239DDA',#青
+    '服薬指導+記録作成':'#2980AF',
+    '無菌調整関連業務':'#1D50A2',
+    '薬剤セット・確認':'#007D8E',
+    '持参薬を確認':'#0068B7',
+    '薬剤服用歴等について保険薬局へ紹介':'#008DB7',
+    '処方代理修正':'#00A0E9',
+    'TDM実施':'#3A8DAA',
+    'カンファレンス':'#26499D',
+    '医師からの相談':'#BCE2E8',#水色
+    '看護師からの相談':'#A0D8EF',
+    'その他の職種からの相談':'#007C45',#緑
+    '委員会':'#4F8A5D',
+    '勉強会参加':'#005842',
+    'WG活動':'#67BE8D',
+    '1on1':'#009854',
+    'ICT/AST':'#A2D7DD',#水色
+    '褥瘡':'#89C3EB',
+    'TPN評価':'#64BCC7',
+    '手術後使用薬剤確認':'#C8D921',#黄緑
+    '手術使用薬剤準備':'#C4C46A',
+    '周術期薬剤管理関連':'#AFD147',
+    '麻酔科周術期外来':'#D7CF3A',
+    '手術使用麻薬確認・補充':'#9D973B',
+    '術後疼痛管理チーム回診':'#C5DE93',
+    '脳卒中ホットライン対応':'#9DC04C',
+    '業務調整':'#68B7A1',#青緑
+    '休憩': '#7EBEAB',
+    'その他':'#005243',
+    '管理業務':'#7FABA9',
+    'NST':'#259F94',
+    '問い合わせ応需':'#FFD900',#黄色
+    'マスター作成・変更':'#FCC800',
+    '薬剤情報評価':'#F5E56B',
+    '後発品選定':'#D2B74E',
+    '会議資料作成':'#F8B500',
+    '配信資料作成':'#FFF33F',
+    'フォーミュラリー作成':'#FFF2B8',
+    '外来処方箋修正':'#FFDC00',
+    '勉強会資料作成・開催':'#FFF262',
+    'お役立ち情報作成':'#BF7834',#茶色
+    '薬剤使用期限確認':'#814336',
+    '抗菌薬相談対応':'#762E05',
+}
+
 # Chartページ用のハンドラ
 class Handlers_Chart:
+    @staticmethod
+    def _calculate_chart_size(unique_items_count, multiplier=CHART_WIDTH_MULTIPLIER, min_size=MIN_CHART_SIZE):
+        """チャートサイズを計算するヘルパーメソッド"""
+        size = int(unique_items_count) * multiplier
+        return size if size >= min_size else min_size
+    
+    @staticmethod
+    def _create_period_selector_ui(start_date=None, end_date=None, page=None):
+        """期間選択UIを作成するヘルパーメソッド"""
+        start_text = start_date.strftime("%Y-%m-%d") if start_date else "開始日"
+        end_text = end_date.strftime("%Y-%m-%d") if end_date else "終了日"
+        
+        return [
+            ft.ListTile(
+                title=ft.Text("表示期間"),
+                leading=ft.Icon(ft.icons.DATE_RANGE),
+                subtitle=ft.Text("選択後は、再度生成ボタンを押してください"),
+            ),
+            ft.Row(
+                controls=[
+                    ft.FilledButton(
+                        text=start_text,
+                        on_click=lambda e: page.open(
+                            ft.DatePicker(
+                                on_change=lambda dp_event: PeriodHandler.select_period(e, dp_event),
+                            )
+                        ),
+                        style=ft.ButtonStyle(
+                            bgcolor=ft.colors.TRANSPARENT,
+                            color=ft.colors.BLUE_900,
+                        )
+                    ),
+                    ft.Text("~", size=20),
+                    ft.FilledButton(
+                        text=end_text,
+                        on_click=lambda e: page.open(
+                            ft.DatePicker(
+                                on_change=lambda dp_event: PeriodHandler.select_period(e, dp_event),
+                            )
+                        ),
+                        style=ft.ButtonStyle(
+                            bgcolor=ft.colors.TRANSPARENT,
+                            color=ft.colors.BLUE_900,
+                        )
+                    )
+                ],
+                spacing=0,
+            )
+        ]
+    
+    @staticmethod
+    def _create_download_button(page, chart, chart_name):
+        """ダウンロードボタンを作成するヘルパーメソッド"""
+        return ft.ElevatedButton(
+            "保存",
+            icon=ft.icons.DOWNLOAD,
+            tooltip=ft.Tooltip("グラフを保存"),
+            on_click=lambda _: Chart_Download_Handler.open_directory(
+                page=page, 
+                barchart=chart, 
+                chart_name=chart_name
+            ),
+        )
+    
+    @staticmethod
+    def _create_preview_button(chart):
+        """プレビューボタンを作成するヘルパーメソッド"""
+        return ft.IconButton(
+            icon=ft.icons.PAGEVIEW,
+            tooltip="拡大表示",
+            on_click=lambda e: PreviewChartHandler.preview_chart(chart)
+        )
+    
+    @staticmethod
+    def _process_time_data(dataframe):
+        """時間データを処理するヘルパーメソッド"""
+        group_bubble = dataframe.groupby(["locate","task","count"]).size().reset_index(name="times")
+        group_bubble2 = group_bubble.groupby(["locate","task"]).sum(numeric_only=True).reset_index()
+        group_bubble2["times"] = group_bubble2["times"] * MINUTES_PER_RECORD
+        return group_bubble2
+        
+    @staticmethod
+    def _create_bar_chart(data, width=None):
+        """棒グラフを作成するヘルパーメソッド"""
+        chart_width = width or Handlers_Chart._calculate_chart_size(len(data["task"].unique()))
+        bar_chart = px.bar(data, x="task", y="times", width=chart_width)
+        bar_chart.update_layout(
+            yaxis=dict(title="かかった時間"),
+            xaxis=dict(title="業務内容")
+        )
+        return bar_chart
+
+    @staticmethod
+    def _create_pie_chart(data, location_name):
+        """円グラフを作成するヘルパーメソッド"""
+        return px.pie(
+            data[data["locate"] == location_name],
+            values="counts",
+            names="task",
+            title=location_name,
+            color="task",
+            color_discrete_map=TASK_COLOR_MAP
+        )
+
     @staticmethod
     def detect_encoding(file_path):
         with open(file_path,'rb') as f:
@@ -118,8 +270,7 @@ class Handlers_Chart:
                                 style=ft.ButtonStyle(
                                     bgcolor=ft.colors.TRANSPARENT,
                                     color=ft.colors.BLUE_900,
-                                ),
-                                data={}
+                                )
                             ),
                             ft.Text("~",size=20),
                             ft.FilledButton(
@@ -132,8 +283,7 @@ class Handlers_Chart:
                                 style=ft.ButtonStyle(
                                     bgcolor=ft.colors.TRANSPARENT,
                                     color=ft.colors.BLUE_900,
-                                ),  
-                                data={}
+                                )  
                             )
 
                         ],
@@ -168,14 +318,6 @@ class Handlers_Chart:
             if chart_width<1000:
                 chart_width=1000
             bar_chart=px.bar(group_bubble2,x="task",y="times",width=chart_width)
-            """
-            fig_bubble = px.scatter(group_bubble2,x = "times",y = "count",color = "task",text = "task" ,
-                            )
-            fig_bubble.update_layout(yaxis =dict(title = "件数"),
-                                    xaxis = dict(title = "かかった時間")
-                                    )
-            fig_bubble.update_traces(textposition='top center')
-            """
             bar_chart.update_layout(yaxis =dict(title = "かかった時間"),
                                     xaxis = dict(title = "業務内容"),
                                     )
@@ -200,7 +342,6 @@ class Handlers_Chart:
                                     bgcolor=ft.colors.TRANSPARENT,
                                     color=ft.colors.BLUE_900,
                                 ),
-                                data={}
                             ),
                             ft.Text("~",size=20),
                             ft.FilledButton(
@@ -214,7 +355,6 @@ class Handlers_Chart:
                                     bgcolor=ft.colors.TRANSPARENT,
                                     color=ft.colors.BLUE_900,
                                 ),  
-                                data={}
                             )
 
                         ],
@@ -280,7 +420,6 @@ class Handlers_Chart:
                                 bgcolor=ft.colors.TRANSPARENT,
                                 color=ft.colors.BLUE_900,
                             ),
-                            data={}
                         ),
                         ft.Text("~",size=20),
                         ft.FilledButton(
@@ -294,7 +433,6 @@ class Handlers_Chart:
                                 bgcolor=ft.colors.TRANSPARENT,
                                 color=ft.colors.BLUE_900,
                             ),  
-                            data={}
                         )
                     ]
                 )
@@ -415,7 +553,6 @@ class Handlers_Chart:
                                 bgcolor=ft.colors.TRANSPARENT,
                                 color=ft.colors.BLUE_900,
                             ),
-                            data={}
                         ),
                         ft.Text("~",size=20),
                         ft.FilledButton(
@@ -429,7 +566,6 @@ class Handlers_Chart:
                                 bgcolor=ft.colors.TRANSPARENT,
                                 color=ft.colors.BLUE_900,
                             ),  
-                            data={}
                         )
                     ]
                 )
@@ -564,7 +700,6 @@ class Handlers_Chart:
                                 bgcolor=ft.colors.TRANSPARENT,
                                 color=ft.colors.BLUE_900,
                             ),
-                            data={}
                         ),
                         ft.Text("~",size=20),
                         ft.FilledButton(
@@ -578,7 +713,6 @@ class Handlers_Chart:
                                 bgcolor=ft.colors.TRANSPARENT,
                                 color=ft.colors.BLUE_900,
                             ),  
-                            data={}
                         )
                     ]
                 ),
@@ -639,7 +773,6 @@ class Handlers_Chart:
                                 bgcolor=ft.colors.TRANSPARENT,
                                 color=ft.colors.BLUE_900,
                             ),
-                            data={}
                         ),
                         ft.Text("~",size=20),
                         ft.FilledButton(
@@ -653,7 +786,6 @@ class Handlers_Chart:
                                 bgcolor=ft.colors.TRANSPARENT,
                                 color=ft.colors.BLUE_900,
                             ),  
-                            data={}
                         )
                     ]
                 ),
