@@ -21,26 +21,33 @@ class ReadFolder:
         #抽出してjson形式のデータに変換
         if not csv_files:
             print("No CSV files found in the selected folder.")
-            return
+            return []
+        
         data = []
         for csv_file in csv_files:
-            #午前0行目、午後16行目
-            file_path=os.path.join(folder_path,csv_file)
-            df=pd.read_csv(file_path,encoding=ReadFolder.detect_encoding(file_path=os.path.join(folder_path,csv_file)))
-            #病棟名と時間と名前が必要
-            #午前で複数病棟担当している場合、先頭行から16行目までの全てのデータを取得してまとめる
-            #病棟名と名前の頭16行のユニークな内容を取得する
-            am_data=df.loc[:15,["locate","phName","date"]].drop_duplicates().reset_index(drop=True)
-            am_data=NormaliseLocate.normalise_locate(am_data,"am")
-            print(am_data)
-            #am_data　病棟データ：名前の組み合わせの辞書データを作成する
-            data.extend(am_data)
-        #午後のデータも同様に取得する
-        #午後は16行目からのデータを取得する
-            pm_data=df.loc[16:,["locate","phName","date"]].drop_duplicates().reset_index(drop=True)
-            pm_data=NormaliseLocate.normalise_locate(pm_data,"pm")  
-            data.extend(pm_data)
-        print(data)
-
-        #読み込んだら読み込み完了のメッセージを表示する
-        #データフレーム更新は更新ボタンを押してもらうようにするか
+            try:
+                #午前0行目、午後16行目
+                file_path=os.path.join(folder_path,csv_file)
+                df=pd.read_csv(file_path,encoding=ReadFolder.detect_encoding(file_path=os.path.join(folder_path,csv_file)))
+                
+                #病棟名と時間と名前が必要
+                #午前で複数病棟担当している場合、先頭行から16行目までの全てのデータを取得してまとめる
+                #病棟名と名前の頭16行のユニークな内容を取得する
+                am_data=df.loc[:15,["locate","phName","date"]].drop_duplicates().reset_index(drop=True)
+                am_data=NormaliseLocate.normalise_locate(am_data,"am")
+                print(f"AM data: {am_data}")
+                data.extend(am_data)
+                
+                #午後のデータも同様に取得する
+                #午後は16行目からのデータを取得する
+                pm_data=df.loc[16:,["locate","phName","date"]].drop_duplicates().reset_index(drop=True)
+                pm_data=NormaliseLocate.normalise_locate(pm_data,"pm")  
+                print(f"PM data: {pm_data}")
+                data.extend(pm_data)
+                
+            except Exception as e:
+                print(f"Error processing file {csv_file}: {e}")
+                continue
+        
+        print(f"Total data loaded: {len(data)} records")
+        return data

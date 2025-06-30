@@ -133,6 +133,7 @@ def main(page: ft.Page):
     #clientstorageから保存データを呼び出し、取得
     #ファイルを読み込んで日付、名前、病棟名を抽出、datatableに追加する
     #保存データはclientstorageに保存
+    #名前での絞り込み機構はどこに入れようか
 
     page.add(read_folder_button,tabs,)
 

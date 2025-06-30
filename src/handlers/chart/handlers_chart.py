@@ -276,7 +276,7 @@ class Handlers_Chart:
 
     @staticmethod
     def ComponentChart_for_standard(dataframe, chart_field, page, parent_instance_standard):
-        """標準チャートを生成するメソッド（エラーハンドリング改善版）"""
+        """標準チャートを生成するメソッド"""
         try:
             # 期間情報の安全な取得
             start_date, end_date = Handlers_Chart._safe_parse_period_from_controls(chart_field)
