@@ -17,11 +17,15 @@ def main(page: ft.Page):
     current_year = today.year
     current_month = today.month
 
+    #スケジュールデータを保存する変数
+    schedule_data=[]
+    #全てのタブのカレンダーを保存するリスト
+
     # タイトル
     page.add(ft.Text(f"calender", size=30, weight=ft.FontWeight.BOLD))
 
     file_picker = ft.FilePicker(
-        on_result = lambda e:ReadFolder.read_folder(e=e)
+        on_result = lambda e:ReadFolder.read_folder(e=e, shcedule_data=schedule_data),
     )
     
     page.overlay.append(file_picker)
@@ -89,7 +93,13 @@ def main(page: ft.Page):
             date_text,
             next_button
         ], alignment=ft.MainAxisAlignment.CENTER)
-        
+
+        update_button=ft.ElevatedButton(
+            text="更新",
+            on_click=lambda e: UpdateCard.update_cards_with_schedule_data(e=e, schedule_data=schedule_data,page=page,card_name=label,card=tab_calendar.controls),
+            icon=ft.icons.REFRESH,
+            
+        )
         # 日付ごとのカードの作成
         days_in_month= (datetime.date(current_year, current_month + 1, 1) - datetime.date(current_year, current_month, 1)).days
         for j in range(1, days_in_month + 1):
@@ -100,20 +110,21 @@ def main(page: ft.Page):
                             ft.Text(f"{current_month}月{j}日"),
                             ft.DataTable(
                                 columns=[
-                                    ft.DataColumn(label=ft.Text("担当者名"), numeric=True),
-                                    ft.DataColumn(label=ft.Text("病棟名"), numeric=True),
+                                    ft.DataColumn(label=ft.Text("name"), numeric=True),
+                                    ft.DataColumn(label=ft.Text("AM or PM"), numeric=True),
                                 ],
                                 rows=[
                                     # 担当者の名前が入る
-                                    ft.DataRow(cells=[ft.DataCell(ft.Text("担当者1")), ft.DataCell(ft.Text(label))])
+                                    ft.DataRow(cells=[ft.DataCell(ft.Text("name")), ft.DataCell(ft.Text("AM or PM"))])
                                 ]
                             )
-                        ]
+                        ],
+                        data={"date": f"{current_year}-{current_month:01d}-{j:01d}", "locate": label},  # カードに日付
                     ),
                 )
             )
         # タブのコンテンツを作成
-        tab_content = ft.Column(controls=[arrow, tab_calendar])
+        tab_content = ft.Column(controls=[arrow, update_button,tab_calendar])
         
         return tab_content
 

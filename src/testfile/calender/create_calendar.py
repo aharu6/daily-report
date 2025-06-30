@@ -100,8 +100,8 @@ class CreateCalendar:
     def back_month(e,page, calendar):
         print("back_month called")
         #表示中のカレンダー年月を取得
-        current_set_year=calendar.year
-        current_set_month=calendar.month
+        current_set_year=calendar.data["year"]
+        current_set_month=calendar.data["month"]
         #前の月を計算
         if current_set_month == 1:
             prev_year = current_set_year - 1
@@ -116,9 +116,9 @@ class CreateCalendar:
         #ページのカレンダーを更新
         calendar.controls.clear()
         calendar.controls.extend(prev_calendar.controls)
-        #カレンダーの年月を更新
-        calendar.year = prev_year
-        calendar.month = prev_month
+        #カレンダーのデータを更新
+        calendar.data["year"] = prev_year
+        calendar.data["month"] = prev_month
         #ページを再描画
         calendar.update()
         print("update calendar completed")

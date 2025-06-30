@@ -30,3 +30,91 @@ class UpdateCard:
             )
             cards.append(card)
         return cards
+    
+    @staticmethod
+    def update_cards_with_schedule_data(e, schedule_data,page,card_name,card):
+        """
+        カードの内容をスケジュールデータで更新する
+        :param cards: 更新対象のカードリスト
+        :param schedule_data: スケジュールデータ（辞書のリスト）
+        card_name:更新する病棟名
+        """
+        #schedule_data=[] の場合はclientstorageからデータを取得する
+        if not schedule_data:
+            print("No schedule data available. Fetching from client storage.")
+            shchedule_data=page.client_storage.get("schedule_data", [])
+        else:
+            shchedule_data=schedule_data   #あればそのまま使用する
+
+        filtered_data= [data for data in shchedule_data if data['locate'] == card_name]
+        print(f"Filtered data for {card_name}: {filtered_data}")
+        
+        #カードの内容を更新
+        #card の中にtab_calendar.controlsが入っている
+        #中のft.Cardを更新する
+        for i, control in enumerate(card):
+            if isinstance(control, ft.Card):
+                # カードの日付を取得（年月日を抽出）
+                date_text = control.content.data["date"] if control.content.controls else ""
+                print(f"Processing card for date: {date_text}")
+                # filtered_dataから該当する日付のデータを検索
+                matching_data = []
+                for data in filtered_data:
+                    # データの日付フォーマットに応じて比較ロジックを調整
+                    if 'date' in data:
+                        data_date = data['date']
+                        # 日付の比較処理（データフォーマットに応じて調整が必要）
+                        if str(data_date) in date_text or date_text in str(data_date):
+                            matching_data.append(data)
+                
+                # マッチするデータがある場合、DataTableの行を更新
+                #午前データならばdatacellの0番目に
+                #午後データならばdataellの1番目に配置
+
+                if matching_data and len(control.content.controls) > 1:
+                    data_table = control.content.controls[1]
+                    if isinstance(data_table, ft.DataTable):
+                        # 既存の行をクリア
+                        data_table.rows.clear()
+                        
+                        # filtered_dataの内容で行を追加
+                        for data in matching_data:
+                            print(f"Adding data to card: {data}")
+                            staff_name = data.get('staff_name',data["phName"])
+                            time = data.get('time', data["time"])  # 病棟名はcard_nameを使用
+                            
+                            # 時間帯に応じて背景色を設定
+                            row_color = None
+                            if time == "am":
+                                print(f"Adding AM data: {staff_name} at {date_text}")
+                                row_color = ft.colors.PINK_100  # 午前は薄いピンク
+                            elif time == "pm":
+                                row_color = ft.colors.BLUE_100  # 午後は薄い青
+                            
+                            new_row = ft.DataRow(
+                                cells=[
+                                    ft.DataCell(ft.Text(staff_name)),
+                                    ft.DataCell(ft.Text(time))
+                                ],
+                                color=row_color  # colorプロパティを使用
+                            )
+                            
+                            data_table.rows.append(new_row)
+                        
+                        print(f"Updated card for date: {date_text} with {len(matching_data)} entries")
+                
+                # マッチするデータがない場合はデフォルトの行を保持
+                elif len(control.content.controls) > 1:
+                    data_table = control.content.controls[1]
+                    if isinstance(data_table, ft.DataTable) and not data_table.rows:
+                        # デフォルトの行を追加
+                        default_row = ft.DataRow(
+                            cells=[
+                                ft.DataCell(ft.Text("担当者未定")),
+                                ft.DataCell(ft.Text(card_name))
+                            ]
+                        )
+                        data_table.rows.append(default_row)
+
+        #ページを再描画
+        page.update()

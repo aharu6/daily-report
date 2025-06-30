@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import chardet
 from normalise_locate import NormaliseLocate
+from update_card import UpdateCard
 class ReadFolder:
     @staticmethod
     def detect_encoding(file_path):
@@ -12,7 +13,7 @@ class ReadFolder:
     
 
     @staticmethod
-    def read_folder(e,):
+    def read_folder(e,shcedule_data):
         folder_path =e.path
         print(f"Selected folder: {folder_path}")
 
@@ -48,6 +49,5 @@ class ReadFolder:
             except Exception as e:
                 print(f"Error processing file {csv_file}: {e}")
                 continue
-        
         print(f"Total data loaded: {len(data)} records")
-        return data
+        return shcedule_data.extend(data)
