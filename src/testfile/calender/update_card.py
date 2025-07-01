@@ -50,7 +50,6 @@ class UpdateCard:
         :param schedule_data: スケジュールデータ（辞書のリスト）
         card_name:更新する病棟名
         """
-        print("update_cards_with_schedule_data called", card)
         #schedule_data=[] の場合はclientstorageからデータを取得する
         if not schedule_data:
             try:
@@ -58,25 +57,21 @@ class UpdateCard:
                 if schedule_data is None:
                     schedule_data = []
             except Exception as e:
-                print(f"Error fetching from client storage: {e}")
                 schedule_data = []
         else:
             schedule_data = schedule_data   #あればそのまま使用する
 
         filtered_data= [data for data in schedule_data if data['locate'] == card_name]
-        print(f"Filtered data for {card_name}: {filtered_data}")
         
         #カードの内容を更新
         #card の中にtab_calendar.controlsが入っている
         #中のft.Cardを更新する
         for i, control in enumerate(card):
-            print(f"Processing control {i}: {control}")
             if isinstance(control, ft.Card):
                 # カードの日付を取得（年月日を抽出）
                 date_text = ""
                 if hasattr(control.content, 'data') and control.content.data and 'date' in control.content.data:
                     date_text = control.content.data["date"]
-                print(f"Processing card for date: {date_text}")
                 
                 # filtered_dataから該当する日付のデータを検索
                 matching_data = []
@@ -87,7 +82,6 @@ class UpdateCard:
                         # 日付の比較処理　完全一致の場合にmatching_dataに追加
                         if isinstance(data_date, str) and date_text in data_date:
                             matching_data.append(data)
-                            print(f"Matched data: {matching_data}")
                 # マッチするデータがある場合、DataTableの行を更新
                 #午前データならばdatacellの0番目に
                 #午後データならばdataellの1番目に配置

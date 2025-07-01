@@ -15,7 +15,6 @@ class ReadFolder:
     @staticmethod
     def read_folder(e,schedule_data,page):
         folder_path =e.path
-        print(f"Selected folder: {folder_path}")
 
         #フォルダ内のcsvファイルを読み込み、病棟名と担当者名を抽出する
         csv_files=[f for f in os.listdir(e.path) if f.endswith('.csv')]
@@ -36,20 +35,17 @@ class ReadFolder:
                 #病棟名と名前の頭16行のユニークな内容を取得する
                 am_data=df.loc[:15,["locate","phName","date"]].drop_duplicates().reset_index(drop=True)
                 am_data=NormaliseLocate.normalise_locate(am_data,"am")
-                print(f"AM data: {am_data}")
                 data.extend(am_data)
                 
                 #午後のデータも同様に取得する
                 #午後は16行目からのデータを取得する
                 pm_data=df.loc[16:,["locate","phName","date"]].drop_duplicates().reset_index(drop=True)
                 pm_data=NormaliseLocate.normalise_locate(pm_data,"pm")  
-                print(f"PM data: {pm_data}")
                 data.extend(pm_data)
                 
             except Exception as e:
                 print(f"Error processing file {csv_file}: {e}")
                 continue
-        print(f"Total data loaded: {len(data)} records")
         #読み込んだデータをclientstorageに保存する
         page.client_storage.set("schedule_data", data)  
         return schedule_data, page

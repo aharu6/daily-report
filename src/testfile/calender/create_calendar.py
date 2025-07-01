@@ -70,7 +70,6 @@ class CreateCalendar:
     
     @staticmethod
     def forward_month(e,page, calendar,card_name):
-        print("forward_month called")
         #表示中のカレンダー年月を取得
         current_set_year=calendar.year
         current_set_month=calendar.month
@@ -93,7 +92,6 @@ class CreateCalendar:
         calendar.month = next_month
         #ページを再描画
         calendar.update()
-        print("update calendar completed")
 
 
     @staticmethod
