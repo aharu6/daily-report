@@ -13,7 +13,7 @@ class ReadFolder:
     
 
     @staticmethod
-    def read_folder(e,shcedule_data):
+    def read_folder(e,schedule_data,page):
         folder_path =e.path
         print(f"Selected folder: {folder_path}")
 
@@ -50,4 +50,6 @@ class ReadFolder:
                 print(f"Error processing file {csv_file}: {e}")
                 continue
         print(f"Total data loaded: {len(data)} records")
-        return shcedule_data.extend(data)
+        #読み込んだデータをclientstorageに保存する
+        page.client_storage.set("schedule_data", data)  
+        return schedule_data, page

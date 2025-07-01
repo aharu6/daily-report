@@ -25,7 +25,7 @@ def main(page: ft.Page):
     page.add(ft.Text(f"calender", size=30, weight=ft.FontWeight.BOLD))
 
     file_picker = ft.FilePicker(
-        on_result = lambda e:ReadFolder.read_folder(e=e, shcedule_data=schedule_data),
+        on_result = lambda e:ReadFolder.read_folder(e=e, schedule_data=schedule_data, page=page),
     )
     
     page.overlay.append(file_picker)
@@ -46,6 +46,14 @@ def main(page: ft.Page):
 
     # 各タブのカレンダーを作成する関数
     def create_tab_content(label):
+        """_summary_
+
+        Args:
+            label (_type_): 病棟名
+
+        Returns:
+            _type_: _description_
+        """
         # 各タブ用のカレンダーを作成
         tab_calendar = CreateCalendar.create_calendar(current_year, current_month)
         
@@ -55,9 +63,10 @@ def main(page: ft.Page):
         # カレンダー更新時に年月表示,カードも更新する関数
         def update_calendar_and_text(e, is_forward=True):
             if is_forward:
-                CreateCalendar.forward_month(e, page, tab_calendar)
+                CreateCalendar.forward_month(e=e, page=page, calendar=tab_calendar, card_name=label)
             else:
-                CreateCalendar.back_month(e, page, tab_calendar)
+                CreateCalendar.back_month(e=e, page=page, calendar=tab_calendar, card_name=label)
+
             # 年月表示を更新
             date_text.value = f"{tab_calendar.year}年{tab_calendar.month}月"
             date_text.update()
@@ -67,10 +76,16 @@ def main(page: ft.Page):
             calendar_controls_content=len([control for control in tab_calendar.controls if not isinstance(control,ft.Card)])
             while len(tab_calendar.controls) > calendar_controls_content:
                 tab_calendar.controls.pop()
-            
-            new_cards = UpdateCard.create_card_for_month(tab_calendar.year, tab_calendar.month)
+
+            new_cards = UpdateCard.create_card_for_month(year=tab_calendar.year, month=tab_calendar.month, label=label)
             tab_calendar.controls.extend(new_cards)
             tab_calendar.update()
+            
+            # カードの内容を更新 
+            UpdateCard.update_cards_with_schedule_data(
+                e=e, schedule_data=schedule_data, page=page, card_name=label,
+                card=tab_calendar.controls[1:]
+            )
 
 
         # 各タブ用のボタンを作成
@@ -141,11 +156,15 @@ def main(page: ft.Page):
     # タブごとにカードを作成する
     # 月切り替えに応じてカードの日付を更新する
     
-    #clientstorageから保存データを呼び出し、取得
     #ファイルを読み込んで日付、名前、病棟名を抽出、datatableに追加する
     #保存データはclientstorageに保存
     #名前での絞り込み機構はどこに入れようか
 
     page.add(read_folder_button,tabs,)
-
+    
+    #読み込みによりschedule_dataが更新されるので、タブの内容を更新する
+    UpdateCard.update_cards_with_schedule_data(
+        schedule_data=schedule_data, e=None, page=page, card_name=locate_labels[0], 
+        card=tabs.tabs[0].content.controls[2].controls  # 最初のタブのカードリストを取得
+        )
 ft.app(main)

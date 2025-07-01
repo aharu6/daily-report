@@ -3,7 +3,17 @@ import flet as ft
 
 class UpdateCard:
     @staticmethod
-    def create_card_for_month(year, month):
+    def create_card_for_month(year, month,label):
+        """_summary_
+
+        Args:
+            year (_type_): _description_
+            month (_type_): _description_
+            label (_type_): 病棟名
+
+        Returns:
+            _type_: _description_
+        """
         cards = []
         if month == 12:
             days_in_month = (datetime.date(year + 1, 1, 1) - datetime.date(year, month, 1)).days
@@ -25,48 +35,59 @@ class UpdateCard:
                                 ft.DataRow(cells=[ft.DataCell(ft.Text("担当者1")), ft.DataCell(ft.Text("病棟名"))])
                             ]
                         )
-                    ]
+                    ],
+                    data={"date": f"{year}-{month:01d}-{day:01d}", "locate": label},  
                 ),
             )
             cards.append(card)
         return cards
     
     @staticmethod
-    def update_cards_with_schedule_data(e, schedule_data,page,card_name,card):
+    def update_cards_with_schedule_data(e, schedule_data, page, card_name, card):
         """
         カードの内容をスケジュールデータで更新する
         :param cards: 更新対象のカードリスト
         :param schedule_data: スケジュールデータ（辞書のリスト）
         card_name:更新する病棟名
         """
+        print("update_cards_with_schedule_data called", card)
         #schedule_data=[] の場合はclientstorageからデータを取得する
         if not schedule_data:
-            print("No schedule data available. Fetching from client storage.")
-            shchedule_data=page.client_storage.get("schedule_data", [])
+            try:
+                schedule_data = page.client_storage.get("schedule_data")
+                if schedule_data is None:
+                    schedule_data = []
+            except Exception as e:
+                print(f"Error fetching from client storage: {e}")
+                schedule_data = []
         else:
-            shchedule_data=schedule_data   #あればそのまま使用する
+            schedule_data = schedule_data   #あればそのまま使用する
 
-        filtered_data= [data for data in shchedule_data if data['locate'] == card_name]
+        filtered_data= [data for data in schedule_data if data['locate'] == card_name]
         print(f"Filtered data for {card_name}: {filtered_data}")
         
         #カードの内容を更新
         #card の中にtab_calendar.controlsが入っている
         #中のft.Cardを更新する
         for i, control in enumerate(card):
+            print(f"Processing control {i}: {control}")
             if isinstance(control, ft.Card):
                 # カードの日付を取得（年月日を抽出）
-                date_text = control.content.data["date"] if control.content.controls else ""
+                date_text = ""
+                if hasattr(control.content, 'data') and control.content.data and 'date' in control.content.data:
+                    date_text = control.content.data["date"]
                 print(f"Processing card for date: {date_text}")
+                
                 # filtered_dataから該当する日付のデータを検索
                 matching_data = []
                 for data in filtered_data:
                     # データの日付フォーマットに応じて比較ロジックを調整
                     if 'date' in data:
                         data_date = data['date']
-                        # 日付の比較処理（データフォーマットに応じて調整が必要）
-                        if str(data_date) in date_text or date_text in str(data_date):
+                        # 日付の比較処理　完全一致の場合にmatching_dataに追加
+                        if isinstance(data_date, str) and date_text in data_date:
                             matching_data.append(data)
-                
+                            print(f"Matched data: {matching_data}")
                 # マッチするデータがある場合、DataTableの行を更新
                 #午前データならばdatacellの0番目に
                 #午後データならばdataellの1番目に配置
@@ -79,14 +100,12 @@ class UpdateCard:
                         
                         # filtered_dataの内容で行を追加
                         for data in matching_data:
-                            print(f"Adding data to card: {data}")
                             staff_name = data.get('staff_name',data["phName"])
                             time = data.get('time', data["time"])  # 病棟名はcard_nameを使用
                             
                             # 時間帯に応じて背景色を設定
                             row_color = None
                             if time == "am":
-                                print(f"Adding AM data: {staff_name} at {date_text}")
                                 row_color = ft.colors.PINK_100  # 午前は薄いピンク
                             elif time == "pm":
                                 row_color = ft.colors.BLUE_100  # 午後は薄い青
@@ -101,7 +120,6 @@ class UpdateCard:
                             
                             data_table.rows.append(new_row)
                         
-                        print(f"Updated card for date: {date_text} with {len(matching_data)} entries")
                 
                 # マッチするデータがない場合はデフォルトの行を保持
                 elif len(control.content.controls) > 1:

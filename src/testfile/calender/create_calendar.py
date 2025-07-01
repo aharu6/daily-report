@@ -1,6 +1,7 @@
 import flet as ft
 import datetime
 import math
+from update_card import UpdateCard
     # 月カレンダーのようなUIを自作して表示する
 
 class CreateCalendar:
@@ -31,7 +32,6 @@ class CreateCalendar:
             last_day = datetime.date(year, month + 1, 1) - datetime.timedelta(days=1)
         # 月の最初の日の曜日を取得（日曜始まりに変換）
         first_weekday = (first_day.weekday() + 1) % 7  # 0=Sunday, 6=Saturday
-        print(f"first_weekday: {first_weekday}, first_day: {first_day}, last_day: {last_day}")
         # 月の日数
         days_in_month = (last_day - first_day).days + 1
         # 必要なセル数
@@ -69,7 +69,7 @@ class CreateCalendar:
         return calendar
     
     @staticmethod
-    def forward_month(e,page, calendar):
+    def forward_month(e,page, calendar,card_name):
         print("forward_month called")
         #表示中のカレンダー年月を取得
         current_set_year=calendar.year
@@ -97,11 +97,18 @@ class CreateCalendar:
 
 
     @staticmethod
-    def back_month(e,page, calendar):
-        print("back_month called")
+    def back_month(e,page, calendar,card_name):
+        """_summary_
+
+        Args:
+            e (_type_): _description_
+            page (_type_): _description_
+            calendar (_type_): _description_
+            card_name (_type_): 更新する病棟名,tab上の名前を取得する
+        """
         #表示中のカレンダー年月を取得
-        current_set_year=calendar.data["year"]
-        current_set_month=calendar.data["month"]
+        current_set_year=calendar.year
+        current_set_month=calendar.month
         #前の月を計算
         if current_set_month == 1:
             prev_year = current_set_year - 1
@@ -117,9 +124,7 @@ class CreateCalendar:
         calendar.controls.clear()
         calendar.controls.extend(prev_calendar.controls)
         #カレンダーのデータを更新
-        calendar.data["year"] = prev_year
-        calendar.data["month"] = prev_month
+        calendar.year = prev_year
+        calendar.month = prev_month
         #ページを再描画
         calendar.update()
-        print("update calendar completed")
-
