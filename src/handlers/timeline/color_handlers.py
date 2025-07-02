@@ -90,3 +90,12 @@ class ColorHandlers:
                 return "#508D4E"
             case "抗菌薬相談対応":
                 return "#507687"
+            case "事前準備":
+                return "#507687"
+            case "カンファ・ラウンド":
+                return "#507687"
+            case "記録作成":
+                return "#507687"
+            case _:
+                return "#384B70"  # Default color for unknown tasks
+            
