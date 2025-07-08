@@ -13,7 +13,7 @@ class ReadFolder:
     
 
     @staticmethod
-    def read_folder(e,schedule_data,page):
+    def read_folder(e,schedule_data,page, folder_name):
         folder_path =e.path
 
         #フォルダ内のcsvファイルを読み込み、病棟名と担当者名を抽出する
@@ -48,4 +48,11 @@ class ReadFolder:
                 continue
         #読み込んだデータをclientstorageに保存する
         page.client_storage.set("schedule_data", data)  
+
+        #現在のフォルダ名表示
+        folder_name.value = f"選択中のフォルダ: {folder_path}"
+        folder_name.update()
+        #フォルダ名はclientstorageに保管する
+        page.client_storage.set("folder_name", folder_path)
+        
         return schedule_data, page

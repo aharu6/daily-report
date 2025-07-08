@@ -25,8 +25,17 @@ def main(page: ft.Page):
     # タイトル
     page.add(ft.Text(f"calender", size=30, weight=ft.FontWeight.BOLD))
 
+    folder_name=ft.Text(
+        "選択中のフォルダ名",
+    )
+    #起動時、前回読み込んだフォルダがある場合には名前を表示する
+    try:
+        folder_name.value=f"選択中のフォルダ名{page.client_storage.get("folder_name")}"
+    except:
+        pass
+
     file_picker = ft.FilePicker(
-        on_result = lambda e:ReadFolder.read_folder(e=e, schedule_data=schedule_data, page=page),
+        on_result = lambda e:ReadFolder.read_folder(e=e, schedule_data=schedule_data, page=page,folder_name=folder_name),
     )
     
     page.overlay.append(file_picker)
@@ -37,6 +46,7 @@ def main(page: ft.Page):
         icon=ft.icons.FOLDER_OPEN,
         
     )
+
 
     # 病棟ラベル
     locate_labels = [
@@ -181,7 +191,7 @@ def main(page: ft.Page):
     #保存データはclientstorageに保存
     #名前での絞り込み機構はどこに入れようか
 
-    page.add(read_folder_button,tabs,)
+    page.add(read_folder_button,folder_name,tabs,)
     
     #読み込みによりschedule_dataが更新されるので、タブの内容を更新する
     UpdateCard.update_cards_with_schedule_data(
