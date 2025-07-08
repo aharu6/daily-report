@@ -40,6 +40,7 @@ class UpdateCalendar:
         以後cardが続く
 
         """
+        print("update_calendar_with_schedule_data:card_name:", card_name)
         if not schedule_data:
             try:
                 schedule_data = page.client_storage.get("schedule_data")
@@ -49,9 +50,11 @@ class UpdateCalendar:
                 schedule_data = []
         else:
             schedule_data = schedule_data
+        print(schedule_data)
         
         # schedule_dataからcard_nameに該当するデータを抽出
         filtered_data = [data for data in schedule_data if data['locate'] == card_name]
+        print(f"filtered_data: {filtered_data}")
         #calendarの長さ
         for i,control in enumerate(calendar):
             if isinstance(control,ft.Row):#calendar[i]== ft.Rowならその中に一週間分の日付セルが入っている
@@ -67,14 +70,18 @@ class UpdateCalendar:
                             # 日付の比較処理　完全一致の場合にmatching_dataに追加
                             if isinstance(data_date, str) and date_text==data_date:
                                 matching_data.append(data)
+                    print(f"date:{date_text} ,matching_data: {matching_data}")
                     # 午前データと午後データが両方揃っている場合に色をつける
                     if matching_data:
                         has_am=any(data["time"] =="am" for data in matching_data)
                         has_pm=any(data["time"] =="pm" for data in matching_data)
+                        print(f"has_am{has_am},has/pm{has_pm}")
                         if has_am and has_pm:
                             j.bgcolor = ft.colors.GREEN
+                            print(f"cell{j}")
                     else:
-                        j.bgcolor=None
+                        j.bgcolor=''
                     j.update()
+                    
                 else:
                     pass

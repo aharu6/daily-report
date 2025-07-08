@@ -123,13 +123,16 @@ def main(page: ft.Page):
             )
             #カレンダーの更新
             UpdateCalendar.update_calendar_with_schedule_data(
-                e=e, schedule_data=schedule_data, page=page, calendar=tabs.tabs[0].content.controls[2].controls[1:],
-                card_name=locate_labels[0]) #更新ボタンを取得するページによってlocateは調節が必要かもしれない
+                e=e, schedule_data=schedule_data, page=page, 
+                calendar=tab_calendar.controls[1:],
+                card_name=label) #更新ボタンを取得するページによってlocateは調節が必要　現在のページのlocate_labelsを渡す
             
         update_button=ft.ElevatedButton(
             text="更新",
-            on_click=lambda e: update_card_calender(e=e,schedule_data=schedule_data,page=page,
-                                                    label=label,tab_calendar=tab_calendar),
+            on_click=lambda e: update_card_calender(
+                e=e,schedule_data=schedule_data,page=page,
+                label=label,tab_calendar=tab_calendar
+                ),
             icon=ft.icons.REFRESH,
             
         )
@@ -188,6 +191,6 @@ def main(page: ft.Page):
     # データがある場合にカレンダーに色をつける更新
     UpdateCalendar.update_calendar_with_schedule_data(
         e=None, schedule_data=schedule_data, page=page, calendar=tabs.tabs[0].content.controls[2].controls[1:],
-        card_name=locate_labels[0],
+        card_name=locate_labels[0],#初回起動時はtab==ICUなのでlocate_labels[0]を渡す
     )
 ft.app(main)
