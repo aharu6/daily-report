@@ -88,6 +88,12 @@ def main(page: ft.Page):
                 card=tab_calendar.controls[1:]
             )
 
+            #カレンダーセルの色を更新
+            UpdateCalendar.update_calendar_with_schedule_data(
+                e=e, schedule_data=schedule_data, page=page, calendar=tab_calendar.controls[1:],
+                card_name=label,
+            )
+
         # 各タブ用のボタンを作成
         back_button = ft.IconButton(
             icon=ft.icons.ARROW_BACK,
@@ -109,9 +115,21 @@ def main(page: ft.Page):
             next_button
         ], alignment=ft.MainAxisAlignment.CENTER)
 
+        def update_card_calender(e,schedule_data,page,label,tab_calendar):
+            #カードの更新
+            UpdateCard.update_cards_with_schedule_data(
+                e=e,schedule_data=schedule_data,page=page,card_name=label,
+                card=tab_calendar.controls
+            )
+            #カレンダーの更新
+            UpdateCalendar.update_calendar_with_schedule_data(
+                e=e, schedule_data=schedule_data, page=page, calendar=tabs.tabs[0].content.controls[2].controls[1:],
+                card_name=locate_labels[0]) #更新ボタンを取得するページによってlocateは調節が必要かもしれない
+            
         update_button=ft.ElevatedButton(
             text="更新",
-            on_click=lambda e: UpdateCard.update_cards_with_schedule_data(e=e, schedule_data=schedule_data,page=page,card_name=label,card=tab_calendar.controls),
+            on_click=lambda e: update_card_calender(e=e,schedule_data=schedule_data,page=page,
+                                                    label=label,tab_calendar=tab_calendar),
             icon=ft.icons.REFRESH,
             
         )

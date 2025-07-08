@@ -62,7 +62,6 @@ class UpdateCard:
             schedule_data = schedule_data   #あればそのまま使用する
 
         filtered_data= [data for data in schedule_data if data['locate'] == card_name]
-        
         #カードの内容を更新
         #card の中にtab_calendar.controlsが入っている
         #中のft.Cardを更新する
@@ -70,63 +69,70 @@ class UpdateCard:
             if isinstance(control, ft.Card):
                 # カードの日付を取得（年月日を抽出）
                 date_text = ""
-                if hasattr(control.content, 'data') and control.content.data and 'date' in control.content.data:
+                if hasattr(control.content, 'data') and control.content.data and 'date' in control.content.data:#日付は完全一致にする
                     date_text = control.content.data["date"]
-                
-                # filtered_dataから該当する日付のデータを検索
-                matching_data = []
-                for data in filtered_data:
-                    # データの日付フォーマットに応じて比較ロジックを調整
-                    if 'date' in data:
-                        data_date = data['date']
-                        # 日付の比較処理　完全一致の場合にmatching_dataに追加
-                        if isinstance(data_date, str) and date_text in data_date:
-                            matching_data.append(data)
-                # マッチするデータがある場合、DataTableの行を更新
-                #午前データならばdatacellの0番目に
-                #午後データならばdataellの1番目に配置
+                    
+                    # filtered_dataから該当する日付のデータを検索
+                    matching_data = []
+                    for data in filtered_data:
+                        # データの日付フォーマットに応じて比較ロジックを調整
+                        if 'date' in data:
+                            data_date = data['date']
+                            # 日付の比較処理　完全一致の場合にmatching_dataに追加
+                            if isinstance(data_date, str) and date_text in data_date:
+                                matching_data.append(data)
+                    # マッチするデータがある場合、DataTableの行を更新
+                    #午前データならばdatacellの0番目に
+                    #午後データならばdataellの1番目に配置
 
-                if matching_data and len(control.content.controls) > 1:
-                    data_table = control.content.controls[1]
-                    if isinstance(data_table, ft.DataTable):
-                        # 既存の行をクリア
-                        data_table.rows.clear()
-                        
-                        # filtered_dataの内容で行を追加
-                        for data in matching_data:
-                            staff_name = data.get('staff_name',data["phName"])
-                            time = data.get('time', data["time"])  # 病棟名はcard_nameを使用
+                    if matching_data and len(control.content.controls) > 1:
+                        data_table = control.content.controls[1]
+                        if isinstance(data_table, ft.DataTable):
+                            # 既存の行をクリア
+                            data_table.rows.clear()
                             
-                            # 時間帯に応じて背景色を設定
-                            row_color = None
-                            if time == "am":
-                                row_color = ft.colors.PINK_100  # 午前は薄いピンク
-                            elif time == "pm":
-                                row_color = ft.colors.BLUE_100  # 午後は薄い青
+                            # filtered_dataの内容で行を追加
+                            for data in matching_data:
+                                staff_name = data.get('staff_name',data["phName"])
+                                time = data.get('time', data["time"])  # 病棟名はcard_nameを使用
+                                
+                                # 時間帯に応じて背景色を設定
+                                row_color = None
+                                if time == "am":
+                                    row_color = ft.colors.PINK_100  # 午前は薄いピンク
+                                elif time == "pm":
+                                    row_color = ft.colors.BLUE_100  # 午後は薄い青
+                                new_row = ft.DataRow(
+                                    cells=[
+                                        ft.DataCell(ft.Text(staff_name)),
+                                        ft.DataCell(ft.Text(time))
+                                    ],
+                                    color=row_color  # colorプロパティを使用
+                                )
+                                
+                                data_table.rows.append(new_row)
                             
-                            new_row = ft.DataRow(
+                    
+                    # マッチするデータがない場合はデフォルトの行を保持
+                    elif len(control.content.controls) > 1:
+                        data_table = control.content.controls[1]
+                        if isinstance(data_table, ft.DataTable) and not data_table.rows:
+                            # デフォルトの行を追加
+                            default_row = ft.DataRow(
                                 cells=[
-                                    ft.DataCell(ft.Text(staff_name)),
-                                    ft.DataCell(ft.Text(time))
-                                ],
-                                color=row_color  # colorプロパティを使用
+                                    ft.DataCell(ft.Text("担当者未定")),
+                                    ft.DataCell(ft.Text(card_name))
+                                ]
                             )
-                            
-                            data_table.rows.append(new_row)
-                        
-                
-                # マッチするデータがない場合はデフォルトの行を保持
-                elif len(control.content.controls) > 1:
-                    data_table = control.content.controls[1]
-                    if isinstance(data_table, ft.DataTable) and not data_table.rows:
-                        # デフォルトの行を追加
-                        default_row = ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text("担当者未定")),
-                                ft.DataCell(ft.Text(card_name))
-                            ]
-                        )
-                        data_table.rows.append(default_row)
+                            data_table.rows.append(default_row)
+                    data_table.update()
+                else:
+                    #データテーブルがある場合には削除
+                    if isinstance(control.content.controls[1], ft.DataTable):
+                        print("updateCard:データテーブルがある場合には削除")
+                        control.content.controls[1].rows.clear()
+                        control.content.controls[1].update()
 
+                    
         #ページを再描画
         page.update()

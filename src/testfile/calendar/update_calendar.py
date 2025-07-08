@@ -52,7 +52,6 @@ class UpdateCalendar:
         
         # schedule_dataからcard_nameに該当するデータを抽出
         filtered_data = [data for data in schedule_data if data['locate'] == card_name]
-        print(f"Filtered data for {card_name}: {filtered_data}")
         #calendarの長さ
         for i,control in enumerate(calendar):
             if isinstance(control,ft.Row):#calendar[i]== ft.Rowならその中に一週間分の日付セルが入っている
@@ -60,7 +59,6 @@ class UpdateCalendar:
                     date_text=""
                     if j.data and isinstance(j.data, dict):
                         date_text = j.data["date"]
-                        print(f"Date text: {date_text}")
                     # 日付のデータを抽出
                     matching_data = []
                     for data in filtered_data:
@@ -69,15 +67,14 @@ class UpdateCalendar:
                             # 日付の比較処理　完全一致の場合にmatching_dataに追加
                             if isinstance(data_date, str) and date_text==data_date:
                                 matching_data.append(data)
-                    print(f"Matching data for {date_text}: {matching_data}")
                     # 午前データと午後データが両方揃っている場合に色をつける
                     if matching_data:
                         has_am=any(data["time"] =="am" for data in matching_data)
                         has_pm=any(data["time"] =="pm" for data in matching_data)
                         if has_am and has_pm:
                             j.bgcolor = ft.colors.GREEN
-                        else:
-                            pass
+                    else:
+                        j.bgcolor=None
                     j.update()
                 else:
                     pass
