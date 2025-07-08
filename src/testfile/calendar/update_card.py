@@ -114,24 +114,24 @@ class UpdateCard:
                             
                     
                     # マッチするデータがない場合はデフォルトの行を保持
+                    # 別フォルダを読み込んだとき、日付に該当するデータがない場合はcardのデータフレームを削除
                     elif len(control.content.controls) > 1:
                         data_table = control.content.controls[1]
+                        data_table.rows.clear()
+                        # デフォルトの行を追加
                         if isinstance(data_table, ft.DataTable) and not data_table.rows:
                             # デフォルトの行を追加
                             default_row = ft.DataRow(
                                 cells=[
-                                    ft.DataCell(ft.Text("担当者未定")),
-                                    ft.DataCell(ft.Text(card_name))
+                                    ft.DataCell(ft.Text("name")),
+                                    ft.DataCell(ft.Text("AM or PM"))
                                 ]
                             )
                             data_table.rows.append(default_row)
-                    data_table.update()
+                    control.content.controls[1].update()
                 else:
                     #データテーブルがある場合には削除
-                    if isinstance(control.content.controls[1], ft.DataTable):
-                        print("updateCard:データテーブルがある場合には削除")
-                        control.content.controls[1].rows.clear()
-                        control.content.controls[1].update()
+                    pass
 
                     
         #ページを再描画
