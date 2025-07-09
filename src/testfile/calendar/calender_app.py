@@ -61,7 +61,7 @@ def main(page: ft.Page):
     tabs=ft.Tabs(
         selected_index=0,
         tabs=[
-            ft.Tab(text=label, content=TabContentCreator.create_tab_content(label, page, schedule_data)) for label in locate_labels
+            ft.Tab(text=label, content=TabContentCreator.create_tab_content(label=label, page=page, schedule_data=schedule_data)) for label in locate_labels
         ],
         expand=True,
         animation_duration=300,
@@ -98,7 +98,10 @@ def main(page: ft.Page):
         )
     # データがある場合にカレンダーに色をつける更新
     UpdateCalendar.update_calendar_with_schedule_data(
-        e=None, schedule_data=schedule_data, page=page, calendar=tabs.tabs[0].content.controls[2].controls[1:],
+        e=None, 
+        schedule_data=schedule_data, 
+        page=page, 
+        calendar=tabs.tabs[0].content.controls[2].controls[1:],
         card_name=locate_labels[0],#初回起動時はtab==ICUなのでlocate_labels[0]を渡す
     )
 ft.app(main)

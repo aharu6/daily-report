@@ -123,7 +123,7 @@ class UpdateCard:
                             # デフォルトの行を追加
                             default_row = ft.DataRow(
                                 cells=[
-                                    ft.DataCell(ft.Text("name")),
+                                    ft.DataCell(ft.Text("担当者名")),
                                     ft.DataCell(ft.Text("AM or PM"))
                                 ]
                             )

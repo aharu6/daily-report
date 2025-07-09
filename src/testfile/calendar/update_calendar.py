@@ -80,7 +80,7 @@ class UpdateCalendar:
                             j.bgcolor = ft.colors.GREEN
                             print(f"cell{j}")
                     else:
-                        j.bgcolor=''
+                        j.bgcolor=ft.colors.WHITE  # データがない場合は白色に戻す
                     j.update()
                     
                 else:
