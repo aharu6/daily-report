@@ -1,7 +1,7 @@
 import flet as ft
 class UpdateCalendar:
     @staticmethod
-    def update_calendar_with_schedule_data(e, schedule_data, page, calendar,card_name):
+    def update_calendar_with_schedule_data(e, schedule_data, page, calendar,card_name,filter_name):
         """
         カレンダーのセルをデータに応じて更新する
         データがあればカレンダーft.Container(bgcolor=)の色をつける
@@ -40,7 +40,6 @@ class UpdateCalendar:
         以後cardが続く
 
         """
-        print("update_calendar_with_schedule_data:card_name:", card_name)
         if not schedule_data:
             try:
                 schedule_data = page.client_storage.get("schedule_data")
@@ -50,11 +49,26 @@ class UpdateCalendar:
                 schedule_data = []
         else:
             schedule_data = schedule_data
-        print(schedule_data)
         
         # schedule_dataからcard_nameに該当するデータを抽出
-        filtered_data = [data for data in schedule_data if data['locate'] == card_name]
-        print(f"filtered_data: {filtered_data}")
+        #病棟絞り込みページの時にはcard_nameに渡される病棟名を利用する
+        if card_name:
+            filtered_data = [data for data in schedule_data if data['locate'] == card_name]
+        #個人名絞り込みの時にはチェックボックスで該当する名前の一覧だけで絞り込みを行う(filter_name)
+        #名前は複数選択することができるので、filter_nameはリストになっている
+        #リスト内に存在する名前で絞り込みデータを作成する
+        elif filter_name:
+            filtered_data=[]
+            for i in filter_name:
+                for data in schedule_data:
+                    if data["phName"]==i:
+                        filtered_data.append(data)
+                    else:pass
+
+        else:#card_nameもfilter_nameも存在しない場合には関数を修了する
+            # 何もチエックボックスを選択せずに更新ボタンを押した場合の処理
+            return
+
         #calendarの長さ
         for i,control in enumerate(calendar):
             if isinstance(control,ft.Row):#calendar[i]== ft.Rowならその中に一週間分の日付セルが入っている
@@ -70,18 +84,17 @@ class UpdateCalendar:
                             # 日付の比較処理　完全一致の場合にmatching_dataに追加
                             if isinstance(data_date, str) and date_text==data_date:
                                 matching_data.append(data)
-                    print(f"date:{date_text} ,matching_data: {matching_data}")
                     # 午前データと午後データが両方揃っている場合に色をつける
                     if matching_data:
                         has_am=any(data["time"] =="am" for data in matching_data)
                         has_pm=any(data["time"] =="pm" for data in matching_data)
-                        print(f"has_am{has_am},has/pm{has_pm}")
                         if has_am and has_pm:
                             j.bgcolor = ft.colors.GREEN
-                            print(f"cell{j}")
                     else:
                         j.bgcolor=ft.colors.WHITE  # データがない場合は白色に戻す
                     j.update()
                     
                 else:
                     pass
+            else:
+                pass

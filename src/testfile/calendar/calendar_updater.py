@@ -93,8 +93,29 @@ class CalendarUpdater:
             card=tab_calendar.controls[calendar_controls_content:]
         )
 
+        print(f"tab_calendar.controls: {tab_calendar.controls}")
         #カレンダーセルの色を更新
         UpdateCalendar.update_calendar_with_schedule_data(
-            e=e, schedule_data=schedule_data, page=page, calendar=tab_calendar.controls[calendar_controls_content:],
-            card_name=label,
+            e=e, schedule_data=schedule_data, page=page, calendar=tab_calendar.controls,
+            card_name=label,filter_name=None
         )
+
+    @staticmethod
+    def personal_filter(check_names, checkboxes):
+        check_names.clear()
+        for checkbox in checkboxes.controls:
+            if isinstance(checkbox, ft.Checkbox) and checkbox.value:
+                check_names.append(checkbox.data)
+                print(f"選択された名前: {checkbox.data}")
+            return check_names
+        
+    #個人名絞り込みのページにおいて、update_calendar_with_schedule_dataとpersonal_filterを統合した関数
+    @staticmethod
+    def update_calendar_with_personal_data(e, schedule_data, page, checkboxes, tab_calendar):
+        check_names = []
+        CalendarUpdater.personal_filter(check_names=check_names, checkboxes=checkboxes)
+        print(check_names)
+        UpdateCalendar.update_calendar_with_schedule_data(
+                e=e,schedule_data=schedule_data,page=page,calendar=tab_calendar,card_name=None,
+                filter_name=check_names
+            )#label=絞り込んだチェックボックスに入れた名前のリスト　絞り込みの対象リスト

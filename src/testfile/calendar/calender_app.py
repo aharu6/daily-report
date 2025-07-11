@@ -32,7 +32,7 @@ def main(page: ft.Page):
     )
     #起動時、前回読み込んだフォルダがある場合には名前を表示する
     try:
-        folder_name.value=f"選択中のフォルダ名{page.client_storage.get("folder_name")}"
+        folder_name.value=f"選択中のフォルダ名{page.client_storage.get('folder_name')}"
     except:
         pass
 
@@ -76,10 +76,13 @@ def main(page: ft.Page):
     def handle_filter_change(e,tabs):
         if e.control.value==True:
             tabs.tabs=[
-                ft.Tab(text=label, content=TabContentCreator.create_tab_content(label, page, schedule_data)) for label in locate_labels
+                ft.Tab(text=label, content=TabContentCreator.create_tab_content(label=label, page=page, schedule_data=schedule_data)) for label in locate_labels
             ]
         elif e.control.value==False:
-            tabs.tabs=[ft.Tab(text="個人名絞り込み")]
+            tabs.tabs=[ft.Tab(
+                text="個人名絞り込み",
+                content=TabContentCreator.create_tab_content(label="個人名絞り込み",page=page,schedule_data=schedule_data)
+            )]
         tabs.update()
     
     #　病棟絞り込みと名前絞り込み機能の切り替え
@@ -103,5 +106,6 @@ def main(page: ft.Page):
         page=page, 
         calendar=tabs.tabs[0].content.controls[2].controls[1:],
         card_name=locate_labels[0],#初回起動時はtab==ICUなのでlocate_labels[0]を渡す
+        filter_name=None
     )
 ft.app(main)

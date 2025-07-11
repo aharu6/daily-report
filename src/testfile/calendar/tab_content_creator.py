@@ -4,7 +4,6 @@ from create_calendar import CreateCalendar
 from update_card import UpdateCard
 from update_calendar import UpdateCalendar
 from calendar_updater import CalendarUpdater
-
 class TabContentCreator:
     @staticmethod
     def create_tab_content(label,page, schedule_data,):
@@ -50,42 +49,89 @@ class TabContentCreator:
         def update_card_calender(e, schedule_data, page, label, tab_calendar):
             """カードとカレンダーの更新"""
             CalendarUpdater.update_card_calendar(
-                e=e, schedule_data=schedule_data, page=page, label=label, tab_calendar=tab_calendar
-            )
+                e=e, schedule_data=schedule_data, page=page, label=label, tab_calendar=tab_calendar,
+                )
         
         #更新ボタン
         update_button=ft.ElevatedButton(
             text="更新",
-            on_click=lambda e: update_card_calender(e, schedule_data, page, label, tab_calendar)    ,
             icon=ft.icons.REFRESH,
         )
         # 日付ごとのカードの作成
-        new_cards = UpdateCard.create_card_for_month(year=tab_calendar.year, month=tab_calendar.month, label=label)
-        for index, card in enumerate(new_cards):
+        #label==病棟名と　個人名絞り込みで場合分けする
+        if label=="個人名絞り込み":
+            
+            #schedule_data=[] の場合はclientstorageからデータを取得する
+            if not schedule_data:
+                try:
+                    schedule_data = page.client_storage.get("schedule_data")
+                    if schedule_data is None:
+                        schedule_data = []
+                except Exception as e:
+                    schedule_data = []
+            else:
+                schedule_data = schedule_data   #あればそのまま使用する
+                pass  # 個人名絞り込みの場合はカードを作成しない
+
+            #schedule_dataからユニークな名前データを抽出してチェックボックスを作成する
+            unique_names =set(item["phName"] for item in schedule_data if "phName" in item)
+            checkboxes=ft.ResponsiveRow(
+                controls=[
+                    ft.Checkbox(
+                        label=name,
+                        value=False,
+                        data=name,
+                    )
+                    for name in unique_names
+                ]
+            )
             tab_calendar.controls.append(
-                ft.Card(
-                    content=ft.Column(
-                        controls=[
-                            ft.Text(f"{tab_calendar.month}月{index + 1}日"),
-                            ft.DataTable(
-                                columns=[
-                                    ft.DataColumn(label=ft.Text("name"), numeric=True),
-                                    ft.DataColumn(label=ft.Text("AM or PM"), numeric=True),
-                                ],
-                                rows=[
-                                    ft.DataRow(
-                                        cells=[
-                                            ft.DataCell(ft.Text("担当者名")),
-                                            ft.DataCell(ft.Text("AM or PM"))
-                                        ]
-                                    )   # 仮のデータ行
-                                ]
-                            )
-                        ],
-                        data={"date": f"{tab_calendar.year}-{tab_calendar.month:01d}-{index + 1:01d}", "locate": label},  # カードに日付
+                ft.Text("絞り込みを行う名前を選択、選択後は再度更新ボタンを押す"),
+            )
+            tab_calendar.controls.append(
+                checkboxes
+            )                
+            #更新ボタンの関数定義
+            update_button.on_click=lambda e:CalendarUpdater.update_calendar_with_personal_data(
+                e=e,schedule_data=schedule_data,page=page,checkboxes=checkboxes,tab_calendar=tab_calendar,
+            )
+            #update_calender_with_schedule_data関数とpersonal_filter関数の両方が必要
+            #update_calender_with_personal_data関数を呼び出す
+
+        else:#病棟絞り込みの場合
+            #更新ボタン関数
+            update_button.on_click=lambda e: update_card_calender(
+                e=e, schedule_data=schedule_data, page=page, label=label,
+                tab_calendar=tab_calendar
+            )
+
+            #日付カード
+            new_cards = UpdateCard.create_card_for_month(year=tab_calendar.year, month=tab_calendar.month, label=label)
+            for index, card in enumerate(new_cards):
+                tab_calendar.controls.append(
+                    ft.Card(
+                        content=ft.Column(
+                            controls=[
+                                ft.Text(f"{tab_calendar.month}月{index + 1}日"),
+                                ft.DataTable(
+                                    columns=[
+                                        ft.DataColumn(label=ft.Text("name"), numeric=True),
+                                        ft.DataColumn(label=ft.Text("AM or PM"), numeric=True),
+                                    ],
+                                    rows=[
+                                        ft.DataRow(
+                                            cells=[
+                                                ft.DataCell(ft.Text("担当者名")),
+                                                ft.DataCell(ft.Text("AM or PM"))
+                                            ]
+                                        )   # 仮のデータ行
+                                    ]
+                                )
+                            ],
+                            data={"date": f"{tab_calendar.year}-{tab_calendar.month:01d}-{index + 1:01d}", "locate": label},  # カードに日付
+                        )
                     )
                 )
-            )
         # タブのコンテンツを作成
         tab_content = ft.Column(controls=[arrow_navigation, update_button, tab_calendar])
 
