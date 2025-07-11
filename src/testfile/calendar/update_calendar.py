@@ -69,10 +69,15 @@ class UpdateCalendar:
             # 何もチエックボックスを選択せずに更新ボタンを押した場合の処理
             return
 
+        if isinstance(calendar, ft.Column):
+            calendar_controls=calendar.controls
+        else:
+            calendar_controls=calendar
+
         #calendarの長さ
-        for i,control in enumerate(calendar):
+        for i,control in enumerate(calendar_controls):
             if isinstance(control,ft.Row):#calendar[i]== ft.Rowならその中に一週間分の日付セルが入っている
-                for j in calendar[i].controls:
+                for j in control.controls:
                     date_text=""
                     if j.data and isinstance(j.data, dict):
                         date_text = j.data["date"]
