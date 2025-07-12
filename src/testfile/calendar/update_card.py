@@ -60,8 +60,11 @@ class UpdateCard:
                 schedule_data = []
         else:
             schedule_data = schedule_data   #あればそのまま使用する
-
-        filtered_data= [data for data in schedule_data if data['locate'] == card_name]
+        
+        if card_name:
+            filtered_data= [data for data in schedule_data if data['locate'] == card_name]
+        else:return
+        #cardの時は個人名絞り込みには再利用されないのでelifは必要なし
         #カードの内容を更新
         #card の中にtab_calendar.controlsが入っている
         #中のft.Cardを更新する
@@ -79,7 +82,7 @@ class UpdateCard:
                         if 'date' in data:
                             data_date = data['date']
                             # 日付の比較処理　完全一致の場合にmatching_dataに追加
-                            if isinstance(data_date, str) and date_text in data_date:
+                            if isinstance(data_date, str) and date_text == data_date:
                                 matching_data.append(data)
                     # マッチするデータがある場合、DataTableの行を更新
                     #午前データならばdatacellの0番目に

@@ -181,7 +181,7 @@ class CalendarUpdater:
         #カレンダーセルの色を更新
         UpdateCalendar.update_calendar_with_schedule_data(
             e=e, schedule_data=schedule_data, page=page, calendar=tab_calendar.controls[calendar_controls_content:],
-            card_name=label,
+            card_name=label, filter_name=None
         )
 
 
