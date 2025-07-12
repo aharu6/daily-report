@@ -57,7 +57,6 @@ class TabContentCreator:
 
         # カレンダー更新時に年月表示,カードも更新する関数
         def update_calendar_and_text(e, is_forward=True,switch_value=switch_value):
-            print(f"Switch value: {switch_value}")
             CalendarUpdater.update_calendar_and_text(
                 e=e, is_forward=is_forward, page=page, tab_calendar=tab_calendar,
                 label=label, schedule_data=schedule_data, tab_header=tab_header,

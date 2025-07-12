@@ -17,7 +17,7 @@ class CreateCalendar:
                 height=cell_height,
                 width=cell_width,
                 alignment=ft.alignment.center,
-                bgcolor=None,
+                bgcolor=ft.colors.WHITE,  # 曜日部分の背景色
                 ) for day in weekdays],
             alignment=ft.MainAxisAlignment.CENTER,
         )
