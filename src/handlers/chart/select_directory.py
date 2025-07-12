@@ -230,7 +230,6 @@ class SelectDirectoryHandler:
                     #午前が含まれるのは0行目から15行目まで
                     #ユニークな文字列を取得する
                     am_locate=df["locate"].head(16).unique()
-                    print(f"午前の病棟名: {am_locate}filename: {file}")
                     result_am=any(loc in l for l in am_locate for loc in AM_location)
                     if result_am== True:
                         result_location_files_am.append(file)

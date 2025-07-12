@@ -336,16 +336,13 @@ class TimelinePage:
             self.selectColumns[14].visible = True  # WG活動
             self.selectColumns[15].visible = True  # 1on1
 
-            self.selectColumns[26].visible = True  # 業務調整
-            self.selectColumns[27].visible = True  # 休憩
-            self.selectColumns[28].visible = True  # その他
             # 非表示
             self.selectColumns[0].visible = False  # 情報収集　指導
             self.selectColumns[1].visible = False  # 指導記録作成
             self.selectColumns[2].visible = False  # 混注時間
             self.selectColumns[3].visible = False  # 薬剤セット・確認
             self.selectColumns[4].visible = False  # 持参薬を確認
-            self.selectColumns[5].visible = False  # 薬剤服用歴等について保険k薬局へ照会
+            self.selectColumns[5].visible = False  # 薬剤服用歴等について保険薬局へ照会
             self.selectColumns[6].visible = False  # 処方代理修正
             self.selectColumns[7].visible = False  # TDM実施
             self.selectColumns[8].visible = False  # カンファレンス
@@ -354,30 +351,38 @@ class TimelinePage:
             self.selectColumns[11].visible = False  # その他の職種からの相談
 
             self.selectColumns[16].visible = False  # ICT/AST
-            self.selectColumns[17].visible = False  # 褥瘡
-            self.selectColumns[18].visible = False  # TPN評価
+            self.selectColumns[17].visible = False  # 抗菌薬相談対応（新位置）
+            self.selectColumns[18].visible = False  # 褥瘡
             self.selectColumns[19].visible = False  # TPN評価
-            self.selectColumns[20].visible = False  # 手術使用薬剤確認
+            self.selectColumns[20].visible = False  # 手術後使用薬剤確認
             self.selectColumns[21].visible = False  # 手術使用薬剤準備
             self.selectColumns[22].visible = False  # 周術期薬剤管理関連
-            self.selectColumns[23].visible = False  # 手術使用麻薬確認・補充
-            self.selectColumns[24].visible = False  # 術後疼痛管理チーム回診
-            self.selectColumns[25].visible = False  # 脳卒中ホットライン対応
+            self.selectColumns[23].visible = False  # 麻酔科周術期外来
+            self.selectColumns[24].visible = False  # 手術使用麻薬確認・補充
+            self.selectColumns[25].visible = False  # 術後疼痛管理チーム回診
+            self.selectColumns[26].visible = False  # 脳卒中ホットライン対応
 
-            self.selectColumns[29].visible = False  # 管理業務
-            self.selectColumns[30].visible = False  # NST
-            self.selectColumns[31].visible = False  # 問い合わせ応需
-            self.selectColumns[32].visible = False  # マスター作成・変更
-            self.selectColumns[33].visible = False  # 薬剤情報評価
-            self.selectColumns[34].visible = False  # 後発品選定
-            self.selectColumns[35].visible = False  # 会議資料作成
-            self.selectColumns[36].visible = False  # 配信資料作成
-            self.selectColumns[37].visible = False  # フォーミュラリー作成  
-            self.selectColumns[38].visible = False  # 外来処方箋修正
-            self.selectColumns[39].visible = False  # 勉強会資料作成・開催
-            self.selectColumns[40].visible = False  #  お役立ち情報作成
-            self.selectColumns[41].visible = False  #  薬剤使用期限
-            self.selectColumns[42].visible = False  #  抗菌薬相談対応
+            self.selectColumns[27].visible = True   # 業務調整
+            self.selectColumns[28].visible = True   # 休憩
+            self.selectColumns[29].visible = True   # その他
+
+            self.selectColumns[30].visible = False  # 管理業務
+            self.selectColumns[31].visible = False  # NST
+            self.selectColumns[32].visible = False  # 問い合わせ応需
+            self.selectColumns[33].visible = False  # マスター作成・変更
+            self.selectColumns[34].visible = False  # 薬剤情報評価
+            self.selectColumns[35].visible = False  # 後発品選定
+            self.selectColumns[36].visible = False  # 会議資料作成
+            self.selectColumns[37].visible = False  # 配信資料作成
+            self.selectColumns[38].visible = False  # フォーミュラリー作成
+            self.selectColumns[39].visible = False  # 外来処方箋修正
+            self.selectColumns[40].visible = False  #  勉強会資料作成・開催
+            self.selectColumns[41].visible = False  #  お役立ち情報作成
+            self.selectColumns[42].visible = False  #  薬剤使用期限確認
+            self.selectColumns[43].visible = False  # 事前準備
+            self.selectColumns[44].visible = False  # カンファ・ラウンド  
+            self.selectColumns[45].visible = False  # 記録作成  
+
 
         self.time_for_visual_label = []
 
@@ -659,8 +664,7 @@ class TimelinePage:
                 ft.Text("1,2F"),
                 ft.Text("役職者・管理業務"),
                 ft.Text("その他"),
-                ft.Text("ICT/AST"),
-                ft.Text("NST"),
+                ft.Text("ICT/AST/NST/緩和・回診"),
                 ft.Text("DI担当者"),
                 ],
             ),
