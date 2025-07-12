@@ -93,7 +93,6 @@ class CalendarUpdater:
             card=tab_calendar.controls[calendar_controls_content:]
         )
 
-        print(f"tab_calendar.controls: {tab_calendar.controls}")
         #カレンダーセルの色を更新
         UpdateCalendar.update_calendar_with_schedule_data(
             e=e, schedule_data=schedule_data, page=page, calendar=tab_calendar.controls,
@@ -111,11 +110,30 @@ class CalendarUpdater:
         
     #個人名絞り込みのページにおいて、update_calendar_with_schedule_dataとpersonal_filterを統合した関数
     @staticmethod
-    def update_calendar_with_personal_data(e, schedule_data, page, checkboxes, tab_calendar):
-        check_names = []
-        CalendarUpdater.personal_filter(check_names=check_names, checkboxes=checkboxes)
-        print(check_names)
+    def update_calendar_with_personal_data(e,  page, checkboxes, tab_calendar):
+        #スケジュールデータの更新
+        #パラメーターとしてschedule_dataを渡すと最新データに更新されないので、ここでclient_storageに保存されているデータから読み込み直す
+        schedule_data = CalendarUpdater.update_schedule_data(page=page, schedule_data=None)
+        #チェックボックス選択データの入力
+        check_names = CalendarUpdater.personal_filter(check_names=[], checkboxes=checkboxes)
+        #
         UpdateCalendar.update_calendar_with_schedule_data(
                 e=e,schedule_data=schedule_data,page=page,calendar=tab_calendar,card_name=None,
                 filter_name=check_names
             )#label=絞り込んだチェックボックスに入れた名前のリスト　絞り込みの対象リスト
+        
+
+    @staticmethod
+    def update_schedule_data(page,schedule_data):
+        """スケジュールデータを更新し、ページに保存
+        
+        Args:
+            schedule_data: 更新するスケジュールデータ
+            page: ページオブジェクト
+        """
+        schedule_data=page.client_storage.get("schedule_data")
+        if schedule_data is None:
+            schedule_data = []
+        else:
+            schedule_data = schedule_data
+        return schedule_data

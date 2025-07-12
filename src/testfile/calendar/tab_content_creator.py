@@ -60,6 +60,7 @@ class TabContentCreator:
         # 日付ごとのカードの作成
         #label==病棟名と　個人名絞り込みで場合分けする
         if label=="個人名絞り込み":
+
             
             #schedule_data=[] の場合はclientstorageからデータを取得する
             if not schedule_data:
@@ -93,7 +94,7 @@ class TabContentCreator:
             )                
             #更新ボタンの関数定義
             update_button.on_click=lambda e:CalendarUpdater.update_calendar_with_personal_data(
-                e=e,schedule_data=schedule_data,page=page,checkboxes=checkboxes,tab_calendar=tab_calendar,
+                e=e,page=page,checkboxes=checkboxes,tab_calendar=tab_calendar,
             )
             #update_calender_with_schedule_data関数とpersonal_filter関数の両方が必要
             #update_calender_with_personal_data関数を呼び出す

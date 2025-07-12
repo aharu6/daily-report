@@ -37,7 +37,7 @@ def main(page: ft.Page):
         pass
 
     file_picker = ft.FilePicker(
-        on_result = lambda e:ReadFolder.read_folder(e=e, schedule_data=schedule_data, page=page,folder_name=folder_name),
+        on_result = lambda e:ReadFolder.read_folder(e=e, schedule_data=schedule_data, page=page,folder_name=folder_name,checkboxes=tabs.tabs[0].content.controls[2].controls[7] if change_filter.value==False else None),
     )
     
     page.overlay.append(file_picker)

@@ -58,6 +58,7 @@ class UpdateCalendar:
         #名前は複数選択することができるので、filter_nameはリストになっている
         #リスト内に存在する名前で絞り込みデータを作成する
         elif filter_name:
+            print(f"絞り込み対象の名前: {filter_name}")
             filtered_data=[]
             for i in filter_name:
                 for data in schedule_data:
