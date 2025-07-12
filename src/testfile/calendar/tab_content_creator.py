@@ -101,10 +101,25 @@ class TabContentCreator:
         # 日付ごとのカードの作成
         #label==病棟名と　個人名絞り込みで場合分けする
         if label=="個人名絞り込み":
-            #更新ボタンの関数定義
-            update_button.on_click=lambda e:CalendarUpdater.update_calendar_with_personal_data(
-                e=e,page=page,checkboxes=checkboxes,tab_calendar=tab_calendar,
-            )
+            #更新ボタンの関数定義 - 動的に最新のチェックボックスを取得
+            def update_with_current_checkboxes(e):
+                # tab_calendarから最新のチェックボックスを動的に取得
+                current_checkboxes = None
+                for control in tab_calendar.controls:
+                    if isinstance(control, ft.ResponsiveRow):
+                        # ResponsiveRowの中にチェックボックスがあるかチェック
+                        if control.controls and isinstance(control.controls[0], ft.Checkbox):
+                            current_checkboxes = control
+                            break
+                
+                if current_checkboxes:
+                    CalendarUpdater.update_calendar_with_personal_data(
+                        e=e, page=page, checkboxes=current_checkboxes, tab_calendar=tab_calendar
+                    )
+                else:
+                    print("現在のチェックボックスが見つかりません")
+            
+            update_button.on_click = update_with_current_checkboxes
             #update_calender_with_schedule_data関数とpersonal_filter関数の両方が必要
             #update_calender_with_personal_data関数を呼び出す
 

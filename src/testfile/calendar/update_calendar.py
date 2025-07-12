@@ -52,6 +52,7 @@ class UpdateCalendar:
         
         # schedule_dataからcard_nameに該当するデータを抽出
         #病棟絞り込みページの時にはcard_nameに渡される病棟名を利用する
+        print(f"更新対象の名前: {filter_name}")
         if card_name:
             filtered_data = [data for data in schedule_data if data['locate'] == card_name]
         #個人名絞り込みの時にはチェックボックスで該当する名前の一覧だけで絞り込みを行う(filter_name)
