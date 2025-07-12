@@ -217,7 +217,7 @@ class ChoiceChangeHandlers:
                 selectColumns[45].visible = False  # 記録作成
 
                 page.update()
-            case 4:  # ICT/AST/NST/緩和・回診"
+            case 4:  # ICT/AST/NST/緩和・回診
                 # 表示
                 selectColumns[16].visible = True  # ICT/AST
                 selectColumns[17].visible = True  # 抗菌薬相談対応

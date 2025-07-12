@@ -36,7 +36,7 @@ class UpdateCard:
                             ]
                         )
                     ],
-                    data={"date": f"{year}-{month:01d}-{day:01d}", "locate": label},  
+                    data={"date": f"{year}-{month:02d}-{day:02d}", "locate": label},  
                 ),
             )
             cards.append(card)

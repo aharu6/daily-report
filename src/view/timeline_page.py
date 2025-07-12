@@ -374,7 +374,7 @@ class TimelinePage:
             self.selectColumns[35].visible = False  # 後発品選定
             self.selectColumns[36].visible = False  # 会議資料作成
             self.selectColumns[37].visible = False  # 配信資料作成
-            self.selectColumns[38].visible = False  # フォームラリー作成
+            self.selectColumns[38].visible = False  # フォーミュラリー作成
             self.selectColumns[39].visible = False  # 外来処方箋修正
             self.selectColumns[40].visible = False  #  勉強会資料作成・開催
             self.selectColumns[41].visible = False  #  お役立ち情報作成
