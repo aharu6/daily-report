@@ -5,7 +5,7 @@ from update_calendar import UpdateCalendar
 
 class CalendarUpdater:
     @staticmethod
-    def update_calendar_and_text(e, is_forward, page, tab_calendar, label, schedule_data, tab_header):
+    def update_calendar_and_text(e, is_forward, page, tab_calendar, label, schedule_data, tab_header, switch_value):
         """カレンダー更新時に年月表示、カードも更新する関数
         
         Args:
@@ -17,6 +17,109 @@ class CalendarUpdater:
             schedule_data: スケジュールデータ
             tab_header: 年月表示用テキスト
         """
+        # switch_valueがFalse（個人名絞り込み）の場合はチェックボックスを保持
+        if switch_value is False:
+            # チェックボックス要素を一時保存（月変更前に実行）
+            saved_checkboxes = []
+            checkbox_container = None
+            
+            def find_checkboxes_recursive(element):
+                """再帰的にチェックボックスを探す関数"""
+                checkboxes = []
+                
+                # 直接チェックボックスかどうかを確認
+                if isinstance(element, ft.Checkbox):
+                    print(f"Found checkbox: {element.label}, value: {element.value}")
+                    checkboxes.append({
+                        'label': element.label,
+                        'value': element.value,
+                        'data': element.data,
+                    })
+                    return checkboxes
+                
+                # controlsプロパティがある場合、その中を検索
+                if hasattr(element, 'controls') and element.controls:
+                    for control in element.controls:
+                        checkboxes.extend(find_checkboxes_recursive(control))
+                
+                # contentプロパティがある場合、その中を検索
+                if hasattr(element, 'content') and element.content:
+                    checkboxes.extend(find_checkboxes_recursive(element.content))
+                
+                return checkboxes
+
+            # チェックボックスを保存
+            saved_checkboxes = find_checkboxes_recursive(tab_calendar)
+
+            # チェックボックスのコンテナを探す
+            def find_checkbox_container(element):
+                if hasattr(element, 'controls') and element.controls:
+                    for control in element.controls:
+                        if isinstance(control, ft.Checkbox):
+                            return element
+                        # ResponsiveRowの場合、その中のチェックボックスを確認
+                        if hasattr(control, 'controls') and control.controls:
+                            for sub_control in control.controls:
+                                if isinstance(sub_control, ft.Checkbox):
+                                    return control
+                        container = find_checkbox_container(control)
+                        if container:
+                            return container
+                if hasattr(element, 'content') and element.content:
+                    return find_checkbox_container(element.content)
+                return None
+
+            checkbox_container = find_checkbox_container(tab_calendar)
+
+            # 月を変更
+            if is_forward:
+                CreateCalendar.forward_month(e=e, page=page, calendar=tab_calendar, card_name=label)
+            else:
+                CreateCalendar.back_month(e=e, page=page, calendar=tab_calendar, card_name=label)
+
+            # 年月表示を更新
+            tab_header.value = f"{tab_calendar.year}年{tab_calendar.month}月"
+            tab_header.update()
+
+            # カレンダーセルの色のみ更新
+            UpdateCalendar.update_calendar_with_schedule_data(
+                e=e, schedule_data=schedule_data, page=page, calendar=tab_calendar.controls,
+                card_name=None, filter_name=None
+            )
+            
+            # チェックボックスを復元（状態も含めて）
+            if saved_checkboxes:
+                # 説明テキストを追加
+                has_instruction_text = False
+                for control in tab_calendar.controls:
+                    if isinstance(control, ft.Text) and "絞り込みを行う名前を選択" in str(control.value):
+                        has_instruction_text = True
+                        break
+                
+                if not has_instruction_text:
+                    tab_calendar.controls.append(
+                        ft.Text("絞り込みを行う名前を選択、選択後は再度更新ボタンを押す")
+                    )
+                
+                # チェックボックスを復元
+                restored_checkboxes = []
+                for checkbox_data in saved_checkboxes:
+                    new_checkbox = ft.Checkbox(
+                        label=checkbox_data['label'],
+                        value=checkbox_data['value'],  # 選択状態を復元
+                        data=checkbox_data['data'],
+                    )
+                    restored_checkboxes.append(new_checkbox)
+                
+                # ResponsiveRowでチェックボックスをラップ
+                checkbox_row = ft.ResponsiveRow(controls=restored_checkboxes)
+                tab_calendar.controls.append(checkbox_row)
+                print(f"復元したチェックボックスの数: {len(restored_checkboxes)}")
+            
+            tab_calendar.update()
+            return
+
+        # 通常の処理（病棟絞り込みの場合）
         if is_forward:
             CreateCalendar.forward_month(e=e, page=page, calendar=tab_calendar, card_name=label)
         else:
@@ -25,7 +128,7 @@ class CalendarUpdater:
         # 年月表示を更新
         tab_header.value = f"{tab_calendar.year}年{tab_calendar.month}月"
         tab_header.update()
-
+        
         #カードの更新
         #既存のカードを削除
         calendar_controls_content = len([control for control in tab_calendar.controls if not isinstance(control, ft.Card)])
@@ -72,6 +175,7 @@ class CalendarUpdater:
             e=e, schedule_data=schedule_data, page=page, calendar=tab_calendar.controls[calendar_controls_content:],
             card_name=label,
         )
+
 
     @staticmethod
     def update_card_calendar(e, schedule_data, page, label, tab_calendar):

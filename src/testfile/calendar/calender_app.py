@@ -61,7 +61,7 @@ def main(page: ft.Page):
     tabs=ft.Tabs(
         selected_index=0,
         tabs=[
-            ft.Tab(text=label, content=TabContentCreator.create_tab_content(label=label, page=page, schedule_data=schedule_data)) for label in locate_labels
+            ft.Tab(text=label, content=TabContentCreator.create_tab_content(label=label, page=page, schedule_data=schedule_data,switch_value=None)) for label in locate_labels
         ],
         expand=True,
         animation_duration=300,
@@ -76,12 +76,15 @@ def main(page: ft.Page):
     def handle_filter_change(e,tabs):
         if e.control.value==True:
             tabs.tabs=[
-                ft.Tab(text=label, content=TabContentCreator.create_tab_content(label=label, page=page, schedule_data=schedule_data)) for label in locate_labels
+                ft.Tab(text=label, content=TabContentCreator.create_tab_content(label=label, page=page, schedule_data=schedule_data,switch_value=None)) for label in locate_labels
             ]
         elif e.control.value==False:
             tabs.tabs=[ft.Tab(
                 text="個人名絞り込み",
-                content=TabContentCreator.create_tab_content(label="個人名絞り込み",page=page,schedule_data=schedule_data)
+                content=TabContentCreator.create_tab_content(
+                    label="個人名絞り込み",page=page,schedule_data=schedule_data,
+                    switch_value=e.control.value
+                    )
             )]
         tabs.update()
     
