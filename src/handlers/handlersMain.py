@@ -10,4 +10,6 @@ class Handlers_Main:
         elif selected_index == 1:
             page.go("/chart")
         elif selected_index == 2:
+            page.go("/calendar")
+        elif selected_index == 3:
             page.go("/settings")
