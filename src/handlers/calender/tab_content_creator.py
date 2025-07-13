@@ -83,6 +83,13 @@ class TabContentCreator:
             # ヘッダーを更新
             tab_header.value = f"{next_year}年{next_month}月"
             
+            # 個人名絞り込みの場合はチェックボックスを再追加
+            if label == "個人名絞り込み":
+                tab_calendar.controls.append(
+                    ft.Text("絞り込みを行う名前を選択、選択後は再度更新ボタンを押す"),
+                )
+                tab_calendar.controls.append(checkboxes)
+            
             # カードを追加（病棟絞り込みの場合のみ）
             if label != "個人名絞り込み":
                 new_cards = UpdateCard.create_card_for_month(next_year, next_month, label)
@@ -118,11 +125,21 @@ class TabContentCreator:
             if label == "個人名絞り込み":
                 # 個人名絞り込みの場合の処理
                 selected_names = []
-                for control in tab_calendar.controls:
-                    if isinstance(control, ft.ResponsiveRow):
-                        for checkbox in control.controls:
-                            if isinstance(checkbox, ft.Checkbox) and checkbox.value:
-                                selected_names.append(checkbox.data)
+                
+                # checkboxes変数を使用してより直接的にアクセス
+                if checkboxes:
+                    for checkbox in checkboxes.controls:
+                        if isinstance(checkbox, ft.Checkbox) and checkbox.value:
+                            selected_names.append(checkbox.data)
+                else:
+                    # フォールバック：元のロジック
+                    for control in tab_calendar.controls:
+                        if isinstance(control, ft.ResponsiveRow):
+                            for checkbox in control.controls:
+                                if isinstance(checkbox, ft.Checkbox) and checkbox.value:
+                                    selected_names.append(checkbox.data)
+                
+                print(f"Selected names: {selected_names}")
                 
                 # 選択された名前でフィルタリング
                 filtered_data = [
@@ -130,11 +147,24 @@ class TabContentCreator:
                     if item.get("phName") in selected_names
                 ]
                 
-                # カレンダーの色を更新
+                print(f"Filtered data count: {len(filtered_data)}")
+                print(f"Filtered data sample: {filtered_data[:3] if filtered_data else 'None'}")
+                
+                # カレンダーの色を更新（個人名絞り込みの場合は純粋なカレンダー部分のみ）
+                calendar_controls = []
+                for control in tab_calendar.controls:
+                    if hasattr(control, 'controls') and len(control.controls) > 0:
+                        # カレンダーの行（Rowオブジェクト）のみを抽出
+                        if hasattr(control.controls[0], 'content') or hasattr(control.controls[0], 'data'):
+                            calendar_controls.append(control)
+                
+                print(f"Calendar controls count: {len(calendar_controls)}")
+                
                 UpdateCalendar.update_calendar_with_schedule_data(
                     e, filtered_data, page, 
-                    tab_calendar.controls[1:], # カレンダー部分のみ
-                    label
+                    calendar_controls, # カレンダーの行のみ
+                    None,  # 個人名絞り込みの場合はcard_nameをNoneにする
+                    None   # filter_nameも明示的にNoneを指定
                 )
             else:
                 # 病棟絞り込みの場合
