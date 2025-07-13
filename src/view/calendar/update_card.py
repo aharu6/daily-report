@@ -18,8 +18,8 @@ class UpdateCard:
                         ft.Text(f"{year}年{month}月{day}日"),
                         ft.DataTable(
                             columns=[
-                                ft.DataColumn(label=ft.Text("担当者名")),
-                                ft.DataColumn(label=ft.Text("病棟名")),
+                                ft.DataColumn(label=ft.Text("担当者名"), numeric=True),
+                                ft.DataColumn(label=ft.Text("病棟名"), numeric=True),
                             ],
                             rows=[
                                 ft.DataRow(cells=[
@@ -36,30 +36,168 @@ class UpdateCard:
         return cards
     
     @staticmethod
-    def update_cards_with_schedule_data(schedule_data, e, page, card_name, card):
+    def update_cards_with_schedule_data(e, schedule_data, page, card_name, card):
         """カードの内容をスケジュールデータで更新"""
+        # schedule_data=[] の場合はclientstorageからデータを取得する
         if not schedule_data:
+            try:
+                schedule_data = page.client_storage.get("schedule_data")
+                if schedule_data is None:
+                    schedule_data = []
+            except Exception as e:
+                schedule_data = []
+        else:
+            schedule_data = schedule_data   # あればそのまま使用する
+        print("schedule_data:", schedule_data)        
+        if not card_name:
             return
         
-        # スケジュールデータに基づいてカードを更新
-        for item in schedule_data:
-            if item.get("locate") == card_name:
-                # カードの内容を更新
-                date = item.get("date")
-                name = item.get("phName", "不明")
-                locate = item.get("locate", "不明")
-                
-                # 対応するカードを見つけて更新
-                for card_item in card:
-                    if hasattr(card_item, 'content') and hasattr(card_item.content, 'data'):
-                        if card_item.content.data.get("date") == date:
-                            # DataTableの行を更新
-                            if card_item.content.controls and len(card_item.content.controls) > 1:
-                                data_table = card_item.content.controls[1]
-                                if hasattr(data_table, 'rows'):
-                                    data_table.rows = [
-                                        ft.DataRow(cells=[
-                                            ft.DataCell(ft.Text(name)), 
-                                            ft.DataCell(ft.Text(locate))
-                                        ])
-                                    ]
+        if card_name:
+            filtered_data = [data for data in schedule_data if data['locate'] == card_name]
+            print(f"card_name: {card_name}")
+            print(f"filtered_data: {filtered_data}")
+        else:
+            return
+        
+        # カードの内容を更新
+        # card の中にtab_calendar.controlsが入っている
+        # 中のft.Cardを更新する
+        for i, control in enumerate(card):
+            if isinstance(control, ft.Card):
+                # カードの日付を取得（年月日を抽出）
+                date_text = ""
+                if hasattr(control.content, 'data') and control.content.data and 'date' in control.content.data:  # 日付は完全一致にする
+                    date_text = control.content.data["date"]
+                    # print(f"Processing card with date: {date_text}")  # コメントアウト
+                    
+                    # filtered_dataから該当する日付のデータを検索
+                    matching_data = []
+                    for data in filtered_data:
+                        # データの日付フォーマットに応じて比較ロジックを調整
+                        if 'date' in data:
+                            data_date = data['date']
+                            # print(f"Comparing card date '{date_text}' with data date '{data_date}'")
+                            
+                            # 日付を正規化して比較（ゼロパディングの違いを吸収）
+                            if isinstance(data_date, str):
+                                # 両方の日付をdatetimeオブジェクトに変換して比較
+                                try:
+                                    from datetime import datetime
+                                    # カードの日付をパース
+                                    card_date = datetime.strptime(date_text, "%Y-%m-%d")
+                                    
+                                    # データの日付をパース（複数のフォーマットに対応）
+                                    data_date_obj = None
+                                    for fmt in ["%Y-%m-%d", "%Y-%m-%d", "%Y-%-m-%-d"]:
+                                        try:
+                                            data_date_obj = datetime.strptime(data_date, fmt)
+                                            break
+                                        except ValueError:
+                                            continue
+                                    
+                                    # フォーマットが合わない場合は手動でパース
+                                    if data_date_obj is None:
+                                        parts = data_date.split('-')
+                                        if len(parts) == 3:
+                                            year, month, day = int(parts[0]), int(parts[1]), int(parts[2])
+                                            data_date_obj = datetime(year, month, day)
+                                    
+                                    # 日付が一致するかチェック
+                                    if data_date_obj and card_date.date() == data_date_obj.date():
+                                        matching_data.append(data)
+                                        print(f"Match found: {data}")
+                                        
+                                except ValueError as e:
+                                    print(f"Date parsing error: {e}")
+                                    # フォールバック：文字列として完全一致を試す
+                                    if date_text == data_date:
+                                        matching_data.append(data)
+                                        print(f"Match found (fallback): {data}")
+                    
+                    print(f"Matching data count for {date_text}: {len(matching_data)}")
+                    
+                    # マッチするデータがある場合、DataTableの行を更新
+                    # 午前データならばdatacellの0番目に
+                    # 午後データならばdataellの1番目に配置
+                    if matching_data and len(control.content.controls) > 1:
+                        print(f"Updating DataTable for date {date_text}")
+                        data_table = control.content.controls[1]
+                        if isinstance(data_table, ft.DataTable):
+                            print("DataTable found, clearing existing rows")
+                            # 既存の行をクリア
+                            data_table.rows.clear()
+                            
+                            # filtered_dataの内容で行を追加
+                            for data in matching_data:
+                                staff_name = data.get('staff_name') or data.get("phName", "不明")
+                                time = data.get('time', "不明")  # 病棟名はcard_nameを使用
+                                print(f"Adding row: staff={staff_name}, time={time}")
+                                print(f"Data keys: {list(data.keys())}")  # データのキーを確認
+                                
+                                # 時間帯に応じて背景色を設定
+                                row_color = None
+                                if time == "am":
+                                    row_color = ft.colors.PINK_100  # 午前は薄いピンク
+                                elif time == "pm":
+                                    row_color = ft.colors.BLUE_100  # 午後は薄い青
+                                new_row = ft.DataRow(
+                                    cells=[
+                                        ft.DataCell(ft.Text(staff_name)),
+                                        ft.DataCell(ft.Text(time))
+                                    ],
+                                    color=row_color  # colorプロパティを使用
+                                )
+                                
+                                data_table.rows.append(new_row)
+                            print(f"Added {len(matching_data)} rows to DataTable")
+                        else:
+                            print("DataTable not found or wrong type")
+                    else:
+                        if not matching_data:
+                            # print(f"No matching data for date {date_text}")  # コメントアウト
+                            pass
+                        if len(control.content.controls) <= 1:
+                            print("DataTable not found in card controls")
+                    
+                    # マッチするデータがない場合はデフォルトの行を保持
+                    # 別フォルダを読み込んだとき、日付に該当するデータがない場合はcardのデータフレームを削除
+                    if not matching_data and len(control.content.controls) > 1:
+                        # print(f"No matching data, clearing DataTable for date {date_text}")  # コメントアウト
+                        data_table = control.content.controls[1]
+                        data_table.rows.clear()
+                        # デフォルトの行を追加
+                        if isinstance(data_table, ft.DataTable) and not data_table.rows:
+                            # デフォルトの行を追加
+                            default_row = ft.DataRow(
+                                cells=[
+                                    ft.DataCell(ft.Text("担当者名")),
+                                    ft.DataCell(ft.Text("AM or PM"))
+                                ]
+                            )
+                            data_table.rows.append(default_row)
+                    try:
+                        if len(control.content.controls) > 1:
+                            control.content.controls[1].update()
+                            # print("DataTable updated successfully")  # コメントアウト
+                    except AssertionError as e:
+                        print(f"AssertionError during update: {e}")
+                        # ページに追加されていない場合はスキップ
+                        pass
+                    except Exception as e:
+                        print(f"Unexpected error during update: {e}")
+                        pass
+                else:
+                    # データテーブルがある場合には削除
+                    pass
+        
+        # ページを再描画（ページに追加されている場合のみ）
+        try:
+            page.update()
+            print("Page updated successfully - Calendar data updated")
+        except AssertionError as e:
+            print(f"AssertionError during page update: {e}")
+            # ページに追加されていない場合はスキップ
+            pass
+        except Exception as e:
+            print(f"Unexpected error during page update: {e}")
+            pass

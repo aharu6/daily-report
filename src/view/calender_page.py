@@ -36,6 +36,9 @@ class CalenderPage:
             "選択中のフォルダ名",
         )
         
+        # folder_nameをインスタンス変数として保存
+        self.folder_name = folder_name
+        
         # 病棟絞り込みと名前絞り込み機能の切り替え
         change_filter = ft.Switch(
             label="病棟絞り込み",
@@ -60,18 +63,18 @@ class CalenderPage:
             animation_duration=300,
             indicator_color=ft.colors.BLUE,
         )
+        
+        # tabsをインスタンス変数として保存
+        self.tabs = tabs
 
         # ファイルピッカー
         file_picker = ft.FilePicker(
             on_result=self._handle_folder_selection,
         )
         
-        # オーバーレイに追加（エラーハンドリング付き）
-        try:
-            if hasattr(self.page, 'overlay') and file_picker not in self.page.overlay.controls:
-                self.page.overlay.append(file_picker)
-        except Exception as e:
-            print(f"FilePicker overlay error: {e}")
+        # ページにファイルピッカーを追加
+        self.page.overlay.append(file_picker)
+        self.page.update()
         
         # フォルダ読み込みボタン
         read_folder_button = ft.ElevatedButton(
@@ -84,7 +87,7 @@ class CalenderPage:
         def handle_filter_change(e):
             if e.control.value == True:
                 # 病棟絞り込みモード
-                tabs.tabs = [
+                self.tabs.tabs = [
                     ft.Tab(
                         text=label, 
                         content=TabContentCreator.create_tab_content(
@@ -97,7 +100,7 @@ class CalenderPage:
                 ]
             elif e.control.value == False:
                 # 個人名絞り込みモード
-                tabs.tabs = [ft.Tab(
+                self.tabs.tabs = [ft.Tab(
                     text="個人名絞り込み",
                     content=TabContentCreator.create_tab_content(
                         label="個人名絞り込み",
@@ -106,18 +109,18 @@ class CalenderPage:
                         switch_value=e.control.value
                     )
                 )]
-            tabs.update()
+            self.tabs.update()
         
         change_filter.on_change = handle_filter_change
 
         # メインコンテンツ
         main_content = ft.Column(
             [
-                ft.Text("Calendar", size=30, weight=ft.FontWeight.BOLD),
+                ft.Text("記録した日付の確認", size=20, weight=ft.FontWeight.BOLD),
                 read_folder_button,
                 folder_name,
                 change_filter,
-                tabs,
+                self.tabs,
             ],
             expand=True,
             scroll=ft.ScrollMode.AUTO,
@@ -157,17 +160,27 @@ class CalenderPage:
         # 起動時のフォルダ読み込み処理
         self._load_stored_folder(folder_name)
 
-        # データがある場合の初期化処理
+        # Viewを作成
+        view = View(
+            "/calendar",
+            controls=[
+                main_content,
+                navigation_bar,
+            ],
+            scroll=ft.ScrollMode.AUTO,
+        )
+
+        # データがある場合の初期化処理（View作成後に実行）
         if self.schedule_data:
             try:
                 # 最初のタブのカードリストを取得して更新
-                first_tab_content = tabs.tabs[0].content
+                first_tab_content = self.tabs.tabs[0].content
                 if hasattr(first_tab_content, 'controls') and len(first_tab_content.controls) > 2:
                     calendar_controls = first_tab_content.controls[2].controls
                     
                     UpdateCard.update_cards_with_schedule_data(
-                        schedule_data=self.schedule_data,
                         e=None,
+                        schedule_data=self.schedule_data,
                         page=self.page,
                         card_name=self.locate_labels[0],
                         card=calendar_controls
@@ -182,16 +195,10 @@ class CalenderPage:
                         filter_name=None
                     )
             except Exception as e:
-                print(f"初期化エラー: {e}")
+                import traceback
+                traceback.print_exc()
 
-        return View(
-            "/calendar",
-            controls=[
-                main_content,
-                navigation_bar,
-            ],
-            scroll=ft.ScrollMode.AUTO,
-        )
+        return view
 
     def _handle_folder_selection(self, e):
         """フォルダ選択時の処理"""
@@ -201,9 +208,45 @@ class CalenderPage:
                 e=e,
                 schedule_data=self.schedule_data,
                 page=self.page,
-                folder_name=None,  # folder_nameは後で更新
+                folder_name=self.folder_name,
                 checkboxes=None
             )
+            
+            # データ読み込み後にUIを更新
+            if self.schedule_data:
+                try:
+                    # 最初のタブのカードリストを取得して更新
+                    if hasattr(self.tabs, 'tabs') and len(self.tabs.tabs) > 0:
+                        first_tab_content = self.tabs.tabs[0].content
+                        
+                        if hasattr(first_tab_content, 'controls') and len(first_tab_content.controls) > 2:
+                            calendar_controls = first_tab_content.controls[2].controls
+                            
+                            # UpdateCard処理
+                            UpdateCard.update_cards_with_schedule_data(
+                                e=None,
+                                schedule_data=self.schedule_data,
+                                page=self.page,
+                                card_name=self.locate_labels[0],
+                                card=calendar_controls
+                            )
+                            
+                            # UpdateCalendar処理
+                            UpdateCalendar.update_calendar_with_schedule_data(
+                                e=None,
+                                schedule_data=self.schedule_data,
+                                page=self.page,
+                                calendar=calendar_controls[1:],
+                                card_name=self.locate_labels[0],
+                                filter_name=None
+                            )
+                            
+                            # ページ全体を更新
+                            self.page.update()
+                        
+                except Exception as e:
+                    import traceback
+                    traceback.print_exc()
 
     def _load_stored_folder(self, folder_name):
         """起動時の保存済みフォルダ読み込み"""
@@ -211,7 +254,6 @@ class CalenderPage:
             stored_folder_path = self.page.client_storage.get("folder_name")
             if stored_folder_path:
                 folder_name.value = f"選択中のフォルダ: {stored_folder_path}"
-                print(f"読み込み済みのフォルダ: {stored_folder_path}")
                 
                 # データ読み込み処理
                 class MockEvent:
@@ -227,8 +269,5 @@ class CalenderPage:
                     folder_name=folder_name,
                     checkboxes=None
                 )
-                
-                folder_name.update()
         except Exception as e:
-            print(f"フォルダの読み込み中にエラーが発生しました: {e}")
             pass

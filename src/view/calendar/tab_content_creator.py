@@ -139,7 +139,7 @@ class TabContentCreator:
             else:
                 # 病棟絞り込みの場合
                 UpdateCard.update_cards_with_schedule_data(
-                    schedule_data, e, page, label, tab_calendar.controls[1:]
+                    e, schedule_data, page, label, tab_calendar.controls[1:]
                 )
                 UpdateCalendar.update_calendar_with_schedule_data(
                     e, schedule_data, page, 
