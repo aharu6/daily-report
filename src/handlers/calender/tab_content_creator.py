@@ -32,13 +32,9 @@ class TabContentCreator:
                     if schedule_data is None:
                         schedule_data = []
                     else:
-                        print(f"[DEBUG] client_storageからschedule_dataを読み込み: {len(schedule_data)}件")
                         # CSVファイル名を含むデータがあるか確認
                         if schedule_data and isinstance(schedule_data[0], dict):
                             sample_keys = list(schedule_data[0].keys())
-                            print(f"[DEBUG] データのキー: {sample_keys}")
-                            if "file_name" in schedule_data[0]:
-                                print(f"[DEBUG] ファイル名例: {schedule_data[0]['file_name']}")
                 except Exception as e:
                     print(f"[DEBUG] schedule_data読み込みエラー: {e}")
                     schedule_data = []
@@ -152,20 +148,16 @@ class TabContentCreator:
                 
                 
                 # 選択された名前でフィルタリング
-                print(f"[DEBUG] 選択された名前: {selected_names}")
-                print(f"[DEBUG] フィルタリング前のデータ件数: {len(schedule_data)}")
                 
                 filtered_data = [
                     item for item in schedule_data 
                     if item.get("phName") in selected_names
                 ]
                 
-                print(f"[DEBUG] フィルタリング後のデータ件数: {len(filtered_data)}")
                 
                 # フィルタリングされたデータに含まれるファイル名を表示
                 if filtered_data:
                     file_names = set(item.get("file_name", "不明") for item in filtered_data)
-                    print(f"[DEBUG] フィルタリング後のファイル名: {list(file_names)}")
                 
                 
                 # カレンダーの色を更新（個人名絞り込みの場合は純粋なカレンダー部分のみ）
@@ -184,14 +176,11 @@ class TabContentCreator:
                     None   # filter_nameも明示的にNoneを指定
                 )
             else:
-                # 病棟絞り込みの場合
-                print(f"[DEBUG] 病棟絞り込み - ラベル: {label}")
-                print(f"[DEBUG] 病棟絞り込み - データ件数: {len(schedule_data)}")
+                pass
                 
                 # 使用されるファイル名を表示
                 if schedule_data:
                     file_names = set(item.get("file_name", "不明") for item in schedule_data)
-                    print(f"[DEBUG] 病棟絞り込み - ファイル名: {list(file_names)}")
                 
                 UpdateCard.update_cards_with_schedule_data(
                     e, schedule_data, page, label, tab_calendar.controls[1:]

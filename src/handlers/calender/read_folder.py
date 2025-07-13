@@ -23,8 +23,6 @@ class ReadFolder:
             # フォルダ内のCSVファイルを読み込み
             csv_files = [f for f in os.listdir(folder_path) if f.endswith('.csv')]
             
-            print(f"[DEBUG] フォルダ内のCSVファイル: {csv_files}")
-            print(f"[DEBUG] 検出されたCSVファイル数: {len(csv_files)}")
             
             if not csv_files:
                 # folder_nameがNoneでない場合のみエラーメッセージを設定
@@ -41,7 +39,6 @@ class ReadFolder:
             schedule_data.clear()
             
             for csv_file in csv_files:
-                print(f"[DEBUG] 処理開始: {csv_file}")
                 try:
                     file_path = os.path.join(folder_path, csv_file)
                     encoding = ReadFolder.detect_encoding(file_path)
@@ -121,7 +118,6 @@ class ReadFolder:
                             schedule_data.append(data_entry)
                             am_count += 1
                     
-                    print(f"[DEBUG] {csv_file}: 午前データ {am_count}件追加")
                     
                     # 午後のデータ（16行目以降）
                     pm_count = 0
@@ -188,16 +184,12 @@ class ReadFolder:
                                 schedule_data.append(data_entry)
                                 pm_count += 1
                     
-                    print(f"[DEBUG] {csv_file}: 午後データ {pm_count}件追加")
-                    print(f"[DEBUG] {csv_file}: 合計 {am_count + pm_count}件追加")
                     
                 except Exception as e:
-                    print(f"[DEBUG] {csv_file}の処理中にエラー: {e}")
                     import traceback
                     traceback.print_exc()
                     continue
             
-            print(f"[DEBUG] 全ファイル処理完了。総データ件数: {len(schedule_data)}")
             
             # フォルダパスを保存
             page.client_storage.set("folder_name", folder_path)
