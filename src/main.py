@@ -61,6 +61,9 @@ def main(page: ft.Page):
         elif page.route == "/chart":
             from view.chart_page import ChartPage
             page.views.append(ChartPage(page).create())
+        elif page.route == "/calendar":
+            from view.calender_page import CalenderPage
+            page.views.append(CalenderPage(page).create())
         elif page.route == "/settings":
             from view.setting_page import SettingPage
             page.views.append(SettingPage(page).create())
@@ -91,8 +94,14 @@ def main(page: ft.Page):
                 selected_icon=ft.icons.AUTO_GRAPH,
             ),
             ft.NavigationBarDestination(
+                icon=ft.icons.CALENDAR_MONTH,
+                label="Calendar",
+                selected_icon=ft.icons.CALENDAR_TODAY,
+            ),
+            ft.NavigationBarDestination(
                 icon=ft.icons.SETTINGS,
                 label="Settings",
+                selected_icon=ft.icons.SETTINGS,
             ),
         ],
     )

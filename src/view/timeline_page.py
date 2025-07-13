@@ -532,15 +532,15 @@ class TimelinePage:
         self.TimeLine.theme = ft.Theme(
             scrollbar_theme=ft.ScrollbarTheme(
                 track_color={
-                    ft.MaterialState.HOVERED: ft.colors.AMBER,
-                    ft.MaterialState.DEFAULT: ft.colors.TRANSPARENT,
+                    ft.ControlState.HOVERED: ft.colors.AMBER,
+                    ft.ControlState.DEFAULT: ft.colors.TRANSPARENT,
                 },
                 track_visibility=True,
                 track_border_color=ft.colors.BLUE,
                 thumb_visibility=True,
                 thumb_color={
-                    ft.MaterialState.HOVERED: ft.colors.RED,
-                    ft.MaterialState.DEFAULT: ft.colors.GREY_300,
+                    ft.ControlState.HOVERED: ft.colors.RED,
+                    ft.ControlState.DEFAULT: ft.colors.GREY_300,
                 },
                 thickness=30,
                 radius=15,
@@ -716,19 +716,24 @@ class TimelinePage:
                         ),
                         destinations=[
                             ft.NavigationBarDestination(
-                                icon=ft.icons.CREATE,
-                                label="Create",
+                                icon=ft.icons.TIMELINE,
+                                label="Timeline",
                                 selected_icon=ft.icons.BORDER_COLOR,
                             ),
                             ft.NavigationBarDestination(
-                                icon=ft.icons.SHOW_CHART,
-                                label="Showchart",
+                                icon=ft.icons.AUTO_GRAPH,
+                                label="Chart",
                                 selected_icon=ft.icons.AUTO_GRAPH,
                             ),
                             ft.NavigationBarDestination(
+                                icon=ft.icons.CALENDAR_MONTH,
+                                label="Calendar",
+                                selected_icon=ft.icons.CALENDAR_TODAY,
+                            ),
+                            ft.NavigationBarDestination(
                                 icon=ft.icons.SETTINGS,
-                                selected_icon=ft.icons.SETTINGS_SUGGEST,
                                 label="Settings",
+                                selected_icon=ft.icons.SETTINGS,
                             ),
                         ],
                     ),
