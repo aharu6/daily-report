@@ -31,6 +31,14 @@ class CalenderPage:
     def create(self):
         """カレンダーページのViewを作成"""
         
+        # 起動時に保存されたフォルダがある場合は自動読み込み
+        auto_loaded = self._auto_load_saved_folder()
+        
+        if auto_loaded:
+            print(f"Calendar page initialized with {len(self.schedule_data)} schedule items")
+        else:
+            print("Calendar page initialized with no saved data")
+        
         # フォルダ名表示
         folder_name = ft.Text(
             "選択中のフォルダ名",
@@ -38,6 +46,9 @@ class CalenderPage:
         
         # folder_nameをインスタンス変数として保存
         self.folder_name = folder_name
+        
+        # 自動読み込みされた場合はフォルダ名を更新
+        self._update_folder_name_if_auto_loaded()
         
         # 病棟絞り込みと名前絞り込み機能の切り替え
         change_filter = ft.Switch(
@@ -157,8 +168,7 @@ class CalenderPage:
             ],
         )
 
-        # 起動時のフォルダ読み込み処理
-        self._load_stored_folder(folder_name)
+        # 起動時のフォルダ読み込み処理は_auto_load_saved_folderで実行済み
 
         # Viewを作成
         view = View(
@@ -248,26 +258,84 @@ class CalenderPage:
                     import traceback
                     traceback.print_exc()
 
-    def _load_stored_folder(self, folder_name):
-        """起動時の保存済みフォルダ読み込み"""
+    def _auto_load_saved_folder(self):
+        """起動時に保存されたフォルダがあれば自動読み込み"""
         try:
+            # クライアントストレージから保存されたフォルダパスを取得
             stored_folder_path = self.page.client_storage.get("folder_name")
+            
             if stored_folder_path:
-                folder_name.value = f"選択中のフォルダ: {stored_folder_path}"
+                import os
+                # フォルダが存在するかチェック
+                if os.path.exists(stored_folder_path) and os.path.isdir(stored_folder_path):
+                    print(f"Auto-loading saved folder: {stored_folder_path}")
+                    
+                    # フォルダから最新データを再読み込み（常にフォルダの最新状態を読み込み）
+                    self._reload_folder_data(stored_folder_path)
+                    
+                    # フォルダ名を保存（後で設定用）
+                    self._saved_folder_name = f"選択中のフォルダ: {os.path.basename(stored_folder_path)}"
+                    
+                    return True
+                else:
+                    # フォルダが存在しない場合、保存されたデータがあれば使用
+                    stored_schedule_data = self.page.client_storage.get("schedule_data")
+                    if stored_schedule_data:
+                        print(f"Folder not found, but using saved data: {len(stored_schedule_data)} items")
+                        self.schedule_data.clear()
+                        self.schedule_data.extend(stored_schedule_data)
+                        
+                        self._saved_folder_name = f"選択中のフォルダ: {os.path.basename(stored_folder_path)} (フォルダ移動済み)"
+                        return True
+                    else:
+                        print(f"Saved folder not found and no backup data: {stored_folder_path}")
+                        # 無効なパスはクリア
+                        self.page.client_storage.remove("folder_name")
+                        return False
+            else:
+                print("No saved folder found")
+                return False
                 
-                # データ読み込み処理
-                class MockEvent:
-                    def __init__(self, path):
-                        self.path = path
-                
-                mock_event = MockEvent(path=stored_folder_path)
-                
-                ReadFolder.read_folder(
-                    e=mock_event,
-                    schedule_data=self.schedule_data,
-                    page=self.page,
-                    folder_name=folder_name,
-                    checkboxes=None
-                )
         except Exception as e:
-            pass
+            print(f"Error during auto-load: {e}")
+            return False
+    
+    def _reload_folder_data(self, folder_path):
+        """フォルダからデータを再読み込み"""
+        try:
+            # MockEventクラスを作成
+            class MockEvent:
+                def __init__(self, path):
+                    self.path = path
+            
+            mock_event = MockEvent(path=folder_path)
+            
+            # データを再読み込み
+            ReadFolder.read_folder(
+                e=mock_event,
+                schedule_data=self.schedule_data,
+                page=self.page,
+                folder_name=self.folder_name,  # フォルダ名テキストを渡す
+                checkboxes=None
+            )
+            
+            print(f"Successfully reloaded {len(self.schedule_data)} schedule items")
+            
+        except Exception as e:
+            print(f"Error reloading folder data: {e}")
+            # エラーの場合は保存されたデータを使用
+            stored_schedule_data = self.page.client_storage.get("schedule_data")
+            if stored_schedule_data:
+                self.schedule_data.clear()
+                self.schedule_data.extend(stored_schedule_data)
+                print(f"Fallback to saved data: {len(self.schedule_data)} items")
+    
+    def _update_folder_name_if_auto_loaded(self):
+        """自動読み込みされた場合にフォルダ名を更新"""
+        if hasattr(self, '_saved_folder_name') and hasattr(self, 'folder_name'):
+            self.folder_name.value = self._saved_folder_name
+            try:
+                self.folder_name.update()
+            except AssertionError:
+                # ページに追加されていない場合はスキップ
+                pass
