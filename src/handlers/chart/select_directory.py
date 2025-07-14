@@ -295,7 +295,7 @@ class SelectDirectoryHandler:
         )
         #病棟関係ない項目はlocationデータを削除　selfなどの名前にしておく
         for index,row in df.iterrows():
-            if row["task"]in["委員会","勉強会参加","WG活動","1on1","業務調整","休憩","その他"]:
+            if row["task"]in["委員会","勉強会参加","WG活動","1on1","業務調整","休憩"]:#その他は除外する
                 df.loc[index,"locate"] = "['self']"
             else:
                 pass
