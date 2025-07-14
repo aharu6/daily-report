@@ -151,7 +151,8 @@ class CalenderPage:
                 self.tabs,
             ],
             expand=True,
-            scroll=ft.ScrollMode.AUTO,
+            scroll=ft.ScrollMode.ALWAYS,
+            on_scroll_interval=4,
         )
 
         # ナビゲーションバー
@@ -194,7 +195,7 @@ class CalenderPage:
                 main_content,
                 navigation_bar,
             ],
-            scroll=ft.ScrollMode.AUTO,
+            scroll=ft.ScrollMode.ALWAYS,
         )
 
         # データがある場合の初期化処理（View作成後に実行）
