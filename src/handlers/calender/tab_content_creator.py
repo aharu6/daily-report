@@ -210,7 +210,28 @@ class TabContentCreator:
         # タブのコンテンツを作成
         tab_content = ft.Column(
             controls=[arrow_navigation, update_button, tab_calendar],
-            scroll=ft.ScrollMode.AUTO,
+            scroll=ft.ScrollMode.ALWAYS,
+        )
+        
+        # スクロールバーのテーマを設定
+        tab_content.theme = ft.Theme(
+            scrollbar_theme=ft.ScrollbarTheme(
+                track_color={
+                    ft.ControlState.HOVERED: ft.colors.AMBER,
+                    ft.ControlState.DEFAULT: ft.colors.TRANSPARENT,
+                },
+                track_visibility=True,
+                track_border_color=ft.colors.BLUE,
+                thumb_visibility=True,
+                thumb_color={
+                    ft.ControlState.HOVERED: ft.colors.RED,
+                    ft.ControlState.DEFAULT: ft.colors.GREY_300,
+                },
+                thickness=30,
+                radius=15,
+                main_axis_margin=5,
+                cross_axis_margin=10,
+            ),
         )
 
         return tab_content
