@@ -16,6 +16,8 @@ class CalenderPage:
         self.page = page
         self.schedule_data = []
         self.folder_name = None  # 初期化時はNone、createメソッドで設定
+        #スクロールを常に表示に変更
+        self.page.scroll = ft.ScrollMode.ALWAYS
         
         # 現在の日付を取得
         self.today = datetime.date.today()
@@ -154,6 +156,27 @@ class CalenderPage:
             scroll=ft.ScrollMode.ALWAYS,
             on_scroll_interval=4,
         )
+        
+        # スクロールバーのテーマを設定
+        main_content.theme = ft.Theme(
+            scrollbar_theme=ft.ScrollbarTheme(
+                track_color={
+                    ft.ControlState.HOVERED: ft.colors.AMBER,
+                    ft.ControlState.DEFAULT: ft.colors.TRANSPARENT,
+                },
+                track_visibility=True,
+                track_border_color=ft.colors.BLUE,
+                thumb_visibility=True,
+                thumb_color={
+                    ft.ControlState.HOVERED: ft.colors.RED,
+                    ft.ControlState.DEFAULT: ft.colors.GREY_300,
+                },
+                thickness=30,
+                radius=15,
+                main_axis_margin=5,
+                cross_axis_margin=10,
+            ),
+        )
 
         # ナビゲーションバー
         navigation_bar = ft.CupertinoNavigationBar(
@@ -196,6 +219,27 @@ class CalenderPage:
                 navigation_bar,
             ],
             scroll=ft.ScrollMode.ALWAYS,
+        )
+        
+        # Viewにもスクロールバーテーマを設定
+        view.theme = ft.Theme(
+            scrollbar_theme=ft.ScrollbarTheme(
+                track_color={
+                    ft.ControlState.HOVERED: ft.colors.AMBER,
+                    ft.ControlState.DEFAULT: ft.colors.TRANSPARENT,
+                },
+                track_visibility=True,
+                track_border_color=ft.colors.BLUE,
+                thumb_visibility=True,
+                thumb_color={
+                    ft.ControlState.HOVERED: ft.colors.RED,
+                    ft.ControlState.DEFAULT: ft.colors.GREY_300,
+                },
+                thickness=30,
+                radius=15,
+                main_axis_margin=5,
+                cross_axis_margin=10,
+            ),
         )
 
         # データがある場合の初期化処理（View作成後に実行）
