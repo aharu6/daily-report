@@ -7,7 +7,6 @@ from handlers.chart.period_handler import PeriodHandler
 import datetime
 import chardet
 from handlers.chart.preview_chart import PreviewChartHandler
-
 pd.set_option('display.max_columns', None) 
 pd.set_option('display.max_rows', None)
 
@@ -316,12 +315,13 @@ class Handlers_Chart:
             
             # UI作成
             period_ui = Handlers_Chart._create_period_selector_ui(start_date, end_date, page)
-            download_button = Handlers_Chart._create_download_button(page, bar_chart, "barchart")
-            
+            expansion_button = Handlers_Chart._create_preview_button(chart=bar_chart)
+            download_button = Handlers_Chart._create_download_button(page=page, chart=bar_chart, chart_name="barchart")
+
             chart_field.controls = [
                 *period_ui,
                 ft.Card(content=PlotlyChart(bar_chart, expand=True, original_size=False, isolated=True)),
-                download_button,
+                ft.ResponsiveRow(controls=[expansion_button, download_button])
             ]
             chart_field.update()
 
@@ -347,13 +347,14 @@ class Handlers_Chart:
                     bar_chart = Handlers_Chart._create_bar_chart(group_bubble2)
                     
                     period_ui = Handlers_Chart._create_period_selector_ui(page=page)
+                    expansion_button = Handlers_Chart._create_preview_button(chart=bar_chart)
                     download_button = Handlers_Chart._create_download_button(page, bar_chart, "barchart")
                     
                     chart_field.controls = [
                         *period_ui,
                         ft.ListTile(),  # 期間表示プレースホルダー
                         ft.Card(content=PlotlyChart(bar_chart, expand=True, original_size=False, isolated=True)),
-                        download_button
+                        ft.ResponsiveRow(controls=[expansion_button, download_button])
                     ]
                     page.update()
                 else:
@@ -563,12 +564,13 @@ class Handlers_Chart:
             
             # UI作成
             period_ui = Handlers_Chart._create_period_selector_ui(start_date, end_date, page)
+            expansion_button = Handlers_Chart._create_preview_button(chart=fig_bar)
             download_button = Handlers_Chart._create_download_button(page, fig_bar, "selfchart")
             
             chart_field.controls = [
                 *period_ui,
                 ft.Card(content=PlotlyChart(fig_bar, expand=True, original_size=False, isolated=True)),
-                download_button
+                ft.ResponsiveRow(controls=[expansion_button, download_button])
             ]
             page.update()
 
@@ -624,12 +626,13 @@ class Handlers_Chart:
                     
                     # UI作成
                     period_ui = Handlers_Chart._create_period_selector_ui(page=page)
+                    expansion_button = Handlers_Chart._create_preview_button(chart=fig_bar)
                     download_button = Handlers_Chart._create_download_button(page, fig_bar, "selfchart")
                     
                     chart_field.controls = [
                         *period_ui,
                         ft.Card(content=PlotlyChart(fig_bar, expand=True, original_size=False, isolated=True)),
-                        download_button
+                        ft.ResponsiveRow(controls=[expansion_button, download_button])
                     ]
                     page.update()
                 else:
