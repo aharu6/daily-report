@@ -41,6 +41,7 @@ class Handlers_analyze:
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
+                Handlers_Chart._create_preview_button(chart=fig), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
                     icon=ft.icons.DOWNLOAD,
@@ -101,6 +102,7 @@ class Handlers_analyze:
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
+                Handlers_Chart._create_preview_button(chart=fig), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
                     icon=ft.icons.DOWNLOAD,
@@ -329,36 +331,11 @@ class Handlers_analyze:
         if all_df is not None:
             df=all_df
             locate_df=df.groupby(["locate","task"]).size().reset_index(name="counts")
-            graph_width=int(len(locate_df["locate"].unique()))*77
-            if graph_width<1000:
-                graph_width=1000
-            fig=px.bar(
-                locate_df,
-                x="locate",
-                y="counts",
-                color="task",
-                title="場所ごとに記録された業務内容と記録回数",
-                labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
-                barmode="stack",
-                width=graph_width,
-            )
-            fig.update_layout(
-                xasix=dict(title="病棟"),
-                yaxis=dict(title="記録回数")
-            )
-            result_field.controls=[
-                PlotlyChart(fig),#グラフ
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="グラフを保存",
-                    on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_location"),
-                )
-            ]
-            result_field.update()
-        else:
-            df=dataframe
-            locate_df=df.groupby(["locate","task"]).size().reset_index(name="counts")
+            #self列は除外する
+            try:
+                locate_df.drop(index=locate_df[locate_df["locate"]=="self"].index,inplace=True)
+            except KeyError:
+                pass
             graph_width=int(len(locate_df["locate"].unique()))*77
             if graph_width<1000:
                 graph_width=1000
@@ -378,6 +355,42 @@ class Handlers_analyze:
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
+                Handlers_Chart._create_preview_button(chart=fig), # グラフのプレビュー用ボタン
+                ft.ElevatedButton(
+                    "保存",
+                    icon=ft.icons.DOWNLOAD,
+                    tooltip="グラフを保存",
+                    on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_location"),
+                )
+            ]
+            result_field.update()
+        else:
+            df=dataframe
+            locate_df=df.groupby(["locate","task"]).size().reset_index(name="counts")
+            try:
+                locate_df.drop(index=locate_df[locate_df["locate"]=="self"].index,inplace=True) #self列は除外する
+            except KeyError:
+                pass
+            graph_width=int(len(locate_df["locate"].unique()))*77
+            if graph_width<1000:
+                graph_width=1000
+            fig=px.bar(
+                locate_df,
+                x="locate",
+                y="counts",
+                color="task",
+                title="場所ごとに記録された業務内容と記録回数",
+                labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
+                barmode="stack",
+                width=graph_width,
+            )
+            fig.update_layout(
+                xaxis=dict(title="病棟"),
+                yaxis=dict(title="記録回数")
+            )
+            result_field.controls=[
+                PlotlyChart(fig),#グラフ
+                Handlers_Chart._create_preview_button(chart=fig), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
                     icon=ft.icons.DOWNLOAD,
@@ -418,6 +431,7 @@ class Handlers_analyze:
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
+                Handlers_Chart._create_preview_button(chart=fig), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
                     icon=ft.icons.DOWNLOAD,
@@ -477,6 +491,7 @@ class Handlers_analyze:
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
+                Handlers_Chart._create_preview_button(chart=fig), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
                     icon=ft.icons.DOWNLOAD,
@@ -829,12 +844,24 @@ class Handlers_analyze:
         if locate_df is not None:
             df=locate_df
             timedf=df.groupby(["locate","task"]).size().reset_index(name="times")
+            try:
+                timedf.drop(index=timedf[timedf["locate"]=="self"].index,inplace=True) #self列は除外する
+            except KeyError:
+                pass
             #*15にすることで実際の時間に変換　(1入力15ふん）
             timedf["times"]=timedf["times"]*15
             #業務数列
             taskdf=dataframe.groupby(["locate","task"]).size().reset_index(name="task_count")
+            try:
+                taskdf.drop(index=taskdf[taskdf["locate"]=="self"].index,inplace=True) #self列は除外する
+            except KeyError:
+                pass
             #カウント数列を算出
             countdf=dataframe.groupby(["locate","task"])["count"].sum().reset_index(name="count_total")
+            try:
+                countdf.drop(index=countdf[countdf["locate"]=="self"].index,inplace=True) #self列は除外する
+            except KeyError:
+                pass
             loc_df=pd.merge(
                 timedf,
                 taskdf,
@@ -898,12 +925,24 @@ class Handlers_analyze:
             result_field.update()
         else:
             timedf=dataframe.groupby(["locate","task"]).size().reset_index(name="times")
+            try:
+                timedf.drop(index=timedf[timedf["locate"]=="self"].index,inplace=True) #self列は除外する
+            except KeyError:
+                pass
             #*15にすることで実際の時間に変換　(1入力15ふん）
             timedf["times"]=timedf["times"]*15
             #業務数列
             taskdf=dataframe.groupby(["locate","task"]).size().reset_index(name="task_count")
+            try:
+                taskdf.drop(index=taskdf[taskdf["locate"]=="self"].index,inplace=True) #self列は除外する
+            except KeyError:
+                pass
             #カウント数列を算出
             countdf=dataframe.groupby(["locate","task"])["count"].sum().reset_index(name="count_total")
+            try:
+                countdf.drop(index=countdf[countdf["locate"]=="self"].index,inplace=True) #self列は除外する
+            except KeyError:
+                pass
             loc_df=pd.merge(
                 timedf,
                 taskdf,

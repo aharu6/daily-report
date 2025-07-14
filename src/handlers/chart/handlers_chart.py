@@ -7,7 +7,6 @@ from handlers.chart.period_handler import PeriodHandler
 import datetime
 import chardet
 from handlers.chart.preview_chart import PreviewChartHandler
-
 pd.set_option('display.max_columns', None) 
 pd.set_option('display.max_rows', None)
 
@@ -62,6 +61,9 @@ TASK_COLOR_MAP = {
     'お役立ち情報作成':'#BF7834',#茶色
     '薬剤使用期限確認':'#814336',
     '抗菌薬相談対応':'#762E05',
+    '事前準備':'#507687',
+    'カンファ・ラウンド':'#507687',
+    '記録作成':'#507687',
 }
 
 # Chartページ用のハンドラ
@@ -143,7 +145,15 @@ class Handlers_Chart:
     def _process_time_data(dataframe):
         """時間データを処理するヘルパーメソッド"""
         group_bubble = dataframe.groupby(["locate","task","count"]).size().reset_index(name="times")
+        try:
+            group_bubble.drop(index=group_bubble[group_bubble["locate"] == "self"].index, inplace=True)  # self列は除外する
+        except KeyError:
+            pass
         group_bubble2 = group_bubble.groupby(["locate","task"]).sum(numeric_only=True).reset_index()
+        try:
+            group_bubble2.drop(index=group_bubble2[group_bubble2["locate"] == "self"].index, inplace=True)  # self列は除外する
+        except KeyError:
+            pass
         group_bubble2["times"] = group_bubble2["times"] * MINUTES_PER_RECORD
         return group_bubble2
         
@@ -305,12 +315,13 @@ class Handlers_Chart:
             
             # UI作成
             period_ui = Handlers_Chart._create_period_selector_ui(start_date, end_date, page)
-            download_button = Handlers_Chart._create_download_button(page, bar_chart, "barchart")
-            
+            expansion_button = Handlers_Chart._create_preview_button(chart=bar_chart)
+            download_button = Handlers_Chart._create_download_button(page=page, chart=bar_chart, chart_name="barchart")
+
             chart_field.controls = [
                 *period_ui,
                 ft.Card(content=PlotlyChart(bar_chart, expand=True, original_size=False, isolated=True)),
-                download_button,
+                ft.ResponsiveRow(controls=[expansion_button, download_button])
             ]
             chart_field.update()
 
@@ -336,13 +347,14 @@ class Handlers_Chart:
                     bar_chart = Handlers_Chart._create_bar_chart(group_bubble2)
                     
                     period_ui = Handlers_Chart._create_period_selector_ui(page=page)
+                    expansion_button = Handlers_Chart._create_preview_button(chart=bar_chart)
                     download_button = Handlers_Chart._create_download_button(page, bar_chart, "barchart")
                     
                     chart_field.controls = [
                         *period_ui,
                         ft.ListTile(),  # 期間表示プレースホルダー
                         ft.Card(content=PlotlyChart(bar_chart, expand=True, original_size=False, isolated=True)),
-                        download_button
+                        ft.ResponsiveRow(controls=[expansion_button, download_button])
                     ]
                     page.update()
                 else:
@@ -386,6 +398,10 @@ class Handlers_Chart:
 
             # データのグループ化
             group_df_locate = df.groupby(["locate", "task"]).size().reset_index(name="counts")
+            try:
+                group_df_locate.drop(index=group_df_locate[group_df_locate["locate"] == "self"].index, inplace=True)  # self列は除外する
+            except KeyError:
+                pass
             
             if group_df_locate.empty:
                 raise ValueError("グループ化後のデータが空です")
@@ -444,6 +460,10 @@ class Handlers_Chart:
                 df = dataframe.copy() if dataframe is not None else pd.DataFrame()
                 if not df.empty and 'locate' in df.columns and 'task' in df.columns:
                     group_df_locate = df.groupby(["locate", "task"]).size().reset_index(name="counts")
+                    try:
+                        group_df_locate.drop(index=group_df_locate[group_df_locate["locate"] == "self"].index, inplace=True)  # self列は除外する
+                    except KeyError:
+                        pass
                     chart2_info.controls = Handlers_Chart._create_period_selector_ui(page=page)
                     
                     locate_chart_list = []
@@ -544,12 +564,13 @@ class Handlers_Chart:
             
             # UI作成
             period_ui = Handlers_Chart._create_period_selector_ui(start_date, end_date, page)
+            expansion_button = Handlers_Chart._create_preview_button(chart=fig_bar)
             download_button = Handlers_Chart._create_download_button(page, fig_bar, "selfchart")
             
             chart_field.controls = [
                 *period_ui,
                 ft.Card(content=PlotlyChart(fig_bar, expand=True, original_size=False, isolated=True)),
-                download_button
+                ft.ResponsiveRow(controls=[expansion_button, download_button])
             ]
             page.update()
 
@@ -605,12 +626,13 @@ class Handlers_Chart:
                     
                     # UI作成
                     period_ui = Handlers_Chart._create_period_selector_ui(page=page)
+                    expansion_button = Handlers_Chart._create_preview_button(chart=fig_bar)
                     download_button = Handlers_Chart._create_download_button(page, fig_bar, "selfchart")
                     
                     chart_field.controls = [
                         *period_ui,
                         ft.Card(content=PlotlyChart(fig_bar, expand=True, original_size=False, isolated=True)),
-                        download_button
+                        ft.ResponsiveRow(controls=[expansion_button, download_button])
                     ]
                     page.update()
                 else:
