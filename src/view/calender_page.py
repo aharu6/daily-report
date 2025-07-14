@@ -16,8 +16,7 @@ class CalenderPage:
         self.page = page
         self.schedule_data = []
         self.folder_name = None  # 初期化時はNone、createメソッドで設定
-        #スクロールを常に表示に変更
-        self.page.scroll = ft.ScrollMode.ALWAYS
+        # ページレベルでのスクロール設定を削除（Viewレベルで制御）
         
         # 現在の日付を取得
         self.today = datetime.date.today()
@@ -64,7 +63,7 @@ class CalenderPage:
             value=True,
         )
 
-        # タブを作成
+        # タブを作成（expandを削除してスクロールを改善）
         tabs = ft.Tabs(
             selected_index=0,
             tabs=[
@@ -78,7 +77,6 @@ class CalenderPage:
                     )
                 ) for label in self.locate_labels
             ],
-            expand=True,
             animation_duration=300,
             indicator_color=ft.colors.BLUE,
         )
@@ -143,18 +141,23 @@ class CalenderPage:
         
         change_filter.on_change = handle_filter_change
 
-        # メインコンテンツ
+        # メインコンテンツ（スクロール可能）
         main_content = ft.Column(
             [
                 ft.Text("記録した日付の確認", size=20, weight=ft.FontWeight.BOLD),
                 read_folder_button,
                 folder_name,
                 change_filter,
-                self.tabs,
+                ft.Container(
+                    content=self.tabs,
+                    expand=True,
+                    height=800,  # 最小高さを指定してスクロール領域を確保
+                ),
             ],
             expand=True,
             scroll=ft.ScrollMode.ALWAYS,
             on_scroll_interval=4,
+            spacing=10,  # 要素間のスペースを追加
         )
         
         # スクロールバーのテーマを設定
@@ -211,14 +214,17 @@ class CalenderPage:
 
         # 起動時のフォルダ読み込み処理は_auto_load_saved_folderで実行済み
 
-        # Viewを作成
+        # Viewを作成（ナビゲーションバーを固定し、メインコンテンツをスクロール可能にする）
         view = View(
             "/calendar",
             controls=[
-                main_content,
+                ft.Container(
+                    content=main_content,
+                    expand=True,
+                ),
                 navigation_bar,
             ],
-            scroll=ft.ScrollMode.ALWAYS,
+            scroll=ft.ScrollMode.HIDDEN,  # Viewレベルではスクロールを無効化
         )
         
         # Viewにもスクロールバーテーマを設定

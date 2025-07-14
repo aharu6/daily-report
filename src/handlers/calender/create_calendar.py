@@ -60,7 +60,12 @@ class CreateCalendar:
                         bgcolor=ft.colors.WHITE,
                     ))
             calendar_cells.append(ft.Row(week_cells, alignment=ft.MainAxisAlignment.CENTER))
-        calendar = ft.Column(calendar_cells, alignment=ft.MainAxisAlignment.CENTER)
+        calendar = ft.Column(
+            calendar_cells, 
+            alignment=ft.MainAxisAlignment.CENTER,
+            spacing=2,  # カレンダーの行間にスペースを追加
+            expand=False,  # expandをFalseにして固定サイズに
+        )
         # カスタム属性として年月を保存
         calendar.year = year
         calendar.month = month
