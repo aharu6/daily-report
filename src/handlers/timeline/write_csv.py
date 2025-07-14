@@ -238,7 +238,10 @@ class WriteCSVHandler:
             if phName.value=="Add":
                 # csvファイルは書き出さずにエラーメッセージのみ表示に再設定する
                 require_name.visible = True
+                page.snack_bar=ft.SnackBar(ft.Text("名前を選択してください"))
+                page.snack_bar.open = True
                 page.update()
+                return
             elif (
                 select_directory.result
                 and select_directory.result.path
