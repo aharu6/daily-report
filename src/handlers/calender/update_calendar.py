@@ -61,14 +61,34 @@ class UpdateCalendar:
                             
                             if date_match and locate_match and name_match:
                                 matching_schedules.append(item)
+                                # デバッグ: マッチしたデータの時間情報を表示
+                                time_info = item.get('time', '時間情報なし')
+                                print(f"  マッチ: {cell_date} - {item_name}@{item_locate} 時間:{time_info}")
                                 
                         
                         has_schedule = len(matching_schedules) > 0
                         
                         if has_schedule:
+                            # 午前データと午後データが両方揃っているかチェック
+                            has_am = any(data.get("time") == "am" for data in matching_schedules)
+                            has_pm = any(data.get("time") == "pm" for data in matching_schedules)
+                            
+                            print(f"  {cell_date}: AM={has_am}, PM={has_pm}, 総データ数={len(matching_schedules)}")
+                            
                             old_bgcolor = cell.bgcolor
-                            cell.bgcolor = ft.colors.BLUE_200
-                            updated_cells += 1
+                            
+                            # 午前・午後両方のデータがある場合は緑色
+                            if has_am and has_pm:
+                                cell.bgcolor = ft.colors.GREEN
+                                updated_cells += 1
+                            # どちらか一方のみの場合は青色
+                            elif has_am or has_pm:
+                                cell.bgcolor = ft.colors.BLUE_200
+                                updated_cells += 1
+                            else:
+                                # データはあるが時間情報がない場合（従来通り）
+                                cell.bgcolor = ft.colors.BLUE_200
+                                updated_cells += 1
                             
                             
                             # セル単体での更新を試行
