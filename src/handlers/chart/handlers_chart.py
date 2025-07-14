@@ -143,7 +143,15 @@ class Handlers_Chart:
     def _process_time_data(dataframe):
         """時間データを処理するヘルパーメソッド"""
         group_bubble = dataframe.groupby(["locate","task","count"]).size().reset_index(name="times")
+        try:
+            group_bubble.drop(index=group_bubble[group_bubble["locate"] == "self"].index, inplace=True)  # self列は除外する
+        except KeyError:
+            pass
         group_bubble2 = group_bubble.groupby(["locate","task"]).sum(numeric_only=True).reset_index()
+        try:
+            group_bubble2.drop(index=group_bubble2[group_bubble2["locate"] == "self"].index, inplace=True)  # self列は除外する
+        except KeyError:
+            pass
         group_bubble2["times"] = group_bubble2["times"] * MINUTES_PER_RECORD
         return group_bubble2
         
@@ -386,6 +394,10 @@ class Handlers_Chart:
 
             # データのグループ化
             group_df_locate = df.groupby(["locate", "task"]).size().reset_index(name="counts")
+            try:
+                group_df_locate.drop(index=group_df_locate[group_df_locate["locate"] == "self"].index, inplace=True)  # self列は除外する
+            except KeyError:
+                pass
             
             if group_df_locate.empty:
                 raise ValueError("グループ化後のデータが空です")
@@ -444,6 +456,10 @@ class Handlers_Chart:
                 df = dataframe.copy() if dataframe is not None else pd.DataFrame()
                 if not df.empty and 'locate' in df.columns and 'task' in df.columns:
                     group_df_locate = df.groupby(["locate", "task"]).size().reset_index(name="counts")
+                    try:
+                        group_df_locate.drop(index=group_df_locate[group_df_locate["locate"] == "self"].index, inplace=True)  # self列は除外する
+                    except KeyError:
+                        pass
                     chart2_info.controls = Handlers_Chart._create_period_selector_ui(page=page)
                     
                     locate_chart_list = []

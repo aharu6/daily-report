@@ -330,7 +330,10 @@ class Handlers_analyze:
             df=all_df
             locate_df=df.groupby(["locate","task"]).size().reset_index(name="counts")
             #self列は除外する
-            locate_df.drop(index=locate_df[locate_df["locate"]=="self"].index,inplace=True)
+            try:
+                locate_df.drop(index=locate_df[locate_df["locate"]=="self"].index,inplace=True)
+            except KeyError:
+                pass
             graph_width=int(len(locate_df["locate"].unique()))*77
             if graph_width<1000:
                 graph_width=1000
@@ -361,7 +364,10 @@ class Handlers_analyze:
         else:
             df=dataframe
             locate_df=df.groupby(["locate","task"]).size().reset_index(name="counts")
-            locate_df.drop(index=locate_df[locate_df["locate"]=="self"].index,inplace=True)
+            try:
+                locate_df.drop(index=locate_df[locate_df["locate"]=="self"].index,inplace=True) #self列は除外する
+            except KeyError:
+                pass
             graph_width=int(len(locate_df["locate"].unique()))*77
             if graph_width<1000:
                 graph_width=1000
@@ -832,12 +838,24 @@ class Handlers_analyze:
         if locate_df is not None:
             df=locate_df
             timedf=df.groupby(["locate","task"]).size().reset_index(name="times")
+            try:
+                timedf.drop(index=timedf[timedf["locate"]=="self"].index,inplace=True) #self列は除外する
+            except KeyError:
+                pass
             #*15にすることで実際の時間に変換　(1入力15ふん）
             timedf["times"]=timedf["times"]*15
             #業務数列
             taskdf=dataframe.groupby(["locate","task"]).size().reset_index(name="task_count")
+            try:
+                taskdf.drop(index=taskdf[taskdf["locate"]=="self"].index,inplace=True) #self列は除外する
+            except KeyError:
+                pass
             #カウント数列を算出
             countdf=dataframe.groupby(["locate","task"])["count"].sum().reset_index(name="count_total")
+            try:
+                countdf.drop(index=countdf[countdf["locate"]=="self"].index,inplace=True) #self列は除外する
+            except KeyError:
+                pass
             loc_df=pd.merge(
                 timedf,
                 taskdf,
@@ -901,12 +919,24 @@ class Handlers_analyze:
             result_field.update()
         else:
             timedf=dataframe.groupby(["locate","task"]).size().reset_index(name="times")
+            try:
+                timedf.drop(index=timedf[timedf["locate"]=="self"].index,inplace=True) #self列は除外する
+            except KeyError:
+                pass
             #*15にすることで実際の時間に変換　(1入力15ふん）
             timedf["times"]=timedf["times"]*15
             #業務数列
             taskdf=dataframe.groupby(["locate","task"]).size().reset_index(name="task_count")
+            try:
+                taskdf.drop(index=taskdf[taskdf["locate"]=="self"].index,inplace=True) #self列は除外する
+            except KeyError:
+                pass
             #カウント数列を算出
             countdf=dataframe.groupby(["locate","task"])["count"].sum().reset_index(name="count_total")
+            try:
+                countdf.drop(index=countdf[countdf["locate"]=="self"].index,inplace=True) #self列は除外する
+            except KeyError:
+                pass
             loc_df=pd.merge(
                 timedf,
                 taskdf,
