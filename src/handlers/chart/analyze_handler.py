@@ -329,6 +329,8 @@ class Handlers_analyze:
         if all_df is not None:
             df=all_df
             locate_df=df.groupby(["locate","task"]).size().reset_index(name="counts")
+            #self列は除外する
+            locate_df.drop(index=locate_df[locate_df["locate"]=="self"].index,inplace=True)
             graph_width=int(len(locate_df["locate"].unique()))*77
             if graph_width<1000:
                 graph_width=1000
@@ -343,7 +345,7 @@ class Handlers_analyze:
                 width=graph_width,
             )
             fig.update_layout(
-                xasix=dict(title="病棟"),
+                xaxis=dict(title="病棟"),
                 yaxis=dict(title="記録回数")
             )
             result_field.controls=[
@@ -359,6 +361,7 @@ class Handlers_analyze:
         else:
             df=dataframe
             locate_df=df.groupby(["locate","task"]).size().reset_index(name="counts")
+            locate_df.drop(index=locate_df[locate_df["locate"]=="self"].index,inplace=True)
             graph_width=int(len(locate_df["locate"].unique()))*77
             if graph_width<1000:
                 graph_width=1000
