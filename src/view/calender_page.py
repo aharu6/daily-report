@@ -126,7 +126,18 @@ class CalenderPage:
                         switch_value=e.control.value
                     )
                 )]
-            self.tabs.update()
+            # 安全にタブを更新
+            try:
+                if hasattr(self.tabs, 'page') and self.tabs.page is not None:
+                    self.tabs.update()
+                else:
+                    self.page.update()
+            except Exception as tabs_update_error:
+                print(f"Error updating tabs in filter change: {tabs_update_error}")
+                try:
+                    self.page.update()
+                except Exception as page_update_error:
+                    print(f"Fallback page update failed: {page_update_error}")
         
         change_filter.on_change = handle_filter_change
 
@@ -423,10 +434,21 @@ class CalenderPage:
                 
                 # タブ全体を更新
                 try:
-                    self.tabs.update()
-                    print("All tabs UI updated after data load")
+                    # Tabsがページに追加されているか確認してから更新
+                    if hasattr(self.tabs, 'page') and self.tabs.page is not None:
+                        self.tabs.update()
+                        print("All tabs UI updated after data load")
+                    else:
+                        # Tabsがページに追加されていない場合はページ全体を更新
+                        self.page.update()
+                        print("Page updated instead of tabs (tabs not yet added to page)")
                 except Exception as update_error:
                     print(f"Error updating tabs: {update_error}")
+                    # フォールバック: ページ全体を更新
+                    try:
+                        self.page.update()
+                    except Exception as fallback_error:
+                        print(f"Fallback page update also failed: {fallback_error}")
                         
         except Exception as e:
             print(f"Error updating UI after data load: {e}")
