@@ -1,7 +1,7 @@
 import flet as ft
 from flet import View
 import asyncio
-from handlers.handlersMain import Handlers_Main
+from handlers import handlersMain
 # main
 def main(page: ft.Page):
 
@@ -81,7 +81,7 @@ def main(page: ft.Page):
         bgcolor=ft.colors.BLUE_GREY_50,
         inactive_color=ft.colors.GREY,
         active_color=ft.colors.BLACK,
-        on_change=lambda e: Handlers_Main().on_navigation_change(e, page),
+        on_change=lambda e: Handlers_Main.on_navigation_change(e, page),
         destinations=[
             ft.NavigationBarDestination(
                 icon=ft.icons.TIMELINE,
