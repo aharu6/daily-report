@@ -209,8 +209,18 @@ class TabContentCreator:
 
         # タブのコンテンツを作成
         tab_content = ft.Column(
-            controls=[arrow_navigation, update_button, tab_calendar],
-            scroll=ft.ScrollMode.ALWAYS,
+            controls=[
+                arrow_navigation, 
+                update_button, 
+                ft.Container(
+                    content=tab_calendar,
+                    expand=True,
+                    padding=10,  # 内側のパディングを追加
+                )
+            ],
+            scroll=ft.ScrollMode.AUTO,  # ALWAYSからAUTOに変更
+            expand=True,  # expandを追加してタブ内で十分な高さを確保
+            spacing=10,   # 要素間のスペースを追加
         )
         
         # スクロールバーのテーマを設定
