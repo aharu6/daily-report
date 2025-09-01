@@ -260,24 +260,15 @@ class ReloadDataHandler:
                 #カウンター内の値も保存データに基づいて更新
                 
                 #コメントがある場合にはコメントボタンを追加
-                
+                if load_data[key]["task"]:
+                    print(load_data[key]["task"])
                 match load_data[key]["task"]:
                     case "その他":
                         #columns
                         columns[i].content.content.controls.append(comments[i])
                         
                     # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
-                    case (
-                        "混注時間",
-                        "無菌調製関連業務",
-                        "休憩",
-                        "委員会",
-                        "WG活動",
-                        "勉強会参加",
-                        "1on1",
-                        "カンファレンス",
-                        "will_accept",
-                    ):
+                    case "混注時間"|"無菌調製関連業務"|"休憩"|"委員会"|"WG活動"|"勉強会参加"|"1on1"|"カンファレンス"|"will_accept":
                         pass
                     #カウンターの再表示
                     case _:

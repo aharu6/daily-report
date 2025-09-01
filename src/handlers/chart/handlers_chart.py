@@ -559,7 +559,8 @@ class Handlers_Chart:
                 y="phName", 
                 color="task", 
                 barmode="stack", 
-                orientation="h"
+                orientation="h",
+                color_discrete_map=TASK_COLOR_MAP
             )
             
             # UI作成
