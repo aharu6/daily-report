@@ -41,7 +41,7 @@ class Handlers_analyze:
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
-                Handlers_Chart._create_preview_button(chart=fig), # グラフのプレビュー用ボタン
+                Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
                     icon=ft.icons.DOWNLOAD,
@@ -102,7 +102,7 @@ class Handlers_analyze:
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
-                Handlers_Chart._create_preview_button(chart=fig), # グラフのプレビュー用ボタン
+                Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
                     icon=ft.icons.DOWNLOAD,
@@ -355,7 +355,7 @@ class Handlers_analyze:
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
-                Handlers_Chart._create_preview_button(chart=fig), # グラフのプレビュー用ボタン
+                Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
                     icon=ft.icons.DOWNLOAD,
@@ -390,7 +390,7 @@ class Handlers_analyze:
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
-                Handlers_Chart._create_preview_button(chart=fig), # グラフのプレビュー用ボタン
+                Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
                     icon=ft.icons.DOWNLOAD,
@@ -431,7 +431,7 @@ class Handlers_analyze:
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
-                Handlers_Chart._create_preview_button(chart=fig), # グラフのプレビュー用ボタン
+                Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
                     icon=ft.icons.DOWNLOAD,
@@ -491,7 +491,7 @@ class Handlers_analyze:
             )
             result_field.controls=[
                 PlotlyChart(fig),#グラフ
-                Handlers_Chart._create_preview_button(chart=fig), # グラフのプレビュー用ボタン
+                Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
                     icon=ft.icons.DOWNLOAD,
