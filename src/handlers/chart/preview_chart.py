@@ -8,7 +8,7 @@ class PreviewChartHandler:
     #flet の内蔵ダイアログを使用した拡大表示
     def preview_chart(chart,page):
         dialog = ft.AlertDialog(
-            title=ft.Text("Chart Preview"),
+            title=ft.Text("Preview"),
             content=ft.Container(
                 content=PlotlyChart(
                     chart,
