@@ -133,12 +133,12 @@ class Handlers_Chart:
         )
     
     @staticmethod
-    def _create_preview_button(chart):
+    def _create_preview_button(chart,page):
         """プレビューボタンを作成するヘルパーメソッド"""
         return ft.IconButton(
             icon=ft.icons.PAGEVIEW,
             tooltip="拡大表示",
-            on_click=lambda e: PreviewChartHandler.preview_chart(chart)
+            on_click=lambda e: PreviewChartHandler.preview_chart(chart,page)
         )
     
     @staticmethod
@@ -315,7 +315,7 @@ class Handlers_Chart:
             
             # UI作成
             period_ui = Handlers_Chart._create_period_selector_ui(start_date, end_date, page)
-            expansion_button = Handlers_Chart._create_preview_button(chart=bar_chart)
+            expansion_button = Handlers_Chart._create_preview_button(chart=bar_chart,page=page)
             download_button = Handlers_Chart._create_download_button(page=page, chart=bar_chart, chart_name="barchart")
 
             chart_field.controls = [
@@ -347,7 +347,7 @@ class Handlers_Chart:
                     bar_chart = Handlers_Chart._create_bar_chart(group_bubble2)
                     
                     period_ui = Handlers_Chart._create_period_selector_ui(page=page)
-                    expansion_button = Handlers_Chart._create_preview_button(chart=bar_chart)
+                    expansion_button = Handlers_Chart._create_preview_button(chart=bar_chart,page=page)
                     download_button = Handlers_Chart._create_download_button(page, bar_chart, "barchart")
                     
                     chart_field.controls = [
@@ -427,7 +427,7 @@ class Handlers_Chart:
                                     PlotlyChart(fig, expand=True, original_size=False, isolated=True),
                                     ft.Text(locate),
                                     Handlers_Chart._create_download_button(page, fig, "piechart"),
-                                    Handlers_Chart._create_preview_button(fig)
+                                    Handlers_Chart._create_preview_button(chart=fig,page=page)
                                 ],
                                 width="30%",
                             ),
@@ -477,7 +477,7 @@ class Handlers_Chart:
                                             PlotlyChart(fig, expand=True, original_size=False, isolated=True),
                                             ft.Text(locate),
                                             Handlers_Chart._create_download_button(page, fig, f"piechart_{locate}"),
-                                            Handlers_Chart._create_preview_button(fig)
+                                            Handlers_Chart._create_preview_button(chart=fig,page=page)
                                         ],
                                         width="30%",
                                     ),
@@ -559,12 +559,13 @@ class Handlers_Chart:
                 y="phName", 
                 color="task", 
                 barmode="stack", 
-                orientation="h"
+                orientation="h",
+                color_discrete_map=TASK_COLOR_MAP
             )
             
             # UI作成
             period_ui = Handlers_Chart._create_period_selector_ui(start_date, end_date, page)
-            expansion_button = Handlers_Chart._create_preview_button(chart=fig_bar)
+            expansion_button = Handlers_Chart._create_preview_button(chart=fig_bar,page=page)
             download_button = Handlers_Chart._create_download_button(page, fig_bar, "selfchart")
             
             chart_field.controls = [
@@ -626,7 +627,7 @@ class Handlers_Chart:
                     
                     # UI作成
                     period_ui = Handlers_Chart._create_period_selector_ui(page=page)
-                    expansion_button = Handlers_Chart._create_preview_button(chart=fig_bar)
+                    expansion_button = Handlers_Chart._create_preview_button(chart=fig_bar,page=page)
                     download_button = Handlers_Chart._create_download_button(page, fig_bar, "selfchart")
                     
                     chart_field.controls = [
