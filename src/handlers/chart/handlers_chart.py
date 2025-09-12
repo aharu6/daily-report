@@ -714,13 +714,15 @@ class Handlers_Chart:
         """チャートエラーを処理するヘルパーメソッド"""
         chart_field.controls = [
             ft.Card(
-                content=ft.Column([
+                content=ft.Container(
+                    content=ft.Column([
                     ft.Icon(ft.icons.ERROR, color=ft.colors.RED, size=50),
                     ft.Text(error_message, color=ft.colors.RED),
                     ft.Text("データを確認してください", size=12),
-                ], 
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-                bgcolor=ft.colors.RED_50
-            )
+                    ], 
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                    bgcolor=ft.colors.RED_50
+                 )
+                )
         ]
         page.update()
