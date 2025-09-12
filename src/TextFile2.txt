@@ -3,4 +3,4 @@ py
 macos でのbuild
 flet pack main.py -i /Users/aizawaharuka/Documents/GitHub/daily-report/src/appicon/macos/diary-left-svgrepo-com.ico -n 業務日誌
 
-flet pack main.py -i appicon\diary-left-svgrepo-com.ico --file-version 1.14.1.0 -n 業務見える化日誌
+flet pack main.py -i appicon\diary-left-svgrepo-com.ico --file-version 1.51.0.0 -n 業務見える化日誌
