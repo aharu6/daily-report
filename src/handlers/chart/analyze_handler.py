@@ -348,6 +348,7 @@ class Handlers_analyze:
                 labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
                 barmode="stack",
                 width=graph_width,
+                height=1400,
             )
             fig.update_layout(
                 xaxis=dict(title="病棟"),
@@ -383,6 +384,7 @@ class Handlers_analyze:
                 labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
                 barmode="stack",
                 width=graph_width,
+                height=1400,
             )
             fig.update_layout(
                 xaxis=dict(title="病棟"),
@@ -424,6 +426,7 @@ class Handlers_analyze:
                 labels={"date": "Date", "counts": "Task Count", "task": "Task"},
                 barmode="stack",
                 width=graph_width,
+                height=1400,
             )
             fig.update_layout(
                 xaxis=dict(title="日付"),
@@ -484,6 +487,7 @@ class Handlers_analyze:
                 labels={"date": "Date", "counts": "Task Count", "task": "Task"},
                 barmode="stack",
                 width=graph_width,
+                height=1400,
             )
             fig.update_layout(
                 xaxis=dict(title="日付"),
