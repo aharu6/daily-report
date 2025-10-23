@@ -424,7 +424,8 @@ class Handlers_Chart:
                         ft.Card(
                             content=ft.Column(
                                 controls=[
-                                    PlotlyChart(fig, expand=True, original_size=False, isolated=True),
+                                    PlotlyChart(fig, expand=True, original_size=False, isolated=True,
+                                                ),
                                     ft.Text(locate),
                                     Handlers_Chart._create_download_button(page, fig, "piechart"),
                                     Handlers_Chart._create_preview_button(chart=fig,page=page)
@@ -560,7 +561,7 @@ class Handlers_Chart:
                 color="task", 
                 barmode="stack", 
                 orientation="h",
-                color_discrete_map=TASK_COLOR_MAP
+                color_discrete_map=TASK_COLOR_MAP,
             )
             
             # UI作成
