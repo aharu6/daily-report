@@ -1,5 +1,5 @@
 import flet as ft
-from handlers.chart.handlers_chart import Handlers_Chart
+from handlers.chart.handlers_chart import Handlers_Chart,TASK_COLOR_MAP
 import plotly.express as px
 from flet.plotly_chart import PlotlyChart
 import pandas as pd
@@ -336,9 +336,11 @@ class Handlers_analyze:
                 locate_df.drop(index=locate_df[locate_df["locate"]=="self"].index,inplace=True)
             except KeyError:
                 pass
+
             graph_width=int(len(locate_df["locate"].unique()))*77
             if graph_width<1000:
                 graph_width=1000
+            
             fig=px.bar(
                 locate_df,
                 x="locate",
@@ -349,6 +351,7 @@ class Handlers_analyze:
                 barmode="stack",
                 width=graph_width,
                 height=1400,
+                hover_data={"locate":True,"task":True,"counts":True}
             )
             fig.update_layout(
                 xaxis=dict(title="病棟"),
@@ -375,29 +378,95 @@ class Handlers_analyze:
             graph_width=int(len(locate_df["locate"].unique()))*77
             if graph_width<1000:
                 graph_width=1000
-            fig=px.bar(
-                locate_df,
-                x="locate",
-                y="counts",
-                color="task",
-                title="場所ごとに記録された業務内容と記録回数",
-                labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
-                barmode="stack",
-                width=graph_width,
-                height=1400,
+
+            print(locate_df)
+
+            #ft.CarChart用のデータ準備
+            bar_groups=[]
+            unique_locations=locate_df["locate"].unique()
+            unique_tasks=locate_df["task"].unique()
+
+            #
+            for i,location in enumerate(unique_locations):
+                location_data=locate_df[locate_df["locate"]==location]
+                bars=[]
+
+                #積み上げ用の累積値を計算
+                cumulative_y=0
+                for j,task in enumerate(unique_tasks):
+                    task_data=location_data[location_data["task"]==task]
+                    count=task_data["counts"].sum() if not task_data.empty else 0
+                    
+                    if count>0:
+                        bars.append(
+                            ft.BarChartRod(
+                                from_y=0,
+                                to_y=count,
+                                width=20,
+                                color=TASK_COLOR_MAP,
+                                tooltip=f"{task}:{count}"
+                            )
+                        )
+
+                if bars:
+                    bar_groups.append(
+                        ft.BarChartGroup(
+                            x=i,
+                            bar_rods=bars,
+                        )
+                    )
+
+            #x軸のラベル
+            bottom_axis=ft.ChartAxis(
+                labels=[
+                    ft.ChartAxisLabel(
+                        value=i,
+                        label=ft.Text(location)
+                    )
+                    for i,location in enumerate(unique_locations)
+                ],
+                labels_size=40,
             )
-            fig.update_layout(
-                xaxis=dict(title="病棟"),
-                yaxis=dict(title="記録回数")
+
+            #y axis
+            left_axis=ft.ChartAxis(
+                labels=[
+                    ft.ChartAxisLabel(
+                        value=i*10,
+                        label=ft.Text(str(i*10))
+                    )
+                    for i in range(0,int(locate_df["counts"].max()/10)+2)
+                ],
+                labels_size=40,
+            )
+
+            bar_chart=ft.BarChart(
+                bar_groups=bar_groups,
+                left_axis=left_axis,
+                border=ft.border.all(1,ft.colors.BLACK),
+                bottom_axis=bottom_axis,
+                horizontal_grid_lines=ft.ChartGridLines(
+                    color=ft.colors.GREEN_300,
+                    width=1,
+                    dash_pattern=[3,3]
+
+                ),
+                tooltip_bgcolor=ft.colors.with_opacity(0.5,ft.colors.GREY),
+                max_y=locate_df["counts"].max()*1.1,
+                expand=True,
+
             )
             result_field.controls=[
-                PlotlyChart(fig),#グラフ
-                Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
+                ft.Container(
+                    content=bar_chart,
+                    height=600,
+                ),
+                Handlers_Chart._create_preview_button(chart=bar_chart,page=page), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
                     icon=ft.icons.DOWNLOAD,
                     tooltip="グラフを保存",
-                    on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_location"),
+                    on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart,chart_name="task_location"),
                 )
             ]
             result_field.update()
