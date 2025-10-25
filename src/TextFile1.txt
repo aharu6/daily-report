@@ -6,6 +6,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 �R�}���h�v�����v�g
 .venv\Scripts\activate.bat
 
+#appフォルダの仮想環境を利用
 powershell
 .\.venv\Scripts\Activate.ps1
 

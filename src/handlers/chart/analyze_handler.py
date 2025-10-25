@@ -403,7 +403,7 @@ class Handlers_analyze:
                     "保存",
                     icon=ft.Icons.DOWNLOAD,
                     tooltip="グラフを保存",
-                    on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart,chart_name="task_location"),
+                    on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_location"),
                 )
             ]
             result_field.update()
