@@ -57,56 +57,26 @@ def main(page: ft.Page):
 
     # タブが作成された後にfile_pickerを定義
     file_picker = ft.FilePicker(
-        on_result = lambda e:ReadFolder.read_folder(e=e, schedule_data=schedule_data, page=page,folder_name=folder_name,checkboxes=tabs.tabs[0].content.controls[2].controls[7] if change_filter.value==False else None),
+        on_result = lambda e:ReadFolder.read_folder(
+            e=e, schedule_data=schedule_data,
+            page=page,
+            folder_name=folder_name,
+            checkboxes=tabs.tabs[0].content.controls[2].controls[7] if change_filter.value==False else None),
     )
     
     page.overlay.append(file_picker)
-    
+    page.update()
+
+    def open_directory_picker():
+        print("フォルダ選択ボタン押した")
+        file_picker.get_directory_path()
     #フォルダ読み込みのボタンを作成
     read_folder_button=ft.ElevatedButton(
         text="読み込むフォルダを選択",
-        on_click=lambda _:file_picker.get_directory_path(),
+        on_click=lambda _: open_directory_picker(),
         icon=ft.icons.FOLDER_OPEN,
     )
     
-
-    # 病棟ラベル
-    locate_labels = [
-        "ICU", "OR", "HR", "1E", "3A", "3B", "3C", "CCU",
-        "4A", "4B", "4C", "4D", "HCU",
-        "5A", "5B", "5C", "5D", "DI"
-    ]
-
-    # 病棟絞り込みと名前絞り込み機能の切り替え
-    change_filter=ft.Switch(
-        label="病棟絞り込み",
-        value=True,
-    )
-
-    # タブを先に作成
-    tabs=ft.Tabs(
-        selected_index=0,
-        tabs=[
-            ft.Tab(text=label, content=TabContentCreator.create_tab_content(label=label, page=page, schedule_data=schedule_data,switch_value=None)) for label in locate_labels
-        ],
-        expand=True,
-        animation_duration=300,
-        indicator_color=ft.colors.BLUE,
-    )
-
-    # タブが作成された後にfile_pickerを定義
-    file_picker = ft.FilePicker(
-        on_result = lambda e:ReadFolder.read_folder(e=e, schedule_data=schedule_data, page=page,folder_name=folder_name,checkboxes=tabs.tabs[0].content.controls[2].controls[7] if change_filter.value==False else None),
-    )
-    
-    page.overlay.append(file_picker)
-    
-    #フォルダ読み込みのボタンを作成
-    read_folder_button=ft.ElevatedButton(
-        text="読み込むフォルダを選択",
-        on_click=lambda _:file_picker.get_directory_path(),
-        icon=ft.icons.FOLDER_OPEN,
-    )
 
     #ファイルを読み込んで日付、名前、病棟名を抽出、datatableに追加する
     #保存データはclientstorageに保存

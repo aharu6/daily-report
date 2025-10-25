@@ -146,8 +146,7 @@ class TimelinePage:
                 self.reloadData,
                 ft.Container(width = 60),
                 ],
-            alignment=ft
-            .MainAxisAlignment.END,
+            alignment=ft.MainAxisAlignment.END,
             spacing = 10,
         )
         #radiobutton_selected data

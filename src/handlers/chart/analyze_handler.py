@@ -379,16 +379,18 @@ class Handlers_analyze:
             if graph_width<1000:
                 graph_width=1000
 
-            print(locate_df)
-
             #ft.CarChart用のデータ準備
             bar_groups=[]
             unique_locations=locate_df["locate"].unique()
             unique_tasks=locate_df["task"].unique()
 
+            sorted_locations=sorted(unique_locations)
+
+            location_to_x={location:i for i,location in enumerate(sorted_locations)}
             #
-            for i,location in enumerate(unique_locations):
+            for i,location in enumerate(sorted_locations):
                 location_data=locate_df[locate_df["locate"]==location]
+                
                 bars=[]
 
                 #積み上げ用の累積値を計算
@@ -396,18 +398,22 @@ class Handlers_analyze:
                 for j,task in enumerate(unique_tasks):
                     task_data=location_data[location_data["task"]==task]
                     count=task_data["counts"].sum() if not task_data.empty else 0
-                    
                     if count>0:
+                        print(repr(task))
+                        tooltip_text = task if isinstance(task, str) else task.decode("utf-8")
+
                         bars.append(
                             ft.BarChartRod(
-                                from_y=0,
-                                to_y=count,
-                                width=20,
-                                color=TASK_COLOR_MAP,
-                                tooltip=f"{task}:{count}"
+                                from_y=cumulative_y,
+                                to_y=cumulative_y + count,
+                                width=40,
+                                color=TASK_COLOR_MAP.get(task,ft.colors.BLUE) if count>0 else ft.colors.TRANSPARENT,
+                                border_radius=0,
+                                tooltip=ft.Tooltip(ft.Text(task)),
+                                show_tooltip=True,
                             )
                         )
-
+                        cumulative_y += count
                 if bars:
                     bar_groups.append(
                         ft.BarChartGroup(
@@ -421,21 +427,23 @@ class Handlers_analyze:
                 labels=[
                     ft.ChartAxisLabel(
                         value=i,
-                        label=ft.Text(location)
+                        label=ft.Text(location,size=12)
                     )
-                    for i,location in enumerate(unique_locations)
+                    for i,location in enumerate(sorted_locations)
                 ],
-                labels_size=40,
+                labels_size=50,
             )
 
             #y axis
+            max_count=locate_df.groupby("locate")["counts"].sum().max()
+            y_interval=max(1,int(max_count/10))
             left_axis=ft.ChartAxis(
                 labels=[
                     ft.ChartAxisLabel(
-                        value=i*10,
-                        label=ft.Text(str(i*10))
+                        value=i*y_interval,
+                        label=ft.Text(str(i*y_interval))
                     )
-                    for i in range(0,int(locate_df["counts"].max()/10)+2)
+                    for i in range(0,int(max_count/y_interval)+2)
                 ],
                 labels_size=40,
             )

@@ -21,7 +21,7 @@ def main(page: ft.Page):
                             ft.Text("Loading..."),
                             ft.ProgressBar(width=200, height=20),
                         ],
-                        alignment="certer",
+                        alignment="center",
                         horizontal_alignment="center",
                     )
                 ],
@@ -34,15 +34,15 @@ def main(page: ft.Page):
     page.theme = ft.Theme(
         scrollbar_theme=ft.ScrollbarTheme(
             track_color={
-                ft.MaterialState.HOVERED: ft.colors.BLUE_GREY_50,
-                ft.MaterialState.DEFAULT: ft.colors.TRANSPARENT,
+                ft.ControlState.HOVERED: ft.colors.BLUE_GREY_50,
+                ft.ControlState.DEFAULT: ft.colors.TRANSPARENT,
             },
             track_visibility=True,
             track_border_color=ft.colors.BLUE_GREY_50,
             thumb_visibility=True,
             thumb_color={
-                ft.MaterialState.HOVERED: None,
-                ft.MaterialState.DEFAULT: ft.colors.GREY_300,
+                ft.ControlState.HOVERED: None,
+                ft.ControlState.DEFAULT: ft.colors.GREY_300,
             },
             thickness=15,
             radius=15,
@@ -81,7 +81,7 @@ def main(page: ft.Page):
         bgcolor=ft.colors.BLUE_GREY_50,
         inactive_color=ft.colors.GREY,
         active_color=ft.colors.BLACK,
-        on_change=lambda e: Handlers_Main.on_navigation_change(e, page),
+        on_change=lambda e: handlersMain.on_navigation_change(e, page),
         destinations=[
             ft.NavigationBarDestination(
                 icon=ft.icons.TIMELINE,

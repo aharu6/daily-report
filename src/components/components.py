@@ -21,37 +21,6 @@ class DateComponent:
             data=self.today,
         )
 
-    """
-    ft.ElevatedButton(
-            text=f"{self.today.year}/{self.today.month}/{self.today.day}",
-            icon=ft.icons.CALENDAR_MONTH,
-            on_click=lambda e: self.page.open(
-                ft.DatePicker(
-                    on_change=self.handle_change,
-                )
-            ),
-            data = self.today,
-        )
-        
-        ft.Column(
-            [
-                ft.Icon(ft.icons.CALENDAR_MONTH),
-                ft.ElevatedButton(
-                    text=f"{self.today.year}/{self.today.month}/{self.today.day}",
-                    on_click = lambda e: self.page.open(
-                        ft.DatePicker(
-                            on_change =lambda e: self.handle_change,
-                        )
-                    ),
-                    data = self.today,
-                ),
-            ],
-            width = 130,
-            data = self.today,
-        )
-
-"""
-
 
 class NameDropdown:
     def __init__(self, page, phNameList, dropdown_changed):
