@@ -78,7 +78,7 @@ class CalenderPage:
                 ) for label in self.locate_labels
             ],
             animation_duration=300,
-            indicator_color=ft.colors.BLUE,
+            indicator_color=ft.Colors.BLUE,
         )
         
         # tabsをインスタンス変数として保存
@@ -97,7 +97,7 @@ class CalenderPage:
         read_folder_button = ft.ElevatedButton(
             text="読み込むフォルダを選択",
             on_click=lambda _: file_picker.get_directory_path(),
-            icon=ft.icons.FOLDER_OPEN,
+            icon=ft.Icons.FOLDER_OPEN,
         )
 
         # フィルター変更ハンドラー
@@ -164,15 +164,15 @@ class CalenderPage:
         main_content.theme = ft.Theme(
             scrollbar_theme=ft.ScrollbarTheme(
                 track_color={
-                    ft.ControlState.HOVERED: ft.colors.AMBER,
-                    ft.ControlState.DEFAULT: ft.colors.TRANSPARENT,
+                    ft.ControlState.HOVERED: ft.Colors.AMBER,
+                    ft.ControlState.DEFAULT: ft.Colors.TRANSPARENT,
                 },
                 track_visibility=True,
-                track_border_color=ft.colors.BLUE,
+                track_border_color=ft.Colors.BLUE,
                 thumb_visibility=True,
                 thumb_color={
-                    ft.ControlState.HOVERED: ft.colors.RED,
-                    ft.ControlState.DEFAULT: ft.colors.GREY_300,
+                    ft.ControlState.HOVERED: ft.Colors.RED,
+                    ft.ControlState.DEFAULT: ft.Colors.GREY_300,
                 },
                 thickness=30,
                 radius=15,
@@ -184,30 +184,30 @@ class CalenderPage:
         # ナビゲーションバー
         navigation_bar = ft.CupertinoNavigationBar(
             selected_index=2,  # Calendarタブを選択状態に
-            bgcolor=ft.colors.BLUE_GREY_50,
-            inactive_color=ft.colors.GREY,
-            active_color=ft.colors.BLACK,
+            bgcolor=ft.Colors.BLUE_GREY_50,
+            inactive_color=ft.Colors.GREY,
+            active_color=ft.Colors.BLACK,
             on_change=lambda e: Handlers_Main().on_navigation_change(e, self.page),
             destinations=[
                 ft.NavigationBarDestination(
-                    icon=ft.icons.TIMELINE,
+                    icon=ft.Icons.TIMELINE,
                     label="Timeline",
-                    selected_icon=ft.icons.BORDER_COLOR,
+                    selected_icon=ft.Icons.BORDER_COLOR,
                 ),
                 ft.NavigationBarDestination(
-                    icon=ft.icons.AUTO_GRAPH,
+                    icon=ft.Icons.AUTO_GRAPH,
                     label="Chart",
-                    selected_icon=ft.icons.AUTO_GRAPH,
+                    selected_icon=ft.Icons.AUTO_GRAPH,
                 ),
                 ft.NavigationBarDestination(
-                    icon=ft.icons.CALENDAR_MONTH,
+                    icon=ft.Icons.CALENDAR_MONTH,
                     label="Calendar",
-                    selected_icon=ft.icons.CALENDAR_TODAY,
+                    selected_icon=ft.Icons.CALENDAR_TODAY,
                 ),
                 ft.NavigationBarDestination(
-                    icon=ft.icons.SETTINGS,
+                    icon=ft.Icons.SETTINGS,
                     label="Settings",
-                    selected_icon=ft.icons.SETTINGS,
+                    selected_icon=ft.Icons.SETTINGS,
                 ),
             ],
         )
@@ -231,15 +231,15 @@ class CalenderPage:
         view.theme = ft.Theme(
             scrollbar_theme=ft.ScrollbarTheme(
                 track_color={
-                    ft.ControlState.HOVERED: ft.colors.AMBER,
-                    ft.ControlState.DEFAULT: ft.colors.TRANSPARENT,
+                    ft.ControlState.HOVERED: ft.Colors.AMBER,
+                    ft.ControlState.DEFAULT: ft.Colors.TRANSPARENT,
                 },
                 track_visibility=True,
-                track_border_color=ft.colors.BLUE,
+                track_border_color=ft.Colors.BLUE,
                 thumb_visibility=True,
                 thumb_color={
-                    ft.ControlState.HOVERED: ft.colors.RED,
-                    ft.ControlState.DEFAULT: ft.colors.GREY_300,
+                    ft.ControlState.HOVERED: ft.Colors.RED,
+                    ft.ControlState.DEFAULT: ft.Colors.GREY_300,
                 },
                 thickness=30,
                 radius=15,

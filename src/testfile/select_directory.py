@@ -15,6 +15,7 @@ def main(page: ft.Page):
         on_click = lambda _:get_directory.get_directory_path()
     )
     page.overlay.extend([get_directory])
+    page.update()
     page.add(button)
 
 ft.app(target = main)

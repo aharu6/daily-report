@@ -52,7 +52,7 @@ def main(page: ft.Page):
         ],
         expand=True,
         animation_duration=300,
-        indicator_color=ft.colors.BLUE,
+        indicator_color=ft.Colors.BLUE,
     )
 
     # タブが作成された後にfile_pickerを定義
@@ -74,7 +74,7 @@ def main(page: ft.Page):
     read_folder_button=ft.ElevatedButton(
         text="読み込むフォルダを選択",
         on_click=lambda _: open_directory_picker(),
-        icon=ft.icons.FOLDER_OPEN,
+        icon=ft.Icons.FOLDER_OPEN,
     )
     
 

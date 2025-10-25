@@ -64,7 +64,7 @@ class DragHandlers:
         e.control.content = ft.Column(
             controls=[
                 ft.IconButton(
-                    icon=ft.icons.DELETE_OUTLINE,
+                    icon=ft.Icons.DELETE_OUTLINE,
                     visible=False,
                     icon_size=20,
                     icon_color="red",
@@ -121,7 +121,7 @@ class DragHandlers:
                         ),
                     ],
                     tooltip="編集",
-                    icon=ft.icons.MORE_VERT,
+                    icon=ft.Icons.MORE_VERT,
                     icon_size=20,
                     on_open=lambda e: MakePopup.pop_up_reload(
                         e=e,

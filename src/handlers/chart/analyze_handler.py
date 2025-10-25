@@ -44,7 +44,7 @@ class Handlers_analyze:
                 Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="グラフを保存",
                     on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="heatmap"),
 
@@ -105,7 +105,7 @@ class Handlers_analyze:
                 Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="グラフを保存",
                     on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="heatmap"),
 
@@ -130,7 +130,7 @@ class Handlers_analyze:
                 ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=task_per_time_heatmap,name="time_task_analysis"),
                 )
@@ -175,7 +175,7 @@ class Handlers_analyze:
                 ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=task_count,name="task_count"),
                 )
@@ -213,7 +213,7 @@ class Handlers_analyze:
                 ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=task_count,name="task_count"),
                 )
@@ -272,7 +272,7 @@ class Handlers_analyze:
                 ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=time_per_task,name="time_per_task"),
                 )
@@ -317,7 +317,7 @@ class Handlers_analyze:
                 ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=time_per_task,name="time_per_task"),
                 )
@@ -362,7 +362,7 @@ class Handlers_analyze:
                 Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="グラフを保存",
                     on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_location"),
                 )
@@ -400,17 +400,15 @@ class Handlers_analyze:
                     count=task_data["counts"].sum() if not task_data.empty else 0
                     if count>0:
                         print(repr(task))
-                        tooltip_text = task if isinstance(task, str) else task.decode("utf-8")
 
                         bars.append(
                             ft.BarChartRod(
                                 from_y=cumulative_y,
                                 to_y=cumulative_y + count,
-                                width=40,
-                                color=TASK_COLOR_MAP.get(task,ft.colors.BLUE) if count>0 else ft.colors.TRANSPARENT,
+                                width=30,
+                                color=TASK_COLOR_MAP.get(task,ft.Colors.BLUE) if count>0 else ft.Colors.TRANSPARENT,
                                 border_radius=0,
-                                tooltip=ft.Tooltip(ft.Text(task)),
-                                show_tooltip=True,
+                                tooltip=f"{task}: {count}件"
                             )
                         )
                         cumulative_y += count
@@ -419,6 +417,7 @@ class Handlers_analyze:
                         ft.BarChartGroup(
                             x=i,
                             bar_rods=bars,
+                            bars_space=2,
                         )
                     )
 
@@ -451,18 +450,18 @@ class Handlers_analyze:
             bar_chart=ft.BarChart(
                 bar_groups=bar_groups,
                 left_axis=left_axis,
-                border=ft.border.all(1,ft.colors.BLACK),
+                border=ft.border.all(1,ft.Colors.BLACK),
                 bottom_axis=bottom_axis,
                 horizontal_grid_lines=ft.ChartGridLines(
-                    color=ft.colors.GREEN_300,
+                    color=ft.Colors.GREEN_300,
                     width=1,
                     dash_pattern=[3,3]
 
                 ),
-                tooltip_bgcolor=ft.colors.with_opacity(0.5,ft.colors.GREY),
+                tooltip_bgcolor=ft.Colors.with_opacity(0.5,ft.Colors.GREY),
                 max_y=locate_df["counts"].max()*1.1,
                 expand=True,
-
+                groups_space=40,
             )
             result_field.controls=[
                 ft.Container(
@@ -472,7 +471,7 @@ class Handlers_analyze:
                 Handlers_Chart._create_preview_button(chart=bar_chart,page=page), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="グラフを保存",
                     on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=bar_chart,chart_name="task_location"),
                 )
@@ -514,7 +513,7 @@ class Handlers_analyze:
                 Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="グラフを保存",
                     on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_date"),
                 ),
@@ -538,7 +537,7 @@ class Handlers_analyze:
                 ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=date_group_df,name="task_date"),
                 )
@@ -575,7 +574,7 @@ class Handlers_analyze:
                 Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="グラフを保存",
                     on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_date"),
                 ),
@@ -599,7 +598,7 @@ class Handlers_analyze:
                 ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=date_group_df,name="task_date"),
                 )
@@ -638,7 +637,7 @@ class Handlers_analyze:
                 ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=comment_df,name="comment"),
                 )
@@ -672,7 +671,7 @@ class Handlers_analyze:
                 ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=comment_df,name="comment"),
                 )
@@ -722,7 +721,7 @@ class Handlers_analyze:
                 ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=per_phName_df,name="self_analysis"),
                 )
@@ -767,7 +766,7 @@ class Handlers_analyze:
                 ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=per_phName_df,name="self_analysis"),
                 )
@@ -841,7 +840,7 @@ class Handlers_analyze:
                 ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=time_for_phname_total,name="self_analysis_total_time"),
                 )
@@ -911,7 +910,7 @@ class Handlers_analyze:
                 ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=time_for_phname_total,name="self_analysis_total_time"),
                 )
@@ -997,7 +996,7 @@ class Handlers_analyze:
                         ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=total_df,name="locate_analysis")
                                                                                             
@@ -1078,7 +1077,7 @@ class Handlers_analyze:
                         ),
                 ft.ElevatedButton(
                     "保存",
-                    icon=ft.icons.DOWNLOAD,
+                    icon=ft.Icons.DOWNLOAD,
                     tooltip="データフレームを保存",
                     on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=total_df,name="locate_analysis")
                                                                                             

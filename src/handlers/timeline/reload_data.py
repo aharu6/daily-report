@@ -58,7 +58,7 @@ class ReloadDataHandler:
             drawer.controls[1].content.controls.append(ft.ListTile(
                 title = ft.Text(i),
                 trailing = ft.IconButton(
-                    ft.icons.EDIT_SQUARE, 
+                    ft.Icons.EDIT_SQUARE, 
                     on_click = lambda e:ReloadDataHandler.open_saved_data(
                         e=e,
                         page=page,
@@ -150,7 +150,7 @@ class ReloadDataHandler:
                     content=ft.Column(
                         controls = [
                             ft.Container(
-                                content = ft.Icon(ft.icons.DOUBLE_ARROW,color = "#2D6E7E"),
+                                content = ft.Icon(ft.Icons.DOUBLE_ARROW,color = "#2D6E7E"),
                                 width = 50,
                                 height = 50,
                                 border_radius = 50,
@@ -172,7 +172,7 @@ class ReloadDataHandler:
                     content=ft.Column(
                         controls = [
                             ft.IconButton(
-                                icon=ft.icons.DELETE_OUTLINE,
+                                icon=ft.Icons.DELETE_OUTLINE,
                                 visible=False,
                                 icon_size=20,
                                 icon_color="red",
@@ -227,7 +227,7 @@ class ReloadDataHandler:
                                         date=date
                                         ), 
                                     ],
-                                icon = ft.icons.MORE_VERT,
+                                icon = ft.Icons.MORE_VERT,
                                 tooltip = "編集",
                                 icon_size = 20,
                                 on_open = lambda e:MakePopup.pop_up_reload(e=e,customDrawerAm=custumDrawerAm,customDrawerPm=custumDrawerPm,page=page),
@@ -387,22 +387,22 @@ class ReloadDataHandler:
         #病棟を選択してくださいの表示は消す
         if total_num_am["count"]>0:
             require_location.content.controls[1].title.color="green"
-            require_location.content.controls[1].leading=ft.Icon(ft.icons.CHECK_CIRCLE_OUTLINE, color="green")
+            require_location.content.controls[1].leading=ft.Icon(ft.Icons.CHECK_CIRCLE_OUTLINE, color="green")
             require_location.content.controls[1].data="true"
         elif total_num_am["count"]==0:
             require_location.content.controls[1].title.color="red"
-            require_location.content.controls[1].leading=ft.Icon(ft.icons.HIGHLIGHT_OFF, color="red")
+            require_location.content.controls[1].leading=ft.Icon(ft.Icons.HIGHLIGHT_OFF, color="red")
             require_location.content.controls[1].data="false"
             require_location.content.controls[0].visible =True
             require_location.content.controls[2].visible =True
         
         if total_num_am["count"]>0:
             require_location.content.controls[2].title.color="green"
-            require_location.content.controls[2].leading=ft.Icon(ft.icons.CHECK_CIRCLE_OUTLINE, color="green")
+            require_location.content.controls[2].leading=ft.Icon(ft.Icons.CHECK_CIRCLE_OUTLINE, color="green")
             require_location.content.controls[2].data="true"
         elif total_num_am["count"]==0:
             require_location.content.controls[2].title.color="red"
-            require_location.content.controls[2].leading=ft.Icon(ft.icons.HIGHLIGHT_OFF, color="red")
+            require_location.content.controls[2].leading=ft.Icon(ft.Icons.HIGHLIGHT_OFF, color="red")
             require_location.content.controls[2].data="false"
             require_location.content.controls[0].visible =True
             require_location.content.controls[1].visible =True

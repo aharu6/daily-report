@@ -124,9 +124,9 @@ class UpdateCard:
                                 # 時間帯に応じて背景色を設定
                                 row_color = None
                                 if time == "am":
-                                    row_color = ft.colors.PINK_100  # 午前は薄いピンク
+                                    row_color = ft.Colors.PINK_100  # 午前は薄いピンク
                                 elif time == "pm":
-                                    row_color = ft.colors.BLUE_100  # 午後は薄い青
+                                    row_color = ft.Colors.BLUE_100  # 午後は薄い青
                                 new_row = ft.DataRow(
                                     cells=[
                                         ft.DataCell(ft.Text(staff_name)),

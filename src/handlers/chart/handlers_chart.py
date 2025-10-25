@@ -83,7 +83,7 @@ class Handlers_Chart:
         return [
             ft.ListTile(
                 title=ft.Text("表示期間"),
-                leading=ft.Icon(ft.icons.DATE_RANGE),
+                leading=ft.Icon(ft.Icons.DATE_RANGE),
                 subtitle=ft.Text("選択後は、再度生成ボタンを押してください"),
             ),
             ft.Row(
@@ -96,8 +96,8 @@ class Handlers_Chart:
                             )
                         ),
                         style=ft.ButtonStyle(
-                            bgcolor=ft.colors.TRANSPARENT,
-                            color=ft.colors.BLUE_900,
+                            bgcolor=ft.Colors.TRANSPARENT,
+                            color=ft.Colors.BLUE_900,
                         )
                     ),
                     ft.Text("~", size=20),
@@ -109,8 +109,8 @@ class Handlers_Chart:
                             )
                         ),
                         style=ft.ButtonStyle(
-                            bgcolor=ft.colors.TRANSPARENT,
-                            color=ft.colors.BLUE_900,
+                            bgcolor=ft.Colors.TRANSPARENT,
+                            color=ft.Colors.BLUE_900,
                         )
                     )
                 ],
@@ -123,7 +123,7 @@ class Handlers_Chart:
         """ダウンロードボタンを作成するヘルパーメソッド"""
         return ft.ElevatedButton(
             "保存",
-            icon=ft.icons.DOWNLOAD,
+            icon=ft.Icons.DOWNLOAD,
             tooltip=ft.Tooltip("グラフを保存"),
             on_click=lambda _: Chart_Download_Handler.open_directory(
                 page=page, 
@@ -136,7 +136,7 @@ class Handlers_Chart:
     def _create_preview_button(chart,page):
         """プレビューボタンを作成するヘルパーメソッド"""
         return ft.IconButton(
-            icon=ft.icons.PAGEVIEW,
+            icon=ft.Icons.PAGEVIEW,
             tooltip="拡大表示",
             on_click=lambda e: PreviewChartHandler.preview_chart(chart,page)
         )
@@ -220,7 +220,7 @@ class Handlers_Chart:
                         ft.ExpansionPanel(
                             bgcolor=None,
                             header=ft.ListTile(
-                                leading=ft.Icon(ft.icons.LIST),
+                                leading=ft.Icon(ft.Icons.LIST),
                                 title=ft.Text("読み込んだファイル一覧"),
                             ),
                             content=ft.Column(
@@ -249,7 +249,7 @@ class Handlers_Chart:
             try:
                 card.controls = [
                     ft.Card(
-                        content=ft.Text("ファイル一覧の表示に失敗しました", color=ft.colors.RED)
+                        content=ft.Text("ファイル一覧の表示に失敗しました", color=ft.Colors.RED)
                     )
                 ]
                 card.update()
@@ -717,12 +717,12 @@ class Handlers_Chart:
             ft.Card(
                 content=ft.Container(
                     content=ft.Column([
-                    ft.Icon(ft.icons.ERROR, color=ft.colors.RED, size=50),
-                    ft.Text(error_message, color=ft.colors.RED),
+                    ft.Icon(ft.Icons.ERROR, color=ft.Colors.RED, size=50),
+                    ft.Text(error_message, color=ft.Colors.RED),
                     ft.Text("データを確認してください", size=12),
                     ], 
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-                    bgcolor=ft.colors.RED_50
+                    bgcolor=ft.Colors.RED_50
                  )
                 )
         ]
