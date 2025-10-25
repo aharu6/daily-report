@@ -39,7 +39,7 @@ class Panel:
                 ft.ExpansionPanel(
                     bgcolor=None,
                     header=ft.ListTile(
-                        leading=ft.Icon(ft.icons.PERSON),
+                        leading=ft.Icon(ft.Icons.PERSON),
                         title=ft.Text("ユーザー名の編集"),
                     ),
                     content=ft.Column(
@@ -60,7 +60,7 @@ class Panel:
                 ft.ExpansionPanel(
                     bgcolor=None,
                     header=ft.ListTile(
-                        leading=ft.Icon(ft.icons.STORAGE),
+                        leading=ft.Icon(ft.Icons.STORAGE),
                         title=ft.Text("この端末に保存されているデータ"),
                     ),
                     content = ft.DataTable(
@@ -82,7 +82,7 @@ class Panel:
                 ft.ExpansionPanel(
                     bgcolor=None,
                     header=ft.ListTile(
-                        leading=ft.Icon(ft.icons.DELETE),
+                        leading=ft.Icon(ft.Icons.DELETE),
                         title=ft.Text("削除データ"),
                         subtitle=ft.Text("ここに保管されているデータは30日後に自動削除されます")
                         ),
@@ -94,7 +94,7 @@ class Panel:
                 ft.ExpansionPanel(
                     bgcolor = None,
                     header = ft.ListTile(
-                        leading = ft.Icon(ft.icons.VISIBILITY),
+                        leading = ft.Icon(ft.Icons.VISIBILITY),
                         title = ft.Text("デフォルトの表示設定"),
                     ),
                     content = ft.Column(

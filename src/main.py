@@ -21,7 +21,7 @@ def main(page: ft.Page):
                             ft.Text("Loading..."),
                             ft.ProgressBar(width=200, height=20),
                         ],
-                        alignment="certer",
+                        alignment="center",
                         horizontal_alignment="center",
                     )
                 ],
@@ -34,15 +34,15 @@ def main(page: ft.Page):
     page.theme = ft.Theme(
         scrollbar_theme=ft.ScrollbarTheme(
             track_color={
-                ft.MaterialState.HOVERED: ft.colors.BLUE_GREY_50,
-                ft.MaterialState.DEFAULT: ft.colors.TRANSPARENT,
+                ft.ControlState.HOVERED: ft.Colors.BLUE_GREY_50,
+                ft.ControlState.DEFAULT: ft.Colors.TRANSPARENT,
             },
             track_visibility=True,
-            track_border_color=ft.colors.BLUE_GREY_50,
+            track_border_color=ft.Colors.BLUE_GREY_50,
             thumb_visibility=True,
             thumb_color={
-                ft.MaterialState.HOVERED: None,
-                ft.MaterialState.DEFAULT: ft.colors.GREY_300,
+                ft.ControlState.HOVERED: None,
+                ft.ControlState.DEFAULT: ft.Colors.GREY_300,
             },
             thickness=15,
             radius=15,
@@ -78,30 +78,30 @@ def main(page: ft.Page):
     page.on_view_pop = view_pop
 
     page.navigation_bar = ft.CupertinoNavigationBar(
-        bgcolor=ft.colors.BLUE_GREY_50,
-        inactive_color=ft.colors.GREY,
-        active_color=ft.colors.BLACK,
-        on_change=lambda e: Handlers_Main.on_navigation_change(e, page),
+        bgcolor=ft.Colors.BLUE_GREY_50,
+        inactive_color=ft.Colors.GREY,
+        active_color=ft.Colors.BLACK,
+        on_change=lambda e: handlersMain.on_navigation_change(e, page),
         destinations=[
             ft.NavigationBarDestination(
-                icon=ft.icons.TIMELINE,
+                icon=ft.Icons.TIMELINE,
                 label="Timeline",
-                selected_icon=ft.icons.BORDER_COLOR,
+                selected_icon=ft.Icons.BORDER_COLOR,
             ),
             ft.NavigationBarDestination(
-                icon=ft.icons.AUTO_GRAPH,
+                icon=ft.Icons.AUTO_GRAPH,
                 label="Chart",
-                selected_icon=ft.icons.AUTO_GRAPH,
+                selected_icon=ft.Icons.AUTO_GRAPH,
             ),
             ft.NavigationBarDestination(
-                icon=ft.icons.CALENDAR_MONTH,
+                icon=ft.Icons.CALENDAR_MONTH,
                 label="Calendar",
-                selected_icon=ft.icons.CALENDAR_TODAY,
+                selected_icon=ft.Icons.CALENDAR_TODAY,
             ),
             ft.NavigationBarDestination(
-                icon=ft.icons.SETTINGS,
+                icon=ft.Icons.SETTINGS,
                 label="Settings",
-                selected_icon=ft.icons.SETTINGS,
+                selected_icon=ft.Icons.SETTINGS,
             ),
         ],
     )

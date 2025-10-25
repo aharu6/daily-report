@@ -10,12 +10,7 @@ class PreviewChartHandler:
         dialog = ft.AlertDialog(
             title=ft.Text("Preview"),
             content=ft.Container(
-                content=PlotlyChart(
-                    chart,
-                    expand=True,
-                    original_size=True,
-                    isolated=True,
-                ),
+                content=chart,
             ),
             actions=[
                 ft.TextButton("Close",on_click=lambda e: page.close(dialog))

@@ -23,3 +23,5 @@ src/testfile/date_col.py
 src/testfile/fig_bar.jpg
 time_per_task.csv
 src/testfile/calendar/別フォルダを読み込んだ時に更新ボタンを押してもカレンダーが更新されない.ini
+src/testfile/filepicker.py
+.gitignore

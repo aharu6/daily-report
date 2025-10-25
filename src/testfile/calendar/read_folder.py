@@ -15,6 +15,7 @@ class ReadFolder:
 
     @staticmethod
     def read_folder(e,schedule_data,page, folder_name,checkboxes):
+        print(f"Selected folder path: {e.path}")
         folder_path =e.path
 
         #フォルダ内のcsvファイルを読み込み、病棟名と担当者名を抽出

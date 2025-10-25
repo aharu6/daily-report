@@ -21,7 +21,7 @@ class Handlers_setting:
                 ft.ListTile(
                     title=ft.Text(f"{item['name']}"),
                     trailing=ft.IconButton(
-                        ft.icons.DELETE,
+                        ft.Icons.DELETE,
                         on_click=lambda e: Handlers_setting.delete_name(
                             e, phNameList, page, panel
                         ),
@@ -85,7 +85,7 @@ class Handlers_setting:
                 cells = [
                     ft.DataCell(ft.Text(i)),
                     ft.DataCell(ft.IconButton(
-                        ft.icons.DELETE,
+                        ft.Icons.DELETE,
                         on_click = lambda e:Handlers_setting.delete_data(e,page,panel),
                         data = i,
                         ))

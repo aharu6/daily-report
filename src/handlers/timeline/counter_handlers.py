@@ -34,7 +34,7 @@ class CounterHandlers:
         return ft.Column(
             [
                 ft.IconButton(
-                    ft.icons.ARROW_DROP_UP_OUTLINED,
+                    ft.Icons.ARROW_DROP_UP_OUTLINED,
                     icon_size=25,
                     on_click=lambda e: CounterHandlers.counterPlus(
                         e, count_field, count_dict, time
@@ -43,7 +43,7 @@ class CounterHandlers:
                 ),
                 count_field,
                 ft.IconButton(
-                    ft.icons.ARROW_DROP_DOWN_OUTLINED,
+                    ft.Icons.ARROW_DROP_DOWN_OUTLINED,
                     icon_size=25,
                     on_click=lambda _: CounterHandlers.counterMinus(
                         e, count_field, count_dict, time

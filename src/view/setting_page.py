@@ -47,30 +47,30 @@ class SettingPage:
         # ナビゲーションバーの設定
         navigation_bar = ft.CupertinoNavigationBar(
             selected_index=3,  # Settings は インデックス3
-            bgcolor=ft.colors.BLUE_GREY_50,
-            inactive_color=ft.colors.GREY,
-            active_color=ft.colors.BLACK,
+            bgcolor=ft.Colors.BLUE_GREY_50,
+            inactive_color=ft.Colors.GREY,
+            active_color=ft.Colors.BLACK,
             on_change=lambda e: Handlers_Main().on_navigation_change(e, self.page),
             destinations=[
                 ft.NavigationBarDestination(
-                    icon=ft.icons.TIMELINE,
+                    icon=ft.Icons.TIMELINE,
                     label="Timeline",
-                    selected_icon=ft.icons.BORDER_COLOR,
+                    selected_icon=ft.Icons.BORDER_COLOR,
                 ),
                 ft.NavigationBarDestination(
-                    icon=ft.icons.AUTO_GRAPH,
+                    icon=ft.Icons.AUTO_GRAPH,
                     label="Chart",
-                    selected_icon=ft.icons.AUTO_GRAPH,
+                    selected_icon=ft.Icons.AUTO_GRAPH,
                 ),
                 ft.NavigationBarDestination(
-                    icon=ft.icons.CALENDAR_MONTH,
+                    icon=ft.Icons.CALENDAR_MONTH,
                     label="Calendar",
-                    selected_icon=ft.icons.CALENDAR_TODAY,
+                    selected_icon=ft.Icons.CALENDAR_TODAY,
                 ),
                 ft.NavigationBarDestination(
-                    icon=ft.icons.SETTINGS,
+                    icon=ft.Icons.SETTINGS,
                     label="Settings",
-                    selected_icon=ft.icons.SETTINGS,
+                    selected_icon=ft.Icons.SETTINGS,
                 ),
             ],
         )

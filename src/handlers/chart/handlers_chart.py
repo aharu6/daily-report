@@ -83,7 +83,7 @@ class Handlers_Chart:
         return [
             ft.ListTile(
                 title=ft.Text("表示期間"),
-                leading=ft.Icon(ft.icons.DATE_RANGE),
+                leading=ft.Icon(ft.Icons.DATE_RANGE),
                 subtitle=ft.Text("選択後は、再度生成ボタンを押してください"),
             ),
             ft.Row(
@@ -96,8 +96,8 @@ class Handlers_Chart:
                             )
                         ),
                         style=ft.ButtonStyle(
-                            bgcolor=ft.colors.TRANSPARENT,
-                            color=ft.colors.BLUE_900,
+                            bgcolor=ft.Colors.TRANSPARENT,
+                            color=ft.Colors.BLUE_900,
                         )
                     ),
                     ft.Text("~", size=20),
@@ -109,8 +109,8 @@ class Handlers_Chart:
                             )
                         ),
                         style=ft.ButtonStyle(
-                            bgcolor=ft.colors.TRANSPARENT,
-                            color=ft.colors.BLUE_900,
+                            bgcolor=ft.Colors.TRANSPARENT,
+                            color=ft.Colors.BLUE_900,
                         )
                     )
                 ],
@@ -123,7 +123,7 @@ class Handlers_Chart:
         """ダウンロードボタンを作成するヘルパーメソッド"""
         return ft.ElevatedButton(
             "保存",
-            icon=ft.icons.DOWNLOAD,
+            icon=ft.Icons.DOWNLOAD,
             tooltip=ft.Tooltip("グラフを保存"),
             on_click=lambda _: Chart_Download_Handler.open_directory(
                 page=page, 
@@ -136,7 +136,7 @@ class Handlers_Chart:
     def _create_preview_button(chart,page):
         """プレビューボタンを作成するヘルパーメソッド"""
         return ft.IconButton(
-            icon=ft.icons.PAGEVIEW,
+            icon=ft.Icons.PAGEVIEW,
             tooltip="拡大表示",
             on_click=lambda e: PreviewChartHandler.preview_chart(chart,page)
         )
@@ -170,16 +170,86 @@ class Handlers_Chart:
 
     @staticmethod
     def _create_pie_chart(data, location_name):
-        """円グラフを作成するヘルパーメソッド"""
-        return px.pie(
-            data[data["locate"] == location_name],
-            values="counts",
-            names="task",
-            title=location_name,
-            color="task",
-            color_discrete_map=TASK_COLOR_MAP
+        normal_radius=80
+        hover_radius=120
+
+        normal_text_style=ft.TextStyle(
+            size=12,
+            color=ft.Colors.GREY_100,
+            weight=ft.FontWeight.BOLD,
+        )
+        hover_text_style=ft.TextStyle(
+            size=30,
+            color=ft.Colors.BLACK,
+            weight=ft.FontWeight.BOLD,
         )
 
+        def on_chart_event(e):
+            for idx,section in enumerate(e.control.sections):
+                if idx == e.section_index:
+                    print("if")
+                    section.radius = hover_radius
+                    section.title_style = hover_text_style
+                else:
+                    print("else")
+                    section.radius = normal_radius
+                    section.title_style = normal_text_style
+            e.control.update()
+
+        """円グラフを作成するヘルパーメソッド"""
+        chart_sections=[]    
+        locate_data=data[data["locate"]==location_name]
+
+        #割合を出すためのlocateごとの合計値
+        total_counts=locate_data["counts"].sum()
+
+        for _,row in locate_data.iterrows():
+            task_name=row["task"]
+            print(task_name)
+            value=row["counts"]
+            color=TASK_COLOR_MAP.get(task_name, "#CCCCCC")  # デフォルト
+
+            print(value/total_counts*100)
+            chart_sections.append(
+                ft.PieChartSection(
+                    value=float(value/total_counts) if total_counts > 0 else 0,
+                    title=f"{task_name}\n{(value/total_counts*100):.1f}%" if total_counts > 0 else f"{task_name}\n0.0%",
+                    color=color,
+                    radius=normal_radius,
+                )
+            )
+        
+        return ft.PieChart(
+            sections=chart_sections,
+            width=400,
+            height=400,
+            sections_space=2,
+            on_chart_event=on_chart_event,
+        )
+        
+    @staticmethod
+    def _create_plotly_piechart(data,location_data):
+        """Plotlyの円グラフを作成するヘルパーメソッド"""
+        locate_data=data[data["locate"]==location_data]
+
+        #割合を出すためのlocateごとの合計値
+        total_counts=locate_data["counts"].sum()
+
+        labels = []
+        values = []
+        for _,row in locate_data.iterrows():
+            task_name=row["task"]
+            value=row["counts"]
+            labels.append(task_name)
+            values.append(float(value/total_counts) if total_counts > 0 else 0)
+
+        fig = px.pie(
+            names=labels,
+            values=values,
+            title=f"{location_data}の業務割合",
+            height=1500
+        )
+        return fig
     @staticmethod
     def detect_encoding(file_path):
         """ファイルエンコーディングを安全に検出"""
@@ -220,7 +290,7 @@ class Handlers_Chart:
                         ft.ExpansionPanel(
                             bgcolor=None,
                             header=ft.ListTile(
-                                leading=ft.Icon(ft.icons.LIST),
+                                leading=ft.Icon(ft.Icons.LIST),
                                 title=ft.Text("読み込んだファイル一覧"),
                             ),
                             content=ft.Column(
@@ -249,7 +319,7 @@ class Handlers_Chart:
             try:
                 card.controls = [
                     ft.Card(
-                        content=ft.Text("ファイル一覧の表示に失敗しました", color=ft.colors.RED)
+                        content=ft.Text("ファイル一覧の表示に失敗しました", color=ft.Colors.RED)
                     )
                 ]
                 card.update()
@@ -419,15 +489,14 @@ class Handlers_Chart:
             for locate in unique_locations:
                 try:
                     fig = Handlers_Chart._create_pie_chart(group_df_locate, locate)
-                    
+                    fig_for_download = Handlers_Chart._create_plotly_piechart(group_df_locate,locate)
                     locate_chart_list.extend([
                         ft.Card(
                             content=ft.Column(
                                 controls=[
-                                    PlotlyChart(fig, expand=True, original_size=False, isolated=True,
-                                                ),
+                                    fig,
                                     ft.Text(locate),
-                                    Handlers_Chart._create_download_button(page, fig, "piechart"),
+                                    Handlers_Chart._create_download_button(page, fig_for_download, "piechart"),
                                     Handlers_Chart._create_preview_button(chart=fig,page=page)
                                 ],
                                 width="30%",
@@ -471,13 +540,15 @@ class Handlers_Chart:
                     for locate in group_df_locate["locate"].unique():
                         try:
                             fig = Handlers_Chart._create_pie_chart(group_df_locate, locate)
+                            fig_for_download = Handlers_Chart._create_plotly_piechart(group_df_locate,locate)
                             locate_chart_list.append(
                                 ft.Card(
                                     content=ft.Column(
                                         controls=[
-                                            PlotlyChart(fig, expand=True, original_size=False, isolated=True),
+                                            fig,
                                             ft.Text(locate),
-                                            Handlers_Chart._create_download_button(page, fig, f"piechart_{locate}"),
+                                            #ダウンロード用にはplotlyの図を渡す
+                                            Handlers_Chart._create_download_button(page, fig_for_download, f"piechart_{locate}"),
                                             Handlers_Chart._create_preview_button(chart=fig,page=page)
                                         ],
                                         width="30%",
@@ -717,12 +788,12 @@ class Handlers_Chart:
             ft.Card(
                 content=ft.Container(
                     content=ft.Column([
-                    ft.Icon(ft.icons.ERROR, color=ft.colors.RED, size=50),
-                    ft.Text(error_message, color=ft.colors.RED),
+                    ft.Icon(ft.Icons.ERROR, color=ft.Colors.RED, size=50),
+                    ft.Text(error_message, color=ft.Colors.RED),
                     ft.Text("データを確認してください", size=12),
                     ], 
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-                    bgcolor=ft.colors.RED_50
+                    bgcolor=ft.Colors.RED_50
                  )
                 )
         ]

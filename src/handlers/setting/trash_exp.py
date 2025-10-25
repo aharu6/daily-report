@@ -24,7 +24,7 @@ class Trashdata_ExpantionPanel:
                         title=ft.Text(key),
                         subtitle=ft.Text(f"削除日: {load[key]['delete']}      戻したい場合はここをクリック"),
                         trailing=ft.IconButton(
-                            ft.icons.RESTORE,
+                            ft.Icons.RESTORE,
                             tooltip="削除したデータを復元します",
                         ),
                         data={

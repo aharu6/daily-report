@@ -9,7 +9,7 @@ class UpdateCalendar:
         tabs (ft.Tabs)
 ├── selected_index: 0
 ├── animation_duration: 300
-├── indicator_color: ft.colors.BLUE
+├── indicator_color: ft.Colors.BLUE
 └── tabs: [ft.Tab, ft.Tab, ...] (19個のタブ)
     ├── tabs[0] (ICU)
     │   ├── text: "ICU"
@@ -95,9 +95,9 @@ class UpdateCalendar:
                         has_am=any(data["time"] =="am" for data in matching_data)
                         has_pm=any(data["time"] =="pm" for data in matching_data)
                         if has_am and has_pm:
-                            j.bgcolor = ft.colors.GREEN
+                            j.bgcolor = ft.Colors.GREEN
                     else:
-                        j.bgcolor=ft.colors.WHITE  # データがない場合は白色に戻す
+                        j.bgcolor=ft.Colors.WHITE  # データがない場合は白色に戻す
                     j.update()
                     
                 else:
