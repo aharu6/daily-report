@@ -378,97 +378,27 @@ class Handlers_analyze:
             graph_width=int(len(locate_df["locate"].unique()))*77
             if graph_width<1000:
                 graph_width=1000
-
-            #ft.CarChart用のデータ準備
-            bar_groups=[]
-            unique_locations=locate_df["locate"].unique()
-            unique_tasks=locate_df["task"].unique()
-
-            sorted_locations=sorted(unique_locations)
-
-            location_to_x={location:i for i,location in enumerate(sorted_locations)}
-            #
-            for i,location in enumerate(sorted_locations):
-                location_data=locate_df[locate_df["locate"]==location]
-                
-                bars=[]
-
-                #積み上げ用の累積値を計算
-                cumulative_y=0
-                for j,task in enumerate(unique_tasks):
-                    task_data=location_data[location_data["task"]==task]
-                    count=task_data["counts"].sum() if not task_data.empty else 0
-                    if count>0:
-                        print(repr(task))
-
-                        bars.append(
-                            ft.BarChartRod(
-                                from_y=cumulative_y,
-                                to_y=cumulative_y + count,
-                                width=30,
-                                color=TASK_COLOR_MAP.get(task,ft.Colors.BLUE) if count>0 else ft.Colors.TRANSPARENT,
-                                border_radius=0,
-                                tooltip=f"{task}: {count}件"
-                            )
-                        )
-                        cumulative_y += count
-                if bars:
-                    bar_groups.append(
-                        ft.BarChartGroup(
-                            x=i,
-                            bar_rods=bars,
-                            bars_space=2,
-                        )
-                    )
-
-            #x軸のラベル
-            bottom_axis=ft.ChartAxis(
-                labels=[
-                    ft.ChartAxisLabel(
-                        value=i,
-                        label=ft.Text(location,size=12)
-                    )
-                    for i,location in enumerate(sorted_locations)
-                ],
-                labels_size=50,
+            
+            fig=px.bar(
+                locate_df,
+                x="locate",
+                y="counts",
+                color="task",
+                title="場所ごとに記録された業務内容と記録回数",
+                labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
+                barmode="stack",
+                width=graph_width,
+                height=1400,
+                hover_data={"locate":True,"task":True,"counts":True}
+            )
+            fig.update_layout(
+                xaxis=dict(title="病棟"),
+                yaxis=dict(title="記録回数")
             )
 
-            #y axis
-            max_count=locate_df.groupby("locate")["counts"].sum().max()
-            y_interval=max(1,int(max_count/10))
-            left_axis=ft.ChartAxis(
-                labels=[
-                    ft.ChartAxisLabel(
-                        value=i*y_interval,
-                        label=ft.Text(str(i*y_interval))
-                    )
-                    for i in range(0,int(max_count/y_interval)+2)
-                ],
-                labels_size=40,
-            )
-
-            bar_chart=ft.BarChart(
-                bar_groups=bar_groups,
-                left_axis=left_axis,
-                border=ft.border.all(1,ft.Colors.BLACK),
-                bottom_axis=bottom_axis,
-                horizontal_grid_lines=ft.ChartGridLines(
-                    color=ft.Colors.GREEN_300,
-                    width=1,
-                    dash_pattern=[3,3]
-
-                ),
-                tooltip_bgcolor=ft.Colors.with_opacity(0.5,ft.Colors.GREY),
-                max_y=locate_df["counts"].max()*1.1,
-                expand=True,
-                groups_space=40,
-            )
             result_field.controls=[
-                ft.Container(
-                    content=bar_chart,
-                    height=600,
-                ),
-                Handlers_Chart._create_preview_button(chart=bar_chart,page=page), # グラフのプレビュー用ボタン
+                PlotlyChart(fig),
+                Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
                 ft.ElevatedButton(
                     "保存",
                     icon=ft.Icons.DOWNLOAD,

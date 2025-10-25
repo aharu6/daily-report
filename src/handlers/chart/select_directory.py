@@ -307,7 +307,6 @@ class SelectDirectoryHandler:
                 new_row["locate"]=tarn_row[loc]
                 new_rows.append(new_row)
         parent_instance.dataframe= pd.DataFrame(new_rows)
-        print(f"Concatenated DataFrame:\n{parent_instance.dataframe.head()}")
 
     @staticmethod
     def concat_files_standard(csv_files, select_directory_path, parent_instance,df_ready_message):
