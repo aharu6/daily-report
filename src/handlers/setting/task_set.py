@@ -42,8 +42,8 @@ class Set_Default_task:
                 columns[19].content = ft.DragTarget(
                     content=ft.Column(
                             controls = [
-                                ft.IconButton(
-                                    icon = ft.Icons.DELETE_OUTLINE,
+                                ft.iconButton(
+                                    icon = ft.icons.DELETE_OUTLINE,
                                     visible = False,
                                     icon_size = 20,
                                     icon_color = "red",

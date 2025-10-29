@@ -35,7 +35,7 @@ class NameDropdown:
             on_change=self.on_change,
             label="Name",
             label_style=ft.TextStyle(color="#2a4d7b"),
-            border_color=ft.Colors.BLUE_GREY_100,
+            border_color=ft.colors.BLUE_GREY_100,
             color="#2a4d7b",
         )
 
@@ -383,8 +383,8 @@ class EditButton:
         self.toggle_delete_button = toggle_delete_button
 
     def create(self, e):
-        return ft.IconButton(
-            icon=ft.Icons.EDIT, on_click=lambda e: self.toggle_delete_button
+        return ft.iconButton(
+            icon=ft.icons.EDIT, on_click=lambda e: self.toggle_delete_button
         )
 
 
@@ -422,8 +422,8 @@ class DeleteButtons:
         self.update_location_data = (update_location_data,)
 
     def create(self):
-        return ft.IconButton(
-            icon=ft.Icons.DELETE,
+        return ft.iconButton(
+            icon=ft.icons.DELETE,
             visible=False,
             icon_color="red",
             icon_size=20,
@@ -455,8 +455,8 @@ class CreateCounter:
     def create(self, e):
         return ft.Column(
             [
-                ft.IconButton(
-                    icon=ft.Icons.ARROW_DROP_UP_OUTLINED,
+                ft.iconButton(
+                    icon=ft.icons.ARROW_DROP_UP_OUTLINED,
                     icon_size=25,
                     on_click=lambda _: self.counterPlus(
                         e, self.count_field, self.count_dict
@@ -464,8 +464,8 @@ class CreateCounter:
                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
                 ),
                 self.count_field,
-                ft.IconButton(
-                    ft.Icons.ARROW_DROP_DOWN_OUTLINED,
+                ft.iconButton(
+                    ft.icons.ARROW_DROP_DOWN_OUTLINED,
                     icon_size=25,
                     on_click=lambda _: self.counterMinus(
                         e, self.count_field, self.cont_dict

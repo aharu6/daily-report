@@ -15,8 +15,8 @@ def main(page: ft.Page):
         on_dismiss=handle_dismissal,
         on_change=handle_change,
         controls=[
-            ft.NavigationDrawerDestination(icon=ft.Icons.ADD_TO_HOME_SCREEN_SHARP, label="Item 1"),
-            ft.NavigationDrawerDestination(icon=ft.Icon(ft.Icons.ADD_COMMENT), label="Item 2"),
+            ft.NavigationDrawerDestination(icon=ft.icons.ADD_TO_HOME_SCREEN_SHARP, label="Item 1"),
+            ft.NavigationDrawerDestination(icon=ft.icon(ft.icons.ADD_COMMENT), label="Item 2"),
         ],
     )
 

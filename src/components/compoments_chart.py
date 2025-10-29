@@ -18,7 +18,7 @@ class FilePickCard:
                 content = ft.Column(
                     controls = [
                         ft.ListTile(
-                            leading = ft.Icon(ft.Icons.FOLDER),
+                            leading = ft.icon(ft.icons.FOLDER),
                             title = ft.Text("csvファイルを選択してください"),
                             title_alignment = ft.MainAxisAlignment.END,
                         ),
@@ -41,7 +41,7 @@ class FileNameCard:
                 content=ft.ListView(
                     controls=[
                         ft.ListTile(
-                            leading=ft.Icon(ft.Icons.DESCRIPTION),
+                            leading=ft.icon(ft.icons.DESCRIPTION),
                             title=ft.Text("読み込んだファイル一覧"),
                             title_alignment=ft.MainAxisAlignment.END,
                         ),

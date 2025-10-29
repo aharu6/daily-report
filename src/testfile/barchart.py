@@ -11,7 +11,7 @@ def main(page: ft.Page):
                         from_y=0,
                         to_y=40,
                         width=40,
-                        color=ft.Colors.GREEN,
+                        color=ft.colors.GREEN,
                         # tooltip="Apple",
                         border_radius=0,
                     ),
@@ -24,7 +24,7 @@ def main(page: ft.Page):
                         from_y=0,
                         to_y=100,
                         width=40,
-                        color=ft.Colors.BLUE,
+                        color=ft.colors.BLUE,
                         # tooltip="Blueberry",
                         border_radius=0,
                     ),
@@ -37,7 +37,7 @@ def main(page: ft.Page):
                         from_y=0,
                         to_y=30,
                         width=40,
-                        color=ft.Colors.RED,
+                        color=ft.colors.RED,
                         # tooltip="Cherry",
                         border_radius=0,
                     ),
@@ -49,7 +49,7 @@ def main(page: ft.Page):
                     ft.BarChartRod(
                         from_y=0,
                         to_y=60,
-                        color=ft.Colors.ORANGE,
+                        color=ft.colors.ORANGE,
                         # tooltip="Orange",
                         width=40,
                         border_radius=0,
@@ -57,7 +57,7 @@ def main(page: ft.Page):
                     ft.BarChartRod(
                         from_y=0,
                         to_y=80,
-                        color=ft.Colors.YELLOW,
+                        color=ft.colors.YELLOW,
                         # tooltip="Orange top",
                         border_radius=0,
                         width=40,
@@ -65,7 +65,7 @@ def main(page: ft.Page):
                 ],
             )
         ],
-        border=ft.border.all(1, ft.Colors.GREY_400),
+        border=ft.border.all(1, ft.colors.GREY_400),
         left_axis=ft.ChartAxis(
             labels_size=40, title=ft.Text("Fruit supply"), title_size=40
         ),
@@ -87,9 +87,9 @@ def main(page: ft.Page):
             labels_size=40,
         ),
         horizontal_grid_lines=ft.ChartGridLines(
-            color=ft.Colors.GREY_300, width=1, dash_pattern=[3, 3]
+            color=ft.colors.GREY_300, width=1, dash_pattern=[3, 3]
         ),
-        tooltip_bgcolor=ft.Colors.with_opacity(0.5, ft.Colors.GREY_300),
+        tooltip_bgcolor=ft.colors.with_opacity(0.5, ft.colors.GREY_300),
         max_y=110,
         interactive=True,
         expand=True,

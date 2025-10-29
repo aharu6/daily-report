@@ -64,14 +64,14 @@ class TabContentCreator:
             )           
         
         # 各タブ用のボタンを作成
-        back_button = ft.IconButton(
-            icon=ft.Icons.ARROW_BACK,
+        back_button = ft.iconButton(
+            icon=ft.icons.ARROW_BACK,
             icon_size=30,
             on_click=lambda e: update_calendar_and_text(e=e, is_forward=False,switch_value=switch_value),
             tooltip="前の月",
         )
-        next_button = ft.IconButton(
-            icon=ft.Icons.ARROW_FORWARD,
+        next_button = ft.iconButton(
+            icon=ft.icons.ARROW_FORWARD,
             icon_size=30,
             on_click=lambda e: update_calendar_and_text(e=e, is_forward=True,switch_value=switch_value),
             tooltip="次の月",
@@ -95,7 +95,7 @@ class TabContentCreator:
         #更新ボタン
         update_button=ft.ElevatedButton(
             text="更新",
-            icon=ft.Icons.REFRESH,
+            icon=ft.icons.REFRESH,
         )
         # 日付ごとのカードの作成
         #label==病棟名と　個人名絞り込みで場合分けする

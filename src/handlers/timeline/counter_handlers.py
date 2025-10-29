@@ -33,8 +33,8 @@ class CounterHandlers:
         count_dict[e] = {"count": count}
         return ft.Column(
             [
-                ft.IconButton(
-                    ft.Icons.ARROW_DROP_UP_OUTLINED,
+                ft.iconButton(
+                    ft.icons.ARROW_DROP_UP_OUTLINED,
                     icon_size=25,
                     on_click=lambda e: CounterHandlers.counterPlus(
                         e, count_field, count_dict, time
@@ -42,8 +42,8 @@ class CounterHandlers:
                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
                 ),
                 count_field,
-                ft.IconButton(
-                    ft.Icons.ARROW_DROP_DOWN_OUTLINED,
+                ft.iconButton(
+                    ft.icons.ARROW_DROP_DOWN_OUTLINED,
                     icon_size=25,
                     on_click=lambda _: CounterHandlers.counterMinus(
                         e, count_field, count_dict, time

@@ -107,14 +107,14 @@ class TabContentCreator:
             tab_header.update()
 
         # ナビゲーションボタン
-        back_button = ft.IconButton(
-            icon=ft.Icons.ARROW_BACK,
+        back_button = ft.iconButton(
+            icon=ft.icons.ARROW_BACK,
             icon_size=30,
             on_click=lambda e: update_calendar_and_text(e, is_forward=False),
             tooltip="前の月",
         )
-        next_button = ft.IconButton(
-            icon=ft.Icons.ARROW_FORWARD,
+        next_button = ft.iconButton(
+            icon=ft.icons.ARROW_FORWARD,
             icon_size=30,
             on_click=lambda e: update_calendar_and_text(e, is_forward=True),
             tooltip="次の月",
@@ -195,7 +195,7 @@ class TabContentCreator:
 
         update_button = ft.ElevatedButton(
             text="更新",
-            icon=ft.Icons.REFRESH,
+            icon=ft.icons.REFRESH,
             on_click=update_card_calendar,
         )
 
@@ -227,15 +227,15 @@ class TabContentCreator:
         tab_content.theme = ft.Theme(
             scrollbar_theme=ft.ScrollbarTheme(
                 track_color={
-                    ft.ControlState.HOVERED: ft.Colors.AMBER,
-                    ft.ControlState.DEFAULT: ft.Colors.TRANSPARENT,
+                    ft.ControlState.HOVERED: ft.colors.AMBER,
+                    ft.ControlState.DEFAULT: ft.colors.TRANSPARENT,
                 },
                 track_visibility=True,
-                track_border_color=ft.Colors.BLUE,
+                track_border_color=ft.colors.BLUE,
                 thumb_visibility=True,
                 thumb_color={
-                    ft.ControlState.HOVERED: ft.Colors.RED,
-                    ft.ControlState.DEFAULT: ft.Colors.GREY_300,
+                    ft.ControlState.HOVERED: ft.colors.RED,
+                    ft.ControlState.DEFAULT: ft.colors.GREY_300,
                 },
                 thickness=30,
                 radius=15,
