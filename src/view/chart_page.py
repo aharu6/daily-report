@@ -151,18 +151,7 @@ class ChartPage:
                 )
             )
         )
-        #date列を基に、日付ごとのタスクの分布を分析
-        self.subtitle9=ft.Text("日付ごとの業務分布",size=15)
-        self.chart9_field=ft.ResponsiveRow()
-        self.chart9card=ft.Card(
-            content=ft.TextButton(
-                "集計",
-                on_click=lambda _:Handlers_analyze.date_task_analysis(
-                    dataframe=self.dataframe, result_field=self.chart9_field, page=self.page,
-                    all_df=self.all_df,
-                )
-            )
-        )
+        #date列を基に、日付ごとのタスクの分布を分析delete
 
         #個人ごと
         #個人ごとの総時間数,1業務あたりの平均時間数,件数あたりの時間数、
@@ -237,9 +226,6 @@ class ChartPage:
                 self.subtitle8,
                 self.chart8card,
                 self.chart8_field,
-                self.subtitle9,
-                self.chart9card,
-                self.chart9_field,
                 self.subtitle2,
                 self.horizon_subtitle,
                 self.chart2card,#病棟ごと
