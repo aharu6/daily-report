@@ -29,7 +29,7 @@ class TimelinePage:
 
         self.date_component = None
         self.Date = None
-        self.date_component_includeicon = None
+        self.date_component_includeicon= None
         self.model = None
         self.phNameList = None
         self.count_dict = None
@@ -49,7 +49,7 @@ class TimelinePage:
         self.selectColumns = None
         self.time_for_visual_label = None
         self.draggable_data_for_move = None
-        self.iconforampmselect = None
+        self.Iconforampmselect = None
         self.amDropDown = None
         self.pmDropDown = None
         self.ampmSelect = None
@@ -78,9 +78,9 @@ class TimelinePage:
             )
             self.Date = self.date_component.create()
             
-            self.date_component_includeicon = ft.Column(
+            self.date_component_includeicon= ft.Column(
                 controls = [
-                    ft.Icon(ft.Icons.CALENDAR_MONTH),
+                    ft.Icon(ft.icons.CALENDAR_MONTH),
                     self.Date,
                     ],
                 width = 130,
@@ -102,15 +102,15 @@ class TimelinePage:
         # editbutton
         # main.pyを参照にeditButtonを追加
         self.editButton = ft.IconButton(
-            icon=ft.Icons.DELETE_OUTLINE,
+            icon=ft.icons.DELETE_OUTLINE,
             icon_size=25,
-            selected_icon  = ft.Icons.DELETE,
-            selected_icon_color = "red",
-            on_click=lambda e: Handlers.toggle_delete_button(e=e,page=self.page, columns=self.columns),
+            selected_icon=ft.icons.DELETE,
+            selected_icon_color="red",
+            on_click=lambda e: Handlers.toggle_delete_button(e=e, page=self.page, columns=self.columns),
         )
         
         self.reloadData = ft.IconButton(
-            icon = ft.Icons.STORAGE,
+            icon= ft.icons.STORAGE,
             icon_size = 25,
             on_click = lambda e:ReloadDataHandler.toggle_Reload_Data(
                 e=e,
@@ -157,7 +157,7 @@ class TimelinePage:
         if not self.comments:
             self.comments = [
                 ft.IconButton(
-                    icon=ft.Icons.COMMENT,
+                    icon=ft.icons.COMMENT,
                     on_click=lambda e: Handlers.create_dialog_for_comment(
                         e=e,
                         comments=self.comments,
@@ -199,7 +199,7 @@ class TimelinePage:
         )
 
         self.comment = ft.IconButton(
-            icon=ft.Icons.COMMENT,
+            icon=ft.icons.COMMENT,
             on_click=lambda e: Handlers.dlg_open(
                 e=e,comment_dict=self.comment_dict,dlg=self.dlg,
                 comment_field=self.comment_field,page=self.page
@@ -209,7 +209,7 @@ class TimelinePage:
         self.temp_save_message = ft.Container(
             ft.Row(
                 controls = [
-                    ft.Icon(ft.Icons.CHECK,color = "green",visible = False),
+                    ft.Icon(ft.icons.CHECK,color = "green",visible = False),
                     ft.Text("一時保存が完了しました",color = "green",visible = False),
                 ]
             )
@@ -251,7 +251,7 @@ class TimelinePage:
         ))
         self.save_message = ft.Container(ft.Row(
             controls=[
-                ft.Icon(ft.Icons.CHECK,color  = "green",visible = False ),
+                ft.Icon(ft.icons.CHECK,color  = "green",visible = False ),
                 ft.Text("保存が完了しました", color="green", visible=False),
             ]
         ))
@@ -307,7 +307,7 @@ class TimelinePage:
                                                     ),
                                             ft.Container(
                                                 content=ft.Icon(
-                                                    name=ft.Icons.INFO_OUTLINE,
+                                                    name=ft.icons.INFO_OUTLINE,
                                                     tooltip=kind["info"],
                                                     ),
                                                 alignment=ft.alignment.bottom_right,
@@ -439,9 +439,9 @@ class TimelinePage:
                     on_leave = lambda e:DragLeave.drag_leave(e,self.page),
                     data={"time": self.model.times()[i], "num": i, "task": ""},
                 )
-        # ampmSelecticon
-        self.iconforampmselect = ft.Icon(
-            ft.Icons.SCHEDULE,
+        # ampmSelectIcon
+        self.Iconforampmselect = ft.Icon(
+            ft.icons.SCHEDULE,
         )
         
         self.amDropDown = ft.TextButton(
@@ -508,13 +508,13 @@ class TimelinePage:
         #スクロールボタンを実装してみる
         #コンテンツの左移動するボタン
         self.backscrollButton = ft.ElevatedButton(
-            content = ft.Icon(ft.Icons.ARROW_BACK_IOS),
+            content = ft.Icon(ft.icons.ARROW_BACK_IOS),
             width = 450,
             on_click = lambda _:self.TimeLine.scroll_to(delta = -100,duration = 200)
         )
         #コンテンツ右移動まで移動するボタン
         self.forwardscrollButton = ft.ElevatedButton(
-            content = ft.Icon(ft.Icons.ARROW_FORWARD_IOS),
+            content = ft.Icon(ft.icons.ARROW_FORWARD_IOS),
             width = 450,
             on_click  = lambda _ :self.TimeLine.scroll_to(delta = 100,duration = 200) #self.TimeLine.scroll_to(delta = 40,duration = 200)
         )
@@ -531,15 +531,15 @@ class TimelinePage:
         self.TimeLine.theme = ft.Theme(
             scrollbar_theme=ft.ScrollbarTheme(
                 track_color={
-                    ft.ControlState.HOVERED: ft.Colors.AMBER,
-                    ft.ControlState.DEFAULT: ft.Colors.TRANSPARENT,
+                    ft.ControlState.HOVERED: ft.colors.AMBER,
+                    ft.ControlState.DEFAULT: ft.colors.TRANSPARENT,
                 },
                 track_visibility=True,
-                track_border_color=ft.Colors.BLUE,
+                track_border_color=ft.colors.BLUE,
                 thumb_visibility=True,
                 thumb_color={
-                    ft.ControlState.HOVERED: ft.Colors.RED,
-                    ft.ControlState.DEFAULT: ft.Colors.GREY_300,
+                    ft.ControlState.HOVERED: ft.colors.RED,
+                    ft.ControlState.DEFAULT: ft.colors.GREY_300,
                 },
                 thickness=30,
                 radius=15,
@@ -595,14 +595,14 @@ class TimelinePage:
         #コントロール部分　ft.Row ft.Containerを追加していく
 
             
-        self.iconforphName = ft.Icon(
-            ft.Icons.ACCOUNT_CIRCLE,
+        self.IconforphName = ft.Icon(
+            ft.icons.ACCOUNT_CIRCLE,
         )
         
 
         self.colPhName = ft.Column(
             [
-                self.iconforphName,
+                self.IconforphName,
                 self.phName,
             ]
         )
@@ -615,14 +615,14 @@ class TimelinePage:
                             ft.Container(width=10),
                             ft.Text(name, size=15),
                             ft.IconButton(
-                                ft.Icons.DELETE_OUTLINE,
+                                ft.icons.DELETE_OUTLINE,
                                 on_click=lambda e: Handlers.delete_name(e),
                                 data=name,
                             ),
                         ]
                     )
                 )
-        self.colampmSelect = ft.Column([self.iconforampmselect, self.ampmSelect])
+        self.colampmSelect = ft.Column([self.Iconforampmselect, self.ampmSelect])
         self.name_field = ft.TextField(label="フルネームにてお願いします")
 
         if not hasattr(self, 'dialog'):
@@ -707,32 +707,32 @@ class TimelinePage:
                     self.save_error_message,
                     ft.CupertinoNavigationBar(
                         selected_index=0,
-                        bgcolor=ft.Colors.BLUE_GREY_50,
-                        inactive_color=ft.Colors.GREY,
-                        active_color=ft.Colors.BLACK,
+                        bgcolor=ft.colors.BLUE_GREY_50,
+                        inactive_color=ft.colors.GREY,
+                        active_color=ft.colors.BLACK,
                         on_change=lambda e: Handlers_Main().on_navigation_change(
                             e, self.page
                         ),
                         destinations=[
                             ft.NavigationBarDestination(
-                                icon=ft.Icons.TIMELINE,
+                                icon=ft.icons.TIMELINE,
                                 label="Timeline",
-                                selected_icon=ft.Icons.BORDER_COLOR,
+                                selected_icon=ft.icons.BORDER_COLOR,
                             ),
                             ft.NavigationBarDestination(
-                                icon=ft.Icons.AUTO_GRAPH,
+                                icon=ft.icons.AUTO_GRAPH,
                                 label="Chart",
-                                selected_icon=ft.Icons.AUTO_GRAPH,
+                                selected_icon=ft.icons.AUTO_GRAPH,
                             ),
                             ft.NavigationBarDestination(
-                                icon=ft.Icons.CALENDAR_MONTH,
+                                icon=ft.icons.CALENDAR_MONTH,
                                 label="Calendar",
-                                selected_icon=ft.Icons.CALENDAR_TODAY,
+                                selected_icon=ft.icons.CALENDAR_TODAY,
                             ),
                             ft.NavigationBarDestination(
-                                icon=ft.Icons.SETTINGS,
+                                icon=ft.icons.SETTINGS,
                                 label="Settings",
-                                selected_icon=ft.Icons.SETTINGS,
+                                selected_icon=ft.icons.SETTINGS,
                             ),
                         ],
                     ),
