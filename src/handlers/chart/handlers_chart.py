@@ -14,7 +14,7 @@ pd.set_option('display.max_rows', None)
 MINUTES_PER_RECORD = 15  # 1レコードあたりの分数
 CHART_WIDTH_MULTIPLIER = 33  # グラフ幅の計算係数
 CHART_HEIGHT_MULTIPLIER = 33  # グラフ高さの計算係数
-MIN_CHART_SIZE = 1000  # 最小チャートサイズ
+MIN_CHART_SIZE = 1400  # 最小チャートサイズ
 
 # 色マッピング定義
 TASK_COLOR_MAP = {
@@ -83,7 +83,7 @@ class Handlers_Chart:
         return [
             ft.ListTile(
                 title=ft.Text("表示期間"),
-                leading=ft.Icon(ft.Icons.DATE_RANGE),
+                leading=ft.Icon(ft.icons.DATE_RANGE),
                 subtitle=ft.Text("選択後は、再度生成ボタンを押してください"),
             ),
             ft.Row(
@@ -96,8 +96,8 @@ class Handlers_Chart:
                             )
                         ),
                         style=ft.ButtonStyle(
-                            bgcolor=ft.Colors.TRANSPARENT,
-                            color=ft.Colors.BLUE_900,
+                            bgcolor=ft.colors.TRANSPARENT,
+                            color=ft.colors.BLUE_900,
                         )
                     ),
                     ft.Text("~", size=20),
@@ -109,8 +109,8 @@ class Handlers_Chart:
                             )
                         ),
                         style=ft.ButtonStyle(
-                            bgcolor=ft.Colors.TRANSPARENT,
-                            color=ft.Colors.BLUE_900,
+                            bgcolor=ft.colors.TRANSPARENT,
+                            color=ft.colors.BLUE_900,
                         )
                     )
                 ],
@@ -123,7 +123,7 @@ class Handlers_Chart:
         """ダウンロードボタンを作成するヘルパーメソッド"""
         return ft.ElevatedButton(
             "保存",
-            icon=ft.Icons.DOWNLOAD,
+            icon=ft.icons.DOWNLOAD,
             tooltip=ft.Tooltip("グラフを保存"),
             on_click=lambda _: Chart_Download_Handler.open_directory(
                 page=page, 
@@ -136,7 +136,7 @@ class Handlers_Chart:
     def _create_preview_button(chart,page):
         """プレビューボタンを作成するヘルパーメソッド"""
         return ft.IconButton(
-            icon=ft.Icons.PAGEVIEW,
+            icon=ft.icons.PAGEVIEW,
             tooltip="拡大表示",
             on_click=lambda e: PreviewChartHandler.preview_chart(chart,page)
         )
@@ -175,12 +175,12 @@ class Handlers_Chart:
 
         normal_text_style=ft.TextStyle(
             size=12,
-            color=ft.Colors.GREY_100,
+            color=ft.colors.GREY_100,
             weight=ft.FontWeight.BOLD,
         )
         hover_text_style=ft.TextStyle(
             size=30,
-            color=ft.Colors.BLACK,
+            color=ft.colors.BLACK,
             weight=ft.FontWeight.BOLD,
         )
 
@@ -290,7 +290,7 @@ class Handlers_Chart:
                         ft.ExpansionPanel(
                             bgcolor=None,
                             header=ft.ListTile(
-                                leading=ft.Icon(ft.Icons.LIST),
+                                leading=ft.Icon(ft.icons.LIST),
                                 title=ft.Text("読み込んだファイル一覧"),
                             ),
                             content=ft.Column(
@@ -319,7 +319,7 @@ class Handlers_Chart:
             try:
                 card.controls = [
                     ft.Card(
-                        content=ft.Text("ファイル一覧の表示に失敗しました", color=ft.Colors.RED)
+                        content=ft.Text("ファイル一覧の表示に失敗しました", color=ft.colors.RED)
                     )
                 ]
                 card.update()
@@ -788,12 +788,12 @@ class Handlers_Chart:
             ft.Card(
                 content=ft.Container(
                     content=ft.Column([
-                    ft.Icon(ft.Icons.ERROR, color=ft.Colors.RED, size=50),
-                    ft.Text(error_message, color=ft.Colors.RED),
+                    ft.Icon(ft.icons.ERROR, color=ft.colors.RED, size=50),
+                    ft.Text(error_message, color=ft.colors.RED),
                     ft.Text("データを確認してください", size=12),
                     ], 
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-                    bgcolor=ft.Colors.RED_50
+                    bgcolor=ft.colors.RED_50
                  )
                 )
         ]

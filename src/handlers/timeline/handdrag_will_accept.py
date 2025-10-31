@@ -11,7 +11,7 @@ class Add_will_accept:
         #左にドラッグしないようにする
         left_key = columns[e.control.data["num"]-1].content.data["task"]
         if e.data == 'false':
-            #deleteiconがonになっているときは矢印も表示しない
+            #deleteIconがonになっているときは矢印も表示しない
             #編集できないようにする
             if e.control.group == "timeline":
                 match left_key:
@@ -32,7 +32,7 @@ class Add_will_accept:
                                         #コピーの方向は右移動だけに限定する？　データ編集が楽
                                         #右と左それぞれからドラッグされた時バッティングするため
                                         #表示矢印も右矢印だけですむ
-                                        content = ft.Icon(ft.Icons.DOUBLE_ARROW,color = "#2D6E7E"),
+                                        content = ft.Icon(ft.icons.DOUBLE_ARROW,color = "#2D6E7E"),
                                         alignment = ft.alignment.top_center,
                                     ),
                                     data = {

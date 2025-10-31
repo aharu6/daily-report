@@ -62,7 +62,7 @@ class SelectDirectoryHandler:
             hint_text="絞り込み対象名を入力。複数入力する場合はカンマ区切りで入力,例えば: 名前1, 名前2, 名前3",
         )
 
-        filtering_message = ft.Text("絞り込みが完了しました。集計を開始することができます。", color=ft.Colors.GREEN,visible=False)
+        filtering_message = ft.Text("絞り込みが完了しました。集計を開始することができます。", color=ft.colors.GREEN,visible=False)
         filtering_loading=ft.Container()
         #pick_file_nameに該当ファイル名を渡す
         #選択したファイルで結合dfを形成
@@ -81,7 +81,7 @@ class SelectDirectoryHandler:
                 )
             ]
 
-            df_ready_message = ft.Text("選択したファイルを集計する準備ができました。集計を開始することができます。", color=ft.Colors.GREEN,visible = False)
+            df_ready_message = ft.Text("選択したファイルを集計する準備ができました。集計を開始することができます。", color=ft.colors.GREEN,visible = False)
             file_filer_content.tabs[0].content.controls = [
                 ft.ElevatedButton("集計準備開始"),
                 df_ready_message,

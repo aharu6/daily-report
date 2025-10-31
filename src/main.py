@@ -34,15 +34,15 @@ def main(page: ft.Page):
     page.theme = ft.Theme(
         scrollbar_theme=ft.ScrollbarTheme(
             track_color={
-                ft.ControlState.HOVERED: ft.Colors.BLUE_GREY_50,
-                ft.ControlState.DEFAULT: ft.Colors.TRANSPARENT,
+                ft.ControlState.HOVERED: ft.colors.BLUE_GREY_50,
+                ft.ControlState.DEFAULT: ft.colors.TRANSPARENT,
             },
             track_visibility=True,
-            track_border_color=ft.Colors.BLUE_GREY_50,
+            track_border_color=ft.colors.BLUE_GREY_50,
             thumb_visibility=True,
             thumb_color={
                 ft.ControlState.HOVERED: None,
-                ft.ControlState.DEFAULT: ft.Colors.GREY_300,
+                ft.ControlState.DEFAULT: ft.colors.GREY_300,
             },
             thickness=15,
             radius=15,
@@ -78,30 +78,30 @@ def main(page: ft.Page):
     page.on_view_pop = view_pop
 
     page.navigation_bar = ft.CupertinoNavigationBar(
-        bgcolor=ft.Colors.BLUE_GREY_50,
-        inactive_color=ft.Colors.GREY,
-        active_color=ft.Colors.BLACK,
+        bgcolor=ft.colors.BLUE_GREY_50,
+        inactive_color=ft.colors.GREY,
+        active_color=ft.colors.BLACK,
         on_change=lambda e: handlersMain.on_navigation_change(e, page),
         destinations=[
             ft.NavigationBarDestination(
-                icon=ft.Icons.TIMELINE,
+                icon=ft.icons.TIMELINE,
                 label="Timeline",
-                selected_icon=ft.Icons.BORDER_COLOR,
+                selected_icon=ft.icons.BORDER_COLOR,
             ),
             ft.NavigationBarDestination(
-                icon=ft.Icons.AUTO_GRAPH,
+                icon=ft.icons.AUTO_GRAPH,
                 label="Chart",
-                selected_icon=ft.Icons.AUTO_GRAPH,
+                selected_icon=ft.icons.AUTO_GRAPH,
             ),
             ft.NavigationBarDestination(
-                icon=ft.Icons.CALENDAR_MONTH,
+                icon=ft.icons.CALENDAR_MONTH,
                 label="Calendar",
-                selected_icon=ft.Icons.CALENDAR_TODAY,
+                selected_icon=ft.icons.CALENDAR_TODAY,
             ),
             ft.NavigationBarDestination(
-                icon=ft.Icons.SETTINGS,
+                icon=ft.icons.SETTINGS,
                 label="Settings",
-                selected_icon=ft.Icons.SETTINGS,
+                selected_icon=ft.icons.SETTINGS,
             ),
         ],
     )

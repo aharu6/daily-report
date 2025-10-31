@@ -79,15 +79,15 @@ class UpdateCalendar:
                             
                             # 午前・午後両方のデータがある場合は緑色
                             if has_am and has_pm:
-                                cell.bgcolor = ft.Colors.GREEN
+                                cell.bgcolor = ft.colors.GREEN
                                 updated_cells += 1
                             # どちらか一方のみの場合は青色
                             elif has_am or has_pm:
-                                cell.bgcolor = ft.Colors.BLUE_200
+                                cell.bgcolor = ft.colors.BLUE_200
                                 updated_cells += 1
                             else:
                                 # データはあるが時間情報がない場合（従来通り）
-                                cell.bgcolor = ft.Colors.BLUE_200
+                                cell.bgcolor = ft.colors.BLUE_200
                                 updated_cells += 1
                             
                             
@@ -97,7 +97,7 @@ class UpdateCalendar:
                             except Exception as e:
                                 pass
                         else:
-                            cell.bgcolor = ft.Colors.WHITE
+                            cell.bgcolor = ft.colors.WHITE
         
         
         # カレンダーを更新

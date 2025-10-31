@@ -35,7 +35,7 @@ class NameDropdown:
             on_change=self.on_change,
             label="Name",
             label_style=ft.TextStyle(color="#2a4d7b"),
-            border_color=ft.Colors.BLUE_GREY_100,
+            border_color=ft.colors.BLUE_GREY_100,
             color="#2a4d7b",
         )
 
@@ -384,7 +384,7 @@ class EditButton:
 
     def create(self, e):
         return ft.IconButton(
-            icon=ft.Icons.EDIT, on_click=lambda e: self.toggle_delete_button
+            icon=ft.icons.EDIT, on_click=lambda e: self.toggle_delete_button
         )
 
 
@@ -423,7 +423,7 @@ class DeleteButtons:
 
     def create(self):
         return ft.IconButton(
-            icon=ft.Icons.DELETE,
+            icon=ft.icons.DELETE,
             visible=False,
             icon_color="red",
             icon_size=20,
@@ -456,7 +456,7 @@ class CreateCounter:
         return ft.Column(
             [
                 ft.IconButton(
-                    icon=ft.Icons.ARROW_DROP_UP_OUTLINED,
+                    icon=ft.icons.ARROW_DROP_UP_OUTLINED,
                     icon_size=25,
                     on_click=lambda _: self.counterPlus(
                         e, self.count_field, self.count_dict
@@ -465,7 +465,7 @@ class CreateCounter:
                 ),
                 self.count_field,
                 ft.IconButton(
-                    ft.Icons.ARROW_DROP_DOWN_OUTLINED,
+                    ft.icons.ARROW_DROP_DOWN_OUTLINED,
                     icon_size=25,
                     on_click=lambda _: self.counterMinus(
                         e, self.count_field, self.cont_dict

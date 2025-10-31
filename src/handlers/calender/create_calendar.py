@@ -15,7 +15,7 @@ class CreateCalendar:
                 height=cell_height,
                 width=cell_width,
                 alignment=ft.alignment.center,
-                bgcolor=ft.Colors.WHITE,  # 曜日部分の背景色
+                bgcolor=ft.colors.WHITE,  # 曜日部分の背景色
                 ) for day in weekdays],
             alignment=ft.MainAxisAlignment.CENTER,
         )
@@ -48,7 +48,7 @@ class CreateCalendar:
                         width=cell_width,
                         height=cell_height,
                         alignment=ft.alignment.center,
-                        bgcolor=ft.Colors.WHITE,
+                        bgcolor=ft.colors.WHITE,
                         data={"date": f"{year}-{month:01d}-{day_number:01d}"}  # 日付をデータ属性として保存
                     ))
                 else:
@@ -57,7 +57,7 @@ class CreateCalendar:
                         width=cell_width,
                         height=cell_height,
                         alignment=ft.alignment.center,
-                        bgcolor=ft.Colors.WHITE,
+                        bgcolor=ft.colors.WHITE,
                     ))
             calendar_cells.append(ft.Row(week_cells, alignment=ft.MainAxisAlignment.CENTER))
         calendar = ft.Column(
