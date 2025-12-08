@@ -251,17 +251,19 @@ class SelectDirectoryHandler:
         #午後病棟だけなら、午後病棟で絞り込んだファイルを返す
         #リストが空の場合には全てのファイル名を入れておく
         #最後に&条件で全てに合致するファイルだけを返す
-        if not result_day_files:
+        if not result_day_files and not (startDay or endDay):
             result_day_files = [l for l in fileList]
         print(f"日付で絞り込んだファイル: {result_day_files}")
-        if not result_name_files:
+
+        if not result_name_files and not filteringNameList:
             result_name_files = [l for l in fileList]
         print(f"名前で絞り込んだファイル: {result_name_files}")
-        if not result_location_files_am:
+
+        if not result_location_files_am and not AM_location:
             result_location_files_am=[l for l in fileList]
         print(f"午前病棟で絞り込んだファイル: {result_location_files_am}")
 
-        if not result_location_files_pm:
+        if not result_location_files_pm and not PM_location:
             result_location_files_pm=[l for l in fileList]
 
         print(f"午後病棟で絞り込んだファイル: {result_location_files_pm}")

@@ -702,48 +702,31 @@ class Handlers_analyze:
                 )
             ]
             result_field.update()
+            
+    @staticmethod   
+    def calculate_for_phName(dataframe):
+        df = dataframe[["phName","task","count"]]
+        task_count=df.groupby("phName").size().reset_index(name="task_count")
+        countdf = df.groupby("phName")["count"].sum().reset_index(name="count_total")
+        df = pd.merge(task_count,countdf,on="phName")
+        #*15にすることで実際の時間に変換　(1入力15ふん）
+        df["times"] = df["task_count"] * 15
+        #１業務あたりの時間列を追加
+        df["time_per_task"]=df["times"]/df["task_count"]
+        #1件あたりの時間列を追加
+        df["time_per_count"]=df["times"]/df["count_total"]
+        print(df)
+        #一番下に平均値を追加
+        avg_row=df.mean(numeric_only=True)
+        avg_row["phName"]="平均"
+        df=pd.concat([df,pd.DataFrame([avg_row])],ignore_index=True)
+        return df
 
     @staticmethod
     def self_analysis_total_time(dataframe,result_field,page,self_df):
         Handlers_Chart.show_progress_bar(result_field, page)
         if self_df is not None:
-            df=self_df
-            time_for_phname_total=df.groupby(["phName","task"]).size().reset_index(name="times")
-            #*15にすることで実際の時間に変換　(1入力15ふん）
-            time_for_phname_total["times"]=time_for_phname_total["times"]*15
-            #業務数列
-            taskdf=dataframe.groupby(["phName","task"]).size().reset_index(name="task_count")
-            #カウント列の合計を算出
-            countdf=dataframe.groupby(["phName","task"])["count"].sum().reset_index(name="count_total")
-            time_for_phname_total=pd.merge(
-                time_for_phname_total,
-                taskdf,
-                on=["phName","task"],
-                how="left"
-            )
-            time_for_phname_total=pd.merge(
-                time_for_phname_total,
-                countdf,
-                on=["phName","task"],
-                how="left"
-            )
-            #集計
-            total_df=time_for_phname_total.groupby(["phName"])["times"].sum().reset_index(name="total_times")
-            #phNameごとの総業務数
-            total_df["task_count"]=time_for_phname_total.groupby("phName")["task_count"].transform("sum")
-            #phNameごとの総件数
-            total_df["count_total"]=time_for_phname_total.groupby("phName")["count_total"].transform("sum")
-
-            #１業務あたりの時間列を追加
-            total_df["time_per_task"]=total_df["total_times"]/total_df["task_count"]
-            #1件あたりの時間列を追加
-            total_df["time_per_count"]=total_df["total_times"]/total_df["count_total"]
-
-            #一番下に平均値を追加
-            avg_row=total_df.mean(numeric_only=True)
-            avg_row["phName"]="平均"
-            total_df=pd.concat([total_df,pd.DataFrame([avg_row])],ignore_index=True)
-
+            df = Handlers_analyze.calculate_for_phName(self_df)    
             result_field.controls=[
                 ft.DataTable(
                     columns=[
@@ -758,14 +741,14 @@ class Handlers_analyze:
                         ft.DataRow(
                             cells=[
                                 ft.DataCell(ft.Text(row.phName)),
-                                ft.DataCell(ft.Text(str(row.total_times))),
+                                ft.DataCell(ft.Text(str(row.times))),
                                 ft.DataCell(ft.Text(str(row.task_count))),
                                 ft.DataCell(ft.Text(str(row.count_total))),
                                 ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
                                 ft.DataCell(ft.Text(f"{row.time_per_count:.2f}")),
                             ]
                         )
-                        for row in total_df.itertuples(index=False, name="Row")
+                        for row in df.itertuples(index=False, name="Row")
                     ]
                 ),
                 ft.ElevatedButton(
@@ -778,41 +761,7 @@ class Handlers_analyze:
             result_field.update()
 
         else:
-            time_for_phname_total=dataframe.groupby(["phName","task"]).size().reset_index(name="times")
-            #*15にすることで実際の時間に変換　(1入力15ふん）
-            time_for_phname_total["times"]=time_for_phname_total["times"]*15
-            #業務数列
-            taskdf=dataframe.groupby(["phName","task"]).size().reset_index(name="task_count")
-            #カウント列の合計を算出
-            countdf=dataframe.groupby(["phName","task"])["count"].sum().reset_index(name="count_total")
-            time_for_phname_total=pd.merge(
-                time_for_phname_total,
-                taskdf,
-                on=["phName","task"],
-                how="left"
-            )
-            time_for_phname_total=pd.merge(
-                time_for_phname_total,
-                countdf,
-                on=["phName","task"],
-                how="left"
-            )
-            #集計
-            total_df=time_for_phname_total.groupby(["phName"])["times"].sum().reset_index(name="total_times")
-            #phNameごとの総業務数
-            total_df["task_count"]=time_for_phname_total.groupby("phName")["task_count"].transform("sum")
-            #phNameごとの総件数
-            total_df["count_total"]=time_for_phname_total.groupby("phName")["count_total"].transform("sum")
-
-            #１業務あたりの時間列を追加
-            total_df["time_per_task"]=total_df["total_times"]/total_df["task_count"]
-            #1件あたりの時間列を追加
-            total_df["time_per_count"]=total_df["total_times"]/total_df["count_total"]
-
-            #一番下に平均値を追加
-            avg_row=total_df.mean(numeric_only=True)
-            avg_row["phName"]="平均"
-            total_df=pd.concat([total_df,pd.DataFrame([avg_row])],ignore_index=True)
+            df = Handlers_analyze.calculate_for_phName(dataframe)
 
             result_field.controls=[
                 ft.DataTable(
@@ -828,14 +777,14 @@ class Handlers_analyze:
                         ft.DataRow(
                             cells=[
                                 ft.DataCell(ft.Text(row.phName)),
-                                ft.DataCell(ft.Text(str(row.total_times))),
+                                ft.DataCell(ft.Text(str(row.times))),
                                 ft.DataCell(ft.Text(str(row.task_count))),
                                 ft.DataCell(ft.Text(str(row.count_total))),
                                 ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
                                 ft.DataCell(ft.Text(f"{row.time_per_count:.2f}")),
                             ]
                         )
-                        for row in total_df.itertuples(index=False, name="Row")
+                        for row in df.itertuples(index=False, name="Row")
                     ]
                 ),
                 ft.ElevatedButton(
