@@ -606,7 +606,6 @@ class Handlers_Chart:
 
             # 合計時間と割合の計算
             group_by_person["total_time"] = group_by_person.groupby("phName")["time"].transform("sum")
-            
             # ゼロ除算エラーを防ぐ
             mask = group_by_person["total_time"] != 0
             group_by_person.loc[mask, "percentage"] = (
