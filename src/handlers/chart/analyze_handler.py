@@ -162,7 +162,7 @@ class Handlers_analyze:
                     ft.DataRow(cells=[
                         ft.DataCell(ft.Text(row.task)),
                         ft.DataCell(ft.Text(str(row.counts))),
-                        ft.DataCell(ft.Text(str(row.times))),
+                        ft.DataCell(ft.Text(f"{row.times:.2f}")),
                         ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
                     ])
                     for row in df.itertuples(index=False, name="Row")
@@ -616,8 +616,8 @@ class Handlers_analyze:
                             ft.DataCell(ft.Text(row.locate)),
                             ft.DataCell(ft.Text(str(f"{row.times/60:.2f}"))),
                             ft.DataCell(ft.Text(str(f"{row.count_times/60:.2f}"))),
-                            ft.DataCell(ft.Text(str(row.task_count))),
-                            ft.DataCell(ft.Text(str(row.count_total))),
+                            ft.DataCell(ft.Text(str(f"{row.task_count:.2f}"))),
+                            ft.DataCell(ft.Text(str(f"{row.count_total:.2f}"))),
                             ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
                             ft.DataCell(ft.Text(f"{row.time_per_count:.2f}")),
                         ]
