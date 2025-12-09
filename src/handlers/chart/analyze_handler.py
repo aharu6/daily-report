@@ -474,6 +474,7 @@ class Handlers_analyze:
     def locate_analysis(dataframe,result_field,page,locate_df):
         Handlers_Chart.show_progress_bar(result_field, page)
         def _extract_location(df):
+            original_df = df.copy()
             df = df[["locate","task","count"]]
             df = df.groupby("locate").size().reset_index(name="times")
             try:
@@ -481,7 +482,16 @@ class Handlers_analyze:
             except KeyError:
                 pass
             df["task_count"] = df["times"]
-            df["times"] =df["times"] * 15
+            df["times"] =df["times"] * 15#単縦な総時間数
+
+            #件数入力する業務だけに絞り込んだ総時間数
+            count_task = original_df[~original_df["task"].isin(["無菌調製関連業務","混注時間","休憩","委員会","WG活動","勉強会参加","1on1","カンファレンス"])]
+            count_task = count_task.groupby("locate").size().reset_index(name="count_times")
+            try:
+                count_task.drop(index =count_task[count_task["locate"]=="self"].index,inplace=True) #self列は除外する)
+            except KeyError:
+                pass
+            count_task["count_times"] = count_task["count_times"] *15
 
             #カウント数列を算出
             countdf = dataframe.groupby("locate")["count"].sum().reset_index(name="count_total")
@@ -495,25 +505,30 @@ class Handlers_analyze:
                 countdf,
                 on=["locate"],
             )
-            
+            df = pd.merge(
+                df,
+                count_task,
+                on=["locate"],
+                how="left"
+            )
             #１業務あたりの時間列を追加
             df["time_per_task"]=df["times"]/df["task_count"]
             #1件あたりの時間列を追加
-            df["time_per_count"]=df["times"]/df["count_total"]
+            df["time_per_count"]=df["count_times"]/df["count_total"]
             #一番下に平均値を追加
             avg_row=df.mean(numeric_only=True)
             avg_row["locate"]="平均"
             df=pd.concat([df,pd.DataFrame([avg_row])],ignore_index=True)  
-
+            print(df)
             return df
         
         df = _extract_location(locate_df if locate_df is not None else dataframe)
-        print(df)
         result_field.controls=[
             ft.DataTable(
                 columns=[
                     ft.DataColumn(ft.Text("病棟名")),
                     ft.DataColumn(ft.Text("総時間")),
+                    ft.DataColumn(ft.Text("件数ありの総時間")),
                     ft.DataColumn(ft.Text("業務数")),
                     ft.DataColumn(ft.Text("件数")),
                     ft.DataColumn(ft.Text("1業務あたりの時間")),
@@ -524,6 +539,7 @@ class Handlers_analyze:
                         cells=[
                             ft.DataCell(ft.Text(row.locate)),
                             ft.DataCell(ft.Text(str(row.times))),
+                            ft.DataCell(ft.Text(str(row.count_times))),
                             ft.DataCell(ft.Text(str(row.task_count))),
                             ft.DataCell(ft.Text(str(row.count_total))),
                             ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
