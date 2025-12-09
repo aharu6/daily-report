@@ -794,7 +794,7 @@ class Handlers_Chart:
                     ], 
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER),
                     bgcolor=ft.colors.RED_50
-                 )
+                )
                 )
         ]
         page.update()

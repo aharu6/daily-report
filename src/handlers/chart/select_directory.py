@@ -6,6 +6,7 @@ import pandas as pd
 import threading
 import ast
 from models.models import DataModel
+import concurrent.futures
 #select directory
 #フォルダ選択した結果
 class SelectDirectoryHandler:
@@ -298,19 +299,17 @@ class SelectDirectoryHandler:
     
     @staticmethod
     def concat_files(file_names,select_directory,parent_instance,page):
-        dfs = []
-        for file_path in file_names:
+        def read_csv_file(file_path):
             try:
                 full_path = os.path.join(select_directory, file_path)
-                df = pd.read_csv(full_path, encoding=Handlers_Chart.detect_encoding(file_path=full_path))
-                dfs.append(df)
+                return pd.read_csv(full_path, encoding=Handlers_Chart.detect_encoding(file_path=full_path))
             except Exception as e:
                 print(f"Error reading {file_path}: {e}")
-                continue
-
-        #選択したファイル名を取得して、結合処理を行う
-        #結合したデータフレームを返す
-        #選択したファイルのパスを取得
+                return None
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            results = list(executor.map(read_csv_file, file_names))
+            dfs = [df for df in results if df is not None]
+        
         if not dfs:
             page.snack_bar = ft.SnackBar(
                 content = ft.Text("有効なCSVファイルが選択されていません。"),
@@ -319,23 +318,17 @@ class SelectDirectoryHandler:
             page.snack_bar.open = True
             page.update()
             return
-        
+
+        #選択したファイル名を取得して、結合処理を行う
+        #結合したデータフレームを返す
+        #選択したファイルのパスを取得        
         #データフレームを結合する
         df=pd.concat(dfs, ignore_index=True)       
         #病棟関係ない項目はlocationデータを削除　selfなどの名前にしておく
-        for index,row in df.iterrows():
-            if row["task"]in["委員会","勉強会参加","WG活動","1on1","業務調整","休憩"]:#その他は除外する
-                df.loc[index,"locate"] = "['self']"
-            else:
-                pass
+        none_locate_keywords=["委員会","勉強会参加","WG活動","1on1","業務調整","休憩"]
+        df.loc[df["task"].isin(none_locate_keywords),"locate"]="['self']"
         
-        def safe_get_fitst_location(x):
-            try:
-                parsed = ast.literal_eval(x)
-                return parsed[0] if parsed else None
-            except (ValueError, SyntaxError):
-                return None
-        df["locate"] = df["locate"].apply(safe_get_fitst_location)
+        df["locate"] = df["locate"].str.extract(r"\['?(.*?)'?\]")
         parent_instance.dataframe= df
         
     @staticmethod
