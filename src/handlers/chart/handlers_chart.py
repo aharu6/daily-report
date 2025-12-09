@@ -606,7 +606,6 @@ class Handlers_Chart:
 
             # 合計時間と割合の計算
             group_by_person["total_time"] = group_by_person.groupby("phName")["time"].transform("sum")
-            
             # ゼロ除算エラーを防ぐ
             mask = group_by_person["total_time"] != 0
             group_by_person.loc[mask, "percentage"] = (
@@ -634,6 +633,12 @@ class Handlers_Chart:
                 orientation="h",
                 color_discrete_map=TASK_COLOR_MAP,
             )
+            fig_bar.update_layout(
+                        height=graph_height,
+                        xaxis=dict(title="業務割合(%)"),
+                        yaxis=dict(title="薬剤師名"),
+                        legend=dict(font=dict(size=10))
+                    )
             
             # UI作成
             period_ui = Handlers_Chart._create_period_selector_ui(start_date, end_date, page)
@@ -692,7 +697,7 @@ class Handlers_Chart:
                     )
                     fig_bar.update_layout(
                         height=graph_height,
-                        xaxis=dict(title="業務"),
+                        xaxis=dict(title="業務割合(%)"),
                         yaxis=dict(title="薬剤師名"),
                         legend=dict(font=dict(size=10))
                     )
@@ -794,7 +799,7 @@ class Handlers_Chart:
                     ], 
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER),
                     bgcolor=ft.colors.RED_50
-                 )
+                )
                 )
         ]
         page.update()

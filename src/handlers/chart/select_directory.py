@@ -6,6 +6,7 @@ import pandas as pd
 import threading
 import ast
 from models.models import DataModel
+import concurrent.futures
 #select directory
 #フォルダ選択した結果
 class SelectDirectoryHandler:
@@ -251,17 +252,19 @@ class SelectDirectoryHandler:
         #午後病棟だけなら、午後病棟で絞り込んだファイルを返す
         #リストが空の場合には全てのファイル名を入れておく
         #最後に&条件で全てに合致するファイルだけを返す
-        if not result_day_files:
+        if not result_day_files and not (startDay or endDay):
             result_day_files = [l for l in fileList]
         print(f"日付で絞り込んだファイル: {result_day_files}")
-        if not result_name_files:
+
+        if not result_name_files and not filteringNameList:
             result_name_files = [l for l in fileList]
         print(f"名前で絞り込んだファイル: {result_name_files}")
-        if not result_location_files_am:
+
+        if not result_location_files_am and not AM_location:
             result_location_files_am=[l for l in fileList]
         print(f"午前病棟で絞り込んだファイル: {result_location_files_am}")
 
-        if not result_location_files_pm:
+        if not result_location_files_pm and not PM_location:
             result_location_files_pm=[l for l in fileList]
 
         print(f"午後病棟で絞り込んだファイル: {result_location_files_pm}")
@@ -282,38 +285,59 @@ class SelectDirectoryHandler:
             10,
             lambda: SelectDirectoryHandler._hide(filtering_message)
         ).start()
+        
+        #該当データがないときはメッセージを表示する
+        if len(result_files) == 0:
+            filtering_message.value = "該当するデータがありません。条件を変更して再度絞り込みを行ってください。"
+            filtering_message.color = ft.colors.RED
+            filtering_message.visible = True
+            filtering_message.update()
+            threading.Timer(
+                10,
+                lambda: SelectDirectoryHandler._hide(filtering_message)
+            ).start()
     
     @staticmethod
-    def concat_files(file_names, select_directory,parent_instance):
+    def concat_files(file_names,select_directory,parent_instance,page):
+        def read_csv_file(file_path):
+            try:
+                full_path = os.path.join(select_directory, file_path)
+                return pd.read_csv(full_path, encoding=Handlers_Chart.detect_encoding(file_path=full_path))
+            except Exception as e:
+                print(f"Error reading {file_path}: {e}")
+                return None
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            results = list(executor.map(read_csv_file, file_names))
+            dfs = [df for df in results if df is not None]
+        
+        if not dfs:
+            page.snack_bar = ft.SnackBar(
+                content = ft.Text("有効なCSVファイルが選択されていません。"),
+                bgcolor = ft.colors.RED
+            )
+            page.snack_bar.open = True
+            page.update()
+            return
+
         #選択したファイル名を取得して、結合処理を行う
         #結合したデータフレームを返す
-        #選択したファイルのパスを取得
-        file_paths = [os.path.join(select_directory, file_name) for file_name in file_names]
+        #選択したファイルのパスを取得        
         #データフレームを結合する
-        df=pd.concat(
-            [pd.read_csv(file,encoding=Handlers_Chart.detect_encoding(file_path=file)) for file in file_paths if os.path.isfile(file)],
-        )
+        df=pd.concat(dfs, ignore_index=True)       
         #病棟関係ない項目はlocationデータを削除　selfなどの名前にしておく
-        for index,row in df.iterrows():
-            if row["task"]in["委員会","勉強会参加","WG活動","1on1","業務調整","休憩"]:#その他は除外する
-                df.loc[index,"locate"] = "['self']"
-            else:
-                pass
-        new_rows=[]
-        for index,row in df.iterrows():
-            tarn_row=ast.literal_eval(row["locate"])
-            for loc in range(len(tarn_row)):
-                new_row=row.copy()
-                new_row["locate"]=tarn_row[loc]
-                new_rows.append(new_row)
-        parent_instance.dataframe= pd.DataFrame(new_rows)
-
+        none_locate_keywords=["委員会","勉強会参加","WG活動","1on1","業務調整","休憩"]
+        df.loc[df["task"].isin(none_locate_keywords),"locate"]="['self']"
+        
+        df["locate"] = df["locate"].str.extract(r"\['?([^'.,\]]+)")
+        parent_instance.dataframe= df
+        
     @staticmethod
     def concat_files_standard(csv_files, select_directory_path, parent_instance,df_ready_message):
         SelectDirectoryHandler.concat_files(
                         file_names=csv_files,
                         select_directory=select_directory_path,
-                        parent_instance=parent_instance
+                        parent_instance=parent_instance,
+                        page=parent_instance.page
                     )
         df_ready_message.visible= True
         df_ready_message.update()

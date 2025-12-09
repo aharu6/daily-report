@@ -6,6 +6,7 @@ class DataframeDownloadHandler:
 
     @staticmethod
     def open_directory_for_dataframe(page,dataframe,name):
+        print(dataframe)
         #保存先を指定
         #フォルダを開く
         select_directory=ft.FilePicker(
