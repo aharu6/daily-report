@@ -328,7 +328,7 @@ class SelectDirectoryHandler:
         none_locate_keywords=["委員会","勉強会参加","WG活動","1on1","業務調整","休憩"]
         df.loc[df["task"].isin(none_locate_keywords),"locate"]="['self']"
         
-        df["locate"] = df["locate"].str.extract(r"\['?(.*?)'?\]")
+        df["locate"] = df["locate"].str.extract(r"\['?([^'.,\]]+)")
         parent_instance.dataframe= df
         
     @staticmethod
