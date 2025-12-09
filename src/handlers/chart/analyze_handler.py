@@ -20,7 +20,7 @@ class Handlers_analyze:
             #sort_time列のデータ型をdatetimeに変換
             df["sort_time"]=pd.to_datetime(df["sort_time"],format="%H:%M",errors="coerce")
             #sort_time列を元に時間順にソート    
-            df.sort_values("sort_time",inplace=True)
+            df.sort_values("sort_time")
             return df
         
         df = _extract_time_task(all_df if all_df is not None else dataframe)
@@ -81,14 +81,14 @@ class Handlers_analyze:
             df = df[["task","count"]]
             df = df.groupby(["task"])["count"].sum().reset_index(name="counts")
             try:
-                df.drop(index=["無菌調製関連業務"],inplace=True)
-                df.drop(index=["混注時間"],inplace=True)
-                df.drop(index=["休憩"],inplace=True)
-                df.drop(index=["委員会"],inplace=True)
-                df.drop(index=["WG活動"],inplace=True)
-                df.drop(index=["勉強会参加"],inplace=True)
-                df.drop(index=["1on1"],inplace=True)
-                df.drop(index=["カンファレンス"],inplace=True)
+                df.drop(index=["無菌調製関連業務"])
+                df.drop(index=["混注時間"])
+                df.drop(index=["休憩"])
+                df.drop(index=["委員会"])
+                df.drop(index=["WG活動"])
+                df.drop(index=["勉強会参加"])
+                df.drop(index=["1on1"])
+                df.drop(index=["カンファレンス"])
             except KeyError:
                 pass
             return df
@@ -115,7 +115,15 @@ class Handlers_analyze:
                 "保存",
                 icon=ft.icons.DOWNLOAD,
                 tooltip="データフレームを保存",
-                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=task_count,name="task_count"),
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(
+                    page=page,
+                    dataframe=task_count.rename(
+                        columns = {
+                            "task":"業務内容",
+                            "counts":"件数",
+                        }
+                    ),
+                    name="task_count"),
             )
         ]
         result_field.update()
@@ -126,6 +134,7 @@ class Handlers_analyze:
         Handlers_Chart.show_progress_bar(result_field, page)
         def _compute_time_per_count(df):
             df = df[["task","count"]]
+            df = df[~df["task"].isin(["無菌調製関連業務","混注時間","休憩","委員会","WG活動","勉強会参加","1on1","カンファレンス"])]
             time_per_task = df.groupby(["task"]).size().reset_index(name="times")
             time_per_task["times"] = time_per_task["times"] *15
 
@@ -144,10 +153,10 @@ class Handlers_analyze:
             ft.Text("1件あたりに要した時間の算出", size=20),
             ft.DataTable(
                 columns=[
-                    ft.DataColumn(ft.Text("業務内容")),
+                    ft.DataColumn(ft.Text("業務内容(件数入力ありのみ)")),
                     ft.DataColumn(ft.Text("件数")),
-                    ft.DataColumn(ft.Text("総時間")),
-                    ft.DataColumn(ft.Text("件数あたりの時間")),
+                    ft.DataColumn(ft.Text("総時間(min)")),
+                    ft.DataColumn(ft.Text("件数あたりの時間(min)")),
                 ],
                 rows=[
                     ft.DataRow(cells=[
@@ -163,7 +172,17 @@ class Handlers_analyze:
                 "保存",
                 icon=ft.icons.DOWNLOAD,
                 tooltip="データフレームを保存",
-                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=time_per_task,name="time_per_task"),
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(
+                    page=page,
+                    dataframe=df.rename(
+                        columns={
+                            "task":"業務内容",
+                            "counts":"件数",
+                            "times":"総時間",
+                            "time_per_task":"件数あたりの時間"
+                        }
+                    ),
+                    name="time_per_task"),
             )
         ]
         page.update()
@@ -211,7 +230,9 @@ class Handlers_analyze:
                 "保存",
                 icon=ft.icons.DOWNLOAD,
                 tooltip="グラフを保存",
-                on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_location"),
+                on_click=lambda _:Chart_Download_Handler.open_directory(
+                    page=page,
+                    barchart=fig,chart_name="task_location"),
             )
         ]
         result_field.update()
@@ -272,14 +293,23 @@ class Handlers_analyze:
                             ft.DataCell(ft.Text(str(row.counts)))
                         ]
                     )
-                    for row in date_group_df.itertuples(index=False, name="Row")
+                    for row in df.itertuples(index=False, name="Row")
                 ]
             ),
             ft.ElevatedButton(
                 "保存",
                 icon=ft.icons.DOWNLOAD,
                 tooltip="データフレームを保存",
-                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=date_group_df,name="task_date"),
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(
+                    page=page,
+                    dataframe=df.rename(
+                        columns = {
+                            "date":"日付",
+                            "task":"業務内容",
+                            "counts":"記録回数",
+                        }
+                    ),
+                    name="task_date"),
             )
         ]
         result_field.update()
@@ -301,7 +331,7 @@ class Handlers_analyze:
                     ft.DataColumn(ft.Text("日付")),
                     ft.DataColumn(ft.Text("時間")),
                     ft.DataColumn(ft.Text("場所")),
-                    ft.DataColumn(ft.Text("記録者")),
+                    ft.DataColumn(ft.Text("薬剤師名")),
                     ft.DataColumn(ft.Text("コメント")),
                 ],
                 rows=[
@@ -321,7 +351,18 @@ class Handlers_analyze:
                 "保存",
                 icon=ft.icons.DOWNLOAD,
                 tooltip="データフレームを保存",
-                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=comment_df,name="comment"),
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(
+                    page=page,
+                    dataframe=df.rename(
+                        columns = {
+                            "date":"日付",
+                            "time":"時間",
+                            "locate":"場所",
+                            "phName":"薬剤師名",
+                            "comment":"コメント",
+                        }
+                    ),
+                    name="comment"),
             )
         ]
         result_field.update()
@@ -351,8 +392,8 @@ class Handlers_analyze:
                     ft.DataColumn(ft.Text("薬剤師名")),
                     ft.DataColumn(ft.Text("業務内容")),
                     ft.DataColumn(ft.Text("件数")),
-                    ft.DataColumn(ft.Text("時間")),
-                    ft.DataColumn(ft.Text("件数あたりの時間")),
+                    ft.DataColumn(ft.Text("時間(min)")),
+                    ft.DataColumn(ft.Text("件数あたりの時間(min)")),
                 ],
                 rows=[
                     ft.DataRow(
@@ -360,7 +401,7 @@ class Handlers_analyze:
                             ft.DataCell(ft.Text(row.phName)),
                             ft.DataCell(ft.Text(row.task)),
                             ft.DataCell(ft.Text(str(row.counts_total))),
-                            ft.DataCell(ft.Text(str(row.times))),
+                            ft.DataCell(ft.Text(f"{row.times:.2f}")),
                             ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
                         ]
                     )
@@ -371,7 +412,20 @@ class Handlers_analyze:
                 "保存",
                 icon=ft.icons.DOWNLOAD,
                 tooltip="データフレームを保存",
-                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=df,name="self_analysis"),
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(
+                    page=page,
+                    dataframe=df.rename(
+                        columns = {
+                            "phName":"薬剤師名",
+                            "task":"業務内容",
+                            "counts_total":"記録回数",
+                            "times":"時間",
+                            "time_per_task":"業務あたりの時間",
+                            "time_per_count":"件数あたりの時間",
+                        }
+                    ),
+                    name="self_analysis"
+                ),
             )
         ]
         result_field.update()
@@ -447,19 +501,19 @@ class Handlers_analyze:
             ft.DataTable(
                 columns=[
                     ft.DataColumn(ft.Text("薬剤師名")),
-                    ft.DataColumn(ft.Text("総時間")),
-                    ft.DataColumn(ft.Text("件数ありの総時間")),
+                    ft.DataColumn(ft.Text("総時間(hr)")),
+                    ft.DataColumn(ft.Text("件数ありの総時間(hr)")),
                     ft.DataColumn(ft.Text("業務数")),
                     ft.DataColumn(ft.Text("件数")),
-                    ft.DataColumn(ft.Text("1業務あたりの時間")),
-                    ft.DataColumn(ft.Text("1件あたりの時間")),
+                    ft.DataColumn(ft.Text("1業務あたりの時間(min)")),
+                    ft.DataColumn(ft.Text("1件あたりの時間(min)")),
                 ],
                 rows=[
                     ft.DataRow(
                         cells=[
                             ft.DataCell(ft.Text(row.phName)),
-                            ft.DataCell(ft.Text(str(row.times))),
-                            ft.DataCell(ft.Text(str(row.count_times))),
+                            ft.DataCell(ft.Text(f"{row.times/60:.2f}")),
+                            ft.DataCell(ft.Text(f"{row.count_times/60:.2f}")),
                             ft.DataCell(ft.Text(str(row.task_count))),
                             ft.DataCell(ft.Text(str(row.count_total))),
                             ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
@@ -473,7 +527,20 @@ class Handlers_analyze:
                 "保存",
                 icon=ft.icons.DOWNLOAD,
                 tooltip="データフレームを保存",
-                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=time_for_phname_total,name="self_analysis_total_time"),
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(
+                    page=page,
+                    dataframe=df.rename(
+                        columns = {
+                            "phName":"薬剤師名",
+                            "times":"総時間",
+                            "count_times":"件数ありの総時間",
+                            "task_count":"業務数",
+                            "count_total":"件数",
+                            "time_per_task":"1業務あたりの時間",
+                            "time_per_count":"1件あたりの時間"
+                        }
+                    ),
+                    name="self_analysis_total_time"),
             )
         ]
         result_field.update()
@@ -528,27 +595,27 @@ class Handlers_analyze:
             avg_row=df.mean(numeric_only=True)
             avg_row["locate"]="平均"
             df=pd.concat([df,pd.DataFrame([avg_row])],ignore_index=True)  
-            print(df)
             return df
         
         df = _extract_location(locate_df if locate_df is not None else dataframe)
+
         result_field.controls=[
             ft.DataTable(
                 columns=[
                     ft.DataColumn(ft.Text("病棟名")),
-                    ft.DataColumn(ft.Text("総時間")),
-                    ft.DataColumn(ft.Text("件数ありの総時間")),
+                    ft.DataColumn(ft.Text("総時間(hr)")),
+                    ft.DataColumn(ft.Text("件数ありの総時間(hr)")),
                     ft.DataColumn(ft.Text("業務数")),
                     ft.DataColumn(ft.Text("件数")),
-                    ft.DataColumn(ft.Text("1業務あたりの時間")),
-                    ft.DataColumn(ft.Text("1件あたりの時間")),
+                    ft.DataColumn(ft.Text("1業務あたりの時間(min)")),
+                    ft.DataColumn(ft.Text("1件あたりの時間(min)")),
                 ],
                 rows=[
                     ft.DataRow(
                         cells=[
                             ft.DataCell(ft.Text(row.locate)),
-                            ft.DataCell(ft.Text(str(row.times))),
-                            ft.DataCell(ft.Text(str(row.count_times))),
+                            ft.DataCell(ft.Text(str(f"{row.times/60:.2f}"))),
+                            ft.DataCell(ft.Text(str(f"{row.count_times/60:.2f}"))),
                             ft.DataCell(ft.Text(str(row.task_count))),
                             ft.DataCell(ft.Text(str(row.count_total))),
                             ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
@@ -563,7 +630,20 @@ class Handlers_analyze:
                 "保存",
                 icon=ft.icons.DOWNLOAD,
                 tooltip="データフレームを保存",
-                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=total_df,name="locate_analysis")
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(
+                    page=page,
+                    dataframe=df.rename(
+                        columns ={
+                            "locate":"病棟",
+                            "times":"総時間",
+                            "count_times":"件数ありの総時間",
+                            "task_count":"業務数",
+                            "count_total":"件数",
+                            "time_per_task":"1業務あたりの時間",
+                            "time_per_count":"1件あたりの時間"
+                        }
+                    ),
+                    name="locate_analysis")
                                                                                         
             )
                 ]

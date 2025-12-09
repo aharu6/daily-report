@@ -633,6 +633,12 @@ class Handlers_Chart:
                 orientation="h",
                 color_discrete_map=TASK_COLOR_MAP,
             )
+            fig_bar.update_layout(
+                        height=graph_height,
+                        xaxis=dict(title="業務割合(%)"),
+                        yaxis=dict(title="薬剤師名"),
+                        legend=dict(font=dict(size=10))
+                    )
             
             # UI作成
             period_ui = Handlers_Chart._create_period_selector_ui(start_date, end_date, page)
@@ -691,7 +697,7 @@ class Handlers_Chart:
                     )
                     fig_bar.update_layout(
                         height=graph_height,
-                        xaxis=dict(title="業務"),
+                        xaxis=dict(title="業務割合(%)"),
                         yaxis=dict(title="薬剤師名"),
                         legend=dict(font=dict(size=10))
                     )
