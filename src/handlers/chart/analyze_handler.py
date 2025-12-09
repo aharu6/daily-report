@@ -10,611 +10,328 @@ class Handlers_analyze:
     @staticmethod
     def time_task_analysis(dataframe, result_field, page,all_df):  
         Handlers_Chart.show_progress_bar(result_field, page)
-        if all_df is not None:
-            df=all_df
-            task_per_time_heatmap=df.groupby(["task","time"]).size().reset_index(name="counts")
-            heat_height=int(len(task_per_time_heatmap["task"].unique()))*33
-            heat_width=int(len(task_per_time_heatmap["time"].unique()))*33
-            if heat_width<1000:
-                heat_width=1000
+
+        def _extract_time_task(df):
+            df = df[["task","time"]]
+            df = df.groupby(["task","time"]).size().reset_index(name="counts")
             #時間順にデータを並び替える
-            task_per_time_heatmap["sort_time"]=task_per_time_heatmap["time"].astype(str).fillna("")
-            task_per_time_heatmap["sort_time"]=task_per_time_heatmap["sort_time"].str.strip().str.split(" ").str[0]
+            df["sort_time"]=df["time"].astype(str).fillna("")
+            df["sort_time"]=df["sort_time"].str.strip().str.split(" ").str[0]
             #sort_time列のデータ型をdatetimeに変換
-            task_per_time_heatmap["sort_time"]=pd.to_datetime(task_per_time_heatmap["sort_time"],format="%H:%M",errors="coerce")
+            df["sort_time"]=pd.to_datetime(df["sort_time"],format="%H:%M",errors="coerce")
             #sort_time列を元に時間順にソート    
-            task_per_time_heatmap.sort_values("sort_time",inplace=True)
-            
-            fig=px.density_heatmap(
-                task_per_time_heatmap,
-                x="time",
-                y="task",
-                z="counts",
-                title="時間ごとに業務が記録された回数",
-                labels={"time": "Time", "task": "Task", "counts": "Task Count"},
-                height=heat_height,
-                width=heat_width,
+            df.sort_values("sort_time",inplace=True)
+            return df
+        
+        df = _extract_time_task(all_df if all_df is not None else dataframe)
+        heat_height = int(len(df["task"].unique())) * 33
+        heat_width = int(len(df["time"].unique())) * 33
+        if heat_width < 1000:
+            heat_width = 1000
+
+        fig=px.density_heatmap(
+            df,
+            x="time",
+            y="task",
+            z="counts",
+            title="時間ごとに業務が記録された回数",
+            labels={"time": "Time", "task": "Task", "counts": "Task Count"},
+            height=heat_height,
+            width=heat_width,
+        )
+        fig.update_layout(
+            xaxis=dict(title="時間"),
+            yaxis=dict(title="業務内容"),
+        )
+        result_field.controls=[
+            PlotlyChart(fig),#グラフ
+            Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="グラフを保存",
+                on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="heatmap"),
+
+            ),
+            #データフレーム
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("業務内容")),
+                    ft.DataColumn(ft.Text("時間")),
+                    ft.DataColumn(ft.Text("時間に記録された回数")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(row.task)),
+                            ft.DataCell(ft.Text(row.time)),
+                            ft.DataCell(ft.Text(str(row.counts)))
+                        ]
+                    )
+                    for row in df.itertuples(index=False, name="Row")
+                ]
             )
-            fig.update_layout(
-                xaxis=dict(title="時間"),
-                yaxis=dict(title="業務内容"),
-            )
-            result_field.controls=[
-                PlotlyChart(fig),#グラフ
-                Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="グラフを保存",
-                    on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="heatmap"),
-
-                ),
-                #データフレーム
-                ft.DataTable(
-                    columns=[
-                        ft.DataColumn(ft.Text("業務内容")),
-                        ft.DataColumn(ft.Text("時間")),
-                        ft.DataColumn(ft.Text("時間に記録された回数")),
-                    ],
-                    rows=[
-                        ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text(row.task)),
-                                ft.DataCell(ft.Text(row.time)),
-                                ft.DataCell(ft.Text(str(row.counts)))
-                            ]
-                        )
-                        for row in task_per_time_heatmap.itertuples(index=False, name="Row")
-                    ]
-                )
-            ]
-            result_field.update()
-        else:
-
-            df=dataframe
-            task_per_time_heatmap=df.groupby(["task","time"]).size().reset_index(name="counts")
-            
-            heat_height=int(len(task_per_time_heatmap["task"].unique()))*33
-            heat_width=int(len(task_per_time_heatmap["time"].unique()))*33
-            if heat_width<1000:
-                heat_width=1000
-            #時間順にデータを並び替える
-            task_per_time_heatmap["sort_time"]=task_per_time_heatmap["time"].astype(str).fillna("")
-            task_per_time_heatmap["sort_time"]=task_per_time_heatmap["sort_time"].str.strip().str.split(" ").str[0]
-            #sort_time列のデータ型をdatetimeに変換
-            task_per_time_heatmap["sort_time"]=pd.to_datetime(task_per_time_heatmap["sort_time"],format="%H:%M",errors="coerce")
-            #sort_time列を元に時間順にソート    
-            task_per_time_heatmap.sort_values("sort_time",inplace=True)
-            
-            fig=px.density_heatmap(
-                task_per_time_heatmap,
-                x="time",
-                y="task",
-                z="counts",
-                title="時間ごとに業務が記録された回数",
-                labels={"time": "Time", "task": "Task", "counts": "Task Count"},
-                height=heat_height,
-                width=heat_width,
-            )
-            fig.update_layout(
-                xaxis=dict(title="時間"),
-                yaxis=dict(title="業務内容"),
-            )
-            result_field.controls=[
-                PlotlyChart(fig),#グラフ
-                Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="グラフを保存",
-                    on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="heatmap"),
-
-                ),
-                #データフレーム
-                ft.DataTable(
-                    columns=[
-                        ft.DataColumn(ft.Text("業務内容")),
-                        ft.DataColumn(ft.Text("時間")),
-                        ft.DataColumn(ft.Text("時間に記録された回数")),
-                    ],
-                    rows=[
-                        ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text(row.task)),
-                                ft.DataCell(ft.Text(row.time)),
-                                ft.DataCell(ft.Text(str(row.counts)))
-                            ]
-                        )
-                        for row in task_per_time_heatmap.itertuples(index=False, name="Row")
-                    ]
-                ),
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="データフレームを保存",
-                    on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=task_per_time_heatmap,name="time_task_analysis"),
-                )
-            ]
-            result_field.update()
-
-
+        ]
+        result_field.update()
     #業務内容ごとの件数
     @staticmethod
     def task_par_count(dataframe, result_field, page,all_df):
         Handlers_Chart.show_progress_bar(result_field, page)
-        if all_df is not None:
-            df=all_df
-            task_count=df.groupby(["task"])["count"].sum().reset_index(name="counts")
-            #件数を集計していない項目はデータフレームより除外する
+        def _extract_task_count(df):
+            df = df[["task","count"]]
+            df = df.groupby(["task"])["count"].sum().reset_index(name="counts")
             try:
-                task_count.drop(index=["無菌調製関連業務"],inplace=True)
-                task_count.drop(index=["混注時間"],inplace=True)
-                task_count.drop(index=["休憩"],inplace=True)
-                task_count.drop(index=["委員会"],inplace=True)
-                task_count.drop(index=["WG活動"],inplace=True)
-                task_count.drop(index=["勉強会参加"],inplace=True)
-                task_count.drop(index=["1on1"],inplace=True)
-                task_count.drop(index=["カンファレンス"],inplace=True)
+                df.drop(index=["無菌調製関連業務"],inplace=True)
+                df.drop(index=["混注時間"],inplace=True)
+                df.drop(index=["休憩"],inplace=True)
+                df.drop(index=["委員会"],inplace=True)
+                df.drop(index=["WG活動"],inplace=True)
+                df.drop(index=["勉強会参加"],inplace=True)
+                df.drop(index=["1on1"],inplace=True)
+                df.drop(index=["カンファレンス"],inplace=True)
             except KeyError:
                 pass
-            result_field.controls=[
-                ft.DataTable(
-                    columns=[
-                        ft.DataColumn(ft.Text("業務内容")),
-                        ft.DataColumn(ft.Text("件数")),
-                    ],
-                    rows=[
-                        ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text(row.task)),
-                                ft.DataCell(ft.Text(str(row.counts))),
-                            ]
-                        )
-                        for row in task_count.itertuples(index=False, name="Row")
-                    ]
-                ),
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="データフレームを保存",
-                    on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=task_count,name="task_count"),
-                )
-            ]
-            result_field.update()
-        else:
-            task_count=dataframe.groupby(["task"])["count"].sum().reset_index(name="counts")
-            #件数を集計していない項目はデータフレームより除外する
-            try:
-                task_count.drop(index=["無菌調製関連業務"],inplace=True)
-                task_count.drop(index=["混注時間"],inplace=True)
-                task_count.drop(index=["休憩"],inplace=True)
-                task_count.drop(index=["委員会"],inplace=True)
-                task_count.drop(index=["WG活動"],inplace=True)
-                task_count.drop(index=["勉強会参加"],inplace=True)
-                task_count.drop(index=["1on1"],inplace=True)
-                task_count.drop(index=["カンファレンス"],inplace=True)
-            except KeyError:
-                pass
-            result_field.controls=[
-                ft.DataTable(
-                    columns=[
-                        ft.DataColumn(ft.Text("業務内容")),
-                        ft.DataColumn(ft.Text("件数")),
-                    ],
-                    rows=[
-                        ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text(row.task)),
-                                ft.DataCell(ft.Text(str(row.counts))),
-                            ]
-                        )
-                        for row in task_count.itertuples(index=False, name="Row")
-                    ]
-                ),
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="データフレームを保存",
-                    on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=task_count,name="task_count"),
-                )
-            ]
-            result_field.update()
-
+            return df
         
+        task_count = _extract_task_count(all_df if all_df is not None else dataframe)
+            
+        result_field.controls=[
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("業務内容")),
+                    ft.DataColumn(ft.Text("件数")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(row.task)),
+                            ft.DataCell(ft.Text(str(row.counts))),
+                        ]
+                    )
+                    for row in task_count.itertuples(index=False, name="Row")
+                ]
+            ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=task_count,name="task_count"),
+            )
+        ]
+        result_field.update()
 
     #件数あたりの時間 件数あたりに要した時間の算出
     @staticmethod
     def count_par_time(dataframe, result_field, page,all_df):
-        """_summary_
-
-        Args:
-            dataframe (_type_): _description_
-            result_field (_type_): グラフかデータフレームを表示する=ft.ResponsiveRow(controls=)
-            page (_type_): _description_
-        """
         Handlers_Chart.show_progress_bar(result_field, page)
-        if all_df is not None:
-            df=all_df
-            time_per_task=df.groupby(["task"]).size().reset_index(name="times")
-            #times列に*15することで、実際の時間に変換（１入力あたり１５分のため）
-            time_per_task["times"]=time_per_task["times"]*15
-            #count列を合計しておく
-            count_per_task=df.groupby(["task"])["count"].sum().reset_index(name="counts")
-            time_per_task["counts"]=count_per_task["counts"]
+        def _compute_time_per_count(df):
+            df = df[["task","count"]]
+            time_per_task = df.groupby(["task"]).size().reset_index(name="times")
+            time_per_task["times"] = time_per_task["times"] *15
 
-            #平均値列を追加
-            avg_row = time_per_task.mean(numeric_only=True)
+            count_per_task = df.groupby(["task"])["count"].sum().reset_index(name="counts")
+            df = pd.merge(time_per_task,count_per_task,on="task")
+
+            avg_row = df.mean(numeric_only=True)
             avg_row["task"] = "平均"
-            time_per_task = pd.concat([time_per_task, pd.DataFrame([avg_row])], ignore_index=True)
+            df = pd.concat([df,pd.DataFrame([avg_row])],ignore_index=True)
+            df["time_per_task"] = df["times"] / df["counts"]
+            return df
+        
+        df =_compute_time_per_count(all_df if all_df is not None else dataframe)
 
-            # 新しいtime/taskにて1件あたりに要した時間を計算
-            time_per_task["time_per_task"] = time_per_task["times"] / time_per_task["counts"]
-
-            # データフレームとして表示する
-            result_field.controls = [
-                ft.Text("1件あたりに要した時間の算出", size=20),
-                ft.DataTable(
-                    columns=[
-                        ft.DataColumn(ft.Text("業務内容")),
-                        ft.DataColumn(ft.Text("件数")),
-                        ft.DataColumn(ft.Text("総時間")),
-                        ft.DataColumn(ft.Text("件数あたりの時間")),
-                    ],
-                    rows=[
-                        ft.DataRow(cells=[
-                            ft.DataCell(ft.Text(row.task)),
-                            ft.DataCell(ft.Text(str(row.counts))),
-                            ft.DataCell(ft.Text(str(row.times))),
-                            ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
-                        ])
-                        for row in time_per_task.itertuples(index=False, name="Row")
-                    ]
-                ),
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="データフレームを保存",
-                    on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=time_per_task,name="time_per_task"),
-                )
-            ]
-            page.update()
-        else:
-            df=dataframe
-            time_per_task=df.groupby(["task"]).size().reset_index(name="times")
-            #times列に*15することで、実際の時間に変換（１入力あたり１５分のため）
-            time_per_task["times"]=time_per_task["times"]*15
-            #count列を合計しておく
-            count_per_task=df.groupby(["task"])["count"].sum().reset_index(name="counts")
-            time_per_task["counts"]=count_per_task["counts"]
-
-            #平均値列を追加
-            avg_row = time_per_task.mean(numeric_only=True)
-            avg_row["task"] = "平均"
-            time_per_task = pd.concat([time_per_task, pd.DataFrame([avg_row])], ignore_index=True)
-
-            # 新しいtime/taskにて1件あたりに要した時間を計算
-            time_per_task["time_per_task"] = time_per_task["times"] / time_per_task["counts"]
-
-            # データフレームとして表示する
-            result_field.controls = [
-                ft.Text("1件あたりに要した時間の算出", size=20),
-                ft.DataTable(
-                    columns=[
-                        ft.DataColumn(ft.Text("業務内容")),
-                        ft.DataColumn(ft.Text("件数")),
-                        ft.DataColumn(ft.Text("総時間")),
-                        ft.DataColumn(ft.Text("件数あたりの時間")),
-                    ],
-                    rows=[
-                        ft.DataRow(cells=[
-                            ft.DataCell(ft.Text(row.task)),
-                            ft.DataCell(ft.Text(str(row.counts))),
-                            ft.DataCell(ft.Text(str(row.times))),
-                            ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
-                        ])
-                        for row in time_per_task.itertuples(index=False, name="Row")
-                    ]
-                ),
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="データフレームを保存",
-                    on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=time_per_task,name="time_per_task"),
-                )
-            ]
-            page.update()
+        result_field.controls = [
+            ft.Text("1件あたりに要した時間の算出", size=20),
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("業務内容")),
+                    ft.DataColumn(ft.Text("件数")),
+                    ft.DataColumn(ft.Text("総時間")),
+                    ft.DataColumn(ft.Text("件数あたりの時間")),
+                ],
+                rows=[
+                    ft.DataRow(cells=[
+                        ft.DataCell(ft.Text(row.task)),
+                        ft.DataCell(ft.Text(str(row.counts))),
+                        ft.DataCell(ft.Text(str(row.times))),
+                        ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
+                    ])
+                    for row in df.itertuples(index=False, name="Row")
+                ]
+            ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=time_per_task,name="time_per_task"),
+            )
+        ]
+        page.update()
 
     #各タスクがどの場所（locate列）で行われたかを集計。
     @staticmethod
     def task_par_location(dataframe, result_field, page,all_df):
         Handlers_Chart.show_progress_bar(result_field, page)
-        if all_df is not None:
-            df=all_df
-            locate_df=df.groupby(["locate","task"]).size().reset_index(name="counts")
-            #self列は除外する
+
+        def _extract_location(df):
+            df = df[["locate","task"]]
+            df = df.groupby(["locate","task"]).size().reset_index(name="counts")
             try:
-                locate_df.drop(index=locate_df[locate_df["locate"]=="self"].index,inplace=True)
+                df.drop(index =df[df["locate"]=="self"].index,inplace=True) #self列は除外する)
             except KeyError:
                 pass
+            return df
+        
+        df = _extract_location(all_df if all_df is not None else dataframe)
 
-            graph_width=int(len(locate_df["locate"].unique()))*77
-            if graph_width<1000:
-                graph_width=1000
+        graph_width=int(len(df["locate"].unique()))*77
+        if graph_width<1000:
+            graph_width=1000
             
-            fig=px.bar(
-                locate_df,
-                x="locate",
-                y="counts",
-                color="task",
-                title="場所ごとに記録された業務内容と記録回数",
-                labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
-                barmode="stack",
-                width=graph_width,
-                height=1400,
-                hover_data={"locate":True,"task":True,"counts":True}
+        fig=px.bar(
+            df,
+            x="locate",
+            y="counts",
+            color="task",
+            title="場所ごとに記録された業務内容と記録回数",
+            labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
+            barmode="stack",
+            width=graph_width,
+            height=1400,
+            hover_data={"locate":True,"task":True,"counts":True}
+        )
+        fig.update_layout(
+            xaxis=dict(title="病棟"),
+            yaxis=dict(title="記録回数")
+        )
+        result_field.controls=[
+            PlotlyChart(fig),#グラフ
+            Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="グラフを保存",
+                on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_location"),
             )
-            fig.update_layout(
-                xaxis=dict(title="病棟"),
-                yaxis=dict(title="記録回数")
-            )
-            result_field.controls=[
-                PlotlyChart(fig),#グラフ
-                Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="グラフを保存",
-                    on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_location"),
-                )
-            ]
-            result_field.update()
-        else:
-            df=dataframe
-            locate_df=df.groupby(["locate","task"]).size().reset_index(name="counts")
-            try:
-                locate_df.drop(index=locate_df[locate_df["locate"]=="self"].index,inplace=True) #self列は除外する
-            except KeyError:
-                pass
-            graph_width=int(len(locate_df["locate"].unique()))*77
-            if graph_width<1000:
-                graph_width=1000
-            
-            fig=px.bar(
-                locate_df,
-                x="locate",
-                y="counts",
-                color="task",
-                title="場所ごとに記録された業務内容と記録回数",
-                labels={"locate": "Location", "counts": "Task Count", "task": "Task"},
-                barmode="stack",
-                width=graph_width,
-                height=1400,
-                hover_data={"locate":True,"task":True,"counts":True}
-            )
-            fig.update_layout(
-                xaxis=dict(title="病棟"),
-                yaxis=dict(title="記録回数")
-            )
-
-            result_field.controls=[
-                PlotlyChart(fig),
-                Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="グラフを保存",
-                    on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_location"),
-                )
-            ]
-            result_field.update()
+        ]
+        result_field.update()
 
     #date列を基に、日付ごとのタスクの分布を分析
     @staticmethod
     def date_task_analysis(dataframe,result_field,page,all_df):
         Handlers_Chart.show_progress_bar(result_field, page)
-        if all_df is not None:
-            df=all_df
-            #date列をdatetime型に変換
-            df["date"]=pd.to_datetime(df["date"])
-            #date列を基に、日付ごとのタスクの分布を分析
-            date_group_df=df.groupby(["date","task"]).size().reset_index(name="counts")
-            #counts は時間になる*15をすると作業時間となる
-            #dateごとのタスクを積み上げ棒グラフで可視化
-            graph_width=int(len(date_group_df["date"].unique()))*33
-            if graph_width<1000:
-                graph_width=1000
-            fig=px.bar(
-                date_group_df,
-                x="date",
-                y="counts",
-                color="task",
-                title="日付ごとに記録された業務内容と記録回数",
-                labels={"date": "Date", "counts": "Task Count", "task": "Task"},
-                barmode="stack",
-                width=graph_width,
-                height=1400,
+
+        def _extract_date(df):
+            date_df = df[df["date"].notna()]
+            date_df = date_df[["date","task"]]
+            date_df = pd.to_datetime(date_df["date"],errors="coerce")
+            date_df = date_df.groupby([date_df,df["task"]]).size().reset_index(name="counts")
+            return date_df
+        
+        df = _extract_date(all_df if all_df is not None else dataframe)
+        graph_width = int(len(df[0].unique())) * 33
+        if graph_width < 1000:
+            graph_width = 1000
+
+        fig=px.bar(
+            df,
+            x="date",
+            y="counts",
+            color="task",
+            title="日付ごとに記録された業務内容と記録回数",
+            labels={"date": "Date", "counts": "Task Count", "task": "Task"},
+            barmode="stack",
+            width=graph_width,
+            height=1400,
+        )
+        fig.update_layout(
+            xaxis=dict(title="日付"),
+            yaxis=dict(title="記録回数")
+        )
+        result_field.controls=[
+            PlotlyChart(fig),#グラフ
+            Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="グラフを保存",
+                on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_date"),
+            ),
+            #データフレーム
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("日付")),
+                    ft.DataColumn(ft.Text("業務内容")),
+                    ft.DataColumn(ft.Text("記録回数")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(row.date.strftime("%Y-%m-%d"))),
+                            ft.DataCell(ft.Text(row.task)),
+                            ft.DataCell(ft.Text(str(row.counts)))
+                        ]
+                    )
+                    for row in date_group_df.itertuples(index=False, name="Row")
+                ]
+            ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=date_group_df,name="task_date"),
             )
-            fig.update_layout(
-                xaxis=dict(title="日付"),
-                yaxis=dict(title="記録回数")
-            )
-            result_field.controls=[
-                PlotlyChart(fig),#グラフ
-                Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="グラフを保存",
-                    on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_date"),
-                ),
-                #データフレーム
-                ft.DataTable(
-                    columns=[
-                        ft.DataColumn(ft.Text("日付")),
-                        ft.DataColumn(ft.Text("業務内容")),
-                        ft.DataColumn(ft.Text("記録回数")),
-                    ],
-                    rows=[
-                        ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text(row.date.strftime("%Y-%m-%d"))),
-                                ft.DataCell(ft.Text(row.task)),
-                                ft.DataCell(ft.Text(str(row.counts)))
-                            ]
-                        )
-                        for row in date_group_df.itertuples(index=False, name="Row")
-                    ]
-                ),
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="データフレームを保存",
-                    on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=date_group_df,name="task_date"),
-                )
-            ]
-            result_field.update()
-        else:
-            df=dataframe
-            #date列をdatetime型に変換
-            df["date"]=pd.to_datetime(df["date"])
-            #date列を基に、日付ごとのタスクの分布を分析
-            date_group_df=df.groupby(["date","task"]).size().reset_index(name="counts")
-            #counts は時間になる*15をすると作業時間となる
-            #dateごとのタスクを積み上げ棒グラフで可視化
-            graph_width=int(len(date_group_df["date"].unique()))*33
-            if graph_width<1000:
-                graph_width=1000
-            fig=px.bar(
-                date_group_df,
-                x="date",
-                y="counts",
-                color="task",
-                title="日付ごとに記録された業務内容と記録回数",
-                labels={"date": "Date", "counts": "Task Count", "task": "Task"},
-                barmode="stack",
-                width=graph_width,
-                height=1400,
-            )
-            fig.update_layout(
-                xaxis=dict(title="日付"),
-                yaxis=dict(title="記録回数")
-            )
-            result_field.controls=[
-                PlotlyChart(fig),#グラフ
-                Handlers_Chart._create_preview_button(chart=fig,page=page), # グラフのプレビュー用ボタン
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="グラフを保存",
-                    on_click=lambda _:Chart_Download_Handler.open_directory(page=page,barchart=fig,chart_name="task_date"),
-                ),
-                #データフレーム
-                ft.DataTable(
-                    columns=[
-                        ft.DataColumn(ft.Text("日付")),
-                        ft.DataColumn(ft.Text("業務内容")),
-                        ft.DataColumn(ft.Text("記録回数")),
-                    ],
-                    rows=[
-                        ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text(row.date.strftime("%Y-%m-%d"))),
-                                ft.DataCell(ft.Text(row.task)),
-                                ft.DataCell(ft.Text(str(row.counts)))
-                            ]
-                        )
-                        for row in date_group_df.itertuples(index=False, name="Row")
-                    ]
-                ),
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="データフレームを保存",
-                    on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=date_group_df,name="task_date"),
-                )
-            ]
-            result_field.update()
+        ]
+        result_field.update()
 
     @staticmethod
     def comment_analysis(dataframe,result_field,page,all_df):
         Handlers_Chart.show_progress_bar(result_field, page)
-        if all_df is not None:
-            df=all_df
+        def _extract_comments(df):
             comment_df=df[df["comment"].notna()]
             comment_df=comment_df[["time","locate","date","phName","comment"]]
             comment_df=comment_df.reset_index(drop=True)
-            result_field.controls=[
-                ft.DataTable(
-                    columns=[
-                        ft.DataColumn(ft.Text("日付")),
-                        ft.DataColumn(ft.Text("時間")),
-                        ft.DataColumn(ft.Text("場所")),
-                        ft.DataColumn(ft.Text("記録者")),
-                        ft.DataColumn(ft.Text("コメント")),
-                    ],
-                    rows=[
-                        ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text(row.date)),
-                                ft.DataCell(ft.Text(row.time)),
-                                ft.DataCell(ft.Text(row.locate)),
-                                ft.DataCell(ft.Text(row.phName)),
-                                ft.DataCell(ft.Text(row.comment))
-                            ]
-                        )
-                        for row in comment_df.itertuples(index=False, name="Row")
-                    ]
-                ),
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="データフレームを保存",
-                    on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=comment_df,name="comment"),
-                )
-            ]
-            result_field.update()
-        else:
-            comment_df=dataframe[dataframe["comment"].notna()]
-            comment_df=comment_df[["time","locate","date","phName","comment"]]
-            comment_df=comment_df.reset_index(drop=True)
-            result_field.controls=[
-                ft.DataTable(
-                    columns=[
-                        ft.DataColumn(ft.Text("日付")),
-                        ft.DataColumn(ft.Text("時間")),
-                        ft.DataColumn(ft.Text("場所")),
-                        ft.DataColumn(ft.Text("記録者")),
-                        ft.DataColumn(ft.Text("コメント")),
-                    ],
-                    rows=[
-                        ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text(row.date)),
-                                ft.DataCell(ft.Text(row.time)),
-                                ft.DataCell(ft.Text(row.locate)),
-                                ft.DataCell(ft.Text(row.phName)),
-                                ft.DataCell(ft.Text(row.comment))
-                            ]
-                        )
-                        for row in comment_df.itertuples(index=False, name="Row")
-                    ]
-                ),
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="データフレームを保存",
-                    on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=comment_df,name="comment"),
-                )
-            ]
-            result_field.update()
+            return comment_df
+        
+        df = _extract_comments(all_df if all_df is not None else dataframe)
 
-
-
+        result_field.controls=[
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("日付")),
+                    ft.DataColumn(ft.Text("時間")),
+                    ft.DataColumn(ft.Text("場所")),
+                    ft.DataColumn(ft.Text("記録者")),
+                    ft.DataColumn(ft.Text("コメント")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(row.date)),
+                            ft.DataCell(ft.Text(row.time)),
+                            ft.DataCell(ft.Text(row.locate)),
+                            ft.DataCell(ft.Text(row.phName)),
+                            ft.DataCell(ft.Text(row.comment))
+                        ]
+                    )
+                    for row in df.itertuples(index=False, name="Row")
+                ]
+            ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=comment_df,name="comment"),
+            )
+        ]
+        result_field.update()
+    
+    
     @staticmethod
     def self_analysis(dataframe,result_field,page,self_df):
         Handlers_Chart.show_progress_bar(result_field, page)
 
-        def calculate_for_phName(dataframe):
+        def _calculate_for_phName(dataframe):
             df = dataframe[["phName","task","count"]]
             times=df.groupby(["phName","task"]).size().reset_index(name="task_total")
             countdf = df.groupby(["phName","task"])["count"].sum().reset_index(name="counts_total")
@@ -627,70 +344,37 @@ class Handlers_analyze:
             df["time_per_count"]=df["times"]/df["counts_total"]
             return df
         
-        if self_df is not None:
-            df=calculate_for_phName(self_df)
-            result_field.controls=[
-                ft.DataTable(
-                    columns=[
-                        ft.DataColumn(ft.Text("薬剤師名")),
-                        ft.DataColumn(ft.Text("業務内容")),
-                        ft.DataColumn(ft.Text("件数")),
-                        ft.DataColumn(ft.Text("時間")),
-                        ft.DataColumn(ft.Text("件数あたりの時間")),
-                    ],
-                    rows=[
-                        ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text(row.phName)),
-                                ft.DataCell(ft.Text(row.task)),
-                                ft.DataCell(ft.Text(str(row.counts_total))),
-                                ft.DataCell(ft.Text(str(row.times))),
-                                ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
-                            ]
-                        )
-                        for row in df.itertuples(index=False, name="Row")
-                    ]
-                ),
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="データフレームを保存",
-                    on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=df,name="self_analysis"),
-                )
-            ]
-            result_field.update()
-        else:
-            df = calculate_for_phName(dataframe)
-            result_field.controls=[
-                ft.DataTable(
-                    columns=[
-                        ft.DataColumn(ft.Text("薬剤師名")),
-                        ft.DataColumn(ft.Text("業務内容")),
-                        ft.DataColumn(ft.Text("件数")),
-                        ft.DataColumn(ft.Text("時間")),
-                        ft.DataColumn(ft.Text("件数あたりの時間")),
-                    ],
-                    rows=[
-                        ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text(row.phName)),
-                                ft.DataCell(ft.Text(row.task)),
-                                ft.DataCell(ft.Text(str(row.counts_total))),
-                                ft.DataCell(ft.Text(str(row.times))),
-                                ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
-                            ]
-                        )
-                        for row in df.itertuples(index=False, name="Row")
-                    ]
-                ),
-                ft.ElevatedButton(
-                    "保存",
-                    icon=ft.icons.DOWNLOAD,
-                    tooltip="データフレームを保存",
-                    on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=df,name="self_analysis"),
-                )
-            ]
-            result_field.update()
+        df = _calculate_for_phName(self_df if self_df is not None else dataframe)
+        result_field.controls=[
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("薬剤師名")),
+                    ft.DataColumn(ft.Text("業務内容")),
+                    ft.DataColumn(ft.Text("件数")),
+                    ft.DataColumn(ft.Text("時間")),
+                    ft.DataColumn(ft.Text("件数あたりの時間")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(row.phName)),
+                            ft.DataCell(ft.Text(row.task)),
+                            ft.DataCell(ft.Text(str(row.counts_total))),
+                            ft.DataCell(ft.Text(str(row.times))),
+                            ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
+                        ]
+                    )
+                    for row in df.itertuples(index=False, name="Row")
+                ]
+            ),
+            ft.ElevatedButton(
+                "保存",
+                icon=ft.icons.DOWNLOAD,
+                tooltip="データフレームを保存",
+                on_click=lambda _:DataframeDownloadHandler.open_directory_for_dataframe(page=page,dataframe=df,name="self_analysis"),
+            )
+        ]
+        result_field.update()
             
     @staticmethod   
     def calculate_for_phName(dataframe):
