@@ -80,7 +80,7 @@ class TimelinePage:
             
             self.date_component_includeicon = ft.Column(
                 controls = [
-                    ft.icon(ft.icons.CALENDAR_MONTH),
+                    ft.Icon(ft.icons.CALENDAR_MONTH),
                     self.Date,
                     ],
                 width = 130,
@@ -101,7 +101,7 @@ class TimelinePage:
         
         # editbutton
         # main.pyを参照にeditButtonを追加
-        self.editButton = ft.iconButton(
+        self.editButton = ft.IconButton(
             icon=ft.icons.DELETE_OUTLINE,
             icon_size=25,
             selected_icon  = ft.icons.DELETE,
@@ -109,7 +109,7 @@ class TimelinePage:
             on_click=lambda e: Handlers.toggle_delete_button(e=e,page=self.page, columns=self.columns),
         )
         
-        self.reloadData = ft.iconButton(
+        self.reloadData = ft.IconButton(
             icon = ft.icons.STORAGE,
             icon_size = 25,
             on_click = lambda e:ReloadDataHandler.toggle_Reload_Data(
@@ -156,7 +156,7 @@ class TimelinePage:
 
         if not self.comments:
             self.comments = [
-                ft.iconButton(
+                ft.IconButton(
                     icon=ft.icons.COMMENT,
                     on_click=lambda e: Handlers.create_dialog_for_comment(
                         e=e,
@@ -198,7 +198,7 @@ class TimelinePage:
             ],
         )
 
-        self.comment = ft.iconButton(
+        self.comment = ft.IconButton(
             icon=ft.icons.COMMENT,
             on_click=lambda e: Handlers.dlg_open(
                 e=e,comment_dict=self.comment_dict,dlg=self.dlg,
@@ -209,7 +209,7 @@ class TimelinePage:
         self.temp_save_message = ft.Container(
             ft.Row(
                 controls = [
-                    ft.icon(ft.icons.CHECK,color = "green",visible = False),
+                    ft.Icon(ft.icons.CHECK,color = "green",visible = False),
                     ft.Text("一時保存が完了しました",color = "green",visible = False),
                 ]
             )
@@ -251,7 +251,7 @@ class TimelinePage:
         ))
         self.save_message = ft.Container(ft.Row(
             controls=[
-                ft.icon(ft.icons.CHECK,color  = "green",visible = False ),
+                ft.Icon(ft.icons.CHECK,color  = "green",visible = False ),
                 ft.Text("保存が完了しました", color="green", visible=False),
             ]
         ))
@@ -306,7 +306,7 @@ class TimelinePage:
                                                     text_align = TextAlign.CENTER,
                                                     ),
                                             ft.Container(
-                                                content=ft.icon(
+                                                content=ft.Icon(
                                                     name=ft.icons.INFO_OUTLINE,
                                                     tooltip=kind["info"],
                                                     ),
@@ -440,7 +440,7 @@ class TimelinePage:
                     data={"time": self.model.times()[i], "num": i, "task": ""},
                 )
         # ampmSelecticon
-        self.iconforampmselect = ft.icon(
+        self.iconforampmselect = ft.Icon(
             ft.icons.SCHEDULE,
         )
         
@@ -508,13 +508,13 @@ class TimelinePage:
         #スクロールボタンを実装してみる
         #コンテンツの左移動するボタン
         self.backscrollButton = ft.ElevatedButton(
-            content = ft.icon(ft.icons.ARROW_BACK_IOS),
+            content = ft.Icon(ft.icons.ARROW_BACK_IOS),
             width = 450,
             on_click = lambda _:self.TimeLine.scroll_to(delta = -100,duration = 200)
         )
         #コンテンツ右移動まで移動するボタン
         self.forwardscrollButton = ft.ElevatedButton(
-            content = ft.icon(ft.icons.ARROW_FORWARD_IOS),
+            content = ft.Icon(ft.icons.ARROW_FORWARD_IOS),
             width = 450,
             on_click  = lambda _ :self.TimeLine.scroll_to(delta = 100,duration = 200) #self.TimeLine.scroll_to(delta = 40,duration = 200)
         )
@@ -595,7 +595,7 @@ class TimelinePage:
         #コントロール部分　ft.Row ft.Containerを追加していく
 
             
-        self.iconforphName = ft.icon(
+        self.iconforphName = ft.Icon(
             ft.icons.ACCOUNT_CIRCLE,
         )
         
@@ -614,7 +614,7 @@ class TimelinePage:
                         [
                             ft.Container(width=10),
                             ft.Text(name, size=15),
-                            ft.iconButton(
+                            ft.IconButton(
                                 ft.icons.DELETE_OUTLINE,
                                 on_click=lambda e: Handlers.delete_name(e),
                                 data=name,

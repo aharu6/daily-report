@@ -107,13 +107,13 @@ class TabContentCreator:
             tab_header.update()
 
         # ナビゲーションボタン
-        back_button = ft.iconButton(
+        back_button = ft.IconButton(
             icon=ft.icons.ARROW_BACK,
             icon_size=30,
             on_click=lambda e: update_calendar_and_text(e, is_forward=False),
             tooltip="前の月",
         )
-        next_button = ft.iconButton(
+        next_button = ft.IconButton(
             icon=ft.icons.ARROW_FORWARD,
             icon_size=30,
             on_click=lambda e: update_calendar_and_text(e, is_forward=True),

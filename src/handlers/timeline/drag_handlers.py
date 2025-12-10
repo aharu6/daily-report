@@ -63,7 +63,7 @@ class DragHandlers:
 
         e.control.content = ft.Column(
             controls=[
-                ft.iconButton(
+                ft.IconButton(
                     icon=ft.icons.DELETE_OUTLINE,
                     visible=False,
                     icon_size=20,
