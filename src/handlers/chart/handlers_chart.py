@@ -83,7 +83,7 @@ class Handlers_Chart:
         return [
             ft.ListTile(
                 title=ft.Text("表示期間"),
-                leading=ft.icon(ft.icons.DATE_RANGE),
+                leading=ft.Icon(ft.icons.DATE_RANGE),
                 subtitle=ft.Text("選択後は、再度生成ボタンを押してください"),
             ),
             ft.Row(
@@ -135,7 +135,7 @@ class Handlers_Chart:
     @staticmethod
     def _create_preview_button(chart,page):
         """プレビューボタンを作成するヘルパーメソッド"""
-        return ft.iconButton(
+        return ft.IconButton(
             icon=ft.icons.PAGEVIEW,
             tooltip="拡大表示",
             on_click=lambda e: PreviewChartHandler.preview_chart(chart,page)
@@ -290,7 +290,7 @@ class Handlers_Chart:
                         ft.ExpansionPanel(
                             bgcolor=None,
                             header=ft.ListTile(
-                                leading=ft.icon(ft.icons.LIST),
+                                leading=ft.Icon(ft.icons.LIST),
                                 title=ft.Text("読み込んだファイル一覧"),
                             ),
                             content=ft.Column(
@@ -793,7 +793,7 @@ class Handlers_Chart:
             ft.Card(
                 content=ft.Container(
                     content=ft.Column([
-                    ft.icon(ft.icons.ERROR, color=ft.colors.RED, size=50),
+                    ft.Icon(ft.icons.ERROR, color=ft.colors.RED, size=50),
                     ft.Text(error_message, color=ft.colors.RED),
                     ft.Text("データを確認してください", size=12),
                     ], 

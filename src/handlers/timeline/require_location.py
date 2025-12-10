@@ -13,11 +13,11 @@ class RequireLocationMessage:
         import flet as ft
         if total_num["count"]>0:
             require_location.content.controls[1].title.color="green"
-            require_location.content.controls[1].leading=ft.icon(ft.icons.CHECK_CIRCLE_OUTLINE, color="green")
+            require_location.content.controls[1].leading=ft.Icon(ft.icons.CHECK_CIRCLE_OUTLINE, color="green")
             require_location.content.controls[1].data="true"
         elif total_num["count"]==0:
             require_location.content.controls[1].title.color="red"
-            require_location.content.controls[1].leading=ft.icon(ft.icons.HIGHLIGHT_OFF, color="red")
+            require_location.content.controls[1].leading=ft.Icon(ft.icons.HIGHLIGHT_OFF, color="red")
             require_location.content.controls[1].data="false"
             require_location.content.controls[0].visible =True
             require_location.content.controls[2].visible =True
@@ -40,11 +40,11 @@ class RequireLocationMessage:
         import flet as ft
         if total_num["count"]>0:
             require_location.content.controls[2].title.color="green"
-            require_location.content.controls[2].leading=ft.icon(ft.icons.CHECK_CIRCLE_OUTLINE, color="green")
+            require_location.content.controls[2].leading=ft.Icon(ft.icons.CHECK_CIRCLE_OUTLINE, color="green")
             require_location.content.controls[2].data="true"
         elif total_num["count"]==0:
             require_location.content.controls[2].title.color="red"
-            require_location.content.controls[2].leading=ft.icon(ft.icons.HIGHLIGHT_OFF, color="red")
+            require_location.content.controls[2].leading=ft.Icon(ft.icons.HIGHLIGHT_OFF, color="red")
             require_location.content.controls[2].data="false"
             require_location.content.controls[0].visible =True
             require_location.content.controls[1].visible =True

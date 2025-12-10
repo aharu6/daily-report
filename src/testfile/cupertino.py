@@ -7,9 +7,9 @@ def main(page: ft.Page):
             width=400,
             content=ft.Row(
                 [
-                    ft.icon(name=ft.icons.FAVORITE, color="pink"),
-                    ft.icon(name=ft.icons.AUDIOTRACK, color="green"),
-                    ft.icon(name=ft.icons.BEACH_ACCESS, color="blue"),
+                    ft.Icon(name=ft.icons.FAVORITE, color="pink"),
+                    ft.Icon(name=ft.icons.AUDIOTRACK, color="green"),
+                    ft.Icon(name=ft.icons.BEACH_ACCESS, color="blue"),
                 ],
                 alignment=ft.MainAxisAlignment.SPACE_AROUND,
             ),

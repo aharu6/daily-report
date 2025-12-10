@@ -383,7 +383,7 @@ class EditButton:
         self.toggle_delete_button = toggle_delete_button
 
     def create(self, e):
-        return ft.iconButton(
+        return ft.IconButton(
             icon=ft.icons.EDIT, on_click=lambda e: self.toggle_delete_button
         )
 
@@ -422,7 +422,7 @@ class DeleteButtons:
         self.update_location_data = (update_location_data,)
 
     def create(self):
-        return ft.iconButton(
+        return ft.IconButton(
             icon=ft.icons.DELETE,
             visible=False,
             icon_color="red",
@@ -455,7 +455,7 @@ class CreateCounter:
     def create(self, e):
         return ft.Column(
             [
-                ft.iconButton(
+                ft.IconButton(
                     icon=ft.icons.ARROW_DROP_UP_OUTLINED,
                     icon_size=25,
                     on_click=lambda _: self.counterPlus(
@@ -464,7 +464,7 @@ class CreateCounter:
                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
                 ),
                 self.count_field,
-                ft.iconButton(
+                ft.IconButton(
                     ft.icons.ARROW_DROP_DOWN_OUTLINED,
                     icon_size=25,
                     on_click=lambda _: self.counterMinus(

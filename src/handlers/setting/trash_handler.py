@@ -17,22 +17,39 @@ class TrashDataHandler:
             pass
         try:
             today=datetime.date.today()
+
+            keys_to_delete = []
+
             for key in load.keys():
                 if "delete" in load[key].keys():
                     load_day=load[key]["delete"]
                     old_day = datetime.datetime.strptime(load_day, "%Y-%m-%d").date()
                     if (today-old_day).days>30:
-                        del load[key]
+                        keys_to_delete.append(key)
                 if "delete" in location_data[key].keys():
                     load_day=location_data[key]["delete"]
                     old_day = datetime.datetime.strptime(load_day, "%Y-%m-%d").date()
                     if (today-old_day).days>30:
-                        del location_data[key]
+                        keys_to_delete.append(key)
                 if "delete" in radio_data[key].keys():
                     load_day=radio_data[key]["delete"]
                     old_day = datetime.datetime.strptime(load_day, "%Y-%m-%d").date()
                     if (today-old_day).days>30:
-                        del radio_data[key]
+                        keys_to_delete.append(key)
+
+            for key in set(keys_to_delete):
+                try:
+                    del load[key]
+                except:
+                    pass
+                try:
+                    del location_data[key]
+                except:
+                    pass
+                try:
+                    del radio_data[key]
+                except:
+                    pass
                         
             page.client_storage.set("delete_drag",json.dumps(load))
             page.client_storage.set("delete_location",json.dumps(location_data))
