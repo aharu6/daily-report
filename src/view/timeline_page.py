@@ -106,12 +106,14 @@ class TimelinePage:
             icon=ft.icons.DELETE_OUTLINE,
             icon_size=25,
             selected_icon  = ft.icons.DELETE,
+            tooltip="削除モード切り替え",
             selected_icon_color = "red",
             on_click=lambda e: Handlers.toggle_delete_button(e=e,page=self.page, columns=self.columns),
         )
         
         self.reloadData = ft.IconButton(
             icon = ft.icons.STORAGE,
+            tooltip="端末に保存したデータから読み込む",
             icon_size = 25,
             on_click = lambda e:ReloadDataHandler.toggle_Reload_Data(
                 e=e,
@@ -141,10 +143,17 @@ class TimelinePage:
                 )
         )
 
+        self.read_csvfile = ft.IconButton(
+            icon=ft.icons.FILE_OPEN,
+            tooltip="csvファイルから読み込む",
+            on_click=lambda e: load_csvfile.pick_files(allow_multiple=False)
+        )
+
         self.ineditButton = ft.Row(
             controls=[
                 self.editButton,
                 self.reloadData,
+                self.read_csvfile,
                 ft.Container(width = 60),
                 ],
             alignment=ft.MainAxisAlignment.END,
@@ -700,10 +709,7 @@ class TimelinePage:
             )
         )
         self.page.overlay.append(load_csvfile)
-        self.read_csvfile = ft.IconButton(
-            icon=ft.icons.FILE_OPEN,
-            on_click=lambda e: load_csvfile.pick_files(allow_multiple=False)
-        )
+        
 
         if not self.contents_list:
             self.contents_list = View(
@@ -719,7 +725,6 @@ class TimelinePage:
                             self.colampmSelect,
                         ]
                     ),
-                    self.read_csvfile,
                     self.custumDrawerAmTitle,
                     self.custumDrawerAm,
                     self.custumDrawerPmTitle,
