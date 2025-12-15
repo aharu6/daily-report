@@ -277,7 +277,6 @@ class ReloadDataHandler:
                         #１以上の場合には表示する
                         if load_data[key]["count"] >0:
                             columns[i].content.content.controls[4].controls[1].value = load_data[key]["count"]
-                            print("counterreload")
                 
                 #radiobuttonでの選択内容は別データにて保管し、ある場合には再表示
                 #何も文字が入っていないカラムは初期状態へ
@@ -322,7 +321,6 @@ class ReloadDataHandler:
                     on_leave=lambda e:DragLeave.drag_leave(e=e,page=page),
                     data={"time":load_data[key]["time"],"num":i,"task":load_data[key]["task"]},
                 )
-                #コメント記載がある場合には内容更新もできる？
                 
             #辞書データの更新
             #delete contentで使用する辞書データを読み込みデータに合わせて更新する
@@ -396,11 +394,11 @@ class ReloadDataHandler:
             require_location.content.controls[0].visible =True
             require_location.content.controls[2].visible =True
         
-        if total_num_am["count"]>0:
+        if total_num_pm["count"]>0:
             require_location.content.controls[2].title.color="green"
             require_location.content.controls[2].leading=ft.Icon(ft.icons.CHECK_CIRCLE_OUTLINE, color="green")
             require_location.content.controls[2].data="true"
-        elif total_num_am["count"]==0:
+        elif total_num_pm["count"]==0:
             require_location.content.controls[2].title.color="red"
             require_location.content.controls[2].leading=ft.Icon(ft.icons.HIGHLIGHT_OFF, color="red")
             require_location.content.controls[2].data="false"
