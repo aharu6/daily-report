@@ -17,6 +17,7 @@ from handlers.timeline.reload_data import ReloadDataHandler
 from handlers.timeline.write_csv import WriteCSVHandler
 from handlers.handlersMain import Handlers_Main
 from handlers.setting.task_set import Set_Default_task
+from handlers.timeline.openfile import Openfile
 from models.models import DataModel
 # timelinepageのviewを定義
 # main.pyの内容をこちらに移動する
@@ -105,12 +106,14 @@ class TimelinePage:
             icon=ft.icons.DELETE_OUTLINE,
             icon_size=25,
             selected_icon  = ft.icons.DELETE,
+            tooltip="削除モード切り替え",
             selected_icon_color = "red",
             on_click=lambda e: Handlers.toggle_delete_button(e=e,page=self.page, columns=self.columns),
         )
         
         self.reloadData = ft.IconButton(
             icon = ft.icons.STORAGE,
+            tooltip="端末に保存したデータから読み込む",
             icon_size = 25,
             on_click = lambda e:ReloadDataHandler.toggle_Reload_Data(
                 e=e,
@@ -140,10 +143,17 @@ class TimelinePage:
                 )
         )
 
+        self.read_csvfile = ft.IconButton(
+            icon=ft.icons.FILE_OPEN,
+            tooltip="csvファイルから読み込む",
+            on_click=lambda e: load_csvfile.pick_files(allow_multiple=False)
+        )
+
         self.ineditButton = ft.Row(
             controls=[
                 self.editButton,
                 self.reloadData,
+                self.read_csvfile,
                 ft.Container(width = 60),
                 ],
             alignment=ft.MainAxisAlignment.END,
@@ -436,7 +446,7 @@ class TimelinePage:
                             columns=self.columns,
                             drag_data=self.drag_data,
                             ),
-                    on_leave = lambda e:DragLeave.drag_leave(e,self.page),
+                    on_leave = lambda e:DragLeave.drag_leave(e=e,page=self.page),
                     data={"time": self.model.times()[i], "num": i, "task": ""},
                 )
         # ampmSelecticon
@@ -670,8 +680,37 @@ class TimelinePage:
             alignment=ft.alignment.center,
             )
 
-    def create(self):
-        self.initialize_components()
+        load_csvfile =ft.FilePicker(
+            on_result= lambda e:Openfile.file_picker_result(
+                e=e,
+                page=self.page,
+                calender=self.Date,
+                drawer=self.reloadDrawer,
+                columns=self.columns, #open_saved_data内で使用
+                draggable_data_for_move=self.draggable_data_for_move,
+                comments=self.comments,
+                model_times=self.model.times(),
+                drag_data=self.drag_data,
+                comment=self.comment,
+                count_dict=self.count_dict,
+                phName=self.phName,
+                custumDrawerAm= self.custumDrawerAm,
+                custumDrawerPm=self.custumDrawerPm,
+                phNameList=self.phNameList,
+                comment_dict=self.comment_dict,
+                draggable_data=self.model.draggable_data(),
+                require_name=self.require_name,
+                require_location=self.require_location,
+                update_location_data=self.update_location_data,
+                radio_selected_data=self.radio_selected_data,
+                date=self.Date,
+                total_num_am=self.am_total_num,
+                total_num_pm=self.pm_total_num,
+            )
+        )
+        self.page.overlay.append(load_csvfile)
+        
+
         if not self.contents_list:
             self.contents_list = View(
                 "/",  # TimelinePageのURL
