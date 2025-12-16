@@ -8,7 +8,6 @@ from handlers.chart.select_directory import SelectDirectoryHandler
 class ChartPage:
     def __init__(self, page):
         self.page = page
-
         # データフレームを定義しておく
         # ファイルのアップロードにてデータフレームの作成まで
         self.dataframe = None

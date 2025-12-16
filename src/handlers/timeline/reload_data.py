@@ -1,5 +1,7 @@
 import flet as ft
 from flet import BoxShape
+from handlers.timeline.handdrag_will_accept import Add_will_accept
+from handlers.timeline.drag_leave import DragLeave
 #ドロワーを展開する
 #保管しているデータを取得して表示する
 #右側にtimeline適用用のボタンを合わせて表示する
@@ -154,10 +156,38 @@ class ReloadDataHandler:
                                 width = 50,
                                 height = 50,
                                 border_radius = 50,
+                                alignment=ft.alignment.top_center,
                             ),
                         ],
                         
                     ),
+                    on_accept =lambda e:Handlers.drag_accepted(
+                        e=e,
+                        page=page,
+                        draggable_data_for_move=draggable_data_for_move,
+                        columns=columns,
+                        comments=comments,
+                        times=model_times,
+                        drag_data=drag_data,
+                        comment=comment,
+                        count_dict=count_dict,
+                        phNameList=phNameList,
+                        phName=phName,
+                        comment_dict=comment_dict,
+                        draggable_data=draggable_data,
+                        customDrawerAm=custumDrawerAm,
+                        customDrawerPm=custumDrawerPm,
+                        update_location_data=update_location_data,
+                        radio_selected_data=radio_selected_data,
+                        date=date,
+                    ),
+                    on_will_accept=lambda e:Add_will_accept.drag_will_accept(
+                        e=e,
+                        page=page,
+                        columns=columns,
+                        drag_data=drag_data,
+                    ),
+                    on_leave=lambda e:DragLeave.drag_leave(e=e,page=page),
                     data={
                             "time": load_data[key]["time"],
                             "num": i,
@@ -166,7 +196,6 @@ class ReloadDataHandler:
                 )
                 
             elif re.search(r'.+',load_data[key]["task"]):
-                #DragTargetにて元のと揃えた方がいい
                 columns[i].content = ft.DragTarget(
                     group  = "timeline",
                     content=ft.Column(
@@ -203,7 +232,7 @@ class ReloadDataHandler:
                                     }
                             ),   
                             ft.Draggable(
-                                group = "timeline",
+                                group = "timeline_accepted",
                                 content = ft.Container(
                                     content = ft.Text(load_data[key]["task"],color = "white"),
                                     width = 50,
@@ -227,7 +256,7 @@ class ReloadDataHandler:
                                         date=date
                                         ), 
                                     ],
-                                icon= ft.icons.MORE_VERT,
+                                icon = ft.icons.MORE_VERT,
                                 tooltip = "編集",
                                 icon_size = 20,
                                 on_open = lambda e:MakePopup.pop_up_reload(e=e,customDrawerAm=custumDrawerAm,customDrawerPm=custumDrawerPm,page=page),
@@ -260,13 +289,10 @@ class ReloadDataHandler:
                 #カウンター内の値も保存データに基づいて更新
                 
                 #コメントがある場合にはコメントボタンを追加
-                if load_data[key]["task"]:
-                    print(load_data[key]["task"])
                 match load_data[key]["task"]:
                     case "その他":
                         #columns
                         columns[i].content.content.controls.append(comments[i])
-                        
                     # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
                     case "混注時間"|"無菌調製関連業務"|"休憩"|"委員会"|"WG活動"|"勉強会参加"|"1on1"|"カンファレンス"|"will_accept":
                         pass
@@ -277,13 +303,10 @@ class ReloadDataHandler:
                         #１以上の場合には表示する
                         if load_data[key]["count"] >0:
                             columns[i].content.content.controls[4].controls[1].value = load_data[key]["count"]
-                            print("counterreload")
                 
                 #radiobuttonでの選択内容は別データにて保管し、ある場合には再表示
                 #何も文字が入っていないカラムは初期状態へ
             elif load_data[key]["task"] == "":
-                from handlers.timeline.handdrag_will_accept import Add_will_accept
-                from handlers.timeline.drag_leave import DragLeave
                 columns[i].content = ft.DragTarget(
                     group="timeline",
                     content=ft.Container(
@@ -317,12 +340,10 @@ class ReloadDataHandler:
                         page=page,
                         columns=columns,
                         drag_data=drag_data,
-                        
                     ),
                     on_leave=lambda e:DragLeave.drag_leave(e=e,page=page),
                     data={"time":load_data[key]["time"],"num":i,"task":load_data[key]["task"]},
                 )
-                #コメント記載がある場合には内容更新もできる？
                 
             #辞書データの更新
             #delete contentで使用する辞書データを読み込みデータに合わせて更新する
@@ -396,11 +417,11 @@ class ReloadDataHandler:
             require_location.content.controls[0].visible =True
             require_location.content.controls[2].visible =True
         
-        if total_num_am["count"]>0:
+        if total_num_pm["count"]>0:
             require_location.content.controls[2].title.color="green"
             require_location.content.controls[2].leading=ft.Icon(ft.icons.CHECK_CIRCLE_OUTLINE, color="green")
             require_location.content.controls[2].data="true"
-        elif total_num_am["count"]==0:
+        elif total_num_pm["count"]==0:
             require_location.content.controls[2].title.color="red"
             require_location.content.controls[2].leading=ft.Icon(ft.icons.HIGHLIGHT_OFF, color="red")
             require_location.content.controls[2].data="false"

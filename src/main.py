@@ -57,7 +57,7 @@ def main(page: ft.Page):
         page.views.clear()
         if page.route == "/":
             from view.timeline_page import TimelinePage
-            page.views.append(TimelinePage(page).create())
+            page.views.append(TimelinePage(page).initialize_components())
         elif page.route == "/chart":
             from view.chart_page import ChartPage
             page.views.append(ChartPage(page).create())

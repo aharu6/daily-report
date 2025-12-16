@@ -10,8 +10,9 @@ class Add_will_accept:
         #data = winllacceptだけ渡してaccept関数にて更新
         #左にドラッグしないようにする
         left_key = columns[e.control.data["num"]-1].content.data["task"]
+        print("dragge_will_accept e.data:",e.data)
         if e.data == 'false':
-            #deleteIconがonになっているときは矢印も表示しない
+            #deleteiconがonになっているときは矢印も表示しない
             #編集できないようにする
             if e.control.group == "timeline":
                 match left_key:

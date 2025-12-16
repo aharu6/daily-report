@@ -20,7 +20,7 @@ def main(page:ft.Page):
         min_width = 80,
         min_extended_width = 100,
         leading = ft.FloatingActionButton(
-            icon= ft.icons.CREATE,text = "Create",
+            icon = ft.icons.CREATE,text = "Create",
             #timelimeページを展開する,
             on_click = lambda e:page.go("/")
             ),
@@ -28,8 +28,8 @@ def main(page:ft.Page):
         extended = True,
         on_change = on_navigation_change,
         destinations = [
-            ft.NavigationRailDestination(icon= ft.icons.SHOW_CHART, label = 'Showchart'),
-            ft.NavigationRailDestination(icon= ft.icons.SETTINGS, label = 'Settings'),
+            ft.NavigationRailDestination(icon = ft.icons.SHOW_CHART, label = 'Showchart'),
+            ft.NavigationRailDestination(icon = ft.icons.SETTINGS, label = 'Settings'),
         ]
     )
     

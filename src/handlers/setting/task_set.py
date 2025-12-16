@@ -43,7 +43,7 @@ class Set_Default_task:
                     content=ft.Column(
                             controls = [
                                 ft.IconButton(
-                                    icon= ft.icons.DELETE_OUTLINE,
+                                    icon = ft.icons.DELETE_OUTLINE,
                                     visible = False,
                                     icon_size = 20,
                                     icon_color = "red",
