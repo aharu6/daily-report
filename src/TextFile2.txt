@@ -5,4 +5,11 @@ flet pack main.py -i /Users/aizawaharuka/Documents/GitHub/daily-report/src/appIc
 
 flet pack main.py -i appIcon\diary-left-svgrepo-com.ico --file-version 1.52.1.0 -n 業務見える化日誌
 
+#plotlyjs 含めるとしたら
+--add-data ".venv\lib\plotly;plotly"
+
+// ...existing code...
+flet pack main.py -i appIcon\diary-left-svgrepo-com.ico --file-version 1.52.1.0 -n 業務見える化日誌 --add-data ".venv\Lib\site-packages\plotly;plotly"
+
+
 uv run flet pack main.py -i appIcon\diary-left-svgrepo-com.ico --file-version 1.52.1.0 -n 業務見える化日誌
