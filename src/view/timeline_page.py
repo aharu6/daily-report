@@ -446,7 +446,7 @@ class TimelinePage:
                             columns=self.columns,
                             drag_data=self.drag_data,
                             ),
-                    on_leave = lambda e:DragLeave.drag_leave(e,self.page),
+                    on_leave = lambda e:DragLeave.drag_leave(e=e,page=self.page),
                     data={"time": self.model.times()[i], "num": i, "task": ""},
                 )
         # ampmSelecticon

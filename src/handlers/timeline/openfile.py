@@ -183,6 +183,7 @@ class Openfile:
                             date=date,
                         ),
                         on_will_accept=lambda e:DragLeave.drag_leave(e=e,page=page),
+                        on_leave=lambda e:DragLeave.drag_leave(e=e,page=page),
                         data = {"time":csv_file.at[i,"time"],"num":i,"task":csv_file.at[i,"task"]},
                     )
                 #辞書データの更新
@@ -266,9 +267,7 @@ class Openfile:
                         total_num_pm["count"] +=1
                     else:
                         pass
-            
-            print("total_num_am:",total_num_am["count"])
-            print("total_num_pm:",total_num_pm["count"])
+
             #名前を入力してくださいの表示は消す
             require_name.visible = False
 

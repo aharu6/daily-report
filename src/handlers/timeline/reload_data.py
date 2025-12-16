@@ -1,5 +1,7 @@
 import flet as ft
 from flet import BoxShape
+from handlers.timeline.handdrag_will_accept import Add_will_accept
+from handlers.timeline.drag_leave import DragLeave
 #ドロワーを展開する
 #保管しているデータを取得して表示する
 #右側にtimeline適用用のボタンを合わせて表示する
@@ -154,10 +156,38 @@ class ReloadDataHandler:
                                 width = 50,
                                 height = 50,
                                 border_radius = 50,
+                                alignment=ft.alignment.top_center,
                             ),
                         ],
                         
                     ),
+                    on_accept =lambda e:Handlers.drag_accepted(
+                        e=e,
+                        page=page,
+                        draggable_data_for_move=draggable_data_for_move,
+                        columns=columns,
+                        comments=comments,
+                        times=model_times,
+                        drag_data=drag_data,
+                        comment=comment,
+                        count_dict=count_dict,
+                        phNameList=phNameList,
+                        phName=phName,
+                        comment_dict=comment_dict,
+                        draggable_data=draggable_data,
+                        customDrawerAm=custumDrawerAm,
+                        customDrawerPm=custumDrawerPm,
+                        update_location_data=update_location_data,
+                        radio_selected_data=radio_selected_data,
+                        date=date,
+                    ),
+                    on_will_accept=lambda e:Add_will_accept.drag_will_accept(
+                        e=e,
+                        page=page,
+                        columns=columns,
+                        drag_data=drag_data,
+                    ),
+                    on_leave=lambda e:DragLeave.drag_leave(e=e,page=page),
                     data={
                             "time": load_data[key]["time"],
                             "num": i,
@@ -166,7 +196,6 @@ class ReloadDataHandler:
                 )
                 
             elif re.search(r'.+',load_data[key]["task"]):
-                #DragTargetにて元のと揃えた方がいい
                 columns[i].content = ft.DragTarget(
                     group  = "timeline",
                     content=ft.Column(
@@ -203,7 +232,7 @@ class ReloadDataHandler:
                                     }
                             ),   
                             ft.Draggable(
-                                group = "timeline",
+                                group = "timeline_accepted",
                                 content = ft.Container(
                                     content = ft.Text(load_data[key]["task"],color = "white"),
                                     width = 50,
@@ -281,8 +310,6 @@ class ReloadDataHandler:
                 #radiobuttonでの選択内容は別データにて保管し、ある場合には再表示
                 #何も文字が入っていないカラムは初期状態へ
             elif load_data[key]["task"] == "":
-                from handlers.timeline.handdrag_will_accept import Add_will_accept
-                from handlers.timeline.drag_leave import DragLeave
                 columns[i].content = ft.DragTarget(
                     group="timeline",
                     content=ft.Container(
