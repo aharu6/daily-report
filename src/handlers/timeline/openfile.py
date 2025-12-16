@@ -40,6 +40,32 @@ class Openfile:
                                 )
                             ]
                         ),
+                        on_accept=lambda e:Handlers.drag_accepted(
+                            e=e,
+                            page=page,
+                            draggable_data_for_move=draggable_data_for_move,
+                            columns=columns,
+                            times=model_times,
+                            drag_data=drag_data,
+                            comment=comment,
+                            count_dict=count_dict,
+                            phNameList=phNameList,
+                            phName=phName,
+                            comment_dict=comment_dict,
+                            draggable_data=draggable_data,
+                            customDrawerAm=custumDrawerAm,
+                            customDrawerPm=custumDrawerPm,
+                            update_location_data=update_location_data,
+                            radio_selected_data=radio_selected_data,
+                            date=date,
+                        ),
+                        on_will_accept=lambda e:Add_will_accept.drag_will_accept(
+                            e=e,
+                            page=page,
+                            columns=columns,
+                            drag_data=drag_data,
+                        ),
+                        on_leave=lambda e:DragLeave.drag_leave(e=e,page=page),
                         data = {
                             "time":csv_file.at[i,"time"],
                             "num":i,
@@ -75,7 +101,7 @@ class Openfile:
                                         customDrawerPm=custumDrawerPm,
                                         radio_selected_data=radio_selected_data,
                                         date=date,
-
+                                        comments=comments,
                                     ),
                                     data = {
                                         "time":csv_file.at[i,"time"],
@@ -84,7 +110,7 @@ class Openfile:
                                     },
                                 ),
                                 ft.Draggable(
-                                    group = "timeline",
+                                    group = "timeline_accepted",
                                     content = ft.Container(
                                         content = ft.Text(csv_file.at[i,"task"],color = "white"),
                                         width = 50,
@@ -177,13 +203,16 @@ class Openfile:
                             comment_dict=comment_dict,
                             draggable_data_for_move=draggable_data_for_move,
                             customDrawerAm=custumDrawerAm,
-                            customDrawerPm=custumDrawerPm
-                            ,
+                            customDrawerPm=custumDrawerPm,
                             update_location_data=update_location_data,
                             radio_selected_data=radio_selected_data,
                             date=date,
                         ),
-                        on_will_accept=lambda e:DragLeave.drag_leave(e=e,page=page),
+                        on_will_accept=lambda e:Add_will_accept.drag_will_accept(
+                            e=e,page=page,
+                            columns=columns,
+                            drag_data = drag_data,
+                        ),
                         on_leave=lambda e:DragLeave.drag_leave(e=e,page=page),
                         data = {"time":csv_file.at[i,"time"],"num":i,"task":csv_file.at[i,"task"]},
                     )
