@@ -36,6 +36,7 @@ class Openfile:
                                     width=50,
                                     height=50,
                                     border_radius=50,
+                                    alignment=ft.alignment.top_center,
                                 )
                             ]
                         ),
