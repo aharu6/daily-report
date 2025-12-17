@@ -20,6 +20,16 @@ class ReadFolder:
 
         #フォルダ内のcsvファイルを読み込み、病棟名と担当者名を抽出
         csv_files=[f for f in os.listdir(e.path) if f.endswith('.csv')]
+        #一つ下の階層のフォルダがあれば読みにいく
+        check_folders = [f for f in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, f))]
+        if check_folders:
+            for sub_folder in check_folders:
+                sub_folder_path = os.path.join(folder_path, sub_folder)
+                sub_csv_files = [f for f in os.listdir(sub_folder_path) if f.endswith('.csv')]
+                csv_files.extend([os.path.join(sub_folder, f) for f in sub_csv_files])
+                for sub_csv in sub_csv_files:
+                    csv_files.append(os.path.join(sub_folder,sub_csv))
+
         #抽出してjson形式のデータに変換
         if not csv_files:
             print("No CSV files found in the selected folder.")
