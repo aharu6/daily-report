@@ -25,6 +25,14 @@ class SelectDirectoryHandler:
             select_directory_path=e.path
             #ディレクトリ内のcsvファイルを全て取得
             csv_files = [f for f in os.listdir(e.path) if f.endswith('.csv')]
+            #一つ下の階層のフォルダがあれば読みにいく
+            check_folders = [f for f in os.listdir(os.path.join(e.path)) if os.path.isdir(os.path.join(e.path,f))]
+            if check_folders:
+                for sub_folder in check_folders:
+                    sub_folder_path = os.path.join(e.path,sub_folder)
+                    sub_csv_files = [f for f in os.listdir(sub_folder_path) if f.endswith('.csv')]
+                    for sub_csv in sub_csv_files:
+                        csv_files.append(os.path.join(sub_folder,sub_csv))
 
             Handlers_Chart.pick_file_name(file_name=csv_files,card=card)
         else:

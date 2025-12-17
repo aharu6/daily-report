@@ -19,7 +19,7 @@ class FilePickCard:
                     controls = [
                         ft.ListTile(
                             leading = ft.Icon(ft.icons.FOLDER),
-                            title = ft.Text("csvファイルを選択してください"),
+                            title = ft.Text("フォルダを選択してください"),
                             title_alignment = ft.MainAxisAlignment.END,
                         ),
                         ft.Row(

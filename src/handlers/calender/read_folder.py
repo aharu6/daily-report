@@ -22,7 +22,14 @@ class ReadFolder:
             
             # フォルダ内のCSVファイルを読み込み
             csv_files = [f for f in os.listdir(folder_path) if f.endswith('.csv')]
-            
+            #一つ下の階層のフォルダがあれば読みにいく
+            check_folders = [f for f in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path,f))]
+            if check_folders:
+                for sub_folder in check_folders:
+                    sub_folder_path = os.path.join(folder_path,sub_folder)
+                    sub_csv_files = [f for f in os.listdir(sub_folder_path) if f.endswith('.csv')]
+                    for sub_csv in sub_csv_files:
+                        csv_files.append(os.path.join(sub_folder,sub_csv))
             
             if not csv_files:
                 # folder_nameがNoneでない場合のみエラーメッセージを設定
