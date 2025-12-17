@@ -11,6 +11,7 @@ output_csv/2025-2-4name9.csv
 output_csv/2025-2-4name19.csv
 output_csv/
 /app/.venv
+/src/.venv
 src/dist/main.exe
 /app/build
 app/main.spec
@@ -25,3 +26,4 @@ time_per_task.csv
 src/testfile/calendar/別フォルダを読み込んだ時に更新ボタンを押してもカレンダーが更新されない.ini
 src/testfile/filepicker.py
 .gitignore
+/src/.venv copy
