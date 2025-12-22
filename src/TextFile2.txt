@@ -7,13 +7,13 @@ powershell
 macos でのbuild
 flet pack main.py -i /Users/aizawaharuka/Documents/GitHub/daily-report/src/appicon/macos/diary-left-svgrepo-com.ico -n 業務日誌
 
-flet pack main.py -i appIcon\diary-left-svgrepo-com.ico --file-version 1.60.1.0 -n 業務見える化日誌
+flet pack main.py -i appIcon\diary-left-svgrepo-com.ico --file-version 1.60.2.0 -n 業務見える化日誌
 
 #plotlyjs 含めるとしたら
 --add-data ".venv\lib\plotly;plotly"
 
 // 修正版: 相対パス使用（推奨）
-flet pack main.py -i appIcon\diary-left-svgrepo-com.ico --file-version 1.60.1.0 -n 業務見える化日誌 --add-data ".venv\Lib\site-packages\plotly;plotly"
+flet pack main.py -i appIcon\diary-left-svgrepo-com.ico --file-version 1.60.2.0 -n 業務見える化日誌 --add-data ".venv\Lib\site-packages\plotly;plotly"
 
 
-uv run flet pack main.py -i appicon\diary-left-svgrepo-com.ico --file-version 1.60.1.0 -n 業務見える化日誌
+uv run flet pack main.py -i appicon\diary-left-svgrepo-com.ico --file-version 1.60.2.0 -n 業務見える化日誌
