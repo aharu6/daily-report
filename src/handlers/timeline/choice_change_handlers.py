@@ -50,9 +50,8 @@ class ChoiceChangeHandlers:
                 selectColumns[40].visible = False  # お役立ち情報作成
                 selectColumns[41].visible = False  # 薬剤使用期限確認
                 selectColumns[42].visible = False  # 抗菌薬相談対応
-                selectColumns[43].visible = False  # 事前準備
-                selectColumns[44].visible = False  # カンファ・ラウンド
-                selectColumns[45].visible = False  # 記録作成
+                selectColumns[43].visible = False  # カンファ・ラウンド
+                selectColumns[44].visible = False  # 記録作成
 
                 page.update()
             case 1:  # 12階
@@ -104,9 +103,8 @@ class ChoiceChangeHandlers:
                 #表示
                 selectColumns[42].visible = True  # 薬剤使用期限確認
                 #非表示
-                selectColumns[43].visible = False  # 事前準備
-                selectColumns[44].visible = False  # カンファ・ラウンド
-                selectColumns[45].visible = False  # 記録作成
+                selectColumns[43].visible = False  # カンファ・ラウンド
+                selectColumns[44].visible = False  # 記録作成
 
                 page.update()
 
@@ -158,9 +156,8 @@ class ChoiceChangeHandlers:
                 selectColumns[40].visible = False  # 勉強会資料作成・開催
                 selectColumns[41].visible = False  # お役立ち情報作成
                 selectColumns[42].visible = False  # 薬剤使用期限確認
-                selectColumns[43].visible = False  # 事前準備
-                selectColumns[44].visible = False  # カンファ・ラウンド
-                selectColumns[45].visible = False  # 記録作成
+                selectColumns[43].visible = False  # カンファ・ラウンド
+                selectColumns[44].visible = False  # 記録作成
 
                 page.update()
 
@@ -214,9 +211,8 @@ class ChoiceChangeHandlers:
                 selectColumns[40].visible = False  # お役立ち情報作成
                 selectColumns[41].visible = False  # 薬剤使用期限確認
                 selectColumns[42].visible = False  # 抗菌薬相談対応
-                selectColumns[43].visible = False  # 事前準備
-                selectColumns[44].visible = False  # カンファ・ラウンド
-                selectColumns[45].visible = False  # 記録作成
+                selectColumns[43].visible = False  # カンファ・ラウンド
+                selectColumns[44].visible = False  # 記録作成
 
                 page.update()
             case 4:  # ICT/AST/NST/緩和・回診    
@@ -269,9 +265,8 @@ class ChoiceChangeHandlers:
                 selectColumns[41].visible = False  # お役立ち情報作成
                 selectColumns[42].visible = False  # 薬剤使用期限確認
                 #表示
-                selectColumns[43].visible = True  # 事前準備
-                selectColumns[44].visible = True  # カンファ・ラウンド
-                selectColumns[45].visible = True  # 記録作成
+                selectColumns[43].visible = True  # カンファ・ラウンド
+                selectColumns[44].visible = True  # 記録作成
 
                 page.update()
 
@@ -327,8 +322,7 @@ class ChoiceChangeHandlers:
                 #非表示
                 selectColumns[42].visible = False  # 薬剤使用期限確認
                 #表示
-                selectColumns[43].visible = False  # 事前準備
-                selectColumns[44].visible = False  # カンファ・ラウンド
-                selectColumns[45].visible = False  # 記録作成
+                selectColumns[43].visible = False  # カンファ・ラウンド
+                selectColumns[44].visible = False  # 記録作成
 
                 page.update()
