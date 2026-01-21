@@ -389,7 +389,8 @@ class TimelinePage:
             self.selectColumns[41].visible = False  #  お役立ち情報作成
             self.selectColumns[42].visible = False  #  薬剤使用期限確認
             self.selectColumns[43].visible = False  # カンファ・ラウンド  
-            self.selectColumns[44].visible = False  # 記録作成  
+            self.selectColumns[44].visible = False  # 記録作成 
+            self.selectColumns[45].visible = False  # 手術室サテライト薬剤定数確認
 
 
         self.time_for_visual_label = []
