@@ -250,6 +250,7 @@ class DataModel:
             "_567": {"task": "薬剤使用期限確認","info":""},  # 42
             "_579": {"task": "カンファ・ラウンド","info":""},  # 43
             "_583": {"task": "記録作成","info":""},  # 44
+            "_587": {"task": "手術室サテライト薬剤定数確認","info":""},  # 45
         }
     def count_dict(self):
         return {}

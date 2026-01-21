@@ -52,6 +52,7 @@ class ChoiceChangeHandlers:
                 selectColumns[42].visible = False  # 抗菌薬相談対応
                 selectColumns[43].visible = False  # カンファ・ラウンド
                 selectColumns[44].visible = False  # 記録作成
+                selectColumns[45].visible = False  # 手術室サテライト薬剤定数確認
 
                 page.update()
             case 1:  # 12階
@@ -84,6 +85,7 @@ class ChoiceChangeHandlers:
                 selectColumns[24].visible = True  # 手術後使用麻薬確認・補充
                 selectColumns[25].visible = True  # 術後疼痛管理チーム回診
                 selectColumns[26].visible = True  # 脳卒中ホットライン対応
+                
                 #非表示
                 selectColumns[27].visible = False  # 業務調整
                 selectColumns[28].visible = False  # 休憩
@@ -105,6 +107,7 @@ class ChoiceChangeHandlers:
                 #非表示
                 selectColumns[43].visible = False  # カンファ・ラウンド
                 selectColumns[44].visible = False  # 記録作成
+                selectColumns[45].visible = True  # 手術室サテライト薬剤定数確認
 
                 page.update()
 
@@ -158,7 +161,8 @@ class ChoiceChangeHandlers:
                 selectColumns[42].visible = False  # 薬剤使用期限確認
                 selectColumns[43].visible = False  # カンファ・ラウンド
                 selectColumns[44].visible = False  # 記録作成
-
+                selectColumns[45].visible = False  # 手術室サテライト薬剤定数確認
+                
                 page.update()
 
             case 3:  # その他
@@ -213,7 +217,8 @@ class ChoiceChangeHandlers:
                 selectColumns[42].visible = False  # 抗菌薬相談対応
                 selectColumns[43].visible = False  # カンファ・ラウンド
                 selectColumns[44].visible = False  # 記録作成
-
+                selectColumns[45].visible = False  # 手術室サテライト薬剤定数確認
+                
                 page.update()
             case 4:  # ICT/AST/NST/緩和・回診    
                 # 非表示
@@ -267,7 +272,8 @@ class ChoiceChangeHandlers:
                 #表示
                 selectColumns[43].visible = True  # カンファ・ラウンド
                 selectColumns[44].visible = True  # 記録作成
-
+                selectColumns[45].visible = False  # 手術室サテライト薬剤定数確認
+                
                 page.update()
 
             case 5:  # DI
@@ -324,5 +330,6 @@ class ChoiceChangeHandlers:
                 #表示
                 selectColumns[43].visible = False  # カンファ・ラウンド
                 selectColumns[44].visible = False  # 記録作成
-
+                selectColumns[45].visible = False  # 手術室サテライト薬剤定数確認
+                
                 page.update()

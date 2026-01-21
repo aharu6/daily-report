@@ -96,6 +96,8 @@ class ColorHandlers:
                 return "#507687"
             case "記録作成":
                 return "#507687"
+            case "手術室サテライト薬剤定数確認":
+                return "#508D4E"
             case _:
                 return "#384B70"  # Default color for unknown tasks
             
