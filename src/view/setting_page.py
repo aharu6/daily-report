@@ -13,7 +13,7 @@ class SettingPage:
         self.horizon = ft.Divider()
         self.model = DataModel()
         self.phNameList = self.model.load_data(page)
-        self.panel = Panel(self).create(self.phNameList, page)
+        self.panel = Panel(page=page, phNameList=self.phNameList).create()
         
         TrashDataHandler.delete_trash_data(page)
 
