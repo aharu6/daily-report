@@ -339,59 +339,84 @@ class TimelinePage:
                 )
                 
             # 初期状態は 3を選択した状態 offの状態
-            # 表示
-            self.selectColumns[12].visible = True  # 委員会
-            self.selectColumns[13].visible = True  # 勉強会参加
-            self.selectColumns[14].visible = True  # WG活動
-            self.selectColumns[15].visible = True  # 1on1
+            
+            
 
             # 非表示
-            self.selectColumns[0].visible = False  # 情報収集　指導
-            self.selectColumns[1].visible = False  # 指導記録作成
-            self.selectColumns[2].visible = False  # 混注時間
-            self.selectColumns[3].visible = False  # 薬剤セット・確認
-            self.selectColumns[4].visible = False  # 持参薬を確認
-            self.selectColumns[5].visible = False  # 薬剤服用歴等について保険薬局へ照会
-            self.selectColumns[6].visible = False  # 処方代理修正
-            self.selectColumns[7].visible = False  # TDM実施
-            self.selectColumns[8].visible = False  # カンファレンス
-            self.selectColumns[9].visible = False  # 医師からの相談
-            self.selectColumns[10].visible = False  # 看護師からの相談
-            self.selectColumns[11].visible = False  # その他の職種からの相談
+            self.selectColumns[0].visible = False  # 初回・中間指導情報収集
+            self.selectColumns[1].visible = False  # 退院指導情報収集
+            self.selectColumns[2].visible = False  # 注射台車監査
+            self.selectColumns[3].visible = False  # 服薬指導
+            self.selectColumns[4].visible = False  # 指導記録作成
+            self.selectColumns[5].visible = False  # 無菌調製(調製者)
+            self.selectColumns[6].visible = False  # 無菌調製補助業務（準備、監査）
+            self.selectColumns[7].visible = False  # 薬剤セット
+            self.selectColumns[8].visible = False  # 薬剤セット確認
+            self.selectColumns[9].visible = False  # 持参薬を確認
+            self.selectColumns[10].visible = False  # 薬剤服用歴等について保険薬局へ照会
+            self.selectColumns[11].visible = False  # 薬剤サマリー作成
+            self.selectColumns[12].visible = False  # 処方代理修正・代行入力
+            self.selectColumns[13].visible = False  # TDM実施
+            self.selectColumns[14].visible = False  # カンファレンス
+            # 表示
+            self.selectColumns[16].visible = True  # 委員会
+            self.selectColumns[17].visible = True  # 勉強会参加
+            self.selectColumns[18].visible = True  # WG活動
+            self.selectColumns[19].visible = True  # 1on1
+            
+            #非表示
+            self.selectColumns[20].visible = False  # ICT
+            self.selectColumns[21].visible = False  # AST
+            self.selectColumns[22].visible = False  # 抗菌薬相談対応
+            self.selectColumns[23].visible = False  # 褥瘡
+            self.selectColumns[24].visible = False  # TPN評価
+            self.selectColumns[25].visible = False  # 手術後使用薬剤確認
+            self.selectColumns[26].visible = False  # 手術使用薬剤準備
+            self.selectColumns[27].visible = True   # 周術期薬剤管理記録作成
+            self.selectColumns[28].visible = True   # 周術期薬剤管理準備
+            self.selectColumns[29].visible = True   # 麻酔科周術期外来予約確認
 
-            self.selectColumns[16].visible = False  # ICT/AST
-            self.selectColumns[17].visible = False  # 抗菌薬相談対応（新位置）
-            self.selectColumns[18].visible = False  # 褥瘡
-            self.selectColumns[19].visible = False  # TPN評価
-            self.selectColumns[20].visible = False  # 手術後使用薬剤確認
-            self.selectColumns[21].visible = False  # 手術使用薬剤準備
-            self.selectColumns[22].visible = False  # 周術期薬剤管理関連
-            self.selectColumns[23].visible = False  # 麻酔科周術期外来
-            self.selectColumns[24].visible = False  # 手術使用麻薬確認・補充
-            self.selectColumns[25].visible = False  # 術後疼痛管理チーム回診
-            self.selectColumns[26].visible = False  # 脳卒中ホットライン対応
-
-            self.selectColumns[27].visible = True   # 業務調整
-            self.selectColumns[28].visible = True   # 休憩
-            self.selectColumns[29].visible = True   # その他
-
-            self.selectColumns[30].visible = False  # 管理業務
-            self.selectColumns[31].visible = False  # NST
-            self.selectColumns[32].visible = False  # 問い合わせ応需
-            self.selectColumns[33].visible = False  # マスター作成・変更
-            self.selectColumns[34].visible = False  # 薬剤情報評価
-            self.selectColumns[35].visible = False  # 後発品選定
-            self.selectColumns[36].visible = False  # 会議資料作成
-            self.selectColumns[37].visible = False  # 配信資料作成
-            self.selectColumns[38].visible = False  # フォーミュラリー作成
-            self.selectColumns[39].visible = False  # 外来処方箋修正
-            self.selectColumns[40].visible = False  #  勉強会資料作成・開催
-            self.selectColumns[41].visible = False  #  お役立ち情報作成
-            self.selectColumns[42].visible = False  #  薬剤使用期限確認
-            self.selectColumns[43].visible = False  # カンファ・ラウンド  
-            self.selectColumns[44].visible = False  # 記録作成 
-            self.selectColumns[45].visible = False  # 手術室サテライト薬剤定数確認
-
+            self.selectColumns[30].visible = False  # 麻酔科周術期外来予約確認以外の周術期関連業務
+            self.selectColumns[31].visible = False  # 麻酔科周術期外来
+            self.selectColumns[32].visible = False  # 麻酔科周術期外来記録
+            self.selectColumns[33].visible = False  # 手術使用麻薬確認・補充
+            self.selectColumns[34].visible = False  # APSチーム回診情報収集
+            self.selectColumns[35].visible = False  # APSチーム回診
+            self.selectColumns[36].visible = False  # APS関連記録作成
+            self.selectColumns[37].visible = False  # 脳卒中ホットライン対応
+            self.selectColumns[38].visible = False  # 手術使用薬剤確認・補充
+            self.selectColumns[39].visible = False  # 注射薬調製
+            self.selectColumns[40].visible = False  # 禁錮管理定数確認
+            
+            #表示
+            self.selectColumns[41].visible = True  # 業務調整
+            self.selectColumns[42].visible = True  # 休憩
+            self.selectColumns[43].visible = True  #　その他
+            
+            #非表示
+            self.selectColumns[44].visible = False  # 管理業務
+            self.selectColumns[45].visible = False  # NST
+            self.selectColumns[46].visible = False  # 問い合わせ応需
+            self.selectColumns[47].visible = False  # マスター作成・変更
+            self.selectColumns[48].visible = False  # 薬剤情報評価
+            self.selectColumns[49].visible = False  # 後発品選定
+            self.selectColumns[50].visible = False  # 会議資料作成
+            self.selectColumns[51].visible = False  # 配信資料作成
+            self.selectColumns[52].visible = False  # フォーミュラリー作成
+            self.selectColumns[53].visible = False  # 外来処方箋修正
+            self.selectColumns[54].visible = False  # 勉強会資料作成＿開催
+            self.selectColumns[55].visible = False  # お役立ち情報作成
+            self.selectColumns[56].visible = False  # 薬剤使用期限確認
+            self.selectColumns[57].visible = False  # 緩和回診
+            self.selectColumns[58].visible = False  # 心不全回診
+            self.selectColumns[59].visible = False  # 緩和回診記録作成
+            self.selectColumns[60].visible = False  # 手術室サテライト薬剤定数確認
+            self.selectColumns[61].visible = False  # ICTリンクスタッフ活動
+            self.selectColumns[62].visible = False  # 医療安全対策WG活動
+            
+            #表示
+            self.selectColumns[63].visible = True  # 実習生対応
+            self.selectColumns[64].visible = True  # 薬剤部連絡会
 
         self.time_for_visual_label = []
 
