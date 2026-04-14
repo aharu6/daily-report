@@ -16,17 +16,18 @@ class Title:
 
 
 class Panel:
-    def __init__(self, page):
+    def __init__(self, page,phNameList):
         self.page = page
+        self.phNameList = phNameList
 
-    def create(self, phNameList, page):
+    def create(self):
         # phNameLIst が文字列の場合、リストに変換
         #phNameListがない時は名前が登録されていないパネルを返す
-        if isinstance(phNameList, str):
-                phNameList = json.loads(phNameList)
+        if isinstance(self.phNameList, str):
+                self.phNameList = json.loads(self.phNameList)
 
 
-        load_data = page.client_storage.get("timeline_data")
+        load_data = self.page.client_storage.get("timeline_data")
         try:
             key = list(json.loads(load_data).keys())
         except:
@@ -52,7 +53,7 @@ class Panel:
                                     title=ft.Text("名前が登録されていません"),
                                 )
                             ]
-                            if not phNameList
+                            if not self.phNameList
                             else []
                         ),
                     ),
@@ -87,7 +88,7 @@ class Panel:
                         subtitle=ft.Text("ここに保管されているデータは30日後に自動削除されます")
                         ),
                         content=ft.Column(
-                            controls=Trashdata_ExpantionPanel.create_expantion_panel(page)
+                            controls=Trashdata_ExpantionPanel.create_expantion_panel(self.page)
                     
                         )
                 ),
@@ -107,8 +108,8 @@ class Panel:
                                         ft.Text("ON"),
                                         ft.Text("OFF"),
                                     ],
-                                    selected_index =ReloadSetDataButton.select_index(page),
-                                    on_change = lambda e:ReloadSetDataButton.reload_set_data_button(e,page),
+                                    selected_index =ReloadSetDataButton.select_index(self.page),
+                                    on_change = lambda e:ReloadSetDataButton.reload_set_data_button(e,self.page),
                                     data = "業務調整"
                                 )
                             )

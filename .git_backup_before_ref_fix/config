@@ -1,0 +1,26 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = true
+[submodule]
+	active = .
+[remote "origin"]
+	url = https://github.com/aharu6/daily-report.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
+	vscode-merge-base = origin/main
+	github-pr-base-branch = "aharu6#daily-report#re"
+[branch "re"]
+	github-pr-base-branch = "aharu6#daily-report#main"
+	vscode-merge-base = origin/main
+	remote = origin
+	merge = refs/heads/re
+	github-pr-owner-number = "aharu6#daily-report#311"
+	github-pr-owner-number = "aharu6#daily-report#311"
+	github-pr-owner-number = "aharu6#daily-report#311"
+	github-pr-owner-number = "aharu6#daily-report#311"
