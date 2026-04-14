@@ -84,7 +84,7 @@ class ColorHandlers:
                 return "#508D4E"
             case "注射薬調製":
                 return "#508D4E"
-            case "金庫管理定数確認":
+            case "金庫管理薬定数確認":
                 return "#508D4E"
             case "業務調整":
                 return "#72BAA9"
