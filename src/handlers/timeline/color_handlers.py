@@ -2,41 +2,51 @@ class ColorHandlers:
     @staticmethod
     def change_color(key):
         match key:
-            case "薬剤使用状況の把握等（情報収集）":
+            case "初回・中間指導情報収集":
                 return "#384B70"
-            case "服薬指導＋指導記録作成":
+            case "他院指導情報収集":
                 return "#384B70"
-            case "混注時間":
+            case "注射台車監査":
                 return "#384B70"
-            case "無菌調製関連業務":
+            case "服薬指導":
                 return "#384B70"
-            case "薬剤セット・確認":
+            case "指導記録作成":#4
+                return "#384B70"
+            case "無菌調製(調製者)":#5
+                return "#384B70"
+            case "無菌調製補助業務（準備、監査）":#6
+                return "#384B70"
+            case "薬剤セット":#7
+                return "#384B70"
+            case "薬剤セット確認":
                 return "#384B70"
             case "持参薬を確認":
                 return "#384B70"
-            case "薬剤服用歴等について保険薬局へ照会":
+            case "薬剤服用歴等について保険薬局へ照会":#10
                 return "#384B70"
-            case "処方代理修正":
+            case "薬剤サマリー作成":#11
                 return "#384B70"
-            case "TDM実施":
+            case "処方代理修正・代行入力":#12
                 return "#384B70"
-            case "カンファレンス":
+            case "TDM実施":#13
                 return "#384B70"
-            case "医師からの相談":
+            case "カンファレンス":#14
                 return "#384B70"
-            case "看護師からの相談":
+            case "問い合わせ業務":#15
                 return "#384B70"
-            case "その他の職種からの相談":
-                return "#384B70"
-            case "委員会":
+            case "委員会":#16
                 return "#507687"
-            case "勉強会参加":
+            case "勉強会参加":#17
                 return "#507687"
-            case "WG活動":
+            case "WG活動":#18
                 return "#507687"
-            case "1on1":
+            case "1on1":#19
                 return "#507687"
-            case "ICT/AST":
+            case "ICT":
+                return "#507687"
+            case "AST":
+                return "#507687"
+            case "抗菌薬相談対応":
                 return "#507687"
             case "褥瘡":
                 return "#507687"
@@ -46,15 +56,35 @@ class ColorHandlers:
                 return "#508D4E"
             case "手術使用薬剤準備":
                 return "#508D4E"
-            case "周術期薬剤管理関連":
+            case "周術期薬剤管理記録作成":
+                return "#508D4E"
+            case "周術期薬剤管理準備":
+                return "#508D4E"
+            case "周術期薬剤管理記録作成":
+                return "#508D4E"
+            case "麻酔科周術期外来予約確認":
+                return "#508D4E"
+            case "麻酔科周術期外来情報収集":
                 return "#508D4E"
             case "麻酔科周術期外来":
                 return "#508D4E"
+            case "麻酔科周術期外来記録":
+                return "#508D4E"
             case "手術使用麻薬確認・補充":
                 return "#508D4E"
-            case "術後疼痛管理チーム回診":
+            case "APSチーム回診情報収集":
+                return "#508D4E"
+            case "APSチーム回診":
+                return "#508D4E"
+            case "APS関連記録作成":
                 return "#508D4E"
             case "脳卒中ホットライン対応":
+                return "#508D4E"
+            case "手術使用薬剤確認・補充":
+                return "#508D4E"
+            case "注射薬調製":
+                return "#508D4E"
+            case "金庫管理定数確認":
                 return "#508D4E"
             case "業務調整":
                 return "#72BAA9"
@@ -66,8 +96,6 @@ class ColorHandlers:
                 return "#72BAA9"
             case "NST":
                 return "#507687"
-            case "問い合わせ応需":
-                return "#DDA853"
             case "マスター作成・変更":
                 return "#DDA853"
             case "薬剤情報評価":
@@ -88,16 +116,22 @@ class ColorHandlers:
                 return "#DDA853"
             case "薬剤使用期限確認":
                 return "#508D4E"
-            case "抗菌薬相談対応":
+            case "緩和回診":
                 return "#507687"
-            case "事前準備":
+            case "心不全回診":
                 return "#507687"
-            case "カンファ・ラウンド":
-                return "#507687"
-            case "記録作成":
+            case "緩和回診記録作成":
                 return "#507687"
             case "手術室サテライト薬剤定数確認":
                 return "#508D4E"
+            case "ICTリンクスタッフ活動":
+                return "#72BAA9"
+            case "医療安全対策WG活動":
+                return "#72BAA9"
+            case "実習生対応":
+                return "#72BAA9"
+            case "薬剤部連絡会":
+                return "#72BAA9"
             case _:
                 return "#384B70"  # Default color for unknown tasks
             
