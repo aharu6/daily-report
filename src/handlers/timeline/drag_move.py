@@ -115,7 +115,7 @@ class DragMoveHandler:
             case "その他":
                 # すでに左のカラムにコンテンツがある場合にはコメントボタンは作成しない
                 e.control.content.controls.append(comments[e.control.data["num"]])
-            # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
+            #　管理業務 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
             case (
                 "管理業務"
                 | "休憩"
