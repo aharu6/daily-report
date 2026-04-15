@@ -18,7 +18,7 @@ class Openfile:
                         count_dict,phName,custumDrawerAm,custumDrawerPm,
                         phNameList,comment_dict,draggable_data,require_name,
                         require_location,update_location_data,
-                        radio_selected_data,date,total_num_am,total_num_pm):
+                        radio_selected_data,date,total_num_am,total_num_pm,):
         try:
             csv_file = pd.read_csv(e.files[0].path)
             #csvfileのクリーニング
@@ -178,6 +178,8 @@ class Openfile:
                             #1以上の場合には表示する
                             if csv_file.at[i,"count"] > 0:
                                 columns[i].content.content.controls[4].controls[1].value = csv_file.at[i,"count"]
+                                #self.count_dict にデータを反映する
+                                count_dict[csv_file.at[i,"time"]]["count"] = int(csv_file.at[i,"count"])
                         
                 #何も文字が入っていないカラムは初期状態へ
                 elif pd.isna(csv_file.at[i,"task"]):
