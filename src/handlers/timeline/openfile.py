@@ -178,6 +178,8 @@ class Openfile:
                             #1以上の場合には表示する
                             if csv_file.at[i,"count"] > 0:
                                 columns[i].content.content.controls[4].controls[1].value = csv_file.at[i,"count"]
+                                #self.count_dictの初期化
+                                count_dict[csv_file.at[i,"time"]]["count"] = 0
                                 #self.count_dict にデータを反映する
                                 count_dict[csv_file.at[i,"time"]]["count"] = int(csv_file.at[i,"count"])
                         

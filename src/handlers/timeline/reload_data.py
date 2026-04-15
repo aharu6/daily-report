@@ -146,6 +146,11 @@ class ReloadDataHandler:
         for i in range(len_load_data):
             #taskがあれば基づいてcolumns内容を更新するが、will_acceptの場合には矢印ボタンだけを表示する
             key = list(load_data.keys())[i]
+            task = load_data[key].get("task","")
+            if not isinstance(task,str):
+                task = ""
+            task = task.strip()
+            
             if load_data[key]["task"] ==  "will_accept":
                 columns[i].content  = ft.DragTarget(
                     group ="timeline_accepted", 
@@ -195,7 +200,7 @@ class ReloadDataHandler:
                         }
                 )
                 
-            elif re.search(r'.+',load_data[key]["task"]):
+            elif task:
                 columns[i].content = ft.DragTarget(
                     group  = "timeline",
                     content=ft.Column(
@@ -280,7 +285,6 @@ class ReloadDataHandler:
                         "task":load_data[key]["task"],
                     }
                 )
-            
                 #カウンターデータ0のときには何も表示されない
                 #一番左のカラムだけは0でもカウンターが必要になるから、1以上の指定ではなくて、 key の比較
                 # move関数とaccepted関数と同じように左のカラムkeyと比較して表示する　update前だからcolumnsに保管されているkeyは使えない
@@ -303,6 +307,11 @@ class ReloadDataHandler:
                         #１以上の場合には表示する
                         if load_data[key]["count"] >0:
                             columns[i].content.content.controls[4].controls[1].value = load_data[key]["count"]
+                            #self.count_dictの初期化
+                            time_key = load_data[key]["time"]
+                            count_dict[time_key]["count"] = 0
+                            #self.count_dict にデータを反映する
+                            count_dict[time_key]["count"] = int(load_data[key]["count"])
                 
                 #radiobuttonでの選択内容は別データにて保管し、ある場合には再表示
                 #何も文字が入っていないカラムは初期状態へ
