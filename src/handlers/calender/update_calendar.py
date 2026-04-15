@@ -4,7 +4,6 @@ class UpdateCalendar:
     @staticmethod
     def update_calendar_with_schedule_data(e, schedule_data, page, calendar, card_name=None, filter_name=None):
         """スケジュールデータに基づいてカレンダーの色を更新"""
-        print(f"[DEBUG CALENDAR] 更新開始: データ件数={len(schedule_data)} card_name={card_name} filter_name={filter_name}")
         
         # データのサンプルを表示（最初の3件）
         if schedule_data:
@@ -71,10 +70,7 @@ class UpdateCalendar:
                         if has_schedule:
                             # 午前データと午後データが両方揃っているかチェック
                             has_am = any(data.get("time") == "am" for data in matching_schedules)
-                            has_pm = any(data.get("time") == "pm" for data in matching_schedules)
-                            
-                            print(f"  {cell_date}: AM={has_am}, PM={has_pm}, 総データ数={len(matching_schedules)}")
-                            
+                            has_pm = any(data.get("time") == "pm" for data in matching_schedules)                            
                             old_bgcolor = cell.bgcolor
                             
                             # 午前・午後両方のデータがある場合は緑色

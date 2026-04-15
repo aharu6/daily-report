@@ -268,6 +268,7 @@ class Openfile:
                         else:
                             split_data = dat
                         am_reload_list.extend(split_data)
+                        print(f"AM再表示用のデータ: {split_data}")  # デバッグ用出力
                     except json.JSONDecodeError as e:
                         print(f"JSON decode error for data: {dat} - {e}")
                 
