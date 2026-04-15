@@ -7,7 +7,10 @@ import json
 from handlers.timeline.make_popup import MakePopup
 #csvファイル読み込みハンドラ
 class Openfile:
-
+    def __init__(self):
+        pass
+    
+    
     @staticmethod
     def file_picker_result(e:ft.FilePickerResultEvent,page,
                         calender,drawer,draggable_data_for_move,
@@ -166,7 +169,7 @@ class Openfile:
                         case "その他":
                             columns[i].content.content.controls.append(comments[i])
                         # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
-                        case "混注時間"|"無菌調製関連業務"|"休憩"|"委員会"|"WG活動"|"勉強会参加"|"1on1"|"カンファレンス"|"業務調整"|"will_accept":
+                        case "休憩"|"委員会"|"WG活動"|"勉強会参加"|"1on1"|"周術期薬剤管理準備"|"カンファレンス"|"業務調整"|"管理業務"|"金庫管理薬定数確認"|"手術使用麻薬確認・補充"|"will_accept":
                             pass
                         #カウンターの再表示
                         case _:

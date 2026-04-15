@@ -294,7 +294,7 @@ class ReloadDataHandler:
                         #columns
                         columns[i].content.content.controls.append(comments[i])
                     # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
-                    case "混注時間"|"無菌調製関連業務"|"休憩"|"委員会"|"WG活動"|"勉強会参加"|"1on1"|"カンファレンス"|"will_accept":
+                    case "休憩"|"委員会"|"WG活動"|"勉強会参加"|"1on1"|"カンファレンス"|"周術期薬剤管理準備"|"手術使用薬剤確認・補充"|"金庫管理薬定数確認"|"will_accept":
                         pass
                     #カウンターの再表示
                     case _:
