@@ -299,7 +299,6 @@ class Openfile:
                                 split_data = dat
                         except json.JSONDecodeError as e:
                             print(f"JSON decode error for data: {dat} - {e}")
-                    print(f"AMradiobutton再表示用のデータ: {split_data}")  # デバッグ用出力
                     if len(split_data) <=1 :
                         columns[i].content.content.controls[3].content = ft.Text(split_data)
                         
@@ -314,8 +313,6 @@ class Openfile:
                 split_data = csv_file.at[i, "parsed_locate"]
                 time = csv_file.at[i, "time"]
                 
-                print(f"デバッグ用：時間{time}")
-                print(f"デバッグ用：split_data{split_data}")
                 
                 if len(split_data) == 1:
                     selected_location = split_data[0]
