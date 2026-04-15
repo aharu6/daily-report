@@ -7,7 +7,10 @@ import json
 from handlers.timeline.make_popup import MakePopup
 #csvファイル読み込みハンドラ
 class Openfile:
-
+    def __init__(self):
+        pass
+    
+    
     @staticmethod
     def file_picker_result(e:ft.FilePickerResultEvent,page,
                         calender,drawer,draggable_data_for_move,
@@ -15,7 +18,7 @@ class Openfile:
                         count_dict,phName,custumDrawerAm,custumDrawerPm,
                         phNameList,comment_dict,draggable_data,require_name,
                         require_location,update_location_data,
-                        radio_selected_data,date,total_num_am,total_num_pm):
+                        radio_selected_data,date,total_num_am,total_num_pm,):
         try:
             csv_file = pd.read_csv(e.files[0].path)
             #csvfileのクリーニング
@@ -166,7 +169,7 @@ class Openfile:
                         case "その他":
                             columns[i].content.content.controls.append(comments[i])
                         # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
-                        case "混注時間"|"無菌調製関連業務"|"休憩"|"委員会"|"WG活動"|"勉強会参加"|"1on1"|"カンファレンス"|"業務調整"|"will_accept":
+                        case "休憩"|"委員会"|"WG活動"|"勉強会参加"|"1on1"|"周術期薬剤管理準備"|"カンファレンス"|"業務調整"|"管理業務"|"金庫管理薬定数確認"|"手術使用麻薬確認・補充"|"will_accept":
                             pass
                         #カウンターの再表示
                         case _:
@@ -175,6 +178,10 @@ class Openfile:
                             #1以上の場合には表示する
                             if csv_file.at[i,"count"] > 0:
                                 columns[i].content.content.controls[4].controls[1].value = csv_file.at[i,"count"]
+                                #self.count_dictの初期化
+                                count_dict[csv_file.at[i,"time"]]["count"] = 0
+                                #self.count_dict にデータを反映する
+                                count_dict[csv_file.at[i,"time"]]["count"] = int(csv_file.at[i,"count"])
                         
                 #何も文字が入っていないカラムは初期状態へ
                 elif pd.isna(csv_file.at[i,"task"]):
@@ -261,6 +268,7 @@ class Openfile:
                         else:
                             split_data = dat
                         am_reload_list.extend(split_data)
+                        print(f"AM再表示用のデータ: {split_data}")  # デバッグ用出力
                     except json.JSONDecodeError as e:
                         print(f"JSON decode error for data: {dat} - {e}")
                 

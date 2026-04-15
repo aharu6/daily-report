@@ -69,7 +69,6 @@ class ReadFolder:
                         
                         # 病棟名の正規化（リスト形式の文字列を処理）
                         locate_raw = str(row["locate"])
-                        print(f"[DEBUG READ] 元の場所データ: '{locate_raw}'")
                         
                         if locate_raw.startswith("['") and locate_raw.endswith("']"):
                             # "['ICU']" -> ["ICU"] または "['ICU', '3A']" -> ["ICU", "3A"]
@@ -87,8 +86,6 @@ class ReadFolder:
                             # その他の形式の処理
                             locate_clean = [locate_raw.strip("'\"")]
                                 
-                        print(f"[DEBUG READ] 正規化後の場所データ: {locate_clean}")
-                        
                         # 複数の場所がある場合、それぞれの場所に対してデータエントリを作成
                         for single_locate in locate_clean:
                             # 個人名の検証
@@ -138,7 +135,6 @@ class ReadFolder:
                             
                             # 病棟名の正規化（リスト形式の文字列を処理）
                             locate_raw = str(row["locate"])
-                            print(f"[DEBUG READ] 元の場所データ: '{locate_raw}'")
                             
                             if locate_raw.startswith("['") and locate_raw.endswith("']"):
                                 # "['ICU']" -> ["ICU"] または "['ICU', '3A']" -> ["ICU", "3A"]
@@ -156,7 +152,6 @@ class ReadFolder:
                                 # その他の形式の処理
                                 locate_clean = [locate_raw.strip("'\"")]
                                     
-                            print(f"[DEBUG READ] 正規化後の場所データ: {locate_clean}")
                             
                             # 複数の場所がある場合、それぞれの場所に対してデータエントリを作成
                             for single_locate in locate_clean:
