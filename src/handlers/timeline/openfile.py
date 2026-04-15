@@ -251,61 +251,107 @@ class Openfile:
 
 
             #初期化
+            total_num_am["count"] = 0
+            total_num_pm["count"] = 0
+            
             for i in range(len(custumDrawerAm.content.controls)):
                 custumDrawerAm.content.controls[i].value = False
             for i in range(len(custumDrawerPm.content.controls)):
                 custumDrawerPm.content.controls[i].value = False
-            #再表示
-            am_reload_data = csv_file[csv_file["am_or_pm"] == "AM"]["locate"].unique().tolist()
-            am_reload_list = []
-            for i in range(len(am_reload_data)):
-                dat = am_reload_data[i]
-                if dat and dat != '[]':
-                    try:
-                        if isinstance(dat,str):
-                            dat_cleaned = dat.replace("'", '"')
-                            split_data = json.loads(dat_cleaned)
-                        else:
-                            split_data = dat
-                        am_reload_list.extend(split_data)
-                        print(f"AM再表示用のデータ: {split_data}")  # デバッグ用出力
-                    except json.JSONDecodeError as e:
-                        print(f"JSON decode error for data: {dat} - {e}")
                 
-            pm_reload_data = csv_file[csv_file["am_or_pm"] == "PM"]["locate"].unique().tolist()
-            pm_reload_list = []
-            for i in range(len(pm_reload_data)):
-                dat = pm_reload_data[i]
-                if dat and dat != '[]':
+            def parse_location_data(data):
+                if pd.isna(data) or data in [None,"", "[]"]:
+                    return []
+                if isinstance(data,list):
+                    return [str(x) for x in data if str(x).strip()]
+                if isinstance(data,str):
                     try:
-                        if isinstance(dat,str):
-                            dat_cleaned = dat.replace("'", '"')
-                            split_data = json.loads(dat_cleaned)
-                        else:
-                            split_data = dat
-                        pm_reload_list.extend(split_data)
-                    except json.JSONDecodeError as e:
-                        print(f"JSON decode error for data: {dat} - {e}")
-            #AM 再表示
-            am_times = csv_file[csv_file["am_or_pm"] == "AM"]["time"].tolist()
-            for i in range(len(am_reload_list)):
+                        parsed = json.loads(data.replace("'", '"'))
+                        if isinstance(parsed,list):
+                            return [str(x) for x in parsed if str(x).strip()]
+                        elif parsed:
+                            return [str(parsed)]
+                    except Exception:
+                        cleaned = data.strip().strip("'\"")
+                        if cleaned and cleaned.lower() != "nan":
+                            return [cleaned]
+                return []
+            
+            csv_file["parsed_locate"]  = csv_file["locate"].apply(parse_location_data)
+            #AM/PM全体のチェック復元用
+            am_reload_data = csv_file[csv_file["am_or_pm"] == "AM"]["parsed_locate"].tolist()
+            am_reload_list = []
+            for i in am_reload_data:
+                am_reload_list.extend(i)
+            am_reload_list = list(dict.fromkeys(am_reload_list))
+            #1病棟のみの選択の時にはradio buttonの再表示を行う
+            if len(am_reload_list)>1:
+                for i in range(0,16):
+                    split_data = []
+                    dat = csv_file.at[i, "locate"]
+                    time = csv_file.at[i, "time"]
+                    if dat and dat != '[]':
+                        try:
+                            if isinstance(dat,str):
+                                dat_cleaned = dat.replace("'", '"')
+                                split_data = json.loads(dat_cleaned)
+                            else:
+                                split_data = dat
+                        except json.JSONDecodeError as e:
+                            print(f"JSON decode error for data: {dat} - {e}")
+                    print(f"AMradiobutton再表示用のデータ: {split_data}")  # デバッグ用出力
+                    if len(split_data) <=1 :
+                        columns[i].content.content.controls[3].content = ft.Text(split_data)
+                        
+            pm_reload_data = csv_file[csv_file["am_or_pm"] == "PM"]["parsed_locate"].tolist()
+            pm_reload_list = []
+            for i in pm_reload_data:
+                pm_reload_list.extend(i)
+            pm_reload_list = list(dict.fromkeys(pm_reload_list))
+            
+            #時間ごとの単独病棟を復元
+            for i in range(len_load_data):
+                split_data = csv_file.at[i, "parsed_locate"]
+                time = csv_file.at[i, "time"]
+                
+                print(f"デバッグ用：時間{time}")
+                print(f"デバッグ用：split_data{split_data}")
+                
+                if len(split_data) == 1:
+                    selected_location = split_data[0]
+
+                    if isinstance(columns[i].content.content,ft.Column) and len(columns[i].content.content.controls)>3:
+                        columns[i].content.content.controls[3].content = ft.Text(selected_location)
+                        
+                    update_location_data[time] = selected_location
+                    radio_selected_data[time] = {
+                        "date":update_date,
+                        "time":time,
+                        "num":i,
+                        "radio_select":selected_location,
+                    }
+            #Am病棟全体を復元
+            for loc in am_reload_list:
                 for j in range(len(custumDrawerAm.content.controls)):
-                    if custumDrawerAm.content.controls[j].label == am_reload_list[i]:
+                    if custumDrawerAm.content.controls[j].label == loc:
                         custumDrawerAm.content.controls[j].value = True
                         total_num_am["count"] +=1
                     else:
                         pass
             
             #PM
-            pm_times = csv_file[csv_file["am_or_pm"] == "PM"]["time"].tolist()
-            for i in range(len(pm_reload_list)):
+            for i in pm_reload_list:
                 for j in range(len(custumDrawerPm.content.controls)):
-                    if custumDrawerPm.content.controls[j].label == pm_reload_list[i]:
+                    if custumDrawerPm.content.controls[j].label == i:
                         custumDrawerPm.content.controls[j].value = True
                         total_num_pm["count"] +=1
                     else:
                         pass
-
+            
+            #病棟単数選択(radiobutton)の再表示
+            #TODO:複数病棟を選択しているうち、書き出しデータが１のみの場合に再表示をおこなう
+            #複数病棟かを判定する
+            
             #名前を入力してくださいの表示は消す
             require_name.visible = False
 
