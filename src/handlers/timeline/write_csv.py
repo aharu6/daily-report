@@ -6,6 +6,19 @@ import pandas as pd
 from handlers.timeline.hide_message import HideMessageHandler
 
 class WriteCSVHandler:
+    def __init__(self):
+        pass
+    
+    @staticmethod
+    def check_locate_data(data):
+        for time, record in data.items():
+            locate = record.get("locate", [])
+            print(f"デバッグ用：時間{time}のlocateデータ{locate}")  # デバッグ用出力
+            if isinstance(locate, list) and len(locate) > 1:
+                print(f"エラー：時間{time}に複数の病棟が選択されています。locateデータ: {locate}")  # エラーデバッグ用出力
+                return False  # 複数の病棟が選択されている場合はエラー
+        return True  # 問題なし
+    
     @staticmethod
     def write_csv_file(
         e,
@@ -233,6 +246,10 @@ class WriteCSVHandler:
             df["task"] = df["task"].replace("will_accept", method="ffill")
             # 選択したラジオボタンでのデータに書き込み直し
 
+            #データのチェック、複数病棟になっていないか
+            check_locate_data = WriteCSVHandler.check_locate_data(data_dict)
+            print((f"デバッグ用{check_locate_data}"))
+
             # csvファイルの書き込み
             #phaName.value==Addのときはエラーを返す
             if phName.value=="Add":
@@ -242,12 +259,20 @@ class WriteCSVHandler:
                 page.snack_bar.open = True
                 page.update()
                 return
+            elif check_locate_data == False:
+                #csvファイルは書き出さずにエラーメッセージのみ表示に再設定する
+                require_location.visible = True
+                page.snack_bar=ft.SnackBar(ft.Text("複数の病棟が選択されている時間帯があります。病棟は1つのみ選択してください。"))
+                page.snack_bar.open = True
+                page.update()
+                return
             elif (
                 select_directory.result
                 and select_directory.result.path
                 and phName.value
                 and list_am_location_data
                 and list_pm_location_data
+                and check_locate_data
             ):
                 try:
                     file_path = (
@@ -278,11 +303,10 @@ class WriteCSVHandler:
                     page.update()
                     # 時間経過後に消す 「csvファイルを保存しました」
                     HideMessageHandler.hide_message(save_message, page)
-
-
             elif (
                 not list_am_location_data or not list_pm_location_data
-            ):  # 薬剤師名がないとき、病棟データが入力されていないとき
+            ):  # 薬剤師名がないとき、病棟データが入力されていないとき,
+                # snackbar
                 # csvファイルは書き出さずにエラーメッセージのみ表示に再設定する
                 require_location.visible = True
                 page.update()
@@ -290,23 +314,3 @@ class WriteCSVHandler:
                 require_name.visible = True
                 page.update()
 
-                """
-                with open(file_path, "w", newline="") as f:
-                    writer = csv.writer(f)
-                    writer.writerow(
-                        ["Time", "Task", "Count", "locate", "date", "PhName", "Comment"]
-                    )
-                    for time, record in data_dict.items():
-                        writer.writerow(
-                            [
-                                record["time"],
-                                record["task"],
-                                record["count"],
-                                record["locate"],
-                                record["date"],
-                                record["phName"],
-                                record["comment"],
-                            ]
-                        )
-                        
-                    """
