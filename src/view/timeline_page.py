@@ -313,18 +313,12 @@ class TimelinePage:
                                             ft.Text(
                                                     kind["task"],
                                                     color="white",
-                                                    text_align = TextAlign.CENTER,
+                                                    text_align = TextAlign.CENTER,                                                    
                                                     ),
-                                            ft.Container(
-                                                content=ft.Icon(
-                                                    name=ft.icons.INFO_OUTLINE,
-                                                    tooltip=kind["info"],
-                                                    ),
-                                                alignment=ft.alignment.bottom_right,
-                                            ),
                                         ]
                                     ),
                                     width=114,
+                                    tooltip = kind["info"],
                                     height=110,
                                     bgcolor=Handlers.change_color(kind["task"]),
                                     border_radius=ft.border_radius.only(top_left = 10,bottom_right = 10),
