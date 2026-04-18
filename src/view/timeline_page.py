@@ -315,7 +315,7 @@ class TimelinePage:
                                                     ),
                                     width=114,
                                     tooltip = ft.Tooltip(
-                                        message = kind["task"],
+                                        message = kind["info"],
                                         text_style = ft.TextStyle(size=15,color=ft.colors.BLACK),
                                         bgcolor=ft.colors.WHITE),
                                     height=110,
