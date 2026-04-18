@@ -308,17 +308,16 @@ class TimelinePage:
                             ft.Draggable(
                                 group="timeline",
                                 content=ft.Container(
-                                    content=ft.Column(
-                                        controls=[
-                                            ft.Text(
+                                    content=ft.Text(
                                                     kind["task"],
                                                     color="white",
                                                     text_align = TextAlign.CENTER,                                                    
                                                     ),
-                                        ]
-                                    ),
                                     width=114,
-                                    tooltip = kind["info"],
+                                    tooltip = ft.Tooltip(
+                                        message = kind["task"],
+                                        text_style = ft.TextStyle(size=15,color=ft.colors.BLACK),
+                                        bgcolor=ft.colors.WHITE),
                                     height=110,
                                     bgcolor=Handlers.change_color(kind["task"]),
                                     border_radius=ft.border_radius.only(top_left = 10,bottom_right = 10),
