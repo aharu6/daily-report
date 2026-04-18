@@ -1,6 +1,7 @@
 import flet as ft
 from handlers.timeline.handlers import Handlers
 from models.models import DataModel
+from handlers.timeline.make_popup import MakePopup
 
 #settingoageの設定に基づいてデフォルトで業務を登録する
 class Set_Default_task:
@@ -83,7 +84,30 @@ class Set_Default_task:
                                         "task":"業務調整",
                                     },
                                 ),
-                                
+                                ft.PopupMenuButton(
+                                    items = [
+                                        MakePopup.add_popup(
+                                            time="13:15 13:30",
+                                            update_location_data=update_location_data,
+                                            num=19,
+                                            columns = columns,
+                                            page=page,
+                                            radio_selected_data=radio_selected_data,
+                                            date=date,
+                                        )
+                                    ],
+                                    tooltip= "編集",
+                                    icon=ft.icons.MORE_VERT,
+                                    icon_size=20,
+                                    on_open=lambda e:MakePopup.pop_up_reload(
+                                        e=e,
+                                        customDrawerAm=customDrawerAm,
+                                        customDrawerPm=customDrawerPm,
+                                        page=page,
+                                    ),
+                                    data={"time":"13:15 13:30"},
+                                ),
+                                ft.Container(),
                             ],
                             height=370,
                             spacing = 0,
