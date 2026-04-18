@@ -1,5 +1,6 @@
 py
-
+今開いている PowerShell セッションだけ許可する（推奨）
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 #.venvの仮想環境を使用する場合
 powershell
 .\.venv\Scripts\Activate.ps1
@@ -13,7 +14,24 @@ flet pack main.py -i appIcon\diary-left-svgrepo-com.ico --file-version 1.60.2.0 
 --add-data ".venv\lib\plotly;plotly"
 
 // 修正版: 相対パス使用（推奨）
-flet pack main.py -i appIcon\diary-left-svgrepo-com.ico --file-version 1.60.2.0 -n 業務見える化日誌 --add-data ".venv\Lib\site-packages\plotly;plotly"
+flet pack main.py -i appIcon\diary-left-svgrepo-com.ico --file-version 1.70.0.0 -n 業務見える化日誌 --add-data ".venv\Lib\site-packages\plotly;plotly"
 
+#Windows で WinError 5 を回避するビルド手順
+#1) 実行中プロセスを止める（起動中だと dist\*.exe を削除できない）
+Get-Process | Where-Object { $_.ProcessName -like '*業務見える化日誌*' } | Stop-Process -Force
+
+#2) 既存EXEを削除（失敗しても継続）
+Remove-Item .\dist\業務見える化日誌.exe -Force -ErrorAction SilentlyContinue
+
+#3) クリーンビルド（uv 環境）venv環境は使用していないのでuv環境のみで書き出し
+uv run flet pack main.py -i appicon\diary-left-svgrepo-com.ico --file-version 1.70.0.0 -n 業務見える化日誌
+
+
+#Uv環境で開発依存関係としてライブラリ追加
+uv add --dev pyinstaller
+uv add --dev plotly
+uv add --dev chardet
+uv add --dev pandas
+uv add --dev flet==0.24.1
 
 uv run flet pack main.py -i appicon\diary-left-svgrepo-com.ico --file-version 1.60.2.0 -n 業務見える化日誌
