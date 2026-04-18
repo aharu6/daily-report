@@ -13,7 +13,6 @@ class WriteCSVHandler:
     def check_locate_data(data):
         for time, record in data.items():
             locate = record.get("locate", [])
-            print(f"デバッグ用：時間{time}のlocateデータ{locate}")  # デバッグ用出力
             if isinstance(locate, list) and len(locate) > 1:
                 print(f"エラー：時間{time}に複数の病棟が選択されています。locateデータ: {locate}")  # エラーデバッグ用出力
                 return False  # 複数の病棟が選択されている場合はエラー
@@ -67,7 +66,7 @@ class WriteCSVHandler:
                     "time": time_for_label[i],
                     "task": "",
                     "count": 0,
-                    "locate": "AM" if time_for_label[i] in amTime else "PM",
+                    "locate": [],
                     "date": str(date),
                     "phName": "",
                     "comment": "",
@@ -99,6 +98,7 @@ class WriteCSVHandler:
                     )
                 else:
                     None
+            """
             for time in data_dict.keys():
                 if list_am_location_data is not None:
                     if data_dict[time]["locate"] == "AM":
@@ -107,7 +107,7 @@ class WriteCSVHandler:
                         else:
                             data_dict[time]["locate"] = []
                 else:
-                    None
+                    None"""
 
                 # PMの場合
             list_pm_location_data = []
@@ -119,8 +119,7 @@ class WriteCSVHandler:
                 else:
                     None
 
-            # taskがある時のみ病棟データを書き込む
-            for time in data_dict.keys():
+            """for time in data_dict.keys():
                 if list_pm_location_data is not None:
                     if data_dict[time]["locate"] == "PM":
                         if data_dict[time]["task"] != "":
@@ -128,9 +127,8 @@ class WriteCSVHandler:
                         else:
                             data_dict[time]["locate"] = []
                 else:
-                    None
+                    None"""
 
-                pass
 
             # ラジオボタンでの病棟選択データを反映,上書き
             # 単選択時もリスト形式に変換して保存する
@@ -248,7 +246,6 @@ class WriteCSVHandler:
 
             #データのチェック、複数病棟になっていないか
             check_locate_data = WriteCSVHandler.check_locate_data(data_dict)
-            print((f"デバッグ用{check_locate_data}"))
 
             # csvファイルの書き込み
             #phaName.value==Addのときはエラーを返す
