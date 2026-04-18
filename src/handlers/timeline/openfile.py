@@ -327,7 +327,8 @@ class Openfile:
                         "num":i,
                         "radio_select":selected_location,
                     }
-            #Am病棟全体を復元
+            #Am病棟全体を復元,初期化済み
+            #TODO:taskがある時間帯のみ病棟情報を反映する
             for loc in am_reload_list:
                 for j in range(len(custumDrawerAm.content.controls)):
                     if custumDrawerAm.content.controls[j].label == loc:
@@ -346,8 +347,7 @@ class Openfile:
                         pass
             
             #病棟単数選択(radiobutton)の再表示
-            #TODO:複数病棟を選択しているうち、書き出しデータが１のみの場合に再表示をおこなう
-            #複数病棟かを判定する
+            #複数病棟を選択しているうち、書き出しデータが１のみの場合に再表示をおこなう
             
             #名前を入力してくださいの表示は消す
             require_name.visible = False

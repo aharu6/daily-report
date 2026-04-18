@@ -55,6 +55,9 @@ class ReloadDataHandler:
         key = list(dat.keys())
         #keyに基づいてドロワーを作成 reloadDrawer   controls
         #drawer.controls.append(ft.Card(content = ft.Column()))
+        
+        
+        
         drawer.controls[1].content.controls = []
         for i in key:
             drawer.controls[1].content.controls.append(ft.ListTile(
@@ -297,8 +300,8 @@ class ReloadDataHandler:
                     case "その他":
                         #columns
                         columns[i].content.content.controls.append(comments[i])
-                    # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
-                    case "休憩"|"委員会"|"WG活動"|"勉強会参加"|"1on1"|"カンファレンス"|"周術期薬剤管理準備"|"手術使用薬剤確認・補充"|"金庫管理薬定数確認"|"will_accept":
+                    # 業務調整、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
+                    case "休憩"|"委員会"|"WG活動"|"勉強会参加"|"1on1"|"周術期薬剤管理準備"|"カンファレンス"|"業務調整"|"管理業務"|"金庫管理薬定数確認"|"手術使用麻薬確認・補充"|"will_accept":
                         pass
                     #カウンターの再表示
                     case _:
