@@ -7,3 +7,12 @@ requires-python = ">=3.11"
 dependencies = [
     "concat>=0.1.2.dev1",
 ]
+
+[dependency-groups]
+dev = [
+    "chardet>=7.4.3",
+    "flet==0.24.1",
+    "pandas>=3.0.2",
+    "plotly>=6.7.0",
+    "pyinstaller>=6.19.0",
+]
