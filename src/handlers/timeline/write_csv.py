@@ -13,7 +13,6 @@ class WriteCSVHandler:
     def check_locate_data(data):
         for time, record in data.items():
             locate = record.get("locate", [])
-            print(f"デバッグ用：時間{time}のlocateデータ{locate}")  # デバッグ用出力
             if isinstance(locate, list) and len(locate) > 1:
                 print(f"エラー：時間{time}に複数の病棟が選択されています。locateデータ: {locate}")  # エラーデバッグ用出力
                 return False  # 複数の病棟が選択されている場合はエラー
@@ -248,7 +247,6 @@ class WriteCSVHandler:
 
             #データのチェック、複数病棟になっていないか
             check_locate_data = WriteCSVHandler.check_locate_data(data_dict)
-            print((f"デバッグ用{check_locate_data}"))
 
             # csvファイルの書き込み
             #phaName.value==Addのときはエラーを返す
