@@ -66,7 +66,7 @@ class WriteCSVHandler:
                     "time": time_for_label[i],
                     "task": "",
                     "count": 0,
-                    "locate": "AM" if time_for_label[i] in amTime else "PM",
+                    "locate": [],
                     "date": str(date),
                     "phName": "",
                     "comment": "",
@@ -98,6 +98,7 @@ class WriteCSVHandler:
                     )
                 else:
                     None
+            """
             for time in data_dict.keys():
                 if list_am_location_data is not None:
                     if data_dict[time]["locate"] == "AM":
@@ -106,7 +107,7 @@ class WriteCSVHandler:
                         else:
                             data_dict[time]["locate"] = []
                 else:
-                    None
+                    None"""
 
                 # PMの場合
             list_pm_location_data = []
@@ -118,8 +119,7 @@ class WriteCSVHandler:
                 else:
                     None
 
-            # taskがある時のみ病棟データを書き込む
-            for time in data_dict.keys():
+            """for time in data_dict.keys():
                 if list_pm_location_data is not None:
                     if data_dict[time]["locate"] == "PM":
                         if data_dict[time]["task"] != "":
@@ -127,9 +127,8 @@ class WriteCSVHandler:
                         else:
                             data_dict[time]["locate"] = []
                 else:
-                    None
+                    None"""
 
-                pass
 
             # ラジオボタンでの病棟選択データを反映,上書き
             # 単選択時もリスト形式に変換して保存する

@@ -327,7 +327,8 @@ class Openfile:
                         "num":i,
                         "radio_select":selected_location,
                     }
-            #Am病棟全体を復元
+            #Am病棟全体を復元,初期化済み
+            #TODO:taskがある時間帯のみ病棟情報を反映する
             for loc in am_reload_list:
                 for j in range(len(custumDrawerAm.content.controls)):
                     if custumDrawerAm.content.controls[j].label == loc:
