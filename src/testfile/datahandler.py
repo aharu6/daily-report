@@ -165,6 +165,11 @@ task_counts_fil=task_counts_fil.query("task != 'WG活動'")
 task_counts_fil=task_counts_fil.query("task != '勉強会参加'")
 task_counts_fil=task_counts_fil.query("task != '1on1'")
 task_counts_fil=task_counts_fil.query("task != 'カンファレンス'")
+task_counts_fil=task_counts_fil.query("task != '管理業務'")
+task_counts_fil=task_counts_fil.query("task != 'ICTリンクスタッフ活動'")
+task_counts_fil=task_counts_fil.query("task != '医療安全対策WG活動'")
+task_counts_fil=task_counts_fil.query("task != '薬剤部連絡会'")
+
 
 #
 #task_counts_fil2=sum_task_counts[sum_task_counts["task"]!="混時"]
@@ -176,10 +181,10 @@ sum_task_counts_pi=sum_task_counts.pivot_table(
     fill_value=0,
 )
 #件数集計していない業務は削除する
-#件数入力しない（混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンス）
+#件数入力しない(、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンス,管理業務）
 #上記業務内容を入力していない場合はdropでエラーになるから、止まらないようにする
 try:
-    sum_task_counts_pi.drop(index=["無菌調製関連業務"],inplace=True)
+    sum_task_counts_pi.drop(index=["無菌調製関連業務"],inplace=True)#名称変更、旧項目は残す
     sum_task_counts_pi.drop(index=["混注時間"],inplace=True)#混注時間→無菌調製関連業務
     sum_task_counts_pi.drop(index=["休憩"],inplace=True)
     sum_task_counts_pi.drop(index=["委員会"],inplace=True)
@@ -187,6 +192,10 @@ try:
     sum_task_counts_pi.drop(index=["勉強会参加"],inplace=True)
     sum_task_counts_pi.drop(index=["1on1"],inplace=True)
     sum_task_counts_pi.drop(index=["カンファレンス"],inplace=True)
+    sum_task_counts_pi.drop(index=["管理業務"],inplace=True)
+    sum_task_counts_pi.drop(index=["ICTリンクスタッフ活動"],inplace=True)
+    sum_task_counts_pi.drop(index=["医療安全対策WG活動"],inplace=True)
+    sum_task_counts_pi.drop(index=["薬剤部連絡会"],inplace=True)
 except KeyError:
     pass
 
@@ -248,6 +257,10 @@ try:
     time_per_task_pi_count.drop(index=["勉強会参加"],inplace=True)
     time_per_task_pi_count.drop(index=["1on1"],inplace=True)
     time_per_task_pi_count.drop(index=["カンファレンス"],inplace=True)  
+    time_per_task_pi_count.drop(index=["管理業務"],inplace=True)  
+    time_per_task_pi_count.drop(index=["ICTリンクスタッフ活動"],inplace=True)  
+    time_per_task_pi_count.drop(index=["医療安全対策WG活動"],inplace=True)  
+    time_per_task_pi_count.drop(index=["薬剤部連絡会"],inplace=True)  
 except KeyError:
     pass
 

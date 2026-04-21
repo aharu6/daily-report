@@ -380,7 +380,7 @@ class TimelinePage:
             self.selectColumns[37].visible = False  # 脳卒中ホットライン対応
             self.selectColumns[38].visible = False  # 手術使用薬剤確認・補充
             self.selectColumns[39].visible = False  # 注射薬調製
-            self.selectColumns[40].visible = False  # 禁錮管理定数確認
+            self.selectColumns[40].visible = False  # 金庫管理薬定数確認
             
             #表示
             self.selectColumns[41].visible = True  # 業務調整
