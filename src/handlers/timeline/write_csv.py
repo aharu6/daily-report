@@ -239,9 +239,9 @@ class WriteCSVHandler:
             # df['task'] == "will_accept"の時、df['locate'] == "uncomplete"に変更する
             df.loc[df["task"] == "will_accept", "locate"] = "uncomplete"
             # uncompleteは前のlocateにて補完する
-            df["locate"] = df["locate"].replace("uncomplete", method="ffill")
+            df["locate"] = df["locate"].replace("uncomplete", pd.NA).ffill()
             # will_acceptは前のタスクにて補完する
-            df["task"] = df["task"].replace("will_accept", method="ffill")
+            df["task"] = df["task"].replace("will_accept", pd.NA).ffill()
             # 選択したラジオボタンでのデータに書き込み直し
 
             #データのチェック、複数病棟になっていないか
