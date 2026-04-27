@@ -66,7 +66,7 @@ class WriteCSVHandler:
                     "time": time_for_label[i],
                     "task": "",
                     "count": 0,
-                    "locate": [],
+                    "locate": "AM" if time_for_label[i] in amTime else "PM",
                     "date": str(date),
                     "phName": "",
                     "comment": "",
@@ -93,21 +93,23 @@ class WriteCSVHandler:
             list_am_location_data = []
             for i in range(len(custumDrawerAm.content.controls)):
                 if custumDrawerAm.content.controls[i].value == True:
+                    print(f"AMの病棟選択データ: {custumDrawerAm.content.controls[i].label}")  # デバッグ用出力
                     list_am_location_data.append(
                         custumDrawerAm.content.controls[i].label
                     )
                 else:
                     None
-            """
+        
             for time in data_dict.keys():
                 if list_am_location_data is not None:
                     if data_dict[time]["locate"] == "AM":
                         if data_dict[time]["task"] != "":
                             data_dict[time]["locate"] = list_am_location_data
+                            print(f"時間{time}のlocateデータをAMの選択内容に更新: {data_dict[time]['locate']}")  # デバッグ用出力   
                         else:
                             data_dict[time]["locate"] = []
                 else:
-                    None"""
+                    None
 
                 # PMの場合
             list_pm_location_data = []
@@ -119,15 +121,16 @@ class WriteCSVHandler:
                 else:
                     None
 
-            """for time in data_dict.keys():
+            for time in data_dict.keys():
                 if list_pm_location_data is not None:
                     if data_dict[time]["locate"] == "PM":
                         if data_dict[time]["task"] != "":
                             data_dict[time]["locate"] = list_pm_location_data
+                            print(f"時間{time}のlocateデータをPMの選択内容に更新: {data_dict[time]['locate']}")  # デバッグ用出力
                         else:
                             data_dict[time]["locate"] = []
                 else:
-                    None"""
+                    None
 
 
             # ラジオボタンでの病棟選択データを反映,上書き
@@ -195,12 +198,12 @@ class WriteCSVHandler:
                         "locate_PM": [],
                     }
                 }
-
             dict_location_data[data_key]["locate_AM"] = [
                 control.label
                 for control in custumDrawerAm.content.controls
                 if control.value
             ]
+            print(f"AMの病棟選択データを保存: {dict_location_data[data_key]['locate_AM']}")  # デバッグ用出力   
             dict_location_data[data_key]["locate_PM"] = [
                 control.label
                 for control in custumDrawerPm.content.controls
@@ -239,6 +242,7 @@ class WriteCSVHandler:
             # df['task'] == "will_accept"の時、df['locate'] == "uncomplete"に変更する
             df.loc[df["task"] == "will_accept", "locate"] = "uncomplete"
             # uncompleteは前のlocateにて補完する
+            print(f"will_acceptのタスクがある行のlocateデータをuncompleteに変更: \n{df[df['task'] == 'will_accept']}")  # デバッグ用出力    
             df["locate"] = df["locate"].replace("uncomplete", pd.NA).ffill()
             # will_acceptは前のタスクにて補完する
             df["task"] = df["task"].replace("will_accept", pd.NA).ffill()
