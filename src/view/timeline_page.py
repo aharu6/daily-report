@@ -409,6 +409,9 @@ class TimelinePage:
             self.selectColumns[61].visible = True  # 医療安全対策WG活動
             self.selectColumns[62].visible = True  # 実習生対応
             self.selectColumns[63].visible = True  # 薬剤部連絡会
+            
+            #非表示
+            self.selectColumns[64].visible = False  # 薬剤使用期限確認
 
         self.time_for_visual_label = []
 

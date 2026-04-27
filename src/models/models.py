@@ -266,6 +266,7 @@ class DataModel:
             "61":{"task": "医療安全対策WG活動","info":""}, 
             "62":{"task": "実習生対応","info":""},  
             "63":{"task": "薬剤部連絡会","info":""},  
+            "64":{"task": "薬剤使用期限確認","info":""},
         }
     def count_dict(self):
         return {}
