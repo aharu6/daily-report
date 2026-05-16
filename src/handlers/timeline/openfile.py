@@ -171,7 +171,7 @@ class Openfile:
                         # 件数入力不要の業務名、カウンターを非表示にする
                         case ("休憩"
                             |"委員会"|"WG活動"|"勉強会参加"|"1on1"|"周術期薬剤管理準備"|"カンファレンス"|"業務調整"|"管理業務"|"金庫管理薬定数確認"|"手術使用薬剤確認・補充"
-                            |"ICTリンクスタッフ活動"|"医療安全対策WG活動"|"薬剤部連絡会"
+                            |"ICTリンクスタッフ活動"|"医療安全対策WG活動"|"薬剤部連絡会"|"薬剤使用期限確認"
                             |"手術室サテライト薬剤定数確認"|"will_accept"):
                             pass
                         #カウンターの再表示
@@ -390,9 +390,9 @@ class Openfile:
                 require_location.content.controls[2].leading = ft.Icon(ft.icons.HIGHLIGHT_OFF,color="red")
                 require_location.content.controls[2].data = "false"
                 require_location.content.controls[0].visible =True
-                require_location.content.controls[1].visible =True
+                require_location.content.controls[1].visible =False
                 #pmの表示のみ消す
-                require_location.content.controls[2].visible =False
+                require_location.content.controls[2].visible =True
             
             elif total_num_am["count"] ==0 and total_num_pm["count"] == 0:#AM,PM両方とも複数病棟が選択されていない場合
                 #am

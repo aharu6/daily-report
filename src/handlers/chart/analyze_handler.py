@@ -562,7 +562,8 @@ class Handlers_analyze:
             df["times"] =df["times"] * 15#単縦な総時間数
 
             #件数入力する業務だけに絞り込んだ総時間数
-            count_task = original_df[~original_df["task"].isin(["無菌調製関連業務","混注時間","休憩","委員会","WG活動","勉強会参加","1on1",""])]
+            count_task = original_df[~original_df["task"].isin(["無菌調製関連業務","混注時間","休憩","委員会","WG活動","勉強会参加","1on1","薬剤使用期限確認",
+                                                                "カンファレンス","管理業務","ICTリンクスタッフ活動","医療安全対策WG活動","薬剤部連絡会","手術室サテライト薬剤定数確認"])],
             count_task = count_task.groupby("locate").size().reset_index(name="count_times")
             try:
                 count_task.drop(index =count_task[count_task["locate"]=="self"].index,inplace=True) #self列は除外する)
