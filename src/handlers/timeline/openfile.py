@@ -373,15 +373,18 @@ class Openfile:
 
             elif total_num_am["count"] ==0 and total_num_pm["count"] > 0:#AMの病棟が選択されていない、PMは複数病棟が選択されている場合
                 print("amの病棟が選択されていません")
-                #am
+                #am　            
                 require_location.content.controls[1].title.color = "red"
                 require_location.content.controls[1].leading = ft.Icon(ft.icons.HIGHLIGHT_OFF,color="red")
                 require_location.content.controls[1].data = "false"
                 require_location.content.controls[0].visible =True
                 require_location.content.controls[1].visible =True
                 #pmの表示のみ消す
+                require_location.content.controls[2].data = "true"
                 require_location.content.controls[2].visible =False
             elif total_num_pm["count"] ==0 and total_num_am["count"] > 0:#PMの病棟が選択されていない、AMは複数病棟が選択されている場合
+                #am 
+                require_location.content.controls[1].data = "true"
                 #pm
                 require_location.content.controls[2].title.color = "red"
                 require_location.content.controls[2].leading = ft.Icon(ft.icons.HIGHLIGHT_OFF,color="red")
