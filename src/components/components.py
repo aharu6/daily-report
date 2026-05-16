@@ -220,6 +220,23 @@ class AmDropDown:
                         e=e, require_location=require_location, page=page,total_num=am_total
                     ),
                 ),
+                ft.Checkbox(
+                    label="専門業務",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="専門業務",
+                    on_change=lambda e: RequireLocationMessage.am_change_require_location(
+                        e=e, require_location=require_location, page=page,total_num=am_total
+                    ),
+                    tooltip=ft.Tooltip("病棟に関わらないAST等の専門業務のみ担当の場合")
+                ),
+                ft.Checkbox(
+                    label="午前休み",
+                    col={"sm": 6, "md": 4, "xl": 2},
+                    data="",
+                    on_change=lambda e: RequireLocationMessage.am_change_require_location(
+                        e=e, require_location=require_location, page=page,total_num=am_total
+                        )
+                )
             ]
         )
 
@@ -372,6 +389,23 @@ class PmDropDown:
                 ),
                 data="DI",
             ),
+            ft.Checkbox(
+                label="専門業務",
+                col={"sm": 6, "md": 4, "xl": 2},
+                data="専門業務",
+                on_change=lambda e: RequireLocationMessage.am_change_require_location(
+                    e=e, require_location=require_location, page=page,total_num=pm_total_num,
+                ),
+                tooltip=ft.Tooltip("病棟に関わらない専門業務のみ担当の場合")
+            ),
+            ft.Checkbox(
+                label="午後休み",
+                col={"sm": 6, "md": 4, "xl": 2},
+                data="",
+                on_change=lambda e: RequireLocationMessage.pm_change_require_location(
+                    e=e, require_location=require_location, page=page,total_num=pm_total_num,
+                )
+            )
             ]
         )
 
