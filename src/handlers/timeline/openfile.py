@@ -390,9 +390,9 @@ class Openfile:
                 require_location.content.controls[2].leading = ft.Icon(ft.icons.HIGHLIGHT_OFF,color="red")
                 require_location.content.controls[2].data = "false"
                 require_location.content.controls[0].visible =True
-                require_location.content.controls[1].visible =True
+                require_location.content.controls[1].visible =False
                 #pmの表示のみ消す
-                require_location.content.controls[2].visible =False
+                require_location.content.controls[2].visible =True
             
             elif total_num_am["count"] ==0 and total_num_pm["count"] == 0:#AM,PM両方とも複数病棟が選択されていない場合
                 #am
