@@ -1,6 +1,7 @@
 import json
 import flet as ft
 import pandas as pd
+import datetime
 
 class Handlers_setting:
     @staticmethod
@@ -94,10 +95,32 @@ class Handlers_setting:
             for i in list(dat.keys())
         ]
         panel.controls[1].content.rows = cells
+            
+    @staticmethod
+    def delete_trash_data(page):
+        """
+        60日以上経過した一時保存データの削除
+        日付_name:{"time":{"time":"","task":"","count":"",....etc}}
+        """
+        try:
+            load_data = page.client_storage.get("timeline_data")
+            today = datetime.date.today()
+            for key, value in json.loads(load_data).items():
+                maked_date = datetime.datetime.strptime(key.split("_")[0], "%Y-%m-%d").date()
+                date_later = maked_date - today
+                if date_later.days < -60:
+                    print("削除",key)
+                    dat = json.loads(page.client_storage.get("timeline_data"))
+                    del dat[key]
+                    page.client_storage.set("timeline_data", json.dumps(dat))
+                    
+        except Exception as e:
+            print(f"Error loading data: {e}")
+            return
+        
 
     @staticmethod   
     def delete_data(e,page,panel):
-        import datetime
         #該当のkey:date_name
         key = e.control.data
         #削除時の日付データを加える
