@@ -2,6 +2,7 @@ import flet as ft
 from flet import View
 import asyncio
 from handlers import handlersMain
+from handlers.setting.handlers_setting import Handlers_setting
 # main
 def main(page: ft.Page):
 
@@ -9,6 +10,9 @@ def main(page: ft.Page):
     page.window.width = 1400
     page.window.height = 1000
     page.scroll = True
+
+    #起動時に60日以上経過した一時保存データの削除を行う
+    Handlers_setting.delete_trash_data(page)
 
     def show_progress_bar():
         page.views.clear()
