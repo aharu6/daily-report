@@ -168,10 +168,11 @@ class Openfile:
                     match csv_file.at[i,"task"]:
                         case "その他":
                             columns[i].content.content.controls.append(comments[i])
-                        # 混注時間、休憩、委員会、WG活動,勉強会参加、1on1、カンファレンスの場合はカウンターを非表示にする
+                        # 件数入力不要の業務名、カウンターを非表示にする
                         case ("休憩"
                             |"委員会"|"WG活動"|"勉強会参加"|"1on1"|"周術期薬剤管理準備"|"カンファレンス"|"業務調整"|"管理業務"|"金庫管理薬定数確認"|"手術使用薬剤確認・補充"
-                            |"ICTリンクスタッフ活動"|"医療安全対策WG活動"|"薬剤部連絡会"|"will_accept"):
+                            |"ICTリンクスタッフ活動"|"医療安全対策WG活動"|"薬剤部連絡会"
+                            |"手術室サテライト薬剤定数確認"|"will_accept"):
                             pass
                         #カウンターの再表示
                         case _:
@@ -355,7 +356,7 @@ class Openfile:
             require_name.visible = False
 
             #病棟を選択してくださいの表示は消す
-            if total_num_am["count"] >0 and total_num_pm["count"] >0:
+            if total_num_am["count"] >0 and total_num_pm["count"] >0:#AM,PM両方とも複数病棟が選択されている場合には全ての表示を消す
                 #am
                 require_location.content.controls[1].title.color = "green"
                 require_location.content.controls[1].leading = ft.Icon(ft.icons.CHECK_CIRCLE_OUTLINE,color="green")
@@ -370,16 +371,20 @@ class Openfile:
                 #病棟を選択してくださいの表示は消す
                 require_location.content.controls[0].visible =False
 
-            elif total_num_am["count"] ==0:
-                #am
+            elif total_num_am["count"] ==0 and total_num_pm["count"] > 0:#AMの病棟が選択されていない、PMは複数病棟が選択されている場合
+                print("amの病棟が選択されていません")
+                #am　            
                 require_location.content.controls[1].title.color = "red"
                 require_location.content.controls[1].leading = ft.Icon(ft.icons.HIGHLIGHT_OFF,color="red")
                 require_location.content.controls[1].data = "false"
                 require_location.content.controls[0].visible =True
-                require_location.content.controls[2].visible =True
-                #amの表示のみ消す
-                require_location.content.controls[1].visible =False
-            elif total_num_pm["count"] ==0:
+                require_location.content.controls[1].visible =True
+                #pmの表示のみ消す
+                require_location.content.controls[2].data = "true"
+                require_location.content.controls[2].visible =False
+            elif total_num_pm["count"] ==0 and total_num_am["count"] > 0:#PMの病棟が選択されていない、AMは複数病棟が選択されている場合
+                #am 
+                require_location.content.controls[1].data = "true"
                 #pm
                 require_location.content.controls[2].title.color = "red"
                 require_location.content.controls[2].leading = ft.Icon(ft.icons.HIGHLIGHT_OFF,color="red")
@@ -388,6 +393,19 @@ class Openfile:
                 require_location.content.controls[1].visible =True
                 #pmの表示のみ消す
                 require_location.content.controls[2].visible =False
+            
+            elif total_num_am["count"] ==0 and total_num_pm["count"] == 0:#AM,PM両方とも複数病棟が選択されていない場合
+                #am
+                require_location.content.controls[1].title.color = "red"
+                require_location.content.controls[1].leading = ft.Icon(ft.icons.HIGHLIGHT_OFF,color="red")
+                require_location.content.controls[1].data = "false"
+                #pm
+                require_location.content.controls[2].title.color = "red"
+                require_location.content.controls[2].leading = ft.Icon(ft.icons.HIGHLIGHT_OFF,color="red")
+                require_location.content.controls[2].data = "false"
+                require_location.content.controls[0].visible =True
+                require_location.content.controls[1].visible =True
+                require_location.content.controls[2].visible =True
             
             page.update()
             
