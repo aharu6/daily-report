@@ -105,14 +105,9 @@ class Handlers_setting:
         try:
             load_data = page.client_storage.get("timeline_data")
             today = datetime.date.today()
-            print(load_data)
-            print(today)
             for key, value in json.loads(load_data).items():
-                print(key)
                 maked_date = datetime.datetime.strptime(key.split("_")[0], "%Y-%m-%d").date()
-                print("maked_date:", maked_date)
                 date_later = maked_date - today
-                print("date_later:", date_later)
                 if date_later.days < -60:
                     print("削除",key)
                     dat = json.loads(page.client_storage.get("timeline_data"))
