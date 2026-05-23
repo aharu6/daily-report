@@ -247,9 +247,10 @@ class WriteCSVHandler:
             # will_acceptは前のタスクにて補完する
             df["task"] = df["task"].replace("will_accept", pd.NA).ffill()
             # 選択したラジオボタンでのデータに書き込み直し
+            print(f"{df}")
 
             #データのチェック、複数病棟になっていないか
-            check_locate_data = WriteCSVHandler.check_locate_data(data_dict)
+            check_locate_data = WriteCSVHandler.check_locate_data(df)
 
             # csvファイルの書き込み
             #phaName.value==Addのときはエラーを返す
