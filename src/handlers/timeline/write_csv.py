@@ -240,6 +240,7 @@ class WriteCSVHandler:
         
             # will_accept時のlocationデータはデフォルト入力データで入っているため、ラジオボタンでの選択内容に書き換える
             # df['task'] == "will_accept"の時、df['locate'] == "uncomplete"に変更する
+            print(f"変換まえのdf: \n{df}")#デバック用
             df.loc[df["task"] == "will_accept", "locate"] = "uncomplete"
             # uncompleteは前のlocateにて補完する
             print(f"will_acceptのタスクがある行のlocateデータをuncompleteに変更: \n{df[df['task'] == 'will_accept']}")  # デバッグ用出力    
