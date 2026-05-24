@@ -2,6 +2,10 @@ import flet as ft
 from flet import BoxShape
 from handlers.timeline.handdrag_will_accept import Add_will_accept
 from handlers.timeline.drag_leave import DragLeave
+from handlers.timeline.handlers import Handlers
+import re
+import json
+from handlers.timeline.make_popup import MakePopup
 #ドロワーを展開する
 #保管しているデータを取得して表示する
 #右側にtimeline適用用のボタンを合わせて表示する
@@ -142,10 +146,23 @@ class ReloadDataHandler:
         # matchにて分岐する？
         #前のコンテンツが残っていて、追加される形式となっているので全てクリアしてから追加する
         
-        from handlers.timeline.handlers import Handlers
-        import re
-        import json
-        from handlers.timeline.make_popup import MakePopup
+        #カレンダーの更新
+        #適応に最初のkey
+        key_for_reload = list(load_data.keys())[0]
+        update_date = load_data[key_for_reload]["date"]
+        calender.text = update_date
+        calender.data = update_date 
+        
+        #薬剤師名の再表示
+        update_phName = load_data[key_for_reload]["phName"] 
+        phName.value = update_phName
+        
+        #name_dateにて紐づける中から取り出す
+        load_data_key=f"{update_date}_{update_phName}"
+        #病棟単数選択（radiobutton）での再表示,保存データの読み出し
+        load_radio_data=json.loads(page.client_storage.get("radio_selected_data"))
+        
+        
         for i in range(len_load_data):
             #taskがあれば基づいてcolumns内容を更新するが、will_acceptの場合には矢印ボタンだけを表示する
             key = list(load_data.keys())[i]
@@ -153,6 +170,7 @@ class ReloadDataHandler:
             if not isinstance(task,str):
                 task = ""
             task = task.strip()
+            
             
             if load_data[key]["task"] ==  "will_accept":
                 columns[i].content  = ft.DragTarget(
@@ -261,13 +279,17 @@ class ReloadDataHandler:
                                         time = load_data[key]["time"],update_location_data=update_location_data,
                                         num = i,columns = columns,page = page,
                                         radio_selected_data=radio_selected_data,
-                                        date=date
+                                        date=date,
+                                        
                                         ), 
                                     ],
                                 icon = ft.icons.MORE_VERT,
                                 tooltip = "編集",
                                 icon_size = 20,
-                                on_open = lambda e:MakePopup.pop_up_reload(e=e,customDrawerAm=custumDrawerAm,customDrawerPm=custumDrawerPm,page=page),
+                                on_open = lambda e:MakePopup.pop_up_reload(e=e,customDrawerAm=custumDrawerAm,customDrawerPm=custumDrawerPm,page=page,
+                                                                        load_radio_data=load_radio_data,
+                                        load_data_key = load_data_key,#load_radio_dataから該当する保存データを取り出すためのkey
+                                        ),
                                 data = {
                                     "time": load_data[key]["time"]
                                 }
@@ -370,25 +392,15 @@ class ReloadDataHandler:
                 comment_dict[load_data[key]["time"]] = {"comment":load_data[key]["comment"]}
                 print(comment_dict)
 
-        #カレンダーの更新
-        #適応に最初のkey
-        key_for_reload = list(load_data.keys())[0]
-        update_date = load_data[key_for_reload]["date"]
-        calender.text = update_date
-        calender.data = update_date 
         
-        #薬剤師名の再表示
-        update_phName = load_data[key_for_reload]["phName"] 
-        phName.value = update_phName
         
         #病棟名の再表示
         #writeにてlocateデータば辞書データと別に保管しておく
         
         load_location_data = json.loads(page.client_storage.get("location_data"))
-        #name_dateにて紐づける中から取り出す
-        key=f"{update_date}_{update_phName}"
-        am_data = load_location_data[key]["locate_AM"]
-        pm_data = load_location_data[key]["locate_PM"]
+        
+        am_data = load_location_data[load_data_key]["locate_AM"]
+        pm_data = load_location_data[load_data_key]["locate_PM"]
         #初期化
         for i in range(len(custumDrawerAm.content.controls)):
             custumDrawerAm.content.controls[i].value = False
@@ -411,11 +423,10 @@ class ReloadDataHandler:
                 else:
                     pass
         
-        #病棟単数選択（radiobutton）での再表示
-        load_radio_data=json.loads(page.client_storage.get("radio_selected_data"))
+        
         #name_dataにて紐づける中から取り出す
-        radio_data=load_radio_data[key]
-        #numdataもほしいかも
+        radio_data=load_radio_data[load_data_key]
+        
         for time_key,data in radio_data.items():
             column_num=data["num"]
             columns[column_num].content.content.controls[3].content=ft.Text(data["radio_select"])

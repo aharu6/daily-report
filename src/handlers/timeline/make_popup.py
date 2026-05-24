@@ -29,8 +29,8 @@ class MakePopup:
     
     
     @staticmethod
-    def add_popup(time, update_location_data, num, columns,page,radio_selected_data,date):
-        
+    def add_popup(time, update_location_data, num, columns,page,radio_selected_data,date,
+                ):
         # 午前と午後の判別
         pop_up = ft.PopupMenuItem(
             content = ft.RadioGroup(
@@ -46,6 +46,9 @@ class MakePopup:
                 
             )
         )
+    
+            
+        
         
         # 何かは追加しておかないとreload機能が機能しない
         # popupmenuitem のみ追加しておく
@@ -55,12 +58,22 @@ class MakePopup:
     #reloadボタンは不要
     #noneはややこしいからいらないかも
     @staticmethod
-    def pop_up_reload(e,customDrawerAm,customDrawerPm,page):
+    def pop_up_reload(e,customDrawerAm,customDrawerPm,page,
+                    load_radio_data=None,load_data_key=None):
+        selected_location_data = None
+        list_pm_location = []
         list_am_location = []
+        
+        """if load_radio_data is not None and load_data_key is not None:
+            print(f"pop_up_reload{load_radio_data[load_data_key][e.control.data['time']]}")
+        list_am_location = []
+        if load_radio_data is not None and load_data_key is not None:
+            selected_location_data = load_radio_data[load_data_key][e.control.data["time"]]
+        """    
+        
         for i in range(len(customDrawerAm.content.controls)):
             if customDrawerAm.content.controls[i].value == True:
                 list_am_location.append(customDrawerAm.content.controls[i].label)
-        list_pm_location = []
         for i in range(len(customDrawerPm.content.controls)):
             if customDrawerPm.content.controls[i].value == True:
                 list_pm_location.append(customDrawerPm.content.controls[i].label)
@@ -79,6 +92,7 @@ class MakePopup:
                     e.control.items[0].content.content.controls.append(
                         ft.Radio(value=list_am_location[i], label=list_am_location[i])
                     )
+                    
             else:
                 pass
         elif time in pmtime:
@@ -87,11 +101,21 @@ class MakePopup:
                     e.control.items[0].content.content.controls.append(
                         ft.Radio(value=list_pm_location[i], label=list_pm_location[i])
                     )
+                    
             else:
                 pass
         else:
             pass
-
+        
+        #TODO:選択した病棟名でラジオボタンが選択された状態にする
+        if selected_location_data is not None:
+            print(f"{e.control.items[0].content.content.controls}")
+            for i in range(len(e.control.items[0].content.content.controls)):
+                if e.control.items[0].content.content.controls[i].value == selected_location_data:
+                    e.control.items[0].content.content.controls[i].value = True
+        else:
+            pass
+        
         page.update()
             
     @staticmethod
