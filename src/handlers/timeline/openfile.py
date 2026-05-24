@@ -20,7 +20,7 @@ class Openfile:
                         require_location,update_location_data,
                         radio_selected_data,date,total_num_am,total_num_pm,):
         try:
-            csv_file = pd.read_csv(e.files[0].path)
+            csv_file = pd.read_csv(e.files[0].path,keep_default_na=False)
             #csvfileのクリーニング
             y = csv_file["task"]
             csv_file["task_counts"] = y.groupby((y != y.shift()).cumsum()).cumcount()#同じタスクが複数行にわたっているとき、最初の行以外を判別するための列
@@ -30,18 +30,15 @@ class Openfile:
             len_load_data = csv_file.index.size
             for i in range(len_load_data):
                 if csv_file.at[i,"task_counts"]>=1 :#同じタスクが複数行にわたっているとき、最初の行以外はドラッグできないようにする
-                        columns[i].content = ft.DragTarget(
+                    
+                    columns[i].content = ft.DragTarget(
                         group="timeline_accepted",
-                        content = ft.Column(
-                            controls=[
-                                ft.Container(
+                        content = ft.Container(
                                     content=ft.Icon(ft.icons.DOUBLE_ARROW,color="#2D6E7E"),
                                     width=50,
                                     height=50,
                                     border_radius=50,
                                     alignment=ft.alignment.top_center,
-                                )
-                            ]
                         ),
                         on_accept=lambda e:Handlers.drag_accepted(
                             e=e,
@@ -75,7 +72,9 @@ class Openfile:
                             "task":"will_accept"
                         }
                     )
-
+                    
+                    columns[i].content.data["task"] = "will_accept"
+                    
                 elif isinstance(csv_file.at[i,"task"],str) and re.search(r'.+', csv_file.at[i,"task"])and csv_file.at[i,"task_counts"]==0:#タスクが空でないとき、かつ同じタスクが複数行にわたっていないとき
                     columns[i].content = ft.DragTarget(
                         group="timeline",
@@ -224,7 +223,7 @@ class Openfile:
                             drag_data = drag_data,
                         ),
                         on_leave=lambda e:DragLeave.drag_leave(e=e,page=page),
-                        data = {"time":csv_file.at[i,"time"],"num":i,"task":csv_file.at[i,"task"]},
+                        data = {"time":csv_file.at[i,"time"],"num":i,"task":""},#何もタスク名がないのでからにしておく
                     )
                 #辞書データの更新
                 #delete content で使用する辞書で０たを読み込みデータに合わせて更新する
