@@ -61,16 +61,19 @@ class MakePopup:
     def pop_up_reload(e,customDrawerAm,customDrawerPm,page,
                     load_radio_data=None,load_data_key=None):
         selected_location_data = None
-        if load_radio_data is not None and load_data_key is not None:
+        list_pm_location = []
+        list_am_location = []
+        
+        """if load_radio_data is not None and load_data_key is not None:
             print(f"pop_up_reload{load_radio_data[load_data_key][e.control.data['time']]}")
         list_am_location = []
         if load_radio_data is not None and load_data_key is not None:
             selected_location_data = load_radio_data[load_data_key][e.control.data["time"]]
-            
+        """    
+        
         for i in range(len(customDrawerAm.content.controls)):
             if customDrawerAm.content.controls[i].value == True:
                 list_am_location.append(customDrawerAm.content.controls[i].label)
-        list_pm_location = []
         for i in range(len(customDrawerPm.content.controls)):
             if customDrawerPm.content.controls[i].value == True:
                 list_pm_location.append(customDrawerPm.content.controls[i].label)

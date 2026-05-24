@@ -29,7 +29,7 @@ class Openfile:
             #読み込んだファイル内容を元にcolumnへ再転記する
             len_load_data = csv_file.index.size
             for i in range(len_load_data):
-                if csv_file.at[i,"task_counts"]>=1 and csv_file.at[i,"count_counts"]:
+                if csv_file.at[i,"task_counts"]>=1 and csv_file.at[i,"count_counts"]:#同じタスクが複数行にわたっているとき、最初の行以外はドラッグできないようにする
                         columns[i].content = ft.DragTarget(
                         group="timeline_accepted",
                         content = ft.Column(
@@ -76,7 +76,7 @@ class Openfile:
                         }
                     )
 
-                elif isinstance(csv_file.at[i,"task"],str) and re.search(r'.+', csv_file.at[i,"task"])and csv_file.at[i,"task_counts"]==0:
+                elif isinstance(csv_file.at[i,"task"],str) and re.search(r'.+', csv_file.at[i,"task"])and csv_file.at[i,"task_counts"]==0:#タスクが空でないとき、かつ同じタスクが複数行にわたっていないとき
                     columns[i].content = ft.DragTarget(
                         group="timeline",
                         content = ft.Column(
@@ -302,8 +302,11 @@ class Openfile:
                                 split_data = dat
                         except json.JSONDecodeError as e:
                             print(f"JSON decode error for data: {dat} - {e}")
-                    if len(split_data) <=1 :
-                        columns[i].content.content.controls[3].content = ft.Text(split_data)
+
+                    if len(split_data) ==1 :
+                        target = columns[i].content                        
+                        if(isinstance(target,ft.DragTarget)and isinstance(target.content,ft.Column) and len(target.content.controls)>3):
+                            target.content.controls[3].content = ft.Text(split_data)
                         
             pm_reload_data = csv_file[csv_file["am_or_pm"] == "PM"]["parsed_locate"].tolist()
             pm_reload_list = []
