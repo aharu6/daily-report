@@ -20,17 +20,16 @@ class Openfile:
                         require_location,update_location_data,
                         radio_selected_data,date,total_num_am,total_num_pm,):
         try:
-            csv_file = pd.read_csv(e.files[0].path)
+            csv_file = pd.read_csv(e.files[0].path, keep_default_na=False)
             #csvfileのクリーニング
             y = csv_file["task"]
             csv_file["task_counts"] = y.groupby((y != y.shift()).cumsum()).cumcount()#同じタスクが複数行にわたっているとき、最初の行以外を判別するための列
             z = csv_file["count"]
             csv_file["count_counts"] = z.groupby((z != z.shift()).cumsum()).cumcount() + 1#同じ件数が複数行にわたっているとき、最初の行以外を判別するための列
-            print(f"読み込んだcsvファイル: \n{csv_file[['time','task_counts', 'count_counts']]}")#デバック用
             #読み込んだファイル内容を元にcolumnへ再転記する
             len_load_data = csv_file.index.size
             for i in range(len_load_data):
-                if csv_file.at[i,"task_counts"]>=1 and csv_file.at[i,"count_counts"]>=1:#同じタスクが複数行にわたっているとき、最初の行以外はドラッグできないようにする
+                if csv_file.at[i,"task_counts"]>=1 and csv_file.at[i,"count_counts"]>=1 and csv_file.at[i,"task"] != "":#同じタスクが複数行にわたっているとき、最初の行以外はドラッグできないようにする
                     print(f"{csv_file.at[i,'time']}のタスクが複数行にわたっているため、ドラッグできないようにします")#デバック用
                     columns[i].content = ft.DragTarget(
                         group="timeline_accepted",
