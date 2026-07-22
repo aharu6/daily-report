@@ -5,6 +5,7 @@ from .color_handlers import ColorHandlers
 from flet import BoxShape
 from .make_popup import MakePopup
 from .counter_handlers import CounterHandlers
+from .task_constants import is_counter_hidden_task
 
 class DragHandlers:
     @staticmethod
@@ -152,25 +153,7 @@ class DragHandlers:
         match key:
             case "その他":
                 e.control.content.controls.append(comments[e.control.data["num"]])
-            case (
-                "管理業務"
-                | "休憩"
-                | "委員会"
-                | "WG活動"
-                | "勉強会参加"
-                | "1on1"
-                | "その他"
-                | "カンファレンス"
-                | "業務調整"
-                | "周術期薬剤管理準備"
-                | "手術使用薬剤確認・補充"
-                | "金庫管理薬定数確認"
-                | "ICTリンクスタッフ活動"
-                | "医療安全対策WG活動"
-                | "薬剤部連絡会"
-                | "手術室サテライト薬剤定数確認"
-                | "薬剤使用期限確認"
-            ):
+            case task_name if is_counter_hidden_task(task_name):
                 pass
             case _:
                 e.control.content.controls.append(

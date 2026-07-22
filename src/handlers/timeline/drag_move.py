@@ -1,4 +1,5 @@
 import flet as ft
+from .task_constants import is_counter_hidden_task
 
 class DragMoveHandler:
     @staticmethod
@@ -116,25 +117,7 @@ class DragMoveHandler:
                 # すでに左のカラムにコンテンツがある場合にはコメントボタンは作成しない
                 e.control.content.controls.append(comments[e.control.data["num"]])
             #　件数入力不要の業務名、カウンターを非表示にする
-            case (
-                "管理業務"
-                | "休憩"
-                | "委員会"
-                | "WG活動"
-                | "勉強会参加"
-                | "1on1"
-                | "その他"
-                | "カンファレンス"
-                | "業務調整"
-                | "周術期薬剤管理準備"
-                | "手術使用薬剤確認・補充"
-                | "金庫管理薬定数確認"
-                | "ICTリンクスタッフ活動"
-                | "医療安全対策WG活動"
-                | "薬剤部連絡会"
-                | "手術室サテライト薬剤定数確認"
-                | "薬剤使用期限確認"
-            ):
+            case task_name if is_counter_hidden_task(task_name):
                 print("カウンター非表示")
                 pass
             # その他の場合にはカウンターを表示する
