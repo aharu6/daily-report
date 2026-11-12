@@ -15,9 +15,24 @@ class CounterHandlers:
         new_Count = old_Count - 1
         if new_Count < 0:
             new_Count = 0
+            e.control.value = 0
+            e.control.update()
         count_field.value = new_Count
         count_field.update()
         count_dict[time]["count"] = new_Count
+    
+    @staticmethod
+    def counter_Change(e,count_dict,time):
+        """カウンターの値が変更されたら呼ばれる
+        count_dictの値を更新する"""
+        try:
+            value = int(e.control.value)
+        except (TypeError, ValueError):
+            return # 値が整数に変換できない場合は何もしない
+        if value <0:
+            value = 0
+        count_dict[time]["count"] = value
+            
 
     @staticmethod
     def create_counter(e, count_dict):
@@ -29,6 +44,7 @@ class CounterHandlers:
             text_align=ft.TextAlign.CENTER,
             text_size=10,
             border_color=None,
+            on_change=lambda e:CounterHandlers.counter_Change(e, count_dict, time)
         )
         count_dict[e] = {"count": count}
         return ft.Column(
