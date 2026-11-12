@@ -15,6 +15,8 @@ class CounterHandlers:
         new_Count = old_Count - 1
         if new_Count < 0:
             new_Count = 0
+            e.control.value = 0
+            e.control.update()
         count_field.value = new_Count
         count_field.update()
         count_dict[time]["count"] = new_Count
