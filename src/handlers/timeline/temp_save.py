@@ -144,20 +144,26 @@ class Temp_Save:
         #locateデータ（全体選択）は別に保管しておく
             #初期ベースの作成
             #紐付けはdate_nameのdata_keyにて共通させる
-        try:
-            pre_old_location_data = page.client_storage.get("location_data")
-            old_location_data = json.loads(pre_old_location_data)
-            dict_location_data=old_location_data|{data_key:{
-                "locate_AM":[],
-                "locate_PM":[],
-            }}
-        except:
+        pre_old_location_data = page.client_storage.get("location_data")
+        if pre_old_location_data is None:
+            # 初回（保存データなし）→ 新規作成してよい
             dict_location_data = {
                 data_key: {
                     "locate_AM": [],
                     "locate_PM": [],
                 }
             }
+        else:
+            try:
+                old_location_data = json.loads(pre_old_location_data)
+            except:
+                # 読み込み失敗時は上書きせず保存を中止（既存データを守る）
+                print("location_data の読み込みに失敗したため保存を中止しました")
+                return
+            dict_location_data = old_location_data | {data_key: {
+                "locate_AM": [],
+                "locate_PM": [],
+            }}
         dict_location_data[data_key]["locate_AM"] = [
             control.label for control in custumDrawerAm.content.controls if control.value
         ]
