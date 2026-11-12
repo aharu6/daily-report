@@ -154,11 +154,22 @@ class Temp_Save:
                 }
             }
         else:
-            try:
-                old_location_data = json.loads(pre_old_location_data)
-            except:
-                # 読み込み失敗時は上書きせず保存を中止（既存データを守る）
-                print("location_data の読み込みに失敗したため保存を中止しました")
+            # 読み込み失敗時はgetから取り直して3回までリトライする
+            old_location_data = None
+            for _ in range(3):
+                try:
+                    old_location_data = json.loads(pre_old_location_data)
+                    break
+                except:
+                    pre_old_location_data = page.client_storage.get("location_data")
+            if old_location_data is None:
+                # それでも読み込めない場合は上書きせず、ユーザーに確認と再保存を促す
+                message.content.controls[0].visible = False
+                message.content.controls[1].value = "保存済みの病棟データが読み込めませんでした。病棟を選択し直して、もう一度「一時保存」を押してください"
+                message.content.controls[1].color = "red"
+                message.content.controls[1].visible = True
+                page.update()
+                HideMessageHandler.hide_message(message, page)
                 return
             dict_location_data = old_location_data | {data_key: {
                 "locate_AM": [],
@@ -193,7 +204,9 @@ class Temp_Save:
         #保存できたら完了メッセージを表示
         #メッセージは一定時間経過後に削除
         message.content.controls[0].visible = True
-        message.content.controls[1].visible = True  
+        message.content.controls[1].value = "一時保存が完了しました"
+        message.content.controls[1].color = "green"
+        message.content.controls[1].visible = True
         page.update()
         HideMessageHandler.hide_message(message,page)
 
