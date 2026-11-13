@@ -79,18 +79,8 @@ class Handlers_analyze:
         Handlers_Chart.show_progress_bar(result_field, page)
         def _extract_task_count(df):
             df = df[["task","count"]]
+            df = df[~df["task"].isin(["無菌調製関連業務","混注時間","休憩","委員会","WG活動","勉強会参加","1on1","カンファレンス","薬剤使用期限確認"])]
             df = df.groupby(["task"])["count"].sum().reset_index(name="counts")
-            try:
-                df.drop(index=["無菌調製関連業務"])
-                df.drop(index=["混注時間"])
-                df.drop(index=["休憩"])
-                df.drop(index=["委員会"])
-                df.drop(index=["WG活動"])
-                df.drop(index=["勉強会参加"])
-                df.drop(index=["1on1"])
-                df.drop(index=["カンファレンス"])
-            except KeyError:
-                pass
             return df
         
         task_count = _extract_task_count(all_df if all_df is not None else dataframe)
@@ -134,7 +124,7 @@ class Handlers_analyze:
         Handlers_Chart.show_progress_bar(result_field, page)
         def _compute_time_per_count(df):
             df = df[["task","count"]]
-            df = df[~df["task"].isin(["無菌調製関連業務","混注時間","休憩","委員会","WG活動","勉強会参加","1on1","カンファレンス"])]
+            df = df[~df["task"].isin(["無菌調製関連業務","混注時間","休憩","委員会","WG活動","勉強会参加","1on1","カンファレンス","薬剤使用期限確認"])]
             time_per_task = df.groupby(["task"]).size().reset_index(name="times")
             time_per_task["times"] = time_per_task["times"] *15
 
