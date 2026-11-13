@@ -186,13 +186,30 @@ class Temp_Save:
             json.dumps(dict_location_data, ensure_ascii=False)
         )
         #radio_selected_dataの保存
-        try:
-            preload = page.client_storage.get("radio_selected_data")
-            load_radio_data = json.loads(preload)
-            # 新規データを追加していくと増えるだけだから、日付データにてフィルタして削除する
-        except:
+        preload = page.client_storage.get("radio_selected_data")
+        if preload is None:
+            # 初回（保存データなし）→ 空から開始してよい
             load_radio_data = {}
+        else:
+            # 読み込み失敗時はgetから取り直して3回までリトライする
+            load_radio_data = None
+            for _ in range(3):
+                try:
+                    load_radio_data = json.loads(preload)
+                    break
+                except:
+                    preload = page.client_storage.get("radio_selected_data")
+            if load_radio_data is None:
+                # それでも読み込めない場合は上書きせず、ユーザーに確認と再保存を促す
+                message.content.controls[0].visible = False
+                message.content.controls[1].value = "保存済みの単一選択データが読み込めませんでした。選択を確認して、もう一度「一時保存」を押してください"
+                message.content.controls[1].color = "red"
+                message.content.controls[1].visible = True
+                page.update()
+                HideMessageHandler.hide_message(message, page)
+                return
 
+        # 新規データを追加していくと増えるだけだから、日付データにてフィルタして削除する
         #radio_selected_dataのキーをdate_nameのキーに変更（削除時の挙動と合わせるため）
         selected_data = {data_key:radio_selected_data}
         #新規データを結合
