@@ -54,7 +54,7 @@ class DragMoveHandler:
             else:
                 key = src.data["task"]
 
-        from handlers.handlers import Handlers
+        from handlers.timeline.handlers import Handlers
         #コンテンツの名前は非表示にしておいて、あとで再表示にvisible  = trueで再表示できるように
         e.control.content = ft.Column(
             controls=[
