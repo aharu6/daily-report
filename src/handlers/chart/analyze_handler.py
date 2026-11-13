@@ -19,8 +19,8 @@ class Handlers_analyze:
             df["sort_time"]=df["sort_time"].str.strip().str.split(" ").str[0]
             #sort_time列のデータ型をdatetimeに変換
             df["sort_time"]=pd.to_datetime(df["sort_time"],format="%H:%M",errors="coerce")
-            #sort_time列を元に時間順にソート    
-            df.sort_values("sort_time")
+            #sort_time列を元に時間順にソート
+            df = df.sort_values("sort_time")
             return df
         
         df = _extract_time_task(all_df if all_df is not None else dataframe)
