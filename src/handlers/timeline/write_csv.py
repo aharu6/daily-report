@@ -11,8 +11,7 @@ class WriteCSVHandler:
     
     @staticmethod
     def check_locate_data(data):
-        for time, record in data.items():
-            locate = record.get("locate", [])
+        for time, locate in data["locate"].items():
             if isinstance(locate, list) and len(locate) > 1:
                 print(f"エラー：時間{time}に複数の病棟が選択されています。locateデータ: {locate}")  # エラーデバッグ用出力
                 return False  # 複数の病棟が選択されている場合はエラー
