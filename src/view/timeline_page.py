@@ -646,7 +646,9 @@ class TimelinePage:
                             ft.Text(name, size=15),
                             ft.IconButton(
                                 ft.icons.DELETE_OUTLINE,
-                                on_click=lambda e: Handlers.delete_name(e),
+                                on_click=lambda e: Handlers.delete_name(
+                                    e, self.phNameList, self.page
+                                ),
                                 data=name,
                             ),
                         ]

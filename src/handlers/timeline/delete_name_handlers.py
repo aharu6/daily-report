@@ -1,4 +1,3 @@
-import json
 class DeleteNameHandler:
     @staticmethod
     def delete_name(e, phNameList, page):
@@ -9,6 +8,6 @@ class DeleteNameHandler:
             phNameList (_type_): _description_
             page (_type_): _description_
         """
-        new_phNameList = phNameList.remove(e.control.data)
-        page.set("phName", json.dumps(new_phNameList, ensure_ascli=False))
+        phNameList.remove(e.control.data)
+        page.client_storage.set("phName", phNameList)
         page.update()
