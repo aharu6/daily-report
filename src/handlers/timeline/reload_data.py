@@ -161,7 +161,45 @@ class ReloadDataHandler:
         #name_dateにて紐づける中から取り出す
         load_data_key=f"{update_date}_{update_phName}"
         #病棟単数選択（radiobutton）での再表示,保存データの読み出し
-        load_radio_data=json.loads(page.client_storage.get("radio_selected_data"))
+        radio_raw = page.client_storage.get("radio_selected_data")
+        if radio_raw is None:
+            # 保存データなし（初回）→ 空でよい
+            load_radio_data={}
+        else:
+            # 読み込み失敗時はgetから取り直して3回までリトライする
+            load_radio_data=None
+            for _ in range(3):
+                try:
+                    load_radio_data=json.loads(radio_raw)
+                    break
+                except:
+                    radio_raw = page.client_storage.get("radio_selected_data")
+            if not isinstance(load_radio_data,dict):
+                # それでも読み込めない場合は開く操作を中止し、ユーザーに知らせる
+                page.snack_bar=ft.SnackBar(ft.Text("保存済みの単一選択データが読み込めませんでした。開く操作を中止しました"))
+                page.snack_bar.open = True
+                page.update()
+                return
+        
+        location_raw = page.client_storage.get("location_data")
+        if location_raw is None:
+            # 保存データなし（初回）→ 空でよい
+            load_location_data = {}
+        else:
+            # 読み込み失敗時はgetから取り直して3回までリトライする
+            load_location_data = None
+            for _ in range(3):
+                try:
+                    load_location_data = json.loads(location_raw)
+                    break
+                except:
+                    location_raw = page.client_storage.get("location_data")
+            if not isinstance(load_location_data,dict):
+                # それでも読み込めない場合は開く操作を中止し、ユーザーに知らせる
+                page.snack_bar=ft.SnackBar(ft.Text("保存済みの病棟データが読み込めませんでした。開く操作を中止しました"))
+                page.snack_bar.open = True
+                page.update()
+                return
         
         
         for i in range(len_load_data):
@@ -393,15 +431,15 @@ class ReloadDataHandler:
         #病棟名の再表示
         #writeにてlocateデータば辞書データと別に保管しておく
         
-        load_location_data = json.loads(page.client_storage.get("location_data"))
-        
-        am_data = load_location_data[load_data_key]["locate_AM"]
-        pm_data = load_location_data[load_data_key]["locate_PM"]
+        am_data = load_location_data.get(load_data_key,{}).get("locate_AM",[])
+        pm_data = load_location_data.get(load_data_key,{}).get("locate_PM",[])
         #初期化
         for i in range(len(custumDrawerAm.content.controls)):
             custumDrawerAm.content.controls[i].value = False
         for i in range(len(custumDrawerPm.content.controls)):
             custumDrawerPm.content.controls[i].value = False
+        total_num_am["count"]=0
+        total_num_pm["count"]=0
         #再表示
         for j in range(len(am_data)):            
             for i in range(len(custumDrawerAm.content.controls)):
@@ -421,7 +459,7 @@ class ReloadDataHandler:
         
         
         #name_dataにて紐づける中から取り出す
-        radio_data=load_radio_data[load_data_key]
+        radio_data=load_radio_data.get(load_data_key,{})
         
         for time_key,data in radio_data.items():
             column_num=data["num"]
