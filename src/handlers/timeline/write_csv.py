@@ -167,12 +167,25 @@ class WriteCSVHandler:
             except:
                 data_key = f"{date}_NoName"
 
-            try:
-                old_data = page.client_storage.get("timeline_data")
-                save_data = json.loads(old_data)
-                save_data[data_key] = data_dict
-            except:
+            old_data = page.client_storage.get("timeline_data")
+            if old_data is None:
+                # 初回（保存データなし）→ 空から開始してよい
                 save_data = {}
+                save_data[data_key] = data_dict
+            else:
+                # 読み込み失敗時はgetから取り直して3回までリトライする
+                save_data = None
+                for _ in range(3):
+                    try:
+                        save_data = json.loads(old_data)
+                        break
+                    except:
+                        old_data = page.client_storage.get("timeline_data")
+                if save_data is None:
+                    # それでも読み込めない場合は上書きせず、ユーザーに再保存を促す
+                    save_error_message.content = ft.Text("保存済みのタイムラインデータが読み込めませんでした。もう一度保存し直してください", color="red")
+                    page.update()
+                    return
                 save_data[data_key] = data_dict
 
             # 変更後のデータを保管する
@@ -184,20 +197,33 @@ class WriteCSVHandler:
             )
             # locateデータ（全体選択）は別に保管しておく
             # 初期ベースの作成
-            try:
-                pre_old_location_data=page.client_storage.get("location_data")
-                old_location_data=json.loads(pre_old_location_data)
-                dict_location_data=old_location_data|{data_key:{
-                    "locate_AM":[],
-                    "locate_PM":[],
-                }}
-            except:
+            pre_old_location_data=page.client_storage.get("location_data")
+            if pre_old_location_data is None:
+                # 初回（保存データなし）→ 新規作成してよい
                 dict_location_data = {
                     data_key: {
                         "locate_AM": [],
                         "locate_PM": [],
                     }
                 }
+            else:
+                # 読み込み失敗時はgetから取り直して3回までリトライする
+                old_location_data = None
+                for _ in range(3):
+                    try:
+                        old_location_data = json.loads(pre_old_location_data)
+                        break
+                    except:
+                        pre_old_location_data=page.client_storage.get("location_data")
+                if old_location_data is None:
+                    # それでも読み込めない場合は上書きせず、ユーザーに再保存を促す
+                    save_error_message.content = ft.Text("保存済みの病棟データが読み込めませんでした。もう一度保存し直してください", color="red")
+                    page.update()
+                    return
+                dict_location_data=old_location_data|{data_key:{
+                    "locate_AM":[],
+                    "locate_PM":[],
+                }}
             dict_location_data[data_key]["locate_AM"] = [
                 control.label
                 for control in custumDrawerAm.content.controls
@@ -221,13 +247,26 @@ class WriteCSVHandler:
             #radio_selected_dataをデータフレームに変換
             # 行列を入れ替える
             #元データを呼び出す　なければ初期データフレームを作成
-            try:
-                preload=page.client_storage.get("radio_selected_data")
-                load_radio_data=json.loads(preload)
-                #新規データを追加していくと増えるだけだから、日付データにてフィルタして削除する
-            except:
+            preload=page.client_storage.get("radio_selected_data")
+            if preload is None:
+                # 初回（保存データなし）→ 空から開始してよい
                 load_radio_data = {}
+            else:
+                # 読み込み失敗時はgetから取り直して3回までリトライする
+                load_radio_data = None
+                for _ in range(3):
+                    try:
+                        load_radio_data = json.loads(preload)
+                        break
+                    except:
+                        preload=page.client_storage.get("radio_selected_data")
+                if load_radio_data is None:
+                    # それでも読み込めない場合は上書きせず、ユーザーに再保存を促す
+                    save_error_message.content = ft.Text("保存済みの単一選択データが読み込めませんでした。もう一度保存し直してください", color="red")
+                    page.update()
+                    return
 
+            #新規データを追加していくと増えるだけだから、日付データにてフィルタして削除する
             #radio_selected_dataのキーをdate_nameのキーに変更（削除時の挙動と合わせるため）
             radio_selected_data = {data_key:radio_selected_data}
             #新規データを結合
