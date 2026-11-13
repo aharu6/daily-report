@@ -8,7 +8,7 @@ class Handlers_setting:
     def delete_name(e, phNameList, page, panel):
         # e.control.dataに該当する名前をphNamelistから削除
         new_phNameList = [item for item in phNameList if item["name"] != e.control.data]
-        page.client_storage.set("phName", json.dumps(new_phNameList))
+        page.client_storage.set("phName", new_phNameList)
         Handlers_setting.update_ListTile(panel, new_phNameList, page)
 
     @staticmethod
@@ -63,7 +63,7 @@ class Handlers_setting:
                 json.loads(phNameList) if isinstance(phNameList, str) else phNameList
             )
             phName_List.append({"name": delspace2})
-            page.client_storage.set("phName", json.dumps(phName_List))
+            page.client_storage.set("phName", phName_List)
             name_field.value = ""
             Handlers_setting.update_ListTile(panel, phNameList=phName_List, page=page)
             dialog.open = False
