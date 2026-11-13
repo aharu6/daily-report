@@ -273,19 +273,24 @@ class DragHandlers:
                     e, page, columns, drag_data
                 ),
             )
-            del drag_data[model.times()[right_col_num]]
+            if model.times()[right_col_num] in drag_data:
+                del drag_data[model.times()[right_col_num]]
             if model.times()[right_col_num] in count_dict:
                 del count_dict[model.times()[right_col_num]]
             if model.times()[right_col_num] in comment_dict:
                 del comment_dict[model.times()[right_col_num]]
 
             right_col_num += 1
-            right_key = columns[right_col_num].content.data["task"]
+            try:
+                right_key = columns[right_col_num].content.data["task"]
+            except:
+                right_key = None
         else:
             pass
         page.update()
 
-        del drag_data[model.times()[col_num]]
+        if model.times()[col_num] in drag_data:
+            del drag_data[model.times()[col_num]]
         if model.times()[col_num] in count_dict:
             del count_dict[model.times()[col_num]]
         if model.times()[col_num] in comment_dict:
