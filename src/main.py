@@ -75,8 +75,10 @@ def main(page: ft.Page):
 
     def view_pop(e):
         page.views.pop()
-        # 不要なリソースを解放
-        page.views.clear()
+        if page.views:
+            page.go(page.views[-1].route)
+        else:
+            page.go("/")
 
     page.on_route_change = route_change
     page.on_view_pop = view_pop
