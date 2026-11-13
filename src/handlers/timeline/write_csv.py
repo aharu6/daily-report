@@ -332,17 +332,11 @@ class WriteCSVHandler:
                     # 時間経過後に消す 「csvファイルを保存しました」
                     HideMessageHandler.hide_message(save_message, page)
                 except:
-                    file_path = select_directory.result.path + f"/{date}.csv"
-                    # ファイル保存名に名前を使用しているので、名前が入力されていない場合にはエラーを表示する
-                    # 病棟データが何も入力されていないときも処理を中断する
-                    # 両者ともエラーメッセージをtrueに設定しなおす
-                    df.to_csv(file_path, index=False)
-                    # 保存できたら完了メッセージを表示
-                    save_message.content.controls[0].visible = True
-                    save_message.content.controls[1].visible = True
+                    # 別名で保存し直すと正しいファイル名で保存できていないことに気づけないため、
+                    # 保存し直さず、失敗したことをユーザーに知らせる
+                    save_error_message.content = ft.Text(f"CSVファイル「{date}{phName.value}.csv」を保存できませんでした。保存先を確認してもう一度保存してください", color="red")
                     page.update()
-                    # 時間経過後に消す 「csvファイルを保存しました」
-                    HideMessageHandler.hide_message(save_message, page)
+                    return
             elif (
                 not list_am_location_data or not list_pm_location_data
             ):  # 薬剤師名がないとき、病棟データが入力されていないとき,
