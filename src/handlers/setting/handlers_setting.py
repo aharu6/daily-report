@@ -165,7 +165,7 @@ class Handlers_setting:
         #削除した新しいデータをclient_storageに保存
         try:
             del load_location_data[key]
-            page.client_storage.set("load_location_data",json.dumps(load_location_data))        
+            page.client_storage.set("location_data",json.dumps(load_location_data))
         except:
             pass
         
