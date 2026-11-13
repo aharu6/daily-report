@@ -1,3 +1,6 @@
+import json
+
+
 class DataModel:
     def create_client_storage(self, page):
         if not hasattr(page, "client_storage"):
@@ -11,6 +14,14 @@ class DataModel:
         DataModel.create_client_storage(self, page)
         phNameList = page.client_storage.get("phName")
         if phNameList == None:
+            phNameList = []
+        if isinstance(phNameList, str):
+            # 旧形式（JSON文字列で保存されたデータ）を list に戻す
+            try:
+                phNameList = json.loads(phNameList)
+            except (json.JSONDecodeError, TypeError):
+                phNameList = []
+        if not isinstance(phNameList, list):
             phNameList = []
         self.phName = phNameList
         return phNameList
