@@ -98,8 +98,8 @@ class Temp_Save:
                 
         #ラジオボタンでの病棟選択データを反映
         #単数選択時もリスト形式に変換して保存する
-        update_loc_list = []
         for time in data_dict.keys():
+            update_loc_list = []
             if time in update_location_data:
                 update_loc_list.append(update_location_data[time])
                 data_dict[time]["locate"] = update_loc_list
