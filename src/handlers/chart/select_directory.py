@@ -282,7 +282,7 @@ class SelectDirectoryHandler:
         #絞り込んだファイルにて 「読み込んだファイル一覧」を更新する
         Handlers_Chart.pick_file_name(file_name=result_files, card=card)
         #絞り込んだデータで結合dfを作成する
-        SelectDirectoryHandler.concat_files(file_names=result_files, select_directory=select_directory,parent_instance=parent_instance)
+        SelectDirectoryHandler.concat_files(file_names=result_files, select_directory=select_directory,parent_instance=parent_instance,page=parent_instance.page)
         #絞り込みが完了したことを通知するメッセージを表示する
         #locadingを非表示にする
         filtering_loading.content=None
