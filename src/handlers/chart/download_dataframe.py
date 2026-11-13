@@ -30,7 +30,7 @@ class DataframeDownloadHandler:
                     selectdirectory.result.path,
                     f'{today.strftime("%Y%m%d")}_{file_name}.csv'
                 )
-                dataframe.to_csv(file_path, index=True)
+                dataframe.to_csv(file_path, index=False, encoding="utf-8-sig")
             except Exception as e:
                 print(e)
                 return

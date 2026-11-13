@@ -239,7 +239,7 @@ class SelectDirectoryHandler:
                     #午前が含まれるのは0行目から15行目まで
                     #ユニークな文字列を取得する
                     am_locate=df["locate"].head(16).unique()
-                    result_am=any(loc in l for l in am_locate for loc in AM_location)
+                    result_am=any(loc in l for l in am_locate if isinstance(l, str) for loc in AM_location)
                     if result_am== True:
                         result_location_files_am.append(file)
                 #PMの病棟名で絞り込み
@@ -248,7 +248,7 @@ class SelectDirectoryHandler:
                     #午後が含まれるのは16行目から55行目まで
                     pm_locate=df["locate"].tail(40).unique()
                     print(f"午後の病棟名: {pm_locate}filename: {file}")
-                    result_pm=any(loc in l for l in pm_locate for loc in PM_location)
+                    result_pm=any(loc in l for l in pm_locate if isinstance(l, str) for loc in PM_location)
                     if result_pm== True:
                         result_location_files_pm.append(file)
                 
