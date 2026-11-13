@@ -197,20 +197,33 @@ class WriteCSVHandler:
             )
             # locateデータ（全体選択）は別に保管しておく
             # 初期ベースの作成
-            try:
-                pre_old_location_data=page.client_storage.get("location_data")
-                old_location_data=json.loads(pre_old_location_data)
-                dict_location_data=old_location_data|{data_key:{
-                    "locate_AM":[],
-                    "locate_PM":[],
-                }}
-            except:
+            pre_old_location_data=page.client_storage.get("location_data")
+            if pre_old_location_data is None:
+                # 初回（保存データなし）→ 新規作成してよい
                 dict_location_data = {
                     data_key: {
                         "locate_AM": [],
                         "locate_PM": [],
                     }
                 }
+            else:
+                # 読み込み失敗時はgetから取り直して3回までリトライする
+                old_location_data = None
+                for _ in range(3):
+                    try:
+                        old_location_data = json.loads(pre_old_location_data)
+                        break
+                    except:
+                        pre_old_location_data=page.client_storage.get("location_data")
+                if old_location_data is None:
+                    # それでも読み込めない場合は上書きせず、ユーザーに再保存を促す
+                    save_error_message.content = ft.Text("保存済みの病棟データが読み込めませんでした。もう一度保存し直してください", color="red")
+                    page.update()
+                    return
+                dict_location_data=old_location_data|{data_key:{
+                    "locate_AM":[],
+                    "locate_PM":[],
+                }}
             dict_location_data[data_key]["locate_AM"] = [
                 control.label
                 for control in custumDrawerAm.content.controls
