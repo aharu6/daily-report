@@ -121,12 +121,29 @@ class Temp_Save:
         except:
             data_key = f"{date}_NoName"
         
-        try:
-            old_data = page.client_storage.get("timeline_data")
-            save_data = json.loads(old_data)
+        old_data = page.client_storage.get("timeline_data")
+        if old_data is None:
+            # 初回（保存データなし）→ 空から開始してよい
+            save_data = {}
             save_data[data_key] = data_dict
-        except:
-            save_data = {}  
+        else:
+            # 読み込み失敗時はgetから取り直して3回までリトライする
+            save_data = None
+            for _ in range(3):
+                try:
+                    save_data = json.loads(old_data)
+                    break
+                except:
+                    old_data = page.client_storage.get("timeline_data")
+            if save_data is None:
+                # それでも読み込めない場合は上書きせず、ユーザーに再保存を促す
+                message.content.controls[0].visible = False
+                message.content.controls[1].value = "保存済みのタイムラインデータが読み込めませんでした。もう一度「一時保存」を押してください"
+                message.content.controls[1].color = "red"
+                message.content.controls[1].visible = True
+                page.update()
+                HideMessageHandler.hide_message(message, page)
+                return
             save_data[data_key] = data_dict
             
         # その他コメントの書き込み
