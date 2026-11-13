@@ -8,34 +8,28 @@ class TrashDataHandler:
         try:
             drag_data=page.client_storage.get("delete_drag")
             load=json.loads(drag_data)
-
-            location_data=json.loads(page.client_storage.get("delete_location"))
-
-            radio_data=json.loads(page.client_storage.get("delete_radio"))
-
         except:
-            pass
+            load={}
+        try:
+            location_data=json.loads(page.client_storage.get("delete_location"))
+        except:
+            location_data={}
+        try:
+            radio_data=json.loads(page.client_storage.get("delete_radio"))
+        except:
+            radio_data={}
         try:
             today=datetime.date.today()
 
             keys_to_delete = []
 
-            for key in load.keys():
-                if "delete" in load[key].keys():
-                    load_day=load[key]["delete"]
-                    old_day = datetime.datetime.strptime(load_day, "%Y-%m-%d").date()
-                    if (today-old_day).days>30:
-                        keys_to_delete.append(key)
-                if "delete" in location_data[key].keys():
-                    load_day=location_data[key]["delete"]
-                    old_day = datetime.datetime.strptime(load_day, "%Y-%m-%d").date()
-                    if (today-old_day).days>30:
-                        keys_to_delete.append(key)
-                if "delete" in radio_data[key].keys():
-                    load_day=radio_data[key]["delete"]
-                    old_day = datetime.datetime.strptime(load_day, "%Y-%m-%d").date()
-                    if (today-old_day).days>30:
-                        keys_to_delete.append(key)
+            for store in (load,location_data,radio_data):
+                for key in store.keys():
+                    if "delete" in store[key].keys():
+                        load_day=store[key]["delete"]
+                        old_day = datetime.datetime.strptime(load_day, "%Y-%m-%d").date()
+                        if (today-old_day).days>30:
+                            keys_to_delete.append(key)
 
             for key in set(keys_to_delete):
                 try:
