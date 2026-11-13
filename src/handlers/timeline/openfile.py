@@ -6,6 +6,8 @@ from handlers.timeline.handlers import Handlers
 import json
 from handlers.timeline.make_popup import MakePopup
 from handlers.timeline.task_constants import is_counter_hidden_task
+from handlers.timeline.handdrag_will_accept import Add_will_accept
+from handlers.timeline.drag_leave import DragLeave
 #csvファイル読み込みハンドラ
 class Openfile:
     def __init__(self):
@@ -187,8 +189,6 @@ class Openfile:
                         
                 #何も文字が入っていないカラムは初期状態へ
                 elif pd.isna(csv_file.at[i,"task"]):
-                    from handlers.timeline.handdrag_will_accept import Add_will_accept
-                    from handlers.timeline.drag_leave import DragLeave
                     columns[i].content = ft.DragTarget(
                         group  = "timeline",
                         content = ft.Container(
