@@ -402,7 +402,7 @@ class Handlers_analyze:
                             ft.DataCell(ft.Text(row.task)),
                             ft.DataCell(ft.Text(str(row.counts_total))),
                             ft.DataCell(ft.Text(f"{row.times:.2f}")),
-                            ft.DataCell(ft.Text(f"{row.time_per_task:.2f}")),
+                            ft.DataCell(ft.Text(f"{row.time_per_count:.2f}")),
                         ]
                     )
                     for row in df.itertuples(index=False, name="Row")
