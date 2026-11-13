@@ -167,12 +167,25 @@ class WriteCSVHandler:
             except:
                 data_key = f"{date}_NoName"
 
-            try:
-                old_data = page.client_storage.get("timeline_data")
-                save_data = json.loads(old_data)
-                save_data[data_key] = data_dict
-            except:
+            old_data = page.client_storage.get("timeline_data")
+            if old_data is None:
+                # 初回（保存データなし）→ 空から開始してよい
                 save_data = {}
+                save_data[data_key] = data_dict
+            else:
+                # 読み込み失敗時はgetから取り直して3回までリトライする
+                save_data = None
+                for _ in range(3):
+                    try:
+                        save_data = json.loads(old_data)
+                        break
+                    except:
+                        old_data = page.client_storage.get("timeline_data")
+                if save_data is None:
+                    # それでも読み込めない場合は上書きせず、ユーザーに再保存を促す
+                    save_error_message.content = ft.Text("保存済みのタイムラインデータが読み込めませんでした。もう一度保存し直してください", color="red")
+                    page.update()
+                    return
                 save_data[data_key] = data_dict
 
             # 変更後のデータを保管する
