@@ -26,6 +26,9 @@ jobs:
       - name: Build exe (flet pack)
         working-directory: src
         shell: pwsh
+        env:
+          PYTHONUTF8: "1"
+          PYTHONIOENCODING: utf-8
         run: |
           $plotly = uv run python -c "import plotly, os; print(os.path.dirname(plotly.__file__))"
           uv run flet pack main.py -i appicon\diary-left-svgrepo-com.ico --file-version 1.70.6.0 -n 業務見える化日誌 --add-data "$plotly;plotly" --add-data "$plotly\package_data;plotly/package_data"
