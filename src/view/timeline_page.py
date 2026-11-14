@@ -411,7 +411,6 @@ class TimelinePage:
             self.selectColumns[63].visible = True  # 薬剤部連絡会
             
             #非表示
-            self.selectColumns[64].visible = False  # 薬剤使用期限確認
 
         self.time_for_visual_label = []
 

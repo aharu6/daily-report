@@ -71,7 +71,6 @@ class ChoiceChangeHandlers:
                 selectColumns[61].visible = False  # 医療安全対策WG活動
                 selectColumns[62].visible = False  # 実習生対応
                 selectColumns[63].visible = False  # 薬剤部連絡会
-                selectColumns[64].visible = False  # 薬剤使用期限確認
 
                 page.update()
             case 1:  # 12階
@@ -135,7 +134,7 @@ class ChoiceChangeHandlers:
                 selectColumns[52].visible = False  # 外来処方箋修正
                 selectColumns[53].visible = False  # 勉強会資料作成・開催
                 selectColumns[54].visible = False  # お役立ち情報作成
-                selectColumns[55].visible = False  # 薬剤使用期限確認
+                selectColumns[55].visible = True  # 薬剤使用期限確認
                 selectColumns[56].visible = False  # 緩和回診
                 selectColumns[57].visible = False  # 心不全回診
                 selectColumns[58].visible = False  # 緩和回診記録作成
@@ -146,9 +145,6 @@ class ChoiceChangeHandlers:
                 selectColumns[61].visible = False  # 医療安全対策WG活動
                 selectColumns[62].visible = False  # 実習生対応
                 selectColumns[63].visible = False  # 薬剤部連絡会
-
-                #表示
-                selectColumns[64].visible = True  # 薬剤使用期限確認
                 page.update()
 
             case 2:  # 役職者
@@ -220,7 +216,6 @@ class ChoiceChangeHandlers:
                 selectColumns[61].visible = False  #   
                 selectColumns[62].visible = False  # 
                 selectColumns[63].visible = False  # 
-                selectColumns[64].visible = False  # 薬剤使用期限確認
                 
                 page.update()
 
@@ -299,7 +294,6 @@ class ChoiceChangeHandlers:
                 selectColumns[62].visible = True  # 実習生対応
                 selectColumns[63].visible = True  # 薬剤部連絡会
                 #非表示
-                selectColumns[64].visible = False  # 薬剤使用期限確認
                 page.update()
             case 4:  # ICT/AST/NST/緩和・回診    
                 # 非表示
@@ -373,7 +367,6 @@ class ChoiceChangeHandlers:
                 selectColumns[61].visible = False  # 医療安全対策WG活動
                 selectColumns[62].visible = False  # 実習生対応
                 selectColumns[63].visible = False  # 薬剤部連絡会
-                selectColumns[64].visible = False  # 薬剤使用期限確認
                 page.update()
 
             case 5:  # DI
@@ -450,6 +443,5 @@ class ChoiceChangeHandlers:
                 selectColumns[61].visible = False  # 医療安全対策WG活動
                 selectColumns[62].visible = False  # 実習生対応
                 selectColumns[63].visible = False  # 薬剤部連絡会                
-                selectColumns[64].visible = False  # 薬剤使用期限確認
                 
                 page.update()
