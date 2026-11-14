@@ -1,0 +1,34 @@
+name: Build Windows exe
+
+on:
+  workflow_dispatch:
+
+env:
+  UV_PYTHON: "3.11"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Build exe (flet pack)
+        working-directory: src
+        shell: pwsh
+        run: |
+          $plotly = uv run python -c "import plotly, os; print(os.path.dirname(plotly.__file__))"
+          uv run flet pack main.py -i appicon\diary-left-svgrepo-com.ico --file-version 1.70.6.0 -n 業務見える化日誌 --add-data "$plotly;plotly" --add-data "$plotly\package_data;plotly/package_data"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-report-exe
+          path: src/dist/*.exe
