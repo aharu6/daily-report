@@ -2,6 +2,9 @@ name: Build Windows exe
 
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - "v*"
 
 env:
   UV_PYTHON: "3.11"
