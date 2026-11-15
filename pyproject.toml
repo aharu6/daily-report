@@ -7,9 +7,9 @@ requires-python = ">=3.11"
 dependencies = [
     "chardet>=7.4.3",
     "flet==0.24.1",
-    "kaleido>=1.2.0",
+    "kaleido==0.2.1",
     "pandas>=3.0.2",
-    "plotly>=6.7.0",
+    "plotly>=6.7.0,<7.0.0",
 ]
 
 [dependency-groups]
