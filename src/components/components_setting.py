@@ -2,6 +2,7 @@ import flet as ft
 import json
 from handlers.setting.reload_set_data import ReloadSetDataButton
 from handlers.setting.trash_exp import Trashdata_ExpantionPanel
+from models.models import DataModel
 
 class Title:
     def __init__(self, page):
@@ -111,6 +112,16 @@ class Panel:
                                     selected_index =ReloadSetDataButton.select_index(self.page),
                                     on_change = lambda e:ReloadSetDataButton.reload_set_data_button(e,self.page),
                                     data = "業務調整"
+                                )
+                            ),
+                            ft.ListTile(
+                                title = ft.Text("業務調整を追加する時間帯"),
+                                subtitle = ft.Text("ONのとき、この時間帯（15分刻み）にデフォルトで追加されます"),
+                                trailing = ft.Dropdown(
+                                    options = [ft.dropdown.Option(t) for t in DataModel().times()],
+                                    value = ReloadSetDataButton.select_time(self.page),
+                                    width = 160,
+                                    on_change = lambda e:ReloadSetDataButton.reload_set_time_button(e,self.page),
                                 )
                             )
                         ]
