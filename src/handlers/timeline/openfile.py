@@ -238,6 +238,7 @@ class Openfile:
 
             #薬剤師名の再表示
             update_phName = csv_file["phName"].unique()[0]
+            Handlers.ensure_name_option(phName, update_phName)
             phName.value = update_phName
 
             #病棟名の再表示

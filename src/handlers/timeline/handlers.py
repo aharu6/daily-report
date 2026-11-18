@@ -13,6 +13,8 @@ class Handlers:
     handle_change = HandleChange.handle_change
     dropdown_changed = DropdownHandlers.dropdown_changed
     update_dropdown = DropdownHandlers.update_dropdown
+    ensure_name_option = DropdownHandlers.ensure_name_option
+    register_name = DropdownHandlers.register_name
     close_dialog = DialogHandlers.close_dialog
     create_dialog_for_comment = DialogHandlers.create_dialog_for_comment
     add_comment_for_dict = DialogHandlers.add_comment_for_dict

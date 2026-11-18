@@ -4,6 +4,7 @@ import flet as ft
 import pandas as pd
 
 from handlers.timeline.hide_message import HideMessageHandler
+from handlers.timeline.dropdown_handlers import DropdownHandlers
 
 class WriteCSVHandler:
     def __init__(self):
@@ -325,6 +326,8 @@ class WriteCSVHandler:
                     # 病棟データが何も入力されていないときも処理を中断する
                     # 両者ともエラーメッセージをtrueに設定しなおす
                     df.to_csv(file_path, index=False)
+                    # 未登録の名前なら端末の名前リストへ登録する（#323）
+                    DropdownHandlers.register_name(page, phName, phName.value)
                     # 保存できたら完了メッセージを表示
                     save_message.content.controls[0].visible = True
                     save_message.content.controls[1].visible = True

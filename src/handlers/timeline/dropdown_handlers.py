@@ -43,3 +43,40 @@ class DropdownHandlers:
 
         phName.options = options
         page.update()
+
+    @staticmethod
+    def ensure_name_option(phName, name):
+        # 読み込んだ名前が選択肢に無いとき、一時的に選択肢へ追加する（#323）
+        # 登録リスト自体は変更しない
+        if not name:
+            return
+        options = list(phName.options or [])
+        if name not in [option.key for option in options]:
+            options.append(ft.dropdown.Option(name))
+            phName.options = options
+
+    @staticmethod
+    def register_name(page, phName, name):
+        # 保存時、未登録の名前なら端末の名前リストへ登録する（#323）
+        if not name or name == "Add":
+            return
+        raw = page.client_storage.get("phName")
+        if raw is None:
+            name_list = []
+        elif isinstance(raw, str):
+            try:
+                name_list = json.loads(raw)
+            except (json.JSONDecodeError, TypeError):
+                name_list = []
+        else:
+            name_list = raw
+        if not isinstance(name_list, list):
+            name_list = []
+        if any(
+            isinstance(item, dict) and item.get("name") == name
+            for item in name_list
+        ):
+            return
+        name_list.append({"name": name})
+        page.client_storage.set("phName", name_list)
+        DropdownHandlers.update_dropdown(phName, name_list, page)
