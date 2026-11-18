@@ -2,6 +2,7 @@
 #保存したらメッセージを表示する
 import json
 from handlers.timeline.hide_message import HideMessageHandler
+from handlers.timeline.dropdown_handlers import DropdownHandlers
 from datetime import datetime
 class Temp_Save:
     @staticmethod
@@ -157,6 +158,8 @@ class Temp_Save:
         page.client_storage.set(
             "timeline_data", json.dumps(save_data, ensure_ascii=False)
             )
+        # 未登録の名前なら端末の名前リストへ登録する（#323）
+        DropdownHandlers.register_name(page, phName, phName.value)
         
         #locateデータ（全体選択）は別に保管しておく
             #初期ベースの作成

@@ -156,6 +156,7 @@ class ReloadDataHandler:
         
         #薬剤師名の再表示
         update_phName = load_data[key_for_reload]["phName"] 
+        Handlers.ensure_name_option(phName, update_phName)
         phName.value = update_phName
         
         #name_dateにて紐づける中から取り出す
