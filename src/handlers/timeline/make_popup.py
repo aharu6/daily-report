@@ -87,21 +87,33 @@ class MakePopup:
         #前のラジオボタンのリセット
         e.control.items[0].content.content.controls.clear()
         if time in amtime:
-            if len(list_am_location) > 0:
-                for i in range(len(list_am_location)):        
+            if len(list_am_location) == 1:
+                # 候補が1つだけならラジオボタンは出さず病棟名のみ表示する（#319）
+                # 書き出し時はチェック済みの病棟がそのまま入るため選択操作は不要
+                e.control.items[0].content.content.controls.append(
+                    ft.Text(list_am_location[0])
+                )
+            elif len(list_am_location) > 1:
+                for i in range(len(list_am_location)):
                     e.control.items[0].content.content.controls.append(
                         ft.Radio(value=list_am_location[i], label=list_am_location[i])
                     )
-                    
+
             else:
                 pass
         elif time in pmtime:
-            if len(list_pm_location) > 0:
-                for i in range(len(list_pm_location)):        
+            if len(list_pm_location) == 1:
+                # 候補が1つだけならラジオボタンは出さず病棟名のみ表示する（#319）
+                # 書き出し時はチェック済みの病棟がそのまま入るため選択操作は不要
+                e.control.items[0].content.content.controls.append(
+                    ft.Text(list_pm_location[0])
+                )
+            elif len(list_pm_location) > 1:
+                for i in range(len(list_pm_location)):
                     e.control.items[0].content.content.controls.append(
                         ft.Radio(value=list_pm_location[i], label=list_pm_location[i])
                     )
-                    
+
             else:
                 pass
         else:
